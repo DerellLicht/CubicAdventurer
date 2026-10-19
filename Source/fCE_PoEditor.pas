@@ -178,6 +178,9 @@ type
 
 implementation
 
+uses
+  CE_WideCompat;
+
 
 
 {$R *.dfm}

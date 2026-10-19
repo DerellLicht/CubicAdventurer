@@ -61,7 +61,7 @@ procedure ShowCreateSymlinkDialog(AParentFolderPath: WideString; ALinkName:
 implementation
 
 uses
-  MPCommonUtilities, CE_LanguageEngine, CE_VistaFuncs;
+  MPCommonUtilities, CE_LanguageEngine, CE_VistaFuncs, CE_WideCompat;
 
 {$R *.dfm}
 

@@ -87,7 +87,7 @@ implementation
 
 uses
   MPShellTypes, Variants, CE_Utils, Forms, MPCommonUtilities, SysUtils,
-  CE_LanguageEngine, DateUtils;
+  CE_LanguageEngine, DateUtils, CE_WideCompat;
 
 var
   fCERecycleBinCtrl: TCERecycleBinCtrl = nil;

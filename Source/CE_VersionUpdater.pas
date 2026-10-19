@@ -198,7 +198,7 @@ uses
   CE_XmlUtils, Math, MPCommonUtilities, Classes, SysUtils,
   Windows, fCE_UpdateDlg, Controls, CE_VistaFuncs, Messages, dCE_Input,
   Forms, CE_FileUtils, CE_LanguageEngine, CE_Consts, CE_Utils,
-  fCE_LoginPromptDlg;
+  fCE_LoginPromptDlg, CE_WideCompat;
 
 {-------------------------------------------------------------------------------
   Compare Version (Result < 0 if Ver1 is smaller,
@@ -296,7 +296,8 @@ procedure UpdateFiles(ADestFolder: WideString; ASrcFolder: WideString );
             else
             begin
               dir:= ADestFolder + SubFolder;
-              WideCopyFile(AFolder + sr.Name, dir + sr.Name, false);
+              // WideCopyFile was a thin TNT wrapper around this same Windows call.
+              CopyFileW(PWideChar(AFolder + sr.Name), PWideChar(dir + sr.Name), false);
             end;
           end;
         until FindNext(sr) <> S_OK;

@@ -37,6 +37,7 @@ uses
   Main in 'Main.pas' {MainForm},
   CE_DockInfo in 'CE_DockInfo.pas',
   CE_Utils in 'CE_Utils.pas',
+  CE_WideCompat in 'CE_WideCompat.pas',
   CE_Layout in 'CE_Layout.pas',
   fCE_TabPage in 'fCE_TabPage.pas' {CECustomTabPage: TFrame},
   fCE_FileView in 'fCE_FileView.pas' {CEFileViewPage: TFrame},

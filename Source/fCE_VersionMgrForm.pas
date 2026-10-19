@@ -113,7 +113,7 @@ implementation
 
 uses
   CE_XmlUtils, CE_VistaFuncs, httpsend, TypInfo, Math, CE_Utils,
-  CE_LanguageEngine, MPCommonUtilities;
+  CE_LanguageEngine, MPCommonUtilities, CE_WideCompat;
 
 {$R *.dfm}
 

@@ -396,7 +396,8 @@ begin
   inherited;
 
   // Hack around some bug in EasyListView. It adds 2 spaces into the file name for some reason.
-  if TntWideLastChar(item.Caption) = ' ' then
+  // (TntWideLastChar returned #0 for an empty caption, hence the explicit check.)
+  if (item.Caption <> '') and (item.Caption[Length(item.Caption)] = ' ') then
   begin
     path:= NewValue + '  ';
   end

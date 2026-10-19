@@ -115,7 +115,7 @@ var
 implementation
 
 uses
-  Main, CE_TBActions, MPCommonUtilities;
+  Main, CE_TBActions, MPCommonUtilities, CE_WideCompat;
 
 {$R *.dfm}
 

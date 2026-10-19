@@ -457,7 +457,9 @@ begin
       ACanvas.Font.Size:= name_size;
       ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
       item:= TCEInfoItem(fInfoList.Items[0]);
-      size:= WideCanvasTextExtent(ACanvas, item.Text);
+      // TCanvas.TextExtent is Unicode-aware in current Delphi, so it replaces the
+      // old TNT helper WideCanvasTextExtent (same change made at every call below).
+      size:= ACanvas.TextExtent(item.Text);
       SpDrawXPText(ACanvas, item.Text, r, DT_END_ELLIPSIS or DT_SINGLELINE or DT_VCENTER);
 
       // Draw Other infos
@@ -467,7 +469,7 @@ begin
       if fSelectionCount > 1 then
       begin
         r.Left:= r.Left + size.cx + 3;
-        size:= WideCanvasTextExtent(ACanvas, item.Prefix);
+        size:= ACanvas.TextExtent(item.Prefix);
         SpDrawXPText(ACanvas, item.Prefix, r, DT_END_ELLIPSIS or DT_SINGLELINE or DT_VCENTER);
       end;
       // infos
@@ -500,7 +502,7 @@ begin
 
       if item.Prefix <> '' then
       begin
-        size:= WideCanvasTextExtent(ACanvas, item.Text);
+        size:= ACanvas.TextExtent(item.Text);
         ACanvas.Font.Style:= [];
         ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsDisabled);
         r.Left:= r.Left + size.cx + 4;
@@ -526,10 +528,10 @@ begin
         if (item.Text <> '') or (item.Prefix <> '') then
         begin
           // get text sizes
-          size:= WideCanvasTextExtent(ACanvas, item.Text);
+          size:= ACanvas.TextExtent(item.Text);
           if item.Prefix <> '' then
           begin
-            prefix_size:= WideCanvasTextExtent(ACanvas, item.Prefix + ':');
+            prefix_size:= ACanvas.TextExtent(item.Prefix + ':');
             prefix_size.cx:= prefix_size.cx + 2;
           end
           else

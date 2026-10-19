@@ -358,7 +358,7 @@ uses
   CE_ToolbarButtons, fCE_Customizer, fCE_TabPage, fCE_FiltersPanel,
   fCE_PoEditor, fCE_OptionsDialog, CE_Sessions, fCE_StackPanel,
   CE_BaseFileView, fCE_QuickViewTab, fCE_SearchPage, fCE_CreateSymlink,
-  fCE_VersionMgrForm, fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView;
+  fCE_VersionMgrForm, fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView, CE_WideCompat;
 
 {##############################################################################}
 

@@ -105,7 +105,7 @@ var
 implementation
 
 uses
-  fCE_OptionsPage_Advanced, MPCommonUtilities;
+  fCE_OptionsPage_Advanced, MPCommonUtilities, CE_WideCompat;
 
 {$R *.dfm}
 

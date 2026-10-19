@@ -58,7 +58,7 @@ function ShowNewTranslationDlg(LocalePath: WideString; var Language:
 implementation
 
 uses
-  Main;
+  Main, CE_WideCompat;
 
 {$R *.dfm}
 

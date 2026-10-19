@@ -248,7 +248,7 @@ var
 implementation
 
 uses
-  dCE_Images, dCE_Actions;
+  dCE_Images, dCE_Actions, CE_WideCompat;
   
 {$R *.dfm}
 

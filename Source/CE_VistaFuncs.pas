@@ -72,7 +72,7 @@ var
 implementation
 
 uses
-  SysUtils, Dialogs, Controls, UxTheme, MPCommonUtilities;
+  SysUtils, Dialogs, Controls, UxTheme, MPCommonUtilities, CE_WideCompat;
 
 {*------------------------------------------------------------------------------
   SetVistaTreeView

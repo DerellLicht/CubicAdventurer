@@ -155,7 +155,7 @@ type
 implementation
 
 uses
-  dCE_Images, CE_LanguageEngine;
+  dCE_Images, CE_LanguageEngine, CE_WideCompat;
 
 {##############################################################################}
 
