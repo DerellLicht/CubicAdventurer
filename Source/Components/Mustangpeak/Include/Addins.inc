@@ -123,7 +123,10 @@
 //  the update then compile the packages in the "Delphi_TNT" (or CBuilder_TNT) folders
 //  an you are done.
 //
-{$DEFINE TNTSUPPORT}
+// CubicAdventurer: TNT Unicode Controls have been removed from the project
+// (modern VCL is natively Unicode), so TNTSUPPORT must stay OFF. With it on,
+// the units below try to use TNT units that no longer exist.
+// {$DEFINE TNTSUPPORT}
 
 
 
