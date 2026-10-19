@@ -29,15 +29,14 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms,
   StdCtrls, ExtCtrls, VirtualTrees, ActiveX,
-  SpTBXDkPanels, SpTBXControls, SpTBXEditors, SpTBXItem, SpTBXTabs, TB2Item,
-  TntForms;
+  SpTBXDkPanels, SpTBXControls, SpTBXEditors, SpTBXItem, SpTBXTabs, TB2Item;
 
 
 
 type
   TVETUpdate = procedure(Sender: TObject) of object;
 
-  TCEFormColumnSettings = class(TTntForm) 
+  TCEFormColumnSettings = class(TForm) 
     SpTBXPanel1: TSpTBXPanel;
     Label2: TSpTBXLabel;
     CheckBoxLiveUpdate: TSpTBXCheckBox;

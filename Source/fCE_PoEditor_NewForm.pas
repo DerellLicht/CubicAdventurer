@@ -26,20 +26,19 @@ interface
 uses
   // CE Units
   CE_LanguageCodes, CE_LanguageEngine,
-  // Tnt
-  TntFileCtrl, TntStdCtrls, TntForms,
+  FileCtrl,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls;
 
 type
-  TCENewTranslationDlg = class(TTntForm)
-    TntLabel1: TTntLabel;
-    edit_path: TTntEdit;
-    Path: TTntLabel;
-    but_browser: TTntButton;
-    but_create: TTntButton;
-    but_cancel: TTntButton;
+  TCENewTranslationDlg = class(TForm)
+    TntLabel1: TLabel;
+    edit_path: TEdit;
+    Path: TLabel;
+    but_browser: TButton;
+    but_create: TButton;
+    but_cancel: TButton;
     Bevel1: TBevel;
     LanguageList: TComboBox;
     procedure FormCreate(Sender: TObject);

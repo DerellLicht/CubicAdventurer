@@ -26,8 +26,6 @@ interface
 uses
   // CE units
   CE_LanguageCodes,
-  // Tnt Control
-  TntSysUtils, TntClasses,
   // System Units
   Windows, SysUtils, TypInfo, Classes;
 
@@ -98,7 +96,7 @@ function UnescapeString(const S: string): string;
 function StripQuotes(const S: string; Ch: Char): string;
 
 procedure GetPOLanguageList(LocaleDir: WideString; DomainName: WideString;
-    Results: TTntStrings);
+    Results: TStrings);
 
 implementation
 
@@ -263,20 +261,20 @@ end;
   Get list of PO files (Returns NameValue pair:  LanguageName=FilePath
 -------------------------------------------------------------------------------}
 procedure GetPOLanguageList(LocaleDir: WideString; DomainName: WideString;
-    Results: TTntStrings);
+    Results: TStrings);
 var
-  sr: TSearchRecW;
+  sr: TSearchRec;
   more:boolean;
   filename, langname: WideString;
 begin
-  more:= WideFindFirst(LocaleDir + '*', faAnyFile, sr) = 0;
+  more:= FindFirst(LocaleDir + '*', faAnyFile, sr) = 0;
   try
     while more do
     begin
       if (sr.Attr and faDirectory <> 0) and (sr.name <> '.') and (sr.name <> '..') then
       begin
         filename:= LocaleDir + sr.Name + PathDelim + DomainName + '.po';
-        if WideFileExists(filename) then
+        if FileExists(filename) then
         begin
           langname:= GetLanguageName(sr.Name);
           if langname <> '' then
@@ -285,10 +283,10 @@ begin
           Results.Add(sr.name + '=' + filename);
         end;
       end;
-      more:= WideFindNext(sr) = 0;
+      more:= FindNext(sr) = 0;
     end;
   finally
-    WideFindClose(sr);
+    FindClose(sr);
   end;
 end;
 
@@ -440,10 +438,10 @@ procedure TCEPOFile.LoadFromFile(const Filename: WideString; LoadComments:
 var
   S: TStream;
 begin
-  if not WideFileExists(Filename) then
+  if not FileExists(Filename) then
   Exit;
   
-  S:= TTntFileStream.Create(Filename, fmOpenRead);
+  S:= TFileStream.Create(Filename, fmOpenRead);
   try
     LoadFromStream(S, LoadComments);
   finally
@@ -648,7 +646,7 @@ procedure TCEPOFile.SaveToFile(const Filename: WideString; SaveComments:
 var
   S: TStream;
 begin
-  S:= TTntFileStream.Create(Filename, fmCreate);
+  S:= TFileStream.Create(Filename, fmCreate);
   try
     SaveToStream(S, SaveComments);
   finally

@@ -31,16 +31,14 @@ uses
   VirtualTrees,
   // SpTBX
   SpTBXItem, SpTBXControls,
-  // TNT Controls
-  TntActnList, TntExtCtrls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, ImgList, StdCtrls, TntStdCtrls, ExtCtrls, ActnList;
+  Dialogs, Menus, ImgList, StdCtrls, ExtCtrls, ActnList;
 
 type
   PCEActTreeData = ^ACEActTreeData;
   ACEActTreeData = record
-    ActionItem: TTntAction;
+    ActionItem: TAction;
     IsCategory: Boolean;
     Name: WideString;
     IconIndex: Integer;
@@ -49,16 +47,16 @@ type
   end;
   
   TTCEOptionsPage_GlobalHotkeys = class(TCEOptionsCustomPage)
-    TntBevel1: TTntBevel;
+    TntBevel1: TBevel;
     HotkeyList: TVirtualStringTree;
     label_action_name: TSpTBXLabel;
-    TntLabel1: TTntLabel;
+    TntLabel1: TLabel;
     list_actionhotkeys: TListBox;
-    TntGroupBox1: TTntGroupBox;
-    edit_hotkey: TTntEdit;
-    but_add: TTntButton;
-    but_replace: TTntButton;
-    but_delete: TTntButton;
+    TntGroupBox1: TGroupBox;
+    edit_hotkey: TEdit;
+    but_add: TButton;
+    but_replace: TButton;
+    but_delete: TButton;
     procedure HotkeyListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
     procedure HotkeyListGetImageIndex(Sender: TBaseVirtualTree;
@@ -80,13 +78,13 @@ type
       Shift: TShiftState);
   private
     fnewHotkey: TShortcut;
-    fselectedAction: TTntAction;
+    fselectedAction: TAction;
     procedure SetnewHotkey(const Value: TShortcut);
-    procedure SetselectedAction(const Value: TTntAction);
+    procedure SetselectedAction(const Value: TAction);
     { Private declarations }
   protected
     property newHotkey: TShortcut read fnewHotkey write SetnewHotkey;
-    property selectedAction: TTntAction read fselectedAction write
+    property selectedAction: TAction read fselectedAction write
         SetselectedAction;
   public
     constructor Create(AOwner: TComponent); override;
@@ -154,7 +152,7 @@ constructor TTCEOptionsPage_GlobalHotkeys.Create(AOwner: TComponent);
 var
   i: Integer;
   data: PCEActTreeData;
-  act: TTntAction;
+  act: TAction;
   node: PVirtualNode;
 begin
   inherited;
@@ -168,7 +166,7 @@ begin
   HotkeyList.Images:= CE_Images.SmallIcons;
   for i:= 0 to CEActions.ActionList.ActionCount - 1 do
   begin
-    act:= TTntAction(CEActions.ActionList.Actions[i]);
+    act:= TAction(CEActions.ActionList.Actions[i]);
     // move to next item if action can't execute
     if act is TCEToolbarAction then
       if not TCEToolbarAction(act).CanExecute then
@@ -514,7 +512,7 @@ end;
   Set selectedAction
 -------------------------------------------------------------------------------}
 procedure TTCEOptionsPage_GlobalHotkeys.SetselectedAction(const Value:
-    TTntAction);
+    TAction);
 begin
   fselectedAction:= Value;
   list_actionhotkeys.Clear;

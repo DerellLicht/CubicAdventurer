@@ -30,8 +30,6 @@ uses
   JvSimpleXml,
   // VSTools
   MPShellUtilities, MPCommonObjects, MPCommonUtilities, MPDataObject,
-  // Tnt
-  TntClasses, TntSysUtils,
   // System Units
   Classes, SysUtils, Windows, Messages, ImgList, Controls, Contnrs, Dialogs,
   ShlObj, ActiveX;
@@ -400,7 +398,7 @@ begin
     end
     else if not Namespace.Folder then
     begin
-      if WideFileExists(Namespace.NameForParsing) then
+      if FileExists(Namespace.NameForParsing) then
       Result:= true;
     end
   end;

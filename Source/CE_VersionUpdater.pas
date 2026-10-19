@@ -195,8 +195,8 @@ var
 implementation
 
 uses
-  CE_XmlUtils, Math, MPCommonUtilities, TntClasses, TntSysUtils, TntSystem,
-  TntWindows, fCE_UpdateDlg, Controls, CE_VistaFuncs, Messages, dCE_Input,
+  CE_XmlUtils, Math, MPCommonUtilities, Classes, SysUtils,
+  Windows, fCE_UpdateDlg, Controls, CE_VistaFuncs, Messages, dCE_Input,
   Forms, CE_FileUtils, CE_LanguageEngine, CE_Consts, CE_Utils,
   fCE_LoginPromptDlg;
 
@@ -273,10 +273,10 @@ procedure UpdateFiles(ADestFolder: WideString; ASrcFolder: WideString );
 
   procedure EnumFolder(AFolder: WideString; SubFolder: WideString);
   var
-    sr: TSearchRecW;
+    sr: TSearchRec;
     dir: WideString;
   begin
-    if WideFindFirst(AFolder + '*', faDirectory or faAnyFile, sr) = S_OK then
+    if FindFirst(AFolder + '*', faDirectory or faAnyFile, sr) = S_OK then
     begin
       try
         repeat
@@ -287,8 +287,8 @@ procedure UpdateFiles(ADestFolder: WideString; ASrcFolder: WideString );
             begin
               // create dir if it doesn't exist
               dir:= ADestFolder + SubFolder + sr.Name;
-              if not WideDirectoryExists(dir) then
-              WideCreateDir(dir);
+              if not DirectoryExists(dir) then
+              CreateDir(dir);
               // enum sub folder
               EnumFolder(AFolder + sr.Name + '\', SubFolder + sr.Name + '\');
             end
@@ -299,18 +299,18 @@ procedure UpdateFiles(ADestFolder: WideString; ASrcFolder: WideString );
               WideCopyFile(AFolder + sr.Name, dir + sr.Name, false);
             end;
           end;
-        until WideFindNext(sr) <> S_OK;
+        until FindNext(sr) <> S_OK;
       finally
-        WideFindClose(sr);
+        FindClose(sr);
       end;
     end;
   end;
 
 begin
-  if WideDirectoryExists(ADestFolder) and WideDirectoryExists(ASrcFolder) then
+  if DirectoryExists(ADestFolder) and DirectoryExists(ASrcFolder) then
   begin
-    ADestFolder:= WideIncludeTrailingPathDelimiter(ADestFolder);
-    ASrcFolder:= WideIncludeTrailingPathDelimiter(ASrcFolder);
+    ADestFolder:= IncludeTrailingPathDelimiter(ADestFolder);
+    ASrcFolder:= IncludeTrailingPathDelimiter(ASrcFolder);
     EnumFolder(ASrcFolder, '');
   end;
 end;
@@ -320,10 +320,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure ClearFolder(AFolder: WideString; ARecursive: Boolean = true);
 var
-  sr: TSearchRecW;
+  sr: TSearchRec;
 begin
-  AFolder:= WideIncludeTrailingPathDelimiter(AFolder);
-  if WideFindFirst(AFolder + '*', faDirectory or faAnyFile or faHidden, sr) = S_OK then
+  AFolder:= IncludeTrailingPathDelimiter(AFolder);
+  if FindFirst(AFolder + '*', faDirectory or faAnyFile or faHidden, sr) = S_OK then
   begin
     try
       repeat
@@ -334,15 +334,15 @@ begin
             if ARecursive then
             begin
               ClearFolder(AFolder + sr.Name, true);
-              WideRemoveDir(AFolder + sr.Name);
+              RemoveDir(AFolder + sr.Name);
             end;
           end
           else
-          WideDeleteFile(AFolder + sr.Name);
+          DeleteFile(AFolder + sr.Name);
         end;
-      until WideFindNext(sr) <> S_OK;
+      until FindNext(sr) <> S_OK;
     finally
-      WideFindClose(sr);
+      FindClose(sr);
     end;
   end;
 end;
@@ -359,13 +359,13 @@ begin
   if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6) then
   begin
     if AFolder <> '' then
-    dir:= WideIncludeTrailingPathDelimiter(AFolder)
+    dir:= IncludeTrailingPathDelimiter(AFolder)
     else
-    dir:= WideExtractFilePath(WideParamStr(0));
+    dir:= ExtractFilePath(ParamStr(0));
     // Generate random file name
     Randomize;
     tmpFile:= 'tmp' + IntToStr(Random($FFFFFF)) + '.exe';
-    while WideFileExists(dir + tmpFile) do
+    while FileExists(dir + tmpFile) do
     begin
       tmpFile:= 'tmp' + IntToStr(Random($FFFFFF)) + '.exe';
     end;
@@ -378,8 +378,8 @@ begin
     begin
       FileClose(h);
       // Delete created file
-      if WideFileExists(tmpFile) then
-      WideDeleteFile(tmpFile);
+      if FileExists(tmpFile) then
+      DeleteFile(tmpFile);
     end;
   end;
 end;
@@ -399,7 +399,7 @@ begin
     AZipPath:= GetRedirectedPath(AZipPath);
     WideShellExecute(0,
                      'runas',
-                     WideParamStr(0),
+                     ParamStr(0),
                      '/update ' + '"' + AZipPath + '" "' + ADestFolderPath + '" ' + IntToStr(OldApplicationHandle),
                      ADestFolderPath);
     Exit;
@@ -615,18 +615,18 @@ begin
       end;
 
       // Check/Create main Versions folder
-      dir:= WideIncludeTrailingBackslash(VersionFolder);
-      if not WideDirectoryExists(dir) then
-        if not WideCreateDir(dir) then
+      dir:= IncludeTrailingBackslash(VersionFolder);
+      if not DirectoryExists(dir) then
+        if not CreateDir(dir) then
         begin
           MessageBox(0, PChar(String(dir)), 'Could not create folder!', MB_ICONERROR or MB_OK);
         end;
 
       // Check/Create version folder
       dir:= dir + VersionNumberToStr(Version) + '\';
-      if not WideDirectoryExists(dir) then
+      if not DirectoryExists(dir) then
       begin
-        if not WideCreateDir(dir) then
+        if not CreateDir(dir) then
         begin
           MessageBox(0, PChar(String(dir)), 'Could not create folder!', MB_ICONERROR or MB_OK);
         end;
@@ -634,7 +634,7 @@ begin
       else
       ClearFolder(dir);
 
-      if WideDirectoryExists(dir) then
+      if DirectoryExists(dir) then
       begin
         thread:= TCCBaseThread.Create(true);
         fThreadList.Add(thread);
@@ -690,7 +690,7 @@ var
   data: TCEDownloadData;
   list: TStrings;
   i: Integer;
-  fs: TTntFileStream;
+  fs: TFileStream;
   fileName: String;
   loginMsg: TCEProxyLoginPromptMsg;
 begin
@@ -736,7 +736,7 @@ begin
           if (data.HTTP.ResultCode = 200) and (fileName <> '') then
           begin
             try
-              fs:= TTntFileStream.Create(data.DestDir + fileName, fmCreate);
+              fs:= TFileStream.Create(data.DestDir + fileName, fmCreate);
               try
                 fs.Seek(0, soFromBeginning);
                 fs.CopyFrom(data.HTTP.Document, 0);
@@ -1001,9 +1001,9 @@ var
   fs: TStream;
 begin
   Result:= false;
-  if WideFileExists(AFilePath) then
+  if FileExists(AFilePath) then
   begin
-    fs:= TTntFileStream.Create(AFilePath, fmOpenRead);
+    fs:= TFileStream.Create(AFilePath, fmOpenRead);
     try
       fs.Seek(0, soFromBeginning);
       try
@@ -1034,7 +1034,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEVersionUpdater.MergeUpdateConf(XmlToMerge: TXMLDocument);
 var
-  fs: TTntFileStream;
+  fs: TFileStream;
   updNode, buildNode, tmpNode: TDOMNode;
   newUpdNode, newBuildNode: TDOMNode;
 begin
@@ -1065,7 +1065,7 @@ begin
   begin
     tmpNode:= buildNode;
     buildNode:= FindNextSiblingDOMNode(buildNode, 'Build');
-    if not WideDirectoryExists(WideIncludeTrailingPathDelimiter(VersionFolder) +
+    if not DirectoryExists(IncludeTrailingPathDelimiter(VersionFolder) +
                                TDOMElement(tmpNode).AttribStrings['version']) then
     begin
       updNode.RemoveChild(tmpNode);
@@ -1089,12 +1089,12 @@ begin
   end;
 
   // save UpdateConf to disk for offline use
-  if not WideDirectoryExists(VersionFolder) then
-  WideCreateDir(VersionFolder);
-  if WideDirectoryExists(VersionFolder) then
+  if not DirectoryExists(VersionFolder) then
+  CreateDir(VersionFolder);
+  if DirectoryExists(VersionFolder) then
   begin
     try
-      fs:= TTntFileStream.Create(VersionFolder + 'updates.xml', fmCreate);
+      fs:= TFileStream.Create(VersionFolder + 'updates.xml', fmCreate);
       try
         fs.Seek(0, soFromBeginning);
         WriteXMLFile(fXML, fs);
@@ -1112,7 +1112,7 @@ end;
 function TCEVersionUpdater.VersionFolderExists(Version: TCEVersionNumber):
     Boolean;
 begin
-  Result:= WideDirectoryExists(WideIncludeTrailingPathDelimiter(VersionFolder) + VersionNumberToStr(Version));
+  Result:= DirectoryExists(IncludeTrailingPathDelimiter(VersionFolder) + VersionNumberToStr(Version));
 end;
 
 {-------------------------------------------------------------------------------
@@ -1137,16 +1137,16 @@ begin
   buildNode:= FindBuildNode(Version);
   if assigned(buildNode) then
   begin
-    dir:= WideIncludeTrailingBackslash(VersionFolder) + TDOMElement(buildNode).AttribStrings['version'];
-    if WideDirectoryExists(dir) then
+    dir:= IncludeTrailingBackslash(VersionFolder) + TDOMElement(buildNode).AttribStrings['version'];
+    if DirectoryExists(dir) then
     begin
       fileNode:= FindFirstChildDOMNode(buildNode, 'File');
       while assigned(fileNode) do
       begin
         path:= TDOMElement(fileNode).AttribStrings['src'];
-        path:= WideStringReplace(path, '/', '\', [rfReplaceAll]);
-        path:= WideIncludeTrailingPathDelimiter(dir) + path;
-        if WideFileExists(path) then
+        path:= StringReplace(path, '/', '\', [rfReplaceAll]);
+        path:= IncludeTrailingPathDelimiter(dir) + path;
+        if FileExists(path) then
         begin
           op:= TDOMElement(fileNode).AttribStrings['operation'];
           if op = 'extract' then
@@ -1172,16 +1172,16 @@ begin
   Result:= false;
   if assigned(Node) then
   begin
-    dir:= WideIncludeTrailingBackslash(VersionFolder) + TDOMElement(Node).AttribStrings['version'];
-    if WideDirectoryExists(dir) then
+    dir:= IncludeTrailingBackslash(VersionFolder) + TDOMElement(Node).AttribStrings['version'];
+    if DirectoryExists(dir) then
     begin
       fileNode:= FindFirstChildDOMNode(Node, 'File');
       while assigned(fileNode) do
       begin
         path:= TDOMElement(fileNode).AttribStrings['src'];
-        path:= WideStringReplace(path, '/', '\', [rfReplaceAll]);
-        path:= WideIncludeTrailingPathDelimiter(dir) + path;
-        if not WideFileExists(path) then
+        path:= StringReplace(path, '/', '\', [rfReplaceAll]);
+        path:= IncludeTrailingPathDelimiter(dir) + path;
+        if not FileExists(path) then
         Exit;
         fileNode:= FindNextSiblingDOMNode(fileNode, 'File');
       end;

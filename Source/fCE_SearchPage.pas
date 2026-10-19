@@ -36,8 +36,6 @@ uses
   SpTBXItem, SpTBXTabs, TB2Item, SpTBXSkins, SpTBXEditors, SpTBXControls,
   // FindFile
   FindFileW,
-  // Tnt
-  TntStdCtrls, TntSysUtils,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, ComCtrls, ShlObj, Menus, SpTBXFormPopupMenu;
@@ -73,14 +71,14 @@ type
     check_attr_system: TSpTBXCheckBox;
     sheet_content: TSpTBXTabSheet;
     SpTBXLabel4: TSpTBXLabel;
-    memo_content: TTntMemo;
+    memo_content: TMemo;
     check_content_wordwrap: TSpTBXCheckBox;
     check_content_case_sensitive: TSpTBXCheckBox;
     check_content_wholeword: TSpTBXCheckBox;
     sheet_filters: TSpTBXTabSheet;
     SpTBXLabel1: TSpTBXLabel;
-    memo_filters_exclude: TTntMemo;
-    memo_filters_include: TTntMemo;
+    memo_filters_exclude: TMemo;
+    memo_filters_include: TMemo;
     SpTBXLabel3: TSpTBXLabel;
     SpTBXLabel5: TSpTBXLabel;
     sheet_date_time: TSpTBXTabSheet;
@@ -130,7 +128,7 @@ type
     panel_status: TSpTBXPanel;
     FolderTreePopup: TSpTBXFormPopupMenu;
     edit_location: TSpTBXButtonEdit;
-    label_status: TTntLabel;
+    label_status: TLabel;
     timer_status: TTimer;
     check_attr_folder: TSpTBXCheckBox;
     procedure but_search_startClick(Sender: TObject);
@@ -510,7 +508,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESearchPage.GlobalPathChanged(Sender: TObject; NewPath: WideString);
 begin
-  if WideDirectoryExists(NewPath) then
+  if DirectoryExists(NewPath) then
   edit_location.Text:= NewPath;
 end;
 
@@ -523,7 +521,7 @@ var
   ws: WideString;
 begin
   ws:= PIDLtoPath(NewPIDL);
-  if WideDirectoryExists(ws) then
+  if DirectoryExists(ws) then
   edit_location.Text:= ws;
 end;
 
@@ -591,10 +589,10 @@ begin
   ws:= _('Finished');
 
   try
-    ChangeStatus(ws + ' - ' + WideFormat(_('%d folder(s) searched and %d item(s) found in %.3f second(s)'),
+    ChangeStatus(ws + ' - ' + Format(_('%d folder(s) searched and %d item(s) found in %.3f second(s)'),
                                                [Find.SearchedFolderCount, fFileCount, (GetTickCount - fStartTime) / 1000]));
   except
-    ChangeStatus(ws + ' - ' + WideFormat('%d folder(s) searched and %d item(s) found in %.3f second(s)',
+    ChangeStatus(ws + ' - ' + Format('%d folder(s) searched and %d item(s) found in %.3f second(s)',
                                                [Find.SearchedFolderCount, fFileCount, (GetTickCount - fStartTime) / 1000]));
   end;
   GlobalPathCtrl.ChangeGlobalContent(Self);
@@ -637,7 +635,7 @@ begin
   inherited;
   if (TargetObj is TExplorerItem) then
   begin
-    Info.Text:= Info.Text + #13#10 + 'Path: ' + WideExtractFilePath(TExplorerItem(TargetObj).Namespace.NameForParsing);
+    Info.Text:= Info.Text + #13#10 + 'Path: ' + ExtractFilePath(TExplorerItem(TargetObj).Namespace.NameForParsing);
   end;
 end;
 
@@ -809,7 +807,7 @@ begin
   but_search_start.Tag:= 0;
   fLastStatusChange:= 0;
   // Location
-  Find.Criteria.Files.Location:= WideStringReplace(edit_location.Text, ',', ';', [rfReplaceAll], false);
+  Find.Criteria.Files.Location:= StringReplace(edit_location.Text, ',', ';', [rfReplaceAll], false);
   Find.Criteria.Files.Subfolders:= check_subfolders.Checked;
   if check_minlevel.Checked then
   Find.Criteria.Files.MinLevel:= StrToIntDef(spin_minlevel.Text, 0)

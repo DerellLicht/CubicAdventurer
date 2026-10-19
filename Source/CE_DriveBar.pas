@@ -33,8 +33,6 @@ uses
   // VSTools
   MPCommonUtilities, MPCommonObjects, MPShellUtilities, VirtualShellNotifier,
   VirtualResources,
-  // Tnt Ctrls
-  TntWideStrUtils,
   // System Units
   Classes, Graphics, ImgList, Windows, ShlObj, SysUtils, Controls, Messages,
   ActiveX;

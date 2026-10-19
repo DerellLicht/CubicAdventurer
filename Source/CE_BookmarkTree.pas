@@ -34,8 +34,6 @@ uses
   VirtualTrees,
   // SpTBX
   SpTBXItem,
-  // Tnt
-  TntClasses, TntSysUtils,
   // System Units
   Classes, SysUtils, Windows, Messages, ImgList, Controls, Contnrs,
   ActiveX, Graphics, Dialogs;
@@ -240,11 +238,11 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkTree.LoadFromXmlFile(AFilePath: WideString);
 var
-  S: TTntFileStream;
+  S: TFileStream;
 begin
-  if WideFileExists(AFilePath) then
+  if FileExists(AFilePath) then
   begin
-    s:= TTntFileStream.Create(AFilePath, fmOpenRead  or fmShareDenyNone);
+    s:= TFileStream.Create(AFilePath, fmOpenRead  or fmShareDenyNone);
     try
       LoadFromXmlStream(s);
     finally
@@ -292,10 +290,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkTree.SaveToXmlFile(AFilePath: WideString);
 var
-  S: TTntFileStream;
+  S: TFileStream;
 begin
   try
-    s:= TTntFileStream.Create(AFilePath, fmCreate);
+    s:= TFileStream.Create(AFilePath, fmCreate);
   except
     Exit;
   end;

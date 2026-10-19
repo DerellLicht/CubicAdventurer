@@ -30,19 +30,17 @@ uses
   pngimage,
   // Syn Edit
   SynEditHighlighter, SynHighlighterURI, SynURIOpener, SynEdit, SynMemo,
-  // Tnt
-  TntForms,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, TntStdCtrls, jpeg, SpTBXItem, SpTBXControls;
+  Dialogs, StdCtrls, ExtCtrls, jpeg, SpTBXItem, SpTBXControls;
 
 type
-  TCEAboutBox = class(TTntForm)
+  TCEAboutBox = class(TForm)
     Image1: TImage;
     SynMemo1: TSynMemo;
     SynURIOpener1: TSynURIOpener;
     SynURISyn1: TSynURISyn;
-    but_close: TTntButton;
+    but_close: TButton;
     Panel1: TPanel;
     VersionLabel: TSpTBXLabel;
     BuildLabel: TSpTBXLabel;

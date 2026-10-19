@@ -24,8 +24,7 @@ unit CE_ProcessUtils;
 interface
 
 uses
-  // TNT Controls
-  TntWindows, TntSysUtils,
+  SysUtils,
   // System Units
   Windows;
 
@@ -47,7 +46,7 @@ begin
   cmd:= Path;
   if Params <> '' then
   cmd:= cmd + ' ' + Params;
-  currDir:= WideExtractFilePath(Path);
+  currDir:= ExtractFilePath(Path);
   // Flags
   flags:= NORMAL_PRIORITY_CLASS;
   // Startup info
@@ -60,7 +59,7 @@ begin
   end;
   FillChar(procInfo,SizeOf(TProcessInformation),#0);
   // Create process
-  createOK:= Tnt_CreateProcessW(nil,                 // Application
+  createOK:= CreateProcessW(nil,                 // Application
                                 PWideChar(cmd),      // Command line
                                 nil,                 // lpProcessAttributes
                                 nil,                 // lpThreadAttributes

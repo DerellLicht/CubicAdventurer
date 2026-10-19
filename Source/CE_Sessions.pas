@@ -30,11 +30,8 @@ uses
   DOM,
   // SpTBX
   SpTBXItem, TB2Item,
-  // Tnt
-  TntDialogs,
   // System Units
-  Classes, SysUtils, StrUtils, Windows, Contnrs, Math, Controls, Dialogs,
-  TntClasses;
+  Classes, SysUtils, StrUtils, Windows, Contnrs, Math, Controls, Dialogs;
 
 type
   TCESessionSaveLoadItem = (sliTabs, sliBookmarks, sliLayout);
@@ -172,7 +169,7 @@ type
 
 function CompareSessionTime(Item1, Item2: Pointer): Integer;
 
-function GetSessionNames(AResults: TTntStrings): Integer;
+function GetSessionNames(AResults: TStrings): Integer;
 
 function CreateSaveSessionDlg(SelectActiveSession: Boolean = true):
     TCEItemSelectSaveDlg;
@@ -203,7 +200,7 @@ end;
 {-------------------------------------------------------------------------------
   Get Session Names
 -------------------------------------------------------------------------------}
-function GetSessionNames(AResults: TTntStrings): Integer;
+function GetSessionNames(AResults: TStrings): Integer;
 var
   i: Integer;
   session: TCESessionItem;

@@ -30,15 +30,15 @@ uses
   VirtualTrees,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, TntStdCtrls, ComCtrls;
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls;
 
 type
 
   TCEUpdateDlg = class(TForm)
-    but_cancel: TTntButton;
-    but_update: TTntButton;
+    but_cancel: TButton;
+    but_update: TButton;
     Panel1: TPanel;
-    TntLabel1: TTntLabel;
+    TntLabel1: TLabel;
     progressbar: TProgressBar;
     timer_close_dlg: TTimer;
     procedure but_updateClick(Sender: TObject);
@@ -60,8 +60,7 @@ type
 
 implementation
 
-uses
-  TntClasses, TntSysUtils;
+
 
 {$R *.dfm}
 
@@ -135,11 +134,11 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEUpdateDlg.RenameOpenFiles(DeleteOldFiles: Boolean);
 var
-  list: TTntStrings;
+  list: TStrings;
   i,i2: Integer;
   path, oldPath: WideString;
 begin
-  list:= TTntStringList.Create;
+  list:= TStringList.Create;
   try
     if ArchiveTree.VerifyExtract(DestinationDir, list, true, true, true) > 0 then
     begin
@@ -152,14 +151,14 @@ begin
           if DeleteOldFiles then
           begin
             oldPath:= path + '.old';
-            if WideFileExists(oldPath) then
-            WideDeleteFile(oldPath);
+            if FileExists(oldPath) then
+            DeleteFile(oldPath);
           end
           else // Find available path for old file
           begin
             oldPath:= path + '.old';
             i2:= 1;
-            while WideFileExists(oldPath) do
+            while FileExists(oldPath) do
             begin
               i2:= i2 + 1;
               oldPath:= path + '.' + IntToStr(i2) + '.old';
@@ -167,7 +166,7 @@ begin
           end;
 
           // Rename file
-          WideRenameFile(path, oldPath);
+          RenameFile(path, oldPath);
         end;
       end;
     end;

@@ -1117,7 +1117,7 @@ var
   list: TCCStringList;
 begin
   Result:= nil;
-  AExtension:= WideLowerCase(AExtension);
+  AExtension:= AnsiLowerCase(AExtension);
   list:= TCCStringList.Create;
   try
     list.Delimiter:= ',';
@@ -1182,7 +1182,7 @@ begin
   end;
   // add to list
   entry:= AllocMem(SizeOf(TCVMediaEngineListEntry));
-  entry.Extensions:= WideLowerCase(AExtensions);
+  entry.Extensions:= AnsiLowerCase(AExtensions);
   entry.EngineClass:= AMediaEngineClass;
   fList.Add(entry);
 end;

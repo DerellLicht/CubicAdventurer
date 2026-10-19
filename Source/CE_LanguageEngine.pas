@@ -26,8 +26,6 @@ interface
 uses
   // CE units
   CE_LanguageUtils,
-  // Tnt Control
-  TntSysUtils, TntClasses,
   // System Units
   Windows, SysUtils, TypInfo, Classes, Contnrs;
 

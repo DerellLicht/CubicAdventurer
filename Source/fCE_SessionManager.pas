@@ -31,10 +31,10 @@ uses
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, SpTBXControls, SpTBXEditors, SpTBXItem,
-  SpTBXDkPanels, SpTBXTabs, TB2Item, TntStdCtrls, TntForms;
+  SpTBXDkPanels, SpTBXTabs, TB2Item;
 
 type
-  TCESessionManager = class(TTntForm)
+  TCESessionManager = class(TForm)
     SpTBXLabel1: TSpTBXLabel;
     edit_name: TSpTBXEdit;
     group_loadsave: TSpTBXGroupBox;

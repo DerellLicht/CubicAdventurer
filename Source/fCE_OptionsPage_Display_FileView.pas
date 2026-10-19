@@ -26,23 +26,21 @@ interface
 uses
   // CE Units
   fCE_OptionsDialog, fCE_OptionsCustomPage, CE_LanguageEngine,
-  // Tnt
-  TntStdCtrls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, SpTBXItem, SpTBXControls, SpTBXEditors;
 
 type
   TCE_OptionsPage_Display_FileView = class(TCEOptionsCustomPage)
-    check_fullrowselect: TTntCheckBox;
-    check_selectprev: TTntCheckBox;
-    check_autoselect: TTntCheckBox;
-    check_autosize_liststyle: TTntCheckBox;
-    check_sortfoldersfirst: TTntCheckBox;
-    check_infotips: TTntCheckBox;
-    check_singleclick: TTntCheckBox;
-    combo_sizeformat: TTntComboBox;
-    TntLabel1: TTntLabel;
+    check_fullrowselect: TCheckBox;
+    check_selectprev: TCheckBox;
+    check_autoselect: TCheckBox;
+    check_autosize_liststyle: TCheckBox;
+    check_sortfoldersfirst: TCheckBox;
+    check_infotips: TCheckBox;
+    check_singleclick: TCheckBox;
+    combo_sizeformat: TComboBox;
+    TntLabel1: TLabel;
     procedure HandleChange(Sender: TObject);
   private
     { Private declarations }

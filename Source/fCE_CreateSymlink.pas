@@ -25,9 +25,7 @@ interface
 
 uses
   // CE Units
-  CE_ElevatedActions, CE_FileUtils,
-  // Tnt
-  TntStdCtrls, TntSysUtils, TntFileCtrl, TntForms,
+  CE_ElevatedActions, CE_FileUtils, FileCtrl,
   // SpTBX
   SpTBXItem, SpTBXControls, SpTBXEditors,
   // System Units
@@ -35,7 +33,7 @@ uses
   Dialogs, StdCtrls, SpTBXTabs, TB2Item;
 
 type
-  TCreateSymlinkDlg = class(TTntForm)
+  TCreateSymlinkDlg = class(TForm)
     but_cancel: TSpTBXButton;
     but_create: TSpTBXButton;
     edit_linkname: TSpTBXEdit;
@@ -104,7 +102,7 @@ procedure TCreateSymlinkDlg.but_createClick(Sender: TObject);
 var
   ws: WideString;
 begin
-  if FileOrFolderExists(WideIncludeTrailingPathDelimiter(ParentLinkFolderPath) + edit_linkname.Text) then
+  if FileOrFolderExists(IncludeTrailingPathDelimiter(ParentLinkFolderPath) + edit_linkname.Text) then
   begin
     ws:= '"' + edit_linkname.Text + '" ' + _('already exists. Please choose another name.');
     WideMessageBox(0, _('Duplicate name'), ws, MB_ICONINFORMATION or MB_OK);
@@ -116,7 +114,7 @@ begin
     // Vista or Win7
     if Win32MajorVersion >= 6 then
     begin
-      if Elevated_CreateJunction(WideIncludeTrailingPathDelimiter(ParentLinkFolderPath) + edit_linkname.Text,
+      if Elevated_CreateJunction(IncludeTrailingPathDelimiter(ParentLinkFolderPath) + edit_linkname.Text,
                                  edit_targetpath.Text,
                                  Self.Handle) then
       begin
@@ -126,7 +124,7 @@ begin
     end
     else if Win32MajorVersion > 4 then // 2000 and XP
     begin
-      if CreateJunction(WideIncludeTrailingPathDelimiter(ParentLinkFolderPath) + edit_linkname.Text,
+      if CreateJunction(IncludeTrailingPathDelimiter(ParentLinkFolderPath) + edit_linkname.Text,
                      edit_targetpath.Text) then
       begin
         Self.ModalResult:= mrOK;

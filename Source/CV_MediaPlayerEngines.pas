@@ -985,7 +985,7 @@ begin
   InternalCreateWMP;
   if assigned(fWMP) then
   begin
-    fTitle:= WideExtractFileName(AFilePath);
+    fTitle:= ExtractFileName(AFilePath);
     //ChangeStatus(mpsOpening);
     fWMP.URL:= AFilePath;
     Result:= true;

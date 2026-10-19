@@ -40,8 +40,6 @@ uses
   SpTBXItem, SpTBXControls, SpTBXDkPanels, SpTBXSkins,
   // TB2K
   TB2Item,
-  // Tnt Controls
-  TntSysUtils,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ShlObj, Menus, JvAppStorage, Contnrs, StrUtils, ExtCtrls, ActiveX;
@@ -1728,7 +1726,7 @@ begin
   begin
     Result:= 'special://' + IntToStr(i);
   end
-  else if WideDirectoryExists(FileViewPage.FileView.RootFolderNamespace.NameForParsing) then
+  else if DirectoryExists(FileViewPage.FileView.RootFolderNamespace.NameForParsing) then
   begin
     Result:= 'file://' + FileViewPage.FileView.RootFolderNamespace.NameForParsing;
   end

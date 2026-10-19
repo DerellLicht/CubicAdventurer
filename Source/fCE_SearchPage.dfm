@@ -157,7 +157,7 @@ inherited CESearchPage: TCESearchPage
           Height = 19
           Caption = 'Exclude File Masks:'
         end
-        object memo_filters_exclude: TTntMemo
+        object memo_filters_exclude: TMemo
           Left = 12
           Top = 30
           Width = 199
@@ -167,7 +167,7 @@ inherited CESearchPage: TCESearchPage
           TabOrder = 1
           WordWrap = False
         end
-        object memo_filters_include: TTntMemo
+        object memo_filters_include: TMemo
           Left = 217
           Top = 30
           Width = 204
@@ -664,7 +664,7 @@ inherited CESearchPage: TCESearchPage
           Height = 19
           Caption = 'File Contains:'
         end
-        object memo_content: TTntMemo
+        object memo_content: TMemo
           Left = 12
           Top = 30
           Width = 409
@@ -859,7 +859,7 @@ inherited CESearchPage: TCESearchPage
     TabOrder = 2
     Borders = False
     TBXStyleBackground = True
-    object label_status: TTntLabel
+    object label_status: TLabel
       Left = 0
       Top = 0
       Width = 584

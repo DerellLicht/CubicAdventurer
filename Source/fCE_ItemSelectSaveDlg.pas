@@ -24,15 +24,13 @@ unit fCE_ItemSelectSaveDlg;
 interface
 
 uses
-  // Tnt
-  TntStdCtrls, TntDialogs, TntForms,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, SpTBXItem, SpTBXControls, SpTBXEditors;
 
 
 type
-  TCEItemSelectSaveDlg = class(TTntForm)
+  TCEItemSelectSaveDlg = class(TForm)
     panel_background: TSpTBXPanel;
     label_combotitle: TSpTBXLabel;
     combo: TSpTBXComboBox;

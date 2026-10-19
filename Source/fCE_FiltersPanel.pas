@@ -38,8 +38,7 @@ uses
   GR32_Image, GR32,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ShlObj, Menus, TB2Item, SpTBXEditors, TB2Toolbar, StdCtrls,
-  TntStdCtrls, ExtCtrls, SpTBXSkins, Contnrs, CE_Toolbar, TntClasses;
+  Dialogs, ShlObj, Menus, TB2Item, SpTBXEditors, TB2Toolbar, StdCtrls, ExtCtrls, SpTBXSkins, Contnrs, CE_Toolbar;
 
 type
   TControlHack = class(TControl);
@@ -62,7 +61,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure DoPatternFilter(Sender: TObject);
   private
-    fPatternHistory: TTntStrings;
+    fPatternHistory: TStrings;
     fPatternNotifyInProgress: Boolean;
     fPatternText: WideString;
     fSettings: TCEFiltersPanelSettings;
@@ -89,7 +88,7 @@ type
     procedure DoFormShow; override;
     procedure DoStartUp; override;
     procedure PopulateMenuItem(AItem: TSpTBXItem);
-    property PatternHistory: TTntStrings read fPatternHistory;
+    property PatternHistory: TStrings read fPatternHistory;
     property PatternText: WideString read fPatternText write SetPatternText;
   published
     property Settings: TCEFiltersPanelSettings read fSettings write fSettings;
@@ -143,7 +142,7 @@ begin
   TopDock.Name:= 'FiltersPanel_TopDock';
   BottomDock.Name:= 'FiltersPanel_BottomDock';
 
-  fPatternHistory:= TTntStringList.Create;
+  fPatternHistory:= TStringList.Create;
   fPatternHistory.Delimiter:= ',';
 
   fSettings:= TCEFiltersPanelSettings.Create;

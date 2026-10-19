@@ -1020,7 +1020,7 @@ object CEAboutBox: TCEAboutBox
     DesignSize = (
       450
       38)
-    object but_close: TTntButton
+    object but_close: TButton
       Left = 367
       Top = 6
       Width = 75

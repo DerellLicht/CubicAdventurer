@@ -26,8 +26,6 @@ interface
 uses
   // CE Units
   fCE_OptionsDialog, fCE_OptionsCustomPage, CE_LanguageEngine, CE_AppSettings,
-  // Tnt
-  TntStdCtrls,
   // JVCL
   JvExControls, JvInspector, JvComponentBase, 
   // System Units

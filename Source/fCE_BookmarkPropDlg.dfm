@@ -46,7 +46,7 @@ object BookmarkPropDlg: TBookmarkPropDlg
         Stretch = True
         Transparent = True
       end
-      object edit_name: TTntEdit
+      object edit_name: TEdit
         Left = 35
         Top = 12
         Width = 297

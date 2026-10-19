@@ -33,7 +33,6 @@ uses
   Controls,
   Messages,
   Windows,
-  TntSystem,
   MPShellUtilities in 'Components\Mustangpeak\CommonLibrary\MPShellUtilities.pas',
   Main in 'Main.pas' {MainForm},
   CE_DockInfo in 'CE_DockInfo.pas',
@@ -114,7 +113,7 @@ uses
   SpTBXChromeSkin in 'Components\SpSkins\SpTBXChromeSkin.pas',
   fCE_OptionsPage_Hotkeys in 'fCE_OptionsPage_Hotkeys.pas' {TCEOptionsPage_Hotkeys: TFrame},
   fCE_OptionsPage_GlobalHotkeys in 'fCE_OptionsPage_GlobalHotkeys.pas' {TCEOptionsPage_GlobalHotkeys: TFrame},
-  fCE_ColumnFormSpTBX in 'fCE_ColumnFormSpTBX.pas' {CEFormColumnSettings: TTntForm},
+  fCE_ColumnFormSpTBX in 'fCE_ColumnFormSpTBX.pas' {CEFormColumnSettings: TForm},
   CE_Stacks in 'CE_Stacks.pas',
   CE_StackTree in 'CE_StackTree.pas',
   TB2Item in 'Components\Tb2K\TB2Item.pas',
@@ -128,7 +127,7 @@ uses
   CE_VersionUpdater in 'CE_VersionUpdater.pas',
   CE_XmlUtils in 'CE_XmlUtils.pas',
   fCE_UpdateDlg in 'fCE_UpdateDlg.pas' {CEUpdateDlg},
-  fCE_VersionMgrForm in 'fCE_VersionMgrForm.pas' {CEVersionMgrForm: TTntForm},
+  fCE_VersionMgrForm in 'fCE_VersionMgrForm.pas' {CEVersionMgrForm: TForm},
   CC_Threads in 'Components\CubicCore\CC_Threads.pas',
   CE_ArchiveTree in 'CE_ArchiveTree.pas',
   JclCompressionWide in 'Components\jcl\JclCompressionWide.pas',
@@ -170,10 +169,10 @@ begin
   begin
     if SendMessage(h, WM_USER + 1,0,0) = 0 then
     begin
-      for i:= 1 to WideParamCount do
+      for i:= 1 to ParamCount do
       begin
-        ws:= ws + WideParamStr(i);
-        if i < WideParamCount then
+        ws:= ws + ParamStr(i);
+        if i < ParamCount then
         ws:= ws + ',';
       end;
       if ws <> '' then

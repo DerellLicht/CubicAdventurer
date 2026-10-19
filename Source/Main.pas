@@ -45,9 +45,6 @@ uses
   VirtualShellNewMenu, EasyListview, VirtualExplorerEasyListview,
   MPCommonObjects, VirtualShellNotifier, VirtualResources, MPShellTypes,
   VirtualTrees, MPShellUtilities, MPCommonUtilities,
-  // Tnt Controls
-  TntSystem, TntActnList, TntClasses, TntMenus, TntStdCtrls, TntSysUtils,
-  TntDialogs, TntForms,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ShellAPI, Menus, ShlObj, XPMan, ActiveX,
@@ -57,7 +54,7 @@ uses
 type
   TMainFormSettings = class;
 
-  TMainForm = class(TTntForm)
+  TMainForm = class(TForm)
     TopToolDock: TSpTBXDock;
     RightToolDock: TSpTBXDock;
     BottomToolDock: TSpTBXDock;
@@ -242,7 +239,7 @@ type
     fFullscreen: Boolean;
     fActiveLanguage: WideString;
     fCEIsClosing: Boolean;
-    fLanguageList: TTntStrings;
+    fLanguageList: TStrings;
     fLockToolbars: Boolean;
     fOldWindowState: TWindowState;
     fPanels: TComponentList;
@@ -478,7 +475,7 @@ begin
   ShowWindow(Application.Handle, SW_SHOW);
 
   ChangeNotifier.RegisterShellChangeNotify(Self);
-  fLanguageList:= TTntStringList.Create;
+  fLanguageList:= TStringList.Create;
   fLanguageList.NameValueSeparator:= '=';
   fIsReady:= false;
   fUpdatingCount:= 0;
@@ -775,15 +772,15 @@ begin
   SkinGroupItem.Recreate;
 
   // Load Sessions
-  if WideFileExists(SettingsDirPath + 'sessions.xml') then
+  if FileExists(SettingsDirPath + 'sessions.xml') then
   GlobalSessions.LoadFromFile(SettingsDirPath + 'sessions.xml')
   else
   GlobalSessions.LoadFromFile(exePath + 'sessions.xml');
   SessionsToolbar.Recreate;
   // Load Settings
-  if WideFileExists(SettingsDirPath + 'settings.xml') then
+  if FileExists(SettingsDirPath + 'settings.xml') then
   GlobalAppSettings.LoadFromFile(SettingsDirPath + 'settings.xml')
-  else if WideFileExists(exePath + 'settings.xml') then       
+  else if FileExists(exePath + 'settings.xml') then       
   GlobalAppSettings.LoadFromFile(exePath + 'settings.xml')
   else
   GlobalAppSettings.LoadFromResource(hInstance, 'DEFAULT_SETTINGS_DATA');
@@ -794,7 +791,7 @@ begin
   // Load Bookmarks
   CEBookmarkPanel.BookmarkMenuItems.Add(BookmarkToolbar.Items);
   CEBookmarkPanel.BookmarkMenuItems.Add(bookmarkMenuItem);
-  if WideFileExists(SettingsDirPath + 'bookmarks.xml') then
+  if FileExists(SettingsDirPath + 'bookmarks.xml') then
   CEBookmarkPanel.BookmarksPath:= SettingsDirPath + 'bookmarks.xml'
   else
   CEBookmarkPanel.BookmarksPath:= exePath + 'bookmarks.xml';
@@ -803,7 +800,7 @@ begin
 
   // Load Layouts
   Layouts.AutoSave:= false;
-  if WideFileExists(SettingsDirPath + 'layout.xml') then
+  if FileExists(SettingsDirPath + 'layout.xml') then
   Layouts.LoadFromFile(SettingsDirPath + 'layout.xml')
   else
   Layouts.LoadFromFile(exePath + 'layout.xml');
@@ -811,12 +808,12 @@ begin
   Layouts.FilePath:= SettingsDirPath + 'layout.xml';
 
   TabsOpened:= false;
-  if WideParamCount > 0 then
+  if ParamCount > 0 then
   begin
-    for i:= 1 to WideParamCount do
+    for i:= 1 to ParamCount do
     begin
-      ws:= ws + WideParamStr(i);
-      if i < WideParamCount then
+      ws:= ws + ParamStr(i);
+      if i < ParamCount then
       ws:= ws + ',';
     end;
     TabsOpened:= HandleCmdParams(ws);
@@ -1099,32 +1096,32 @@ end;
 -------------------------------------------------------------------------------}
 procedure TMainForm.GetSkinsFromFolder(AFolderPath: WideString);
 var
-  SearchRec: TSearchRecW;
-  list: TTntStrings;
+  SearchRec: TSearchRec;
+  list: TStrings;
   path: WideString;
   i: Integer;
 begin
-  AFolderPath:= WideIncludeTrailingPathDelimiter(AFolderPath);
-  if WideDirectoryExists(AFolderPath) then
+  AFolderPath:= IncludeTrailingPathDelimiter(AFolderPath);
+  if DirectoryExists(AFolderPath) then
   begin
-    list:= TTntStringList.Create;
+    list:= TStringList.Create;
     try
       path:= AFolderPath + '*.skn';
-      if WideFindFirst(Path, faAnyFile, SearchRec) = 0 then
+      if FindFirst(Path, faAnyFile, SearchRec) = 0 then
       begin
         try
           repeat
             if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
             list.Add(SearchRec.Name);
-          until WideFindNext(SearchRec) <> 0;
+          until FindNext(SearchRec) <> 0;
         finally
-          WideFindClose(SearchRec);
+          FindClose(SearchRec);
         end;
       end;
       for i:= 0 to List.Count - 1 do
       begin
         path:= AFolderPath + list.Strings[i];
-        if WideFileExists(path) then
+        if FileExists(path) then
         SkinManager.SkinsList.AddSkinFromFile(path);
       end;
     finally
@@ -1222,18 +1219,18 @@ begin
   CEGlobalTranslator.RegisterIgnoredClass(TFont);
   CEGlobalTranslator.UseIncludeList:= true;
   CEGlobalTranslator.IncludeInheritedAlso:= true;
-  CEGlobalTranslator.IncludeClasses.Add(TTntAction);
+  CEGlobalTranslator.IncludeClasses.Add(TAction);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXItem);
-  CEGlobalTranslator.IncludeClasses.Add(TTntMenuItem);
+  CEGlobalTranslator.IncludeClasses.Add(TMenuItem);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXTabItem);
-  CEGlobalTranslator.IncludeClasses.Add(TTntLabel);
-  CEGlobalTranslator.IncludeClasses.Add(TTntButton);
-  CEGlobalTranslator.IncludeClasses.Add(TTntCheckBox);
-  CEGlobalTranslator.IncludeClasses.Add(TTntGroupBox);
+  CEGlobalTranslator.IncludeClasses.Add(TLabel);
+  CEGlobalTranslator.IncludeClasses.Add(TButton);
+  CEGlobalTranslator.IncludeClasses.Add(TCheckBox);
+  CEGlobalTranslator.IncludeClasses.Add(TGroupBox);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXButton);
   CEGlobalTranslator.IncludeClasses.Add(TForm);
   CEGlobalTranslator.IncludeClasses.Add(TTBCustomDockableWindow);
-  CEGlobalTranslator.IncludeClasses.Add(TTntRadioButton);
+  CEGlobalTranslator.IncludeClasses.Add(TRadioButton);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXCheckBox);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXGroupBox);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXRadioGroup);
@@ -1295,10 +1292,10 @@ end;
 
 procedure TMainForm.OpenSkin;
 var
-  open: TTntOpenDialog;
+  open: TOpenDialog;
   i: Integer;
 begin
-  open:= TTntOpenDialog.Create(nil);
+  open:= TOpenDialog.Create(nil);
   open.InitialDir:= exePath + 'Skins\';
   open.Filter:= 'Skin File|*.skn|All Files|*.*';
   try
@@ -1437,12 +1434,12 @@ begin
     if fPathInTitle then
     begin
       Caption:= GlobalPathCtrl.GlobalPathCaption;
-      TntApplication.Title:= Caption;
+      Application.Title:= Caption;
     end
     else
     begin
       Caption:= 'CubicExplorer';
-      TntApplication.Title:= Caption;
+      Application.Title:= Caption;
     end;
   end;
 end;
@@ -1623,9 +1620,9 @@ procedure TMainForm.HandleUpdateFound(Sender: TObject; BuildType: TCEBuildType;
     Version: TCEVersionNumber; Notes: WideString; var DoUpdate: Boolean);
 var
   ws: WideString;
-  list: TTntStrings;
+  list: TStrings;
 begin
-  list:= TTntStringList.Create;
+  list:= TStringList.Create;
   list.Text:= Notes;
   if list.Count > 20 then
   begin
@@ -1636,9 +1633,9 @@ begin
 
   try
     try
-      ws:= WideFormat(_('New version (%s) is available. Do you want to update now?'), [VersionNumberToStr(Version)]);
+      ws:= Format(_('New version (%s) is available. Do you want to update now?'), [VersionNumberToStr(Version)]);
     except
-      ws:= WideFormat('New version (%s) is available. Do you want to update now?', [VersionNumberToStr(Version)]);
+      ws:= Format('New version (%s) is available. Do you want to update now?', [VersionNumberToStr(Version)]);
     end;
 
     ws:= ws + #13#10 + '____________________' + #13#10;

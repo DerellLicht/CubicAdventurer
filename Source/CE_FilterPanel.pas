@@ -26,8 +26,6 @@ interface
 uses
   // CE Units
   CE_LanguageEngine, CE_Utils,
-  // Tnt Controls
-  TntClasses, TntSysUtils,
   // VT
   VirtualTrees,
   // JVCL
@@ -87,7 +85,7 @@ type
         override;
     procedure PopulateTree;
   public
-    ActiveFilters: TTntStrings;
+    ActiveFilters: TStrings;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ClearFilters;
@@ -121,7 +119,7 @@ constructor TCEFilterList.Create(AOwner: TComponent);
 begin
   inherited;
   Self.NodeDataSize:= SizeOf(AFilterItem);
-  ActiveFilters:= TTntStringList.Create;
+  ActiveFilters:= TStringList.Create;
 
   Self.BorderStyle:= bsNone;
   Self.CheckImageKind:= ckSystemDefault;
@@ -168,7 +166,7 @@ begin
   while assigned(Result) do
   begin
     data:= Self.GetNodeData(Result);
-    if (WideCompareText(data.extension, ext) = 0) and (Result <> fShowAllNode) and (Result <> fShowFoldersNode) then
+    if (AnsiCompareText(data.extension, ext) = 0) and (Result <> fShowAllNode) and (Result <> fShowFoldersNode) then
     break
     else
     Result:= Result.NextSibling;

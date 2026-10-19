@@ -27,18 +27,16 @@ uses
   // CE Units
   fCE_OptionsDialog, fCE_OptionsCustomPage, fCE_BookmarkPanel,
   CE_LanguageEngine, CE_StdBookmarkComps,
-  // Tnt
-  TntStdCtrls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls;
 
 type
   TCE_OptionsPage_Display_Bookmarks = class(TCEOptionsCustomPage)
-    check_autoexpand: TTntCheckBox;
-    check_autocollapse: TTntCheckBox;
-    check_singleclick: TTntCheckBox;
-    check_newtabdefault: TTntCheckBox;
+    check_autoexpand: TCheckBox;
+    check_autocollapse: TCheckBox;
+    check_singleclick: TCheckBox;
+    check_newtabdefault: TCheckBox;
   private
     { Private declarations }
   protected

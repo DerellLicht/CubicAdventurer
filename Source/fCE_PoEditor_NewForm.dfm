@@ -31,21 +31,21 @@ object CENewTranslationDlg: TCENewTranslationDlg
     Shape = bsFrame
     ExplicitWidth = 381
   end
-  object TntLabel1: TTntLabel
+  object TntLabel1: TLabel
     Left = 20
     Top = 16
     Width = 47
     Height = 13
     Caption = 'Language'
   end
-  object Path: TTntLabel
+  object Path: TLabel
     Left = 20
     Top = 69
     Width = 22
     Height = 13
     Caption = 'Path'
   end
-  object edit_path: TTntEdit
+  object edit_path: TEdit
     Left = 20
     Top = 88
     Width = 242
@@ -53,7 +53,7 @@ object CENewTranslationDlg: TCENewTranslationDlg
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
   end
-  object but_browser: TTntButton
+  object but_browser: TButton
     Left = 268
     Top = 88
     Width = 69
@@ -63,7 +63,7 @@ object CENewTranslationDlg: TCENewTranslationDlg
     TabOrder = 2
     OnClick = but_browserClick
   end
-  object but_create: TTntButton
+  object but_create: TButton
     Left = 194
     Top = 135
     Width = 75
@@ -74,7 +74,7 @@ object CENewTranslationDlg: TCENewTranslationDlg
     ModalResult = 1
     TabOrder = 3
   end
-  object but_cancel: TTntButton
+  object but_cancel: TButton
     Left = 275
     Top = 135
     Width = 75

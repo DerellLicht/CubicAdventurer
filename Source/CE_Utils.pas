@@ -26,8 +26,7 @@ interface
 uses
   // JCL
   JclFileUtils, JclMime,
-  // TNT Controls
-  TntActnList, TntSysUtils, TntSystem, TntWindows, TntClasses,
+  ActnList,
   // VSTools
   MPCommonUtilities, MPCommonObjects, MPShellUtilities,
   // System Units
@@ -39,7 +38,7 @@ type
 
   function DecodeRelativePath(Path: WideString): WideString;
   function EncodeRelativePath(Path: WideString): WideString;
-  function FindAction(ActionList: TTntActionList; ActionName: String): TTntAction;
+  function FindAction(ActionList: TActionList; ActionName: String): TAction;
   function IsInsideRect(ARect: TRect; X, Y: Integer): Boolean;
   procedure ReplaceChar(var S: string; Orig: Char; Replacement: Char);
   function CEStrToRect(S: String; Sep: String = ','): TRect;
@@ -142,10 +141,10 @@ function DecodeRelativePath(Path: WideString): WideString;
 var
   ws: WideString;
 begin
-  ws:= WideGetCurrentDir;
-  WideSetCurrentDir(ExePath);
-  Result:= WideExpandFileName(Path);
-  WideSetCurrentDir(ws);
+  ws:= GetCurrentDir;
+  SetCurrentDir(ExePath);
+  Result:= ExpandFileName(Path);
+  SetCurrentDir(ws);
 end;
 
 {*------------------------------------------------------------------------------
@@ -155,16 +154,16 @@ function EncodeRelativePath(Path: WideString): WideString;
 var
   ws: WideString;
 begin
-  ws:= WideGetCurrentDir;
-  WideSetCurrentDir(ExePath);
-  Result:= WideExtractRelativePath(WideParamStr(0), Path);
-  WideSetCurrentDir(ws);
+  ws:= GetCurrentDir;
+  SetCurrentDir(ExePath);
+  Result:= ExtractRelativePath(ParamStr(0), Path);
+  SetCurrentDir(ws);
 end;
 
 {*------------------------------------------------------------------------------
   Find action from ActionList
 -------------------------------------------------------------------------------}
-function FindAction(ActionList: TTntActionList; ActionName: String): TTntAction;
+function FindAction(ActionList: TActionList; ActionName: String): TAction;
 var
   i: Integer;
 begin
@@ -176,7 +175,7 @@ begin
   begin
     if SameText(ActionList.Actions[i].Name, ActionName) then
     begin
-      Result:= TTntAction(ActionList.Actions[i]);
+      Result:= TAction(ActionList.Actions[i]);
       Break;
     end;
   end;
@@ -418,9 +417,9 @@ function IsSameText(Str1: WideString; Str2: WideString; CaseSensitive: Boolean
     = false): Boolean;
 begin
   if CaseSensitive then
-  Result:= WideCompareStr(Str1, str2) = 0
+  Result:= AnsiCompareStr(Str1, str2) = 0
   else
-  Result:= WideCompareText(Str1, str2) = 0;
+  Result:= AnsiCompareText(Str1, str2) = 0;
 end;
 
 {*------------------------------------------------------------------------------
@@ -466,23 +465,23 @@ procedure ReplaceSystemVariablePath(var Path: WideString);
 
   function ReplacePath(Path, Variable, VarPath: WideString): WideString;
   begin
-    Result := Tnt_WideStringReplace(Path, Variable, VarPath, [rfReplaceAll, rfIgnoreCase])
+    Result := StringReplace(Path, Variable, VarPath, [rfReplaceAll, rfIgnoreCase])
   end;
 
 begin
   /// TODO: Optimize this method. 
 
   // Psudo Variables
-  Path := ReplacePath(Path, '%sysdir%', WideLowerCase(WideStripTrailingBackslash(SystemDirectory)));
+  Path := ReplacePath(Path, '%sysdir%', AnsiLowerCase(WideStripTrailingBackslash(SystemDirectory)));
   //Path := ReplacePath(Path, '%temp%', WideLowerCase(WideStripTrailingBackslash(WideGetTempDir)));
   //Path := ReplacePath(Path, '%appdata%', WideLowerCase(WideStripTrailingBackslash(UserDocumentsFolder.NameForParsing)));
   //Path := ReplacePath(Path, '%favorites%', WideLowerCase(WideStripTrailingBackslash(FavoritesFolder.NameForParsing)));
   if assigned(MyDocumentsFolder) then
-  Path := ReplacePath(Path, '%personal%', WideLowerCase(WideStripTrailingBackslash(MyDocumentsFolder.NameForParsing)));
+  Path := ReplacePath(Path, '%personal%', AnsiLowerCase(WideStripTrailingBackslash(MyDocumentsFolder.NameForParsing)));
   //Path := ReplacePath(Path, '%templates%', WideLowerCase(WideStripTrailingBackslash(TemplatesFolder.NameForParsing)));
   //Path := ReplacePath(Path, '%history%', WideLowerCase(WideStripTrailingBackslash(HistoryFolder.NameForParsing)));
   //Path := ReplacePath(Path, '%desktopfolder%', WideLowerCase(WideStripTrailingBackslash(PhysicalDesktopFolder.NameForParsing)));
-  Path := ReplacePath(Path, '%cedrive%', WideLowerCase(WideStripTrailingBackslash(WideExtractFileDrive(ExePath))));
+  Path := ReplacePath(Path, '%cedrive%', AnsiLowerCase(WideStripTrailingBackslash(ExtractFileDrive(ExePath))));
 
   // Environment variables
   Path:= WideExpandEnviromentStringForUser(Path);
@@ -533,12 +532,12 @@ var
   FixInfoBuf: PVSFixedFileInfo;
 begin
   Result:= 0;
-  Size:= Tnt_GetFileVersionInfoSizeW(PWideChar(Path), Handle);
+  Size:= GetFileVersionInfoSizeW(PWideChar(Path), Handle);
   if Size > 0 then
   begin
     SetLength(Buffer, Size);
-    if Tnt_GetFileVersionInfoW(PWideChar(Path), Handle, Size, Pointer(Buffer)) and
-      Tnt_VerQueryValueW(Pointer(Buffer), DirDelimiter, Pointer(FixInfoBuf), FixInfoLen) and
+    if GetFileVersionInfoW(PWideChar(Path), Handle, Size, Pointer(Buffer)) and
+      VerQueryValueW(Pointer(Buffer), DirDelimiter, Pointer(FixInfoBuf), FixInfoLen) and
       (FixInfoLen = SizeOf(TVSFixedFileInfo)) then
     begin
       Result:= LoWord(FixInfoBuf^.dwProductVersionLS)
@@ -628,7 +627,7 @@ begin
   info.hwndOwner:= Application.ActiveFormHandle;
   info.ulFlags:= BIF_USENEWUI;
   info.lpszTitle:= PWideChar(aTitle);
-  Result:= Tnt_SHBrowseForFolderW(info);
+  Result:= SHBrowseForFolderW(info);
 end;
 
 {-------------------------------------------------------------------------------
@@ -869,15 +868,15 @@ end;
 function GetSettingsFolderPath(var IsReadOnly: Boolean; ACreate: Boolean):
     WideString;
 var
-  list: TTntStrings;
+  list: TStrings;
   i, p: Integer;
   ws: WideString;
 begin
   Result:= '';
   IsReadOnly:= false;
-  if WideFileExists(exePath + 'settings.path') then
+  if FileExists(exePath + 'settings.path') then
   begin
-    list:= TTntStringList.Create;
+    list:= TStringList.Create;
     try
       list.LoadFromFile(exePath + 'settings.path');
       for i:= 0 to list.Count - 1 do
@@ -895,9 +894,9 @@ begin
               Result:= DecodeRelativePath(ws);
               if ACreate then
               begin
-                if not WideDirectoryExists(Result) then
+                if not DirectoryExists(Result) then
                 begin
-                  if not WideCreateDir(Result) then
+                  if not CreateDir(Result) then
                   Result:= '';
                 end;
               end;
@@ -925,7 +924,7 @@ begin
   if Result = '' then
   Result:= ExePath;
 
-  Result:= WideIncludeTrailingBackslash(Result);
+  Result:= IncludeTrailingBackslash(Result);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1217,7 +1216,7 @@ end;
 {##############################################################################}
 
 initialization
-  ExePath:= WideExtractFilePath(WideParamStr(0));
+  ExePath:= ExtractFilePath(ParamStr(0));
   SettingsDirPath:= GetSettingsFolderPath(ReadOnlySettings, true);
   LargeShellIconSize:= GetLargeShellIconSize;
   SmallShellIconSize:= GetSmallShellIconSize;

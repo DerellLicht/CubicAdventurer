@@ -177,7 +177,7 @@ begin
   if fBrowseZipFolders then
   AllowAsChild:= Namespace.Folder
   else
-  AllowAsChild:= Namespace.Folder and (WideStrIComp(PWideChar(Namespace.Extension), '.zip') <> 0);
+  AllowAsChild:= Namespace.Folder and (StrIComp(PWideChar(Namespace.Extension), '.zip') <> 0);
 end;
 
 {*------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ begin
   if fBrowseZipFolders then
   AllowAsChild:= Namespace.Folder
   else
-  AllowAsChild:= Namespace.Folder and (WideStrIComp(PWideChar(Namespace.Extension), '.zip') <> 0);
+  AllowAsChild:= Namespace.Folder and (StrIComp(PWideChar(Namespace.Extension), '.zip') <> 0);
 end;
 
 {*------------------------------------------------------------------------------

@@ -28,8 +28,6 @@ uses
   fCE_OptionsCustomPage, CE_LanguageEngine,
   // VirtualTree
   VirtualTrees,
-  // Tnt Controls
-  TntStdCtrls, TntExtCtrls, TntForms,
   // SpTBXLib
   SpTBXSkins,
   // System Units
@@ -45,15 +43,15 @@ type
     ImageIndex: Integer;
   end;
 
-  TCEOptionsDialog = class(TTntForm)
+  TCEOptionsDialog = class(TForm)
     MainPanel: TPanel;
     BottomPanel: TPanel;
     PagePanel: TPanel;
-    but_ok: TTntButton;
-    but_cancel: TTntButton;
-    but_apply: TTntButton;
+    but_ok: TButton;
+    but_cancel: TButton;
+    but_apply: TButton;
     PageContainer: TPanel;
-    PageTitlePanel: TTntPanel;
+    PageTitlePanel: TPanel;
     SmallImageList: TPngImageList;
     PageTree: TVirtualDrawTree;
     LargeImageList: TPngImageList;

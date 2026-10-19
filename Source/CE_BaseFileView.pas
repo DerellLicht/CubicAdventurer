@@ -38,9 +38,7 @@ uses
   // SpTBXLib
   SpTBXItem, SpTBXSkins, TB2Item,
   // Graphics32
-  GR32,
-  // Tnt Controls
-  TntSysUtils, TntStdCtrls, TntWideStrUtils,
+  GR32, StdCtrls,
   // VT
   VirtualTrees,
   // System Units
@@ -216,7 +214,7 @@ begin
     end
     else if NS.FileSystem then
     begin
-      l:= Length(WideExtractFileExt(edit.Text));
+      l:= Length(ExtractFileExt(edit.Text));
       edit.SelStart:= 0;
       edit.SelLength:= Length(edit.Text) - l;
     end;
@@ -252,7 +250,7 @@ begin
     end
     else if NS.FileSystem then
     begin
-      l:= Length(WideExtractFileExt(edit.Text));
+      l:= Length(ExtractFileExt(edit.Text));
       edit.SelStart:= 0;
       edit.SelLength:= Length(edit.Text) - l;
     end;
@@ -415,11 +413,11 @@ begin
   oldCaption:= NS.NameParseAddressInFolder;
   
 
-  if WideCompareStr(path,oldCaption) = 0 then
+  if AnsiCompareStr(path,oldCaption) = 0 then
   begin
     Exit;
   end
-  else if WideCompareText(path,oldCaption) = 0 then
+  else if AnsiCompareText(path,oldCaption) = 0 then
   begin
     Accept:= true;
     Exit;
@@ -435,7 +433,7 @@ begin
       p:= GetPopupPoint;
       BalloonHint.ActivateHintPos(nil, p,'Name can''t be empty.', 'Please choose another '#13'or press ESC to Cancel',2000, ikError);
     end
-    else if WideDirectoryExists(path) then
+    else if DirectoryExists(path) then
     begin
       Accept:= false;
       p:= GetPopupPoint;
@@ -454,7 +452,7 @@ begin
       p:= GetPopupPoint;
       BalloonHint.ActivateHintPos(nil, p,'Name can''t be empty.', 'Please choose another '#13'or press ESC to Cancel',2000, ikError);
     end
-    else if WideFileExists(path) then
+    else if FileExists(path) then
     begin
       Accept:= false;
       p:= GetPopupPoint;
@@ -715,7 +713,7 @@ begin
           begin
             // Recycle bin item
             if assigned(NS.Parent) and NS.Parent.IsRecycleBin then 
-            NS.FShellCache.Data.InFolderName:= WideExtractFileName(NS.DisplayNameOf(SHGDN_NORMAL))
+            NS.FShellCache.Data.InFolderName:= ExtractFileName(NS.DisplayNameOf(SHGDN_NORMAL))
             // Normal file
             else
             begin
@@ -727,7 +725,7 @@ begin
           begin
             // Recycle bin item
             if assigned(NS.Parent) and NS.Parent.IsRecycleBin then
-            NS.FShellCache.Data.InFolderName:= WideStripExt(WideExtractFileName(NS.DisplayNameOf(SHGDN_NORMAL)))
+            NS.FShellCache.Data.InFolderName:= WideStripExt(ExtractFileName(NS.DisplayNameOf(SHGDN_NORMAL)))
             // Normal file
             else
             begin
@@ -889,7 +887,7 @@ begin
     CompareStr:= Self.Selection.FocusedItem.Caption;
     SetLength(CompareStr, Length(SearchBuffer));
 
-    CompareResult:= WideCompareText(SearchBuffer, CompareStr);
+    CompareResult:= AnsiCompareText(SearchBuffer, CompareStr);
 
     if CompareResult <> 0 then
     item:= Self.Groups.FirstItem
@@ -911,7 +909,7 @@ begin
     CompareStr := Self.Items.Items[i].Caption;
     SetLength(CompareStr, Length(SearchBuffer));
 
-    CompareResult:= WideCompareText(SearchBuffer, CompareStr);
+    CompareResult:= AnsiCompareText(SearchBuffer, CompareStr);
 
     if CompareResult = 0 then
     begin
@@ -934,7 +932,7 @@ begin
       CompareStr := Self.Items.Items[i].Caption;
       SetLength(CompareStr, Length(SearchBuffer));
 
-      CompareResult:= WideCompareText(SearchBuffer, CompareStr);
+      CompareResult:= AnsiCompareText(SearchBuffer, CompareStr);
 
       if CompareResult = 0 then
       begin
@@ -1450,7 +1448,7 @@ begin
   begin
     if (not Item.Namespace.Folder) then
     Caption:= Item.Namespace.Extension
-    else if WideSameText(Item.Namespace.Extension, '.ZIP') then
+    else if AnsiSameText(Item.Namespace.Extension, '.ZIP') then
     Caption:= Item.Namespace.Extension;
   end
   else
@@ -1529,9 +1527,9 @@ begin
         else
         begin
           if (ColIndex = 2) and IsWinVista then
-          Result:= WideCompareText(WideString(NS1.DetailsOf(2)), WideString( NS2.DetailsOf(2)))
+          Result:= AnsiCompareText(WideString(NS1.DetailsOf(2)), WideString( NS2.DetailsOf(2)))
           else if (ColIndex = ExtColumnIndex) then
-          Result:= WideStrComp(PWidechar(Item1.Captions[ColIndex]), PWideChar(Item2.Captions[ColIndex]))
+          Result:= StrComp(PWidechar(Item1.Captions[ColIndex]), PWideChar(Item2.Captions[ColIndex]))
           else
           Result:= NS2.ComparePIDL(NS1.RelativePIDL, False, ColIndex);
         end;
@@ -1546,7 +1544,7 @@ begin
     else
     begin
       if (ColIndex = ExtColumnIndex) then
-      Result:= WideStrComp(PWidechar(Item1.Captions[ColIndex]), PWideChar(Item2.Captions[ColIndex]))
+      Result:= StrComp(PWidechar(Item1.Captions[ColIndex]), PWideChar(Item2.Captions[ColIndex]))
       else
       Result:= NS2.ComparePIDL(NS1.RelativePIDL, False, ColIndex);
 
@@ -1652,7 +1650,7 @@ procedure TCECustomFileView.ShowHeaderSelector;
     while not Result and Assigned(Node) do
     begin
       ColData := VST.GetNodeData(Node);
-      Result := WideStrComp(PWideChar(ColData^.Title), PWideChar( Text)) = 0;
+      Result := StrComp(PWideChar(ColData^.Title), PWideChar( Text)) = 0;
       Node := VST.GetNext(Node)
     end
   end;

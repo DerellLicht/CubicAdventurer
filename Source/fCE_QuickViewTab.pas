@@ -136,7 +136,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewPage.OpenFile(AFilePath: WideString);
 begin
-  if WideFileExists(AFilePath) then
+  if FileExists(AFilePath) then
   begin
     ActiveFile:= AFilePath;
     UpdateCaption;
@@ -190,7 +190,7 @@ begin
   end
   else
   begin
-    TabCaption:= WideExtractFileName(ActiveFile);
+    TabCaption:= ExtractFileName(ActiveFile);
     TabItem.Images:= SmallSysImages;
     TabItem.ImageIndex:= GetIconIndex(ActiveFile);
   end;

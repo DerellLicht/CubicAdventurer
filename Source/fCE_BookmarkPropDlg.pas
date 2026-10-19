@@ -29,8 +29,6 @@ uses
   CE_Utils, CE_VistaFuncs,
   // TB2K, SpTBX
   SpTBXEditors, SpTBXFormPopupMenu, SpTBXControls,
-  // Tnt Controls
-  TntStdCtrls, TntForms,
   // VSTools
   MPCommonObjects, MPShellUtilities,
   // VirtualTrees
@@ -40,7 +38,7 @@ uses
   Dialogs, ComCtrls, StdCtrls, ExtCtrls,  Menus, ImgList;
 
 type
-  TBookmarkPropDlg = class(TTntForm)
+  TBookmarkPropDlg = class(TForm)
     PageControl: TPageControl;
     GeneralSheet: TTabSheet;
     but_OK: TButton;
@@ -51,7 +49,7 @@ type
     check_relative: TCheckBox;
     edit_target: TSpTBXButtonEdit;
     FormPopupMenu: TSpTBXFormPopupMenu;
-    edit_name: TTntEdit;
+    edit_name: TEdit;
     TargetPanel: TPanel;
     but_browse: TButton;
     open1: TOpenDialog;

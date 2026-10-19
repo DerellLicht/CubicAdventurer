@@ -28,8 +28,6 @@ uses
   CE_Stacks, CE_Utils, CE_CommonObjects, CE_FileUtils,
   // VT
   VirtualTrees,
-  // Tnt
-  TntClasses,
   // VS Tools
   MPDataObject, MPShellUtilities, MPCommonObjects, MPCommonUtilities,
   VirtualExplorerTree, VirtualResources, VirtualShellNotifier,
@@ -1166,7 +1164,7 @@ begin
     data.Offline:= true;
     data.CEPath:= PIDLToCEPath(APIDL);
     data.PathType:= GetCEPathType(data.CEPath);
-    data.Caption:= WideExtractFileName(data.CEPath, false);
+    data.Caption:= ExtractFileName(data.CEPath, false);
     data.IconIndex:= -1;
     data.OverlayIndex:= -1;
     data.fLastOfflineCheck:= 0;
@@ -1183,7 +1181,7 @@ end;
 procedure TCEStackTree.LoadFromStack(AStack: TCEStackItem);
 var
   i, i2: Integer;
-  list, l: TTntStrings;
+  list, l: TStrings;
   groupNode, node: PVirtualNode;
   data: PCEStackItemData;
 begin
@@ -1191,7 +1189,7 @@ begin
   if not assigned(AStack) then
   Exit;
 
-  l:= TTntStringList.Create;
+  l:= TStringList.Create;
   BeginUpdate;
   Self.Clear;
   try
@@ -1215,7 +1213,7 @@ begin
             if l.Count > 1 then
             data.Caption:= l.Strings[1]
             else
-            data.Caption:= WideExtractFileName(data.CEPath, false);
+            data.Caption:= ExtractFileName(data.CEPath, false);
             data.IconIndex:= -1;
             data.OverlayIndex:= -1;
             data.fLastOfflineCheck:= 0;
@@ -1349,13 +1347,13 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEStackTree.SaveToStack(AStack: TCEStackItem);
 
-  procedure enumGroup(groupNode: PVirtualNode; groupItems: TTntStrings);
+  procedure enumGroup(groupNode: PVirtualNode; groupItems: TStrings);
   var
     chNode: PVirtualNode;
     chData: PCEStackItemData;
-    l: TTntStrings;
+    l: TStrings;
   begin
-    l:= TTntStringList.Create;
+    l:= TStringList.Create;
     try
     chNode:= Self.GetFirstChild(groupNode);
       while assigned(chNode) do
@@ -1375,7 +1373,7 @@ procedure TCEStackTree.SaveToStack(AStack: TCEStackItem);
 var
   node: PVirtualNode;
   data: PCEStackItemData;
-  list: TTntStrings;
+  list: TStrings;
 begin
   AStack.ClearGroups;
   node:= Self.GetFirstChild(nil);
@@ -1535,7 +1533,7 @@ begin
     begin
       ns:= TNamespace.Create(pidl, nil);
       try
-        if ns.Folder and (WideStrIComp(PWideChar(ns.Extension), '.zip') <> 0) then
+        if ns.Folder and (StrIComp(PWideChar(ns.Extension), '.zip') <> 0) then
         GlobalPathCtrl.ChangeGlobalPathPIDL(Self, ns.AbsolutePIDL)
         else
         ns.ShellExecuteNamespace(GlobalPathCtrl.CurrentPath, '', true, true, MP_ThreadedShellExecute);
@@ -1682,7 +1680,7 @@ begin
                   begin
                     data:= Self.GetNodeData(node);
                     data.CEPath:= PIDLToCEPath(ShellEvent.PIDL2);
-                    data.Caption:= WideExtractFileName(data.CEPath, false);
+                    data.Caption:= ExtractFileName(data.CEPath, false);
                     data.IconIndex:= -1;
                     data.OverlayIndex:= -1;
                     data.fLastOfflineCheck:= 0;

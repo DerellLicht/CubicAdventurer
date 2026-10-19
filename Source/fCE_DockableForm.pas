@@ -30,8 +30,6 @@ uses
   JvDockControlForm,
   // TB2k, SpTBX
   TB2Dock, SpTBXItem,
-  // TNT
-  TntForms,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ShlObj;

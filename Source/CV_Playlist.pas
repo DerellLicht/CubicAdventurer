@@ -580,7 +580,7 @@ begin
   while assigned(node) do
   begin
     data:= Self.GetNodeData(node);
-    if WideCompareText(AFilePath, data.Path) = 0 then
+    if AnsiCompareText(AFilePath, data.Path) = 0 then
     begin
       Result:= node;
       break;
@@ -685,7 +685,7 @@ begin
   Result:= Self.AddChild(nil, Pointer(1));
   data:= Self.GetNodeData(Result);
   data.Path:= APath;
-  data.Title:= WideExtractFileName(APath);
+  data.Title:= ExtractFileName(APath);
   data.ImageIndex:= -1;
   data.fLastUpdate:= 0;
 
@@ -996,13 +996,13 @@ var
     sr: TCCSearchRec;
     newTask: TCVFilelistTask;
   begin
-    if WideFindFirst(dirPath + '*.*', faAnyFile, sr) = S_OK then
+    if FindFirst(dirPath + '*.*', faAnyFile, sr) = S_OK then
     begin
       repeat
         // add file to list
         if (sr.Attr and faDirectory) <> faDirectory then
         begin
-          if IsSupported(WideExtractFileExt(sr.Name)) then
+          if IsSupported(ExtractFileExt(sr.Name)) then
           begin
             task.Results.Lock;
             task.Results.Add(dirPath + sr.Name);
@@ -1025,7 +1025,7 @@ var
               // use separate thread for sub folders
               newTask:= TCVFilelistTask.Create;
               newTask.TaskType:= fttSearchFiles;
-              newTask.Path:= WideIncludeTrailingPathDelimiter(dirPath + sr.Name);
+              newTask.Path:= IncludeTrailingPathDelimiter(dirPath + sr.Name);
               newTask.IncludeSubfolders:= includeSubFolders;
 
               // increase refrence count (we need it in TCVFilelistTask.Destroy)
@@ -1037,12 +1037,12 @@ var
             end
             else
             begin
-              DoFileSearch(task, WideIncludeTrailingPathDelimiter(dirPath + sr.Name), includeSubFolders);
+              DoFileSearch(task, IncludeTrailingPathDelimiter(dirPath + sr.Name), includeSubFolders);
             end;
           end;
         end;
-      until (WideFindNext(sr) <> S_OK) or Sender.IsAborted;
-      WideFindClose(sr);
+      until (FindNext(sr) <> S_OK) or Sender.IsAborted;
+      FindClose(sr);
       
       if (task.Results.Count > 0) and not Sender.IsAborted then
       Sender.SendSyncMessage(FilelistTask_FilesFound, 0, 0);
@@ -1073,7 +1073,7 @@ begin
     else if task.TaskType = fttSearchFiles then
     begin
       DoFileSearch(task,
-                   WideIncludeTrailingPathDelimiter(task.Path),
+                   IncludeTrailingPathDelimiter(task.Path),
                    task.IncludeSubfolders);
     end;
   end;
@@ -1102,7 +1102,7 @@ begin
         begin
           node:= Self.Add(task.Results.Strings[i]);
           // set active item
-          if WideCompareText(fActiveFilePath, task.Results.Strings[i]) = 0 then
+          if AnsiCompareText(fActiveFilePath, task.Results.Strings[i]) = 0 then
           begin
             Self.fActiveItem:= node;
           end;
@@ -1148,7 +1148,7 @@ begin
   if fActiveFilePath <> Value then
   begin
     inherited;
-    PopulateList(WideExtractFilePath(fActiveFilePath), fIncludeSubFolders);
+    PopulateList(ExtractFilePath(fActiveFilePath), fIncludeSubFolders);
   end;
 end;
 

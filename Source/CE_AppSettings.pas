@@ -26,8 +26,6 @@ interface
 uses
   // fcl-xml
   XMLRead, XMLWrite, DOM, WideSupport,
-  // Tnt
-  TntSysUtils,
   // System Units
   TypInfo, Contnrs, Classes, SysUtils, Windows;
 
@@ -221,7 +219,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCEAppSettings.LoadFromFile(AFilePath: WideString): Boolean;
 begin
-  if WideFileExists(AFilePath) then
+  if FileExists(AFilePath) then
   begin
     fXML.Free;
     Result:= true;

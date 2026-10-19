@@ -4,11 +4,11 @@ object CEActions: TCEActions
   OnDestroy = DataModuleDestroy
   Height = 305
   Width = 385
-  object ActionList: TTntActionList
+  object ActionList: TActionList
     Images = CE_Images.SmallIcons
     Left = 28
     Top = 12
-    object act_tabs_closetab: TTntAction
+    object act_tabs_closetab: TAction
       Tag = 661
       Category = 'Tabs'
       Caption = 'Close Tab'
@@ -19,7 +19,7 @@ object CEActions: TCEActions
         'Ctrl+F4')
       OnExecute = ActionExecute
     end
-    object act_gen_exit: TTntAction
+    object act_gen_exit: TAction
       Tag = 100
       Category = 'General'
       Caption = 'Exit'
@@ -27,7 +27,7 @@ object CEActions: TCEActions
       ShortCut = 32883
       OnExecute = ActionExecute
     end
-    object act_view_dropstack: TTntAction
+    object act_view_dropstack: TAction
       Tag = 305
       Category = 'View'
       Caption = 'Stack'
@@ -35,7 +35,7 @@ object CEActions: TCEActions
       ShortCut = 16437
       OnExecute = ActionExecute
     end
-    object act_help_donate: TTntAction
+    object act_help_donate: TAction
       Tag = 505
       Category = 'Help'
       Caption = 'Donate'
@@ -58,14 +58,14 @@ object CEActions: TCEActions
       ShortCut = 32805
       OnExecute = ActionExecute
     end
-    object act_navi_folderup: TTntAction
+    object act_navi_folderup: TAction
       Tag = 605
       Category = 'Navigation'
       Caption = 'Folder Up'
       ImageIndex = 7
       OnExecute = ActionExecute
     end
-    object act_navi_refresh: TTntAction
+    object act_navi_refresh: TAction
       Tag = 606
       Category = 'Navigation'
       Caption = 'Refresh'
@@ -73,7 +73,7 @@ object CEActions: TCEActions
       ShortCut = 116
       OnExecute = ActionExecute
     end
-    object act_view_folders: TTntAction
+    object act_view_folders: TAction
       Tag = 301
       Category = 'View'
       Caption = 'Folders'
@@ -88,7 +88,7 @@ object CEActions: TCEActions
       ImageIndex = 55
       OnExecute = ActionExecute
     end
-    object act_view_bookmark: TTntAction
+    object act_view_bookmark: TAction
       Tag = 302
       Category = 'View'
       Caption = 'Bookmarks'
@@ -96,34 +96,34 @@ object CEActions: TCEActions
       ShortCut = 16434
       OnExecute = ActionExecute
     end
-    object act_view_large: TTntAction
+    object act_view_large: TAction
       Tag = 351
       Category = 'View'
       Caption = 'Large Icons'
       ImageIndex = 11
       OnExecute = ActionExecute
     end
-    object act_view_small: TTntAction
+    object act_view_small: TAction
       Tag = 352
       Category = 'View'
       Caption = 'Small Icons'
       ImageIndex = 12
       OnExecute = ActionExecute
     end
-    object act_view_list: TTntAction
+    object act_view_list: TAction
       Tag = 353
       Category = 'View'
       Caption = 'List'
       ImageIndex = 13
       OnExecute = ActionExecute
     end
-    object act_view_showheaderalways: TTntAction
+    object act_view_showheaderalways: TAction
       Tag = 333
       Category = 'View'
       Caption = 'Always Show Sort Columns'
       OnExecute = ActionExecute
     end
-    object act_view_filters: TTntAction
+    object act_view_filters: TAction
       Tag = 304
       Category = 'View'
       Caption = 'Filters'
@@ -131,35 +131,35 @@ object CEActions: TCEActions
       ShortCut = 16436
       OnExecute = ActionExecute
     end
-    object act_view_details: TTntAction
+    object act_view_details: TAction
       Tag = 354
       Category = 'View'
       Caption = 'Details'
       ImageIndex = 14
       OnExecute = ActionExecute
     end
-    object act_view_thumbs: TTntAction
+    object act_view_thumbs: TAction
       Tag = 355
       Category = 'View'
       Caption = 'Thumbnails'
       ImageIndex = 16
       OnExecute = ActionExecute
     end
-    object act_view_loadskin: TTntAction
+    object act_view_loadskin: TAction
       Tag = 371
       Category = 'View'
       Caption = 'Load theme from file...'
       Hint = 'Load theme from file'
       OnExecute = ActionExecute
     end
-    object act_view_tiles: TTntAction
+    object act_view_tiles: TAction
       Tag = 356
       Category = 'View'
       Caption = 'Tiles'
       ImageIndex = 15
       OnExecute = ActionExecute
     end
-    object act_view_alwaysontop: TTntAction
+    object act_view_alwaysontop: TAction
       Tag = 335
       Category = 'View'
       Caption = 'Always On Top'
@@ -182,21 +182,21 @@ object CEActions: TCEActions
       OnExecute = ActionExecute
       CanExecute = False
     end
-    object act_view_filmstrip: TTntAction
+    object act_view_filmstrip: TAction
       Tag = 358
       Category = 'View'
       Caption = 'Filmstrip'
       ImageIndex = 17
       OnExecute = ActionExecute
     end
-    object act_view_checkbox_selection: TTntAction
+    object act_view_checkbox_selection: TAction
       Tag = 337
       Category = 'View'
       Caption = 'Checkbox Selection'
       ImageIndex = 56
       OnExecute = ActionExecute
     end
-    object act_edit_copy: TTntAction
+    object act_edit_copy: TAction
       Tag = 201
       Category = 'Edit'
       Caption = 'Copy'
@@ -206,7 +206,7 @@ object CEActions: TCEActions
         'Ctrl+Ins')
       OnExecute = ActionExecute
     end
-    object act_edit_cut: TTntAction
+    object act_edit_cut: TAction
       Tag = 202
       Category = 'Edit'
       Caption = 'Cut'
@@ -214,7 +214,7 @@ object CEActions: TCEActions
       ShortCut = 16472
       OnExecute = ActionExecute
     end
-    object act_edit_paste: TTntAction
+    object act_edit_paste: TAction
       Tag = 203
       Category = 'Edit'
       Caption = 'Paste'
@@ -224,7 +224,7 @@ object CEActions: TCEActions
         'Shift+Ins')
       OnExecute = ActionExecute
     end
-    object act_edit_delete: TTntAction
+    object act_edit_delete: TAction
       Tag = 204
       Category = 'Edit'
       Caption = 'Delete'
@@ -232,7 +232,7 @@ object CEActions: TCEActions
       ShortCut = 46
       OnExecute = ActionExecute
     end
-    object act_edit_selall: TTntAction
+    object act_edit_selall: TAction
       Tag = 205
       Category = 'Edit'
       Caption = 'Select All'
@@ -240,7 +240,7 @@ object CEActions: TCEActions
       ShortCut = 16449
       OnExecute = ActionExecute
     end
-    object act_edit_invertsel: TTntAction
+    object act_edit_invertsel: TAction
       Tag = 206
       Category = 'Edit'
       Caption = 'Invert Selection'
@@ -248,7 +248,7 @@ object CEActions: TCEActions
       ShortCut = 24641
       OnExecute = ActionExecute
     end
-    object act_edit_properties: TTntAction
+    object act_edit_properties: TAction
       Tag = 207
       Category = 'Edit'
       Caption = 'Properties...'
@@ -256,7 +256,7 @@ object CEActions: TCEActions
       ShortCut = 32781
       OnExecute = ActionExecute
     end
-    object act_edit_rename: TTntAction
+    object act_edit_rename: TAction
       Tag = 208
       Category = 'Edit'
       Caption = 'Rename'
@@ -264,58 +264,58 @@ object CEActions: TCEActions
       ShortCut = 113
       OnExecute = ActionExecute
     end
-    object act_quick_none: TTntAction
+    object act_quick_none: TAction
       Tag = 701
       Category = 'Quickview'
       Caption = 'None'
       OnExecute = ActionExecute
     end
-    object act_quick_auto: TTntAction
+    object act_quick_auto: TAction
       Tag = 702
       Category = 'Quickview'
       Caption = 'Auto'
       OnExecute = ActionExecute
     end
-    object act_quick_text: TTntAction
+    object act_quick_text: TAction
       Tag = 703
       Category = 'Quickview'
       Caption = 'Text'
       OnExecute = ActionExecute
     end
-    object act_quick_image: TTntAction
+    object act_quick_image: TAction
       Tag = 704
       Category = 'Quickview'
       Caption = 'Image'
       OnExecute = ActionExecute
     end
-    object act_quick_hex: TTntAction
+    object act_quick_hex: TAction
       Tag = 705
       Category = 'Quickview'
       Caption = 'Hex'
       OnExecute = ActionExecute
     end
-    object act_help_home: TTntAction
+    object act_help_home: TAction
       Tag = 501
       Category = 'Help'
       Caption = 'CubicExplorer Home Page'
       ImageIndex = 47
       OnExecute = ActionExecute
     end
-    object act_help_forum: TTntAction
+    object act_help_forum: TAction
       Tag = 502
       Category = 'Help'
       Caption = 'Support Forum'
       ImageIndex = 47
       OnExecute = ActionExecute
     end
-    object act_help_about: TTntAction
+    object act_help_about: TAction
       Tag = 503
       Category = 'Help'
       Caption = 'About...'
       ImageIndex = 48
       OnExecute = ActionExecute
     end
-    object act_view_quickview: TTntAction
+    object act_view_quickview: TAction
       Tag = 303
       Category = 'View'
       Caption = 'Quickview'
@@ -323,7 +323,7 @@ object CEActions: TCEActions
       ShortCut = 16435
       OnExecute = ActionExecute
     end
-    object act_edit_duplicate: TTntAction
+    object act_edit_duplicate: TAction
       Tag = 209
       Category = 'Edit'
       Caption = 'Duplicate'
@@ -331,7 +331,7 @@ object CEActions: TCEActions
       ShortCut = 16452
       OnExecute = ActionExecute
     end
-    object act_navi_texteditor: TTntAction
+    object act_navi_texteditor: TAction
       Tag = 650
       Category = 'Navigation'
       Caption = 'Text Editor'
@@ -339,7 +339,7 @@ object CEActions: TCEActions
       ShortCut = 118
       OnExecute = ActionExecute
     end
-    object act_navi_filesearch: TTntAction
+    object act_navi_filesearch: TAction
       Tag = 651
       Category = 'Navigation'
       Caption = 'File Search'
@@ -347,13 +347,13 @@ object CEActions: TCEActions
       ShortCut = 16454
       OnExecute = ActionExecute
     end
-    object act_tools_mapdrive: TTntAction
+    object act_tools_mapdrive: TAction
       Tag = 451
       Category = 'Tools'
       Caption = 'Map Network Drive...'
       OnExecute = ActionExecute
     end
-    object act_tools_disconnectdrive: TTntAction
+    object act_tools_disconnectdrive: TAction
       Tag = 452
       Category = 'Tools'
       Caption = 'Disconnect Network Drive...'
@@ -375,27 +375,27 @@ object CEActions: TCEActions
       ShortCut = 16466
       OnExecute = ActionExecute
     end
-    object act_view_showhints: TTntAction
+    object act_view_showhints: TAction
       Tag = 330
       Category = 'View'
       Caption = 'Show Hints'
       OnExecute = ActionExecute
     end
-    object act_tools_showcustomizer: TTntAction
+    object act_tools_showcustomizer: TAction
       Tag = 401
       Category = 'Tools'
       Caption = 'Customizer...'
       ImageIndex = 40
       OnExecute = ActionExecute
     end
-    object act_view_hiddenfiles: TTntAction
+    object act_view_hiddenfiles: TAction
       Tag = 332
       Category = 'View'
       Caption = 'Show Hidden Files'
       ImageIndex = 53
       OnExecute = ActionExecute
     end
-    object act_edit_newfolder: TTntAction
+    object act_edit_newfolder: TAction
       Tag = 212
       Category = 'Edit'
       Caption = 'New Folder'
@@ -403,26 +403,26 @@ object CEActions: TCEActions
       ShortCut = 16462
       OnExecute = ActionExecute
     end
-    object act_edit_paste_shortcut: TTntAction
+    object act_edit_paste_shortcut: TAction
       Tag = 213
       Category = 'Edit'
       Caption = 'Paste Shortcut'
       OnExecute = ActionExecute
     end
-    object act_tools_cmd: TTntAction
+    object act_tools_cmd: TAction
       Tag = 454
       Category = 'Tools'
       Caption = 'Open Command Prompt'
       ImageIndex = 27
       OnExecute = ActionExecute
     end
-    object act_view_statusbar: TTntAction
+    object act_view_statusbar: TAction
       Tag = 300
       Category = 'View'
       Caption = 'Status Bar'
       OnExecute = ActionExecute
     end
-    object act_view_fullscreen: TTntAction
+    object act_view_fullscreen: TAction
       Tag = 370
       Category = 'View'
       Caption = 'Fullscreen'
@@ -430,35 +430,35 @@ object CEActions: TCEActions
       ShortCut = 122
       OnExecute = ActionExecute
     end
-    object act_view_showextensions: TTntAction
+    object act_view_showextensions: TAction
       Tag = 334
       Category = 'View'
       Caption = 'Show Extensions'
       ImageIndex = 54
       OnExecute = ActionExecute
     end
-    object act_help_poedit_form: TTntAction
+    object act_help_poedit_form: TAction
       Tag = 504
       Category = 'Help'
       Caption = 'Translate CubicExplorer'
       ImageIndex = 52
       OnExecute = ActionExecute
     end
-    object act_tools_showoptions: TTntAction
+    object act_tools_showoptions: TAction
       Tag = 402
       Category = 'Tools'
       Caption = 'Options...'
       ImageIndex = 39
       OnExecute = ActionExecute
     end
-    object act_sessions_save: TTntAction
+    object act_sessions_save: TAction
       Tag = 851
       Category = 'Sessions'
       Caption = 'Save...'
       Hint = 'Save active session.'
       OnExecute = ActionExecute
     end
-    object act_sessions_manage: TTntAction
+    object act_sessions_manage: TAction
       Tag = 852
       Category = 'Sessions'
       Caption = 'Manage...'
@@ -473,19 +473,19 @@ object CEActions: TCEActions
       OnExecute = ActionExecute
       CanExecute = False
     end
-    object act_navi_scrollleft: TTntAction
+    object act_navi_scrollleft: TAction
       Tag = 608
       Category = 'Navigation'
       Caption = 'Scroll Left'
       OnExecute = ActionExecute
     end
-    object act_navi_scrollright: TTntAction
+    object act_navi_scrollright: TAction
       Tag = 609
       Category = 'Navigation'
       Caption = 'Scroll Right'
       OnExecute = ActionExecute
     end
-    object act_tabs_closeothertabs: TTntAction
+    object act_tabs_closeothertabs: TAction
       Tag = 662
       Category = 'Tabs'
       Caption = 'Close Other Tabs'
@@ -493,7 +493,7 @@ object CEActions: TCEActions
       ImageIndex = 34
       OnExecute = ActionExecute
     end
-    object act_tabs_addtab: TTntAction
+    object act_tabs_addtab: TAction
       Tag = 663
       Category = 'Tabs'
       Caption = 'Add Tab'
@@ -502,7 +502,7 @@ object CEActions: TCEActions
       ShortCut = 16468
       OnExecute = ActionExecute
     end
-    object act_tabs_duplicatetab: TTntAction
+    object act_tabs_duplicatetab: TAction
       Tag = 664
       Category = 'Tabs'
       Caption = 'Duplicate Tab'
@@ -510,7 +510,7 @@ object CEActions: TCEActions
       ImageIndex = 32
       OnExecute = ActionExecute
     end
-    object act_tabs_closeonleft: TTntAction
+    object act_tabs_closeonleft: TAction
       Tag = 665
       Category = 'Tabs'
       Caption = 'Close Tabs on Left'
@@ -518,7 +518,7 @@ object CEActions: TCEActions
       ImageIndex = 35
       OnExecute = ActionExecute
     end
-    object act_tabs_closeonright: TTntAction
+    object act_tabs_closeonright: TAction
       Tag = 666
       Category = 'Tabs'
       Caption = 'Close Tabs on Right'
@@ -534,7 +534,7 @@ object CEActions: TCEActions
       OnExecute = ActionExecute
       CanExecute = False
     end
-    object act_navi_quickview: TTntAction
+    object act_navi_quickview: TAction
       Tag = 652
       Category = 'Navigation'
       Caption = 'QuickView'
@@ -542,14 +542,14 @@ object CEActions: TCEActions
       ShortCut = 119
       OnExecute = ActionExecute
     end
-    object act_sessions_addhistoryitem: TTntAction
+    object act_sessions_addhistoryitem: TAction
       Tag = 853
       Category = 'Sessions'
       Caption = 'Add History Item'
       Hint = 'Show Session Manager'
       OnExecute = ActionExecute
     end
-    object act_sessions_clearhistory: TTntAction
+    object act_sessions_clearhistory: TAction
       Tag = 854
       Category = 'Sessions'
       Caption = 'Clear History'
@@ -572,27 +572,27 @@ object CEActions: TCEActions
       OnExecute = ActionExecute
       CanExecute = False
     end
-    object act_view_infobar: TTntAction
+    object act_view_infobar: TAction
       Tag = 336
       Category = 'View'
       Caption = 'Info Bar'
       ImageIndex = 66
       OnExecute = ActionExecute
     end
-    object act_edit_create_symlink: TTntAction
+    object act_edit_create_symlink: TAction
       Tag = 214
       Category = 'Edit'
       Caption = 'Create Symbolic Link'
       OnExecute = ActionExecute
     end
-    object act_sessions_enablehistory: TTntAction
+    object act_sessions_enablehistory: TAction
       Tag = 855
       Category = 'Sessions'
       Caption = 'Auto Save History'
       Hint = 'Show Session Manager'
       OnExecute = ActionExecute
     end
-    object act_gen_showhide: TTntAction
+    object act_gen_showhide: TAction
       Tag = 101
       Category = 'General'
       Caption = 'Show/Hide'
@@ -607,7 +607,7 @@ object CEActions: TCEActions
       ShortCut = 24660
       OnExecute = ActionExecute
     end
-    object act_tabs_next: TTntAction
+    object act_tabs_next: TAction
       Tag = 668
       Category = 'Tabs'
       Caption = 'Switch to Next Tab'
@@ -616,7 +616,7 @@ object CEActions: TCEActions
         'Ctrl+PgDn')
       OnExecute = ActionExecute
     end
-    object act_tabs_prev: TTntAction
+    object act_tabs_prev: TAction
       Tag = 669
       Category = 'Tabs'
       Caption = 'Swith to Previous Tab'
@@ -625,7 +625,7 @@ object CEActions: TCEActions
         'Ctrl+PgUp')
       OnExecute = ActionExecute
     end
-    object act_focus_addressbar: TTntAction
+    object act_focus_addressbar: TAction
       Tag = 951
       Category = 'Focus'
       Caption = 'Set focus to address bar'
@@ -649,42 +649,42 @@ object CEActions: TCEActions
       OnExecute = ActionExecute
       CanExecute = False
     end
-    object act_filters_clear: TTntAction
+    object act_filters_clear: TAction
       Tag = 901
       Category = 'Filters'
       Caption = 'Clear Filters'
       ImageIndex = 44
       OnExecute = ActionExecute
     end
-    object act_help_versionmgr: TTntAction
+    object act_help_versionmgr: TAction
       Tag = 506
       Category = 'Help'
       Caption = 'Version Manager'
       ImageIndex = 46
       OnExecute = ActionExecute
     end
-    object act_view_archiver: TTntAction
+    object act_view_archiver: TAction
       Tag = 306
       Category = 'View'
       Caption = 'Archiver'
       Visible = False
       OnExecute = ActionExecute
     end
-    object act_gen_new_instance: TTntAction
+    object act_gen_new_instance: TAction
       Tag = 103
       Category = 'General'
       Caption = 'New Window'
       ImageIndex = 61
       OnExecute = ActionExecute
     end
-    object act_help_checkupdates: TTntAction
+    object act_help_checkupdates: TAction
       Tag = 507
       Category = 'Help'
       Caption = 'Check For Updates'
       ImageIndex = 45
       OnExecute = ActionExecute
     end
-    object act_tools_emptytrash: TTntAction
+    object act_tools_emptytrash: TAction
       Tag = 453
       Category = 'Tools'
       Caption = 'Empty Recycle Bin'
@@ -700,13 +700,13 @@ object CEActions: TCEActions
       OnExecute = ActionExecute
       CanExecute = False
     end
-    object act_view_lock_toolbars: TTntAction
+    object act_view_lock_toolbars: TAction
       Tag = 390
       Category = 'View'
       Caption = 'Lock Toolbars'
       OnExecute = ActionExecute
     end
-    object act_navi_refresh_current: TTntAction
+    object act_navi_refresh_current: TAction
       Tag = 610
       Category = 'Navigation'
       Caption = 'Refresh Fileview'
@@ -714,7 +714,7 @@ object CEActions: TCEActions
       ShortCut = 8308
       OnExecute = ActionExecute
     end
-    object act_filters_strict: TTntAction
+    object act_filters_strict: TAction
       Tag = 902
       Category = 'Filters'
       Caption = 'Strict'
@@ -722,7 +722,7 @@ object CEActions: TCEActions
       ImageIndex = 63
       OnExecute = ActionExecute
     end
-    object act_filters_exclude: TTntAction
+    object act_filters_exclude: TAction
       Tag = 903
       Category = 'Filters'
       Caption = 'Exclude'
@@ -730,7 +730,7 @@ object CEActions: TCEActions
       ImageIndex = 64
       OnExecute = ActionExecute
     end
-    object act_help_restore_layout: TTntAction
+    object act_help_restore_layout: TAction
       Tag = 508
       Category = 'Help'
       Caption = 'Restore Default Layout'
@@ -743,7 +743,7 @@ object CEActions: TCEActions
       ImageIndex = 67
       OnExecute = ActionExecute
     end
-    object act_edit_newemptyfile: TTntAction
+    object act_edit_newemptyfile: TAction
       Tag = 217
       Category = 'Edit'
       Caption = 'New File'
@@ -765,21 +765,21 @@ object CEActions: TCEActions
       ImageIndex = 69
       OnExecute = ActionExecute
     end
-    object act_stack_remove: TTntAction
+    object act_stack_remove: TAction
       Tag = 923
       Category = 'Stack'
       Caption = 'Remove from Stack'
       ImageIndex = 4
       OnExecute = ActionExecute
     end
-    object act_stack_clear: TTntAction
+    object act_stack_clear: TAction
       Tag = 924
       Category = 'Stack'
       Caption = 'Clear List'
       ImageIndex = 44
       OnExecute = ActionExecute
     end
-    object act_stack_allowmove: TTntAction
+    object act_stack_allowmove: TAction
       Tag = 925
       Category = 'Stack'
       Caption = 'Allow Move'
@@ -800,85 +800,85 @@ object CEActions: TCEActions
     Left = 180
     Top = 12
   end
-  object BackgroundCMItems_up: TTntPopupMenu
+  object BackgroundCMItems_up: TPopupMenu
     OnPopup = BackgroundCMItems_upPopup
     Left = 64
     Top = 104
-    object View1: TTntMenuItem
+    object View1: TMenuItem
       Caption = 'View'
-      object LargeIcons1: TTntMenuItem
+      object LargeIcons1: TMenuItem
         Action = act_view_large
         RadioItem = True
       end
-      object SmallIcons1: TTntMenuItem
+      object SmallIcons1: TMenuItem
         Action = act_view_small
         RadioItem = True
       end
-      object List1: TTntMenuItem
+      object List1: TMenuItem
         Action = act_view_list
         RadioItem = True
       end
-      object Details1: TTntMenuItem
+      object Details1: TMenuItem
         Action = act_view_details
         RadioItem = True
       end
-      object iles1: TTntMenuItem
+      object iles1: TMenuItem
         Action = act_view_tiles
         RadioItem = True
       end
-      object humbnails1: TTntMenuItem
+      object humbnails1: TMenuItem
         Action = act_view_thumbs
         RadioItem = True
       end
-      object Filmstrip1: TTntMenuItem
+      object Filmstrip1: TMenuItem
         Action = act_view_filmstrip
         RadioItem = True
       end
     end
-    object N1: TTntMenuItem
+    object N1: TMenuItem
       Caption = '-'
     end
-    object MenuItem_ArragneBy: TTntMenuItem
+    object MenuItem_ArragneBy: TMenuItem
       Caption = 'Arrange By'
     end
-    object MenuItem_GroupBy: TTntMenuItem
+    object MenuItem_GroupBy: TMenuItem
       Caption = 'Group By'
     end
-    object Refresh1: TTntMenuItem
+    object Refresh1: TMenuItem
       Action = act_navi_refresh
     end
-    object N2: TTntMenuItem
+    object N2: TMenuItem
       Caption = '-'
     end
-    object Paste1: TTntMenuItem
+    object Paste1: TMenuItem
       Action = act_edit_paste
     end
-    object PasteShortcut1: TTntMenuItem
+    object PasteShortcut1: TMenuItem
       Action = act_edit_paste_shortcut
     end
-    object CopyPath1: TTntMenuItem
+    object CopyPath1: TMenuItem
       Action = act_edit_copypath
     end
-    object N4: TTntMenuItem
+    object N4: TMenuItem
       Caption = '-'
     end
-    object CreateSymbolicLink1: TTntMenuItem
+    object CreateSymbolicLink1: TMenuItem
       Action = act_edit_create_symlink
     end
-    object N5: TTntMenuItem
+    object N5: TMenuItem
       Caption = '-'
     end
   end
-  object BackgroundCMItems_down: TTntPopupMenu
+  object BackgroundCMItems_down: TPopupMenu
     Left = 64
     Top = 168
-    object NewFolder1: TTntMenuItem
+    object NewFolder1: TMenuItem
       Action = act_edit_newfolder
     end
-    object N3: TTntMenuItem
+    object N3: TMenuItem
       Caption = '-'
     end
-    object Properties1: TTntMenuItem
+    object Properties1: TMenuItem
       Action = act_edit_properties
     end
   end

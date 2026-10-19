@@ -26,8 +26,6 @@ interface
 uses
   // CE Units
   CE_FileUtils,
-  // Tnt
-  TntSysUtils, TntWindows, TntSystem,
   // System Units
   Windows, SysUtils, ShellAPI, Forms;
 
@@ -79,8 +77,8 @@ begin
       begin
         if index + 2 <= count then // make sure we have all needed params present
         begin
-          param1:= WideParamStr(index + 1);
-          param2:= WideParamStr(index + 2);
+          param1:= ParamStr(index + 1);
+          param2:= ParamStr(index + 2);
           index:= index + 2;
 
           CreateJunction(param1, param2);
@@ -89,10 +87,10 @@ begin
       // Register
       else if action = 'register' then
       begin
-        b:= RegisterDefaultFileManager('cubicexplorer', 'Open in CubicExplorer', WideParamStr(0));
+        b:= RegisterDefaultFileManager('cubicexplorer', 'Open in CubicExplorer', ParamStr(0));
         if index + 1 <= count then
         begin
-          param1:= WideParamStr(index + 1);
+          param1:= ParamStr(index + 1);
           paramI:= StrToIntDef(param1, 0);
           if paramI > 0 then
           begin
@@ -109,7 +107,7 @@ begin
         b:= UnRegisterDefaultFileManager('cubicexplorer');
         if index + 1 <= count then
         begin
-          param1:= WideParamStr(index + 1);
+          param1:= ParamStr(index + 1);
           paramI:= StrToIntDef(param1, 0);
           if paramI > 0 then
           begin
@@ -131,12 +129,12 @@ begin
     begin
       if index + 1 < count then
       begin
-        param1:= WideParamStr(index); // zip path
-        param2:= WideParamStr(index + 1); // dest folder
+        param1:= ParamStr(index); // zip path
+        param2:= ParamStr(index + 1); // dest folder
         index:= index + 2;
         if index <= count then
         begin
-          paramI:= StrToIntDef(WideParamStr(index), 0); // Handle to old app
+          paramI:= StrToIntDef(ParamStr(index), 0); // Handle to old app
           index:= index + 1;
         end
         else
@@ -178,9 +176,9 @@ begin
   else
   op:= 'open';
 
-  Tnt_ShellExecuteW(AParentHWND,
+  ShellExecuteW(AParentHWND,
                     PWideChar(op),
-                    PWideChar(WideParamStr(0)),
+                    PWideChar(ParamStr(0)),
                     PWideChar(AParams),
                     '',
                     SW_HIDE);
@@ -207,7 +205,7 @@ begin
   Result:= RunElevatedCommand(AParentHWND, '/admin register ' + IntToStr(CEInput.MsgInput.Handle))
   else
   begin
-    Result:= RegisterDefaultFileManager('cubicexplorer', 'Open in CubicExplorer', WideParamStr(0));
+    Result:= RegisterDefaultFileManager('cubicexplorer', 'Open in CubicExplorer', ParamStr(0));
     if Result then
     PostMessage(CEInput.MsgInput.Handle, WM_AdminResult, 100, 0)
     else

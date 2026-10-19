@@ -27,8 +27,6 @@ uses
   // CE Units
   CE_Breadcrumb, fCE_FolderTreeForm, CE_VistaFuncs, CE_GlobalCtrl,
   CE_AppSettings, CE_Utils,
-  // Tnt Controls
-  TntStdCtrls, TntSysUtils,
   // TB2K, TBX, SpTBX
   SpTBXEditors, SpTBXFormPopupMenu, SpTBXItem, SpTBXSkins, TB2Item,
   // VSTools
@@ -40,7 +38,7 @@ uses
 type
   TSpTBXCustomItemHack = class(TSpTBXCustomItem);
 
-  TCE_AMemo = class(TTntMemo)
+  TCE_AMemo = class(TMemo)
   private
     fOnValueChange: TNotifyEvent;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
@@ -509,13 +507,13 @@ begin
 
   if IsUNC(ws) then
   begin
-    ws:= WideExcludeTrailingBackslash(ws);
+    ws:= ExcludeTrailingBackslash(ws);
     errCode:= UseConnection(ws, Application.MainFormHandle);
     if errCode <> NO_ERROR then
     begin
       if errCode <> ERROR_CANCELLED then
       begin
-        error:= WideSysErrorMessage(GetLastError);
+        error:= SysErrorMessage(GetLastError);
         WideMessageBox(Application.MainFormHandle, _('Connection error!'), error, MB_ICONERROR or MB_OK);
       end;
       exit;

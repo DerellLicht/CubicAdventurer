@@ -29,8 +29,6 @@ uses
   // VS Tools
   MPShellUtilities, MPDataObject, MPCommonObjects, 
   MPCommonUtilities,
-  // Tnt
-  TntClasses, TntMenus,
   // SpTBX
   SpTBXItem,
   // System Units
@@ -58,7 +56,7 @@ type
     function GetMenuItem(ID: Integer): TCEContextMenuItem;
     function GetMenuItemBySubMenu(SubMenu: hMenu): TCEContextMenuItem;
   protected
-    GUIDList: TTntStrings;
+    GUIDList: TStrings;
     MenuItems: TObjectList;
   public
     constructor Create; override;
@@ -83,7 +81,7 @@ constructor TCEBackContextMenu.Create;
 begin
   inherited;
   MenuItems:= TObjectList.Create(true);
-  GUIDList:= TTntStringList.Create;
+  GUIDList:= TStringList.Create;
   GetGUIDs;
 end;
 
@@ -122,8 +120,8 @@ procedure TCEBackContextMenu.AddMenuItems(Menu:  hMenu);
       if chItem.Visible then
       begin
         // Get Caption
-        if chItem is TTntMenuItem then
-        ws:= TTntMenuItem(chItem).Caption
+        if chItem is TMenuItem then
+        ws:= TMenuItem(chItem).Caption
         else
         ws:= chItem.Caption;
         // Initialize MenuItemInfo
@@ -530,7 +528,7 @@ var
   ShellIDList: TCommonShellIDList;
   PIDLList: TCommonPIDLList;
   HDrop: TCommonHDrop;
-  FileList: TTntStringList;
+  FileList: TStringList;
 begin
   Result:= false;
   MenuItems.Clear;
@@ -561,7 +559,7 @@ begin
             PIDLList.Free;
             ShellIDList.Free
           end;
-          FileList := TTntStringList.Create;
+          FileList := TStringList.Create;
           HDrop := TCommonHDrop.Create;
           try
             FileList.Add(RootFolder.NameForParsing);

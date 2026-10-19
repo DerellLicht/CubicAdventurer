@@ -114,7 +114,7 @@ object CEVersionMgrForm: TCEVersionMgrForm
         Width = 6
         Height = 6
       end
-      object memo_notes: TTntMemo
+      object memo_notes: TMemo
         Left = 316
         Top = 58
         Width = 309

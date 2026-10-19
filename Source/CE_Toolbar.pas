@@ -27,7 +27,7 @@ uses
   // TB2K, TBX, SpTBX
   SpTBXItem, TB2Item, SpTBXSkins,
   // System Units
-  Classes, Windows, SysUtils, Controls, Messages, TntActnList, Graphics, Math;
+  Classes, Windows, SysUtils, Controls, Messages, ActnList, Graphics, Math;
 
 type
   TTBItemViewerAccess = class(TTBItemViewer);

@@ -36,8 +36,6 @@ uses
   PngImageList,
   // Toolbar2k, SpTBX
   TB2Dock, TB2Item, SpTBXItem,
-  // Tnt Controls
-  TntSysUtils,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ImgList, Contnrs, Menus;
@@ -367,7 +365,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkPanel.LoadBookmarks;
 begin
-  if WideFileExists(BookmarksPath) then
+  if FileExists(BookmarksPath) then
   begin
     BookmarkTree.BeginUpdate;
     try

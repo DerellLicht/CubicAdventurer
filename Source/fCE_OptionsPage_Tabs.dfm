@@ -1,5 +1,5 @@
 inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
-  object NewTabGroup: TTntGroupBox
+  object NewTabGroup: TGroupBox
     Left = 16
     Top = 16
     Width = 409
@@ -10,7 +10,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     DesignSize = (
       409
       121)
-    object radio_newtab_1: TTntRadioButton
+    object radio_newtab_1: TRadioButton
       Left = 8
       Top = 24
       Width = 398
@@ -22,7 +22,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
       TabStop = True
       OnClick = radio_newtab_1Click
     end
-    object radio_newtab_2: TTntRadioButton
+    object radio_newtab_2: TRadioButton
       Left = 8
       Top = 47
       Width = 398
@@ -32,7 +32,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
       TabOrder = 1
       OnClick = radio_newtab_1Click
     end
-    object radio_newtab_3: TTntRadioButton
+    object radio_newtab_3: TRadioButton
       Left = 8
       Top = 70
       Width = 398
@@ -42,7 +42,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
       TabOrder = 2
       OnClick = radio_newtab_1Click
     end
-    object edit_newtab: TTntEdit
+    object edit_newtab: TEdit
       Left = 8
       Top = 91
       Width = 320
@@ -52,7 +52,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
       TabOrder = 3
       OnChange = HandleChange
     end
-    object but_newtab: TTntButton
+    object but_newtab: TButton
       Left = 334
       Top = 91
       Width = 66
@@ -64,7 +64,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
       OnClick = but_newtabClick
     end
   end
-  object check_newtab_switch: TTntCheckBox
+  object check_newtab_switch: TCheckBox
     Left = 16
     Top = 152
     Width = 406
@@ -73,7 +73,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     TabOrder = 1
     OnClick = HandleChange
   end
-  object check_opentab_switch: TTntCheckBox
+  object check_opentab_switch: TCheckBox
     Left = 16
     Top = 175
     Width = 406
@@ -82,7 +82,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     TabOrder = 2
     OnClick = HandleChange
   end
-  object check_reusetabs_switch: TTntCheckBox
+  object check_reusetabs_switch: TCheckBox
     Left = 16
     Top = 198
     Width = 409
@@ -91,7 +91,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     TabOrder = 3
     OnClick = HandleChange
   end
-  object check_nexttocur_switch: TTntCheckBox
+  object check_nexttocur_switch: TCheckBox
     Left = 16
     Top = 221
     Width = 409
@@ -100,7 +100,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     TabOrder = 4
     OnClick = HandleChange
   end
-  object check_autofit_switch: TTntCheckBox
+  object check_autofit_switch: TCheckBox
     Left = 16
     Top = 244
     Width = 409
@@ -109,7 +109,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     TabOrder = 5
     OnClick = HandleChange
   end
-  object check_dblclick_switch: TTntCheckBox
+  object check_dblclick_switch: TCheckBox
     Left = 16
     Top = 267
     Width = 409
@@ -118,7 +118,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     TabOrder = 6
     OnClick = HandleChange
   end
-  object check_exit: TTntCheckBox
+  object check_exit: TCheckBox
     Left = 16
     Top = 290
     Width = 409

@@ -28,18 +28,16 @@ uses
   fCE_OptionsDialog, fCE_OptionsCustomPage, CE_LanguageEngine, dCE_Actions,
   // SpTBX
   SpTBXSkins,
-  // Tnt
-  TntStdCtrls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls;
 
 type
   TCEOptionsPage_Display = class(TCEOptionsCustomPage)
-    TntLabel1: TTntLabel;
+    TntLabel1: TLabel;
     combo_theme: TComboBox;
-    check_path_in_title: TTntCheckBox;
-    TntButton1: TTntButton;
+    check_path_in_title: TCheckBox;
+    TntButton1: TButton;
   private
     { Private declarations }
   public

@@ -30,20 +30,20 @@ uses
   SpTBXItem, SpTBXControls, SpTBXEditors,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, CheckLst, TntCheckLst, TntStdCtrls;
+  Dialogs, StdCtrls, CheckLst;
 
 type
   TCE_OptionsPage_General_Updates = class(TCEOptionsCustomPage)
-    check_autoupdates: TTntCheckBox;
-    list_update_types: TTntCheckListBox;
-    group_proxy: TTntGroupBox;
-    edit_proxy_address: TTntEdit;
-    label_proxy_address: TTntLabel;
-    label_proxy_port: TTntLabel;
-    edit_proxy_port: TTntEdit;
-    check_proxy_system: TTntCheckBox;
-    check_proxy: TTntCheckBox;
-    TntLabel1: TTntLabel;
+    check_autoupdates: TCheckBox;
+    list_update_types: TCheckListBox;
+    group_proxy: TGroupBox;
+    edit_proxy_address: TEdit;
+    label_proxy_address: TLabel;
+    label_proxy_port: TLabel;
+    edit_proxy_port: TEdit;
+    check_proxy_system: TCheckBox;
+    check_proxy: TCheckBox;
+    TntLabel1: TLabel;
     procedure HandleChange(Sender: TObject);
   private
     { Private declarations }

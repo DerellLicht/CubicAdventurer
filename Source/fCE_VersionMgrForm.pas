@@ -28,8 +28,6 @@ uses
   CE_VersionUpdater, dCE_Images,
   // fcl-xml
   XMLRead, DOM, XMLWrite,
-  // Tnt
-  TntForms, TntStdCtrls,
   // SpTBX
   SpTBXTabs, TB2Item, SpTBXItem, SpTBXControls, 
   // System Units
@@ -51,7 +49,7 @@ type
     fDownloadThread: Integer;
   end;
   
-  TCEVersionMgrForm = class(TTntForm)
+  TCEVersionMgrForm = class(TForm)
     ItemList: TVirtualStringTree;
     TabControl: TSpTBXTabControl;
     tab_versions: TSpTBXTabItem;
@@ -61,7 +59,7 @@ type
     label_version: TSpTBXLabel;
     label_datetime: TSpTBXLabel;
     label_type: TSpTBXLabel;
-    memo_notes: TTntMemo;
+    memo_notes: TMemo;
     but_check: TSpTBXButton;
     label_lastcheck: TSpTBXLabel;
     but_use: TSpTBXButton;
@@ -114,7 +112,7 @@ var
 implementation
 
 uses
-  CE_XmlUtils, CE_VistaFuncs, httpsend, TypInfo, Math, TntSysUtils, CE_Utils,
+  CE_XmlUtils, CE_VistaFuncs, httpsend, TypInfo, Math, CE_Utils,
   CE_LanguageEngine, MPCommonUtilities;
 
 {$R *.dfm}
@@ -222,8 +220,8 @@ begin
     end
     else if but_download.Tag = 1 then
     begin
-      path:= WideIncludeTrailingPathDelimiter(Updater.VersionFolder) + VersionNumberToStr(data.Version);
-      if WideDirectoryExists(path) then
+      path:= IncludeTrailingPathDelimiter(Updater.VersionFolder) + VersionNumberToStr(data.Version);
+      if DirectoryExists(path) then
       begin
         WideDeleteDirEx(path);
         data.IsOffline:= false;
@@ -286,7 +284,7 @@ var
 begin
   data:= ItemList.GetNodeData(SelectedItem);
   if assigned(data) and (data.fDownloadThread = Integer(Sender)) then
-  but_download.Caption:= IntToStr(Percent) + '% (' + WideFormat(_('%d of %d'), [Current, FileCount]) + ')'; 
+  but_download.Caption:= IntToStr(Percent) + '% (' + Format(_('%d of %d'), [Current, FileCount]) + ')'; 
 end;
 
 {-------------------------------------------------------------------------------
@@ -361,9 +359,9 @@ begin
     if Data.Failed > 0 then
     begin
       try
-        TaskDialog(Self.Handle, _('Download failed!'), WideFormat(_('%d file(s) failed to download!'), [IntToStr(Data.Failed)]), '', TD_ICON_WARNING, TD_BUTTON_OK);
+        TaskDialog(Self.Handle, _('Download failed!'), Format(_('%d file(s) failed to download!'), [IntToStr(Data.Failed)]), '', TD_ICON_WARNING, TD_BUTTON_OK);
       except
-        TaskDialog(Self.Handle, _('Download failed!'), WideFormat('%d file(s) failed to download!', [IntToStr(Data.Failed)]), '', TD_ICON_WARNING, TD_BUTTON_OK);
+        TaskDialog(Self.Handle, _('Download failed!'), Format('%d file(s) failed to download!', [IntToStr(Data.Failed)]), '', TD_ICON_WARNING, TD_BUTTON_OK);
       end;
     end;
     CheckOfflineStates;

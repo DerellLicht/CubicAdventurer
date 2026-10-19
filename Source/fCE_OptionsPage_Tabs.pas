@@ -26,9 +26,7 @@ interface
 uses
   // CE Units
   fCE_OptionsCustomPage, fCE_OptionsDialog, CE_LanguageEngine, CE_Utils,
-  CE_FileUtils, CE_CommonObjects,
-  // Tnt
-  TntStdCtrls, TntFileCtrl,
+  CE_FileUtils, CE_CommonObjects, FileCtrl,
   // VSTools
   MPShellUtilities,
   // System Units
@@ -37,19 +35,19 @@ uses
 
 type
   TCEOptionsPage_Tabs = class(TCEOptionsCustomPage)
-    NewTabGroup: TTntGroupBox;
-    radio_newtab_1: TTntRadioButton;
-    radio_newtab_2: TTntRadioButton;
-    radio_newtab_3: TTntRadioButton;
-    edit_newtab: TTntEdit;
-    but_newtab: TTntButton;
-    check_newtab_switch: TTntCheckBox;
-    check_opentab_switch: TTntCheckBox;
-    check_reusetabs_switch: TTntCheckBox;
-    check_nexttocur_switch: TTntCheckBox;
-    check_autofit_switch: TTntCheckBox;
-    check_dblclick_switch: TTntCheckBox;
-    check_exit: TTntCheckBox;
+    NewTabGroup: TGroupBox;
+    radio_newtab_1: TRadioButton;
+    radio_newtab_2: TRadioButton;
+    radio_newtab_3: TRadioButton;
+    edit_newtab: TEdit;
+    but_newtab: TButton;
+    check_newtab_switch: TCheckBox;
+    check_opentab_switch: TCheckBox;
+    check_reusetabs_switch: TCheckBox;
+    check_nexttocur_switch: TCheckBox;
+    check_autofit_switch: TCheckBox;
+    check_dblclick_switch: TCheckBox;
+    check_exit: TCheckBox;
     procedure radio_newtab_1Click(Sender: TObject);
     procedure but_newtabClick(Sender: TObject);
   private

@@ -1,5 +1,5 @@
 inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
-  object check_autoexpand: TTntCheckBox
+  object check_autoexpand: TCheckBox
     Left = 16
     Top = 152
     Width = 401
@@ -8,7 +8,7 @@ inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
     TabOrder = 0
     OnClick = HandleChange
   end
-  object check_autocollapse: TTntCheckBox
+  object check_autocollapse: TCheckBox
     Left = 16
     Top = 175
     Width = 401
@@ -17,7 +17,7 @@ inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
     TabOrder = 1
     OnClick = HandleChange
   end
-  object check_fullexpand: TTntCheckBox
+  object check_fullexpand: TCheckBox
     Left = 16
     Top = 198
     Width = 401
@@ -26,14 +26,14 @@ inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
     TabOrder = 2
     OnClick = HandleChange
   end
-  object group_startup: TTntGroupBox
+  object group_startup: TGroupBox
     Left = 16
     Top = 12
     Width = 409
     Height = 129
     Caption = 'On Startup'
     TabOrder = 3
-    object radio_empty: TTntRadioButton
+    object radio_empty: TRadioButton
       Left = 11
       Top = 24
       Width = 386
@@ -42,7 +42,7 @@ inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
       TabOrder = 0
       OnClick = radioClick
     end
-    object radio_lastused: TTntRadioButton
+    object radio_lastused: TRadioButton
       Tag = 1
       Left = 11
       Top = 47
@@ -52,7 +52,7 @@ inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
       TabOrder = 1
       OnClick = radioClick
     end
-    object radio_selected: TTntRadioButton
+    object radio_selected: TRadioButton
       Tag = 2
       Left = 11
       Top = 70
@@ -62,7 +62,7 @@ inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
       TabOrder = 2
       OnClick = radioClick
     end
-    object combo_stacks: TTntComboBox
+    object combo_stacks: TComboBox
       Left = 27
       Top = 93
       Width = 162

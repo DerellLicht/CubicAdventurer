@@ -86,7 +86,7 @@ var
 implementation
 
 uses
-  MPShellTypes, Variants, CE_Utils, Forms, MPCommonUtilities, TntSysUtils,
+  MPShellTypes, Variants, CE_Utils, Forms, MPCommonUtilities, SysUtils,
   CE_LanguageEngine, DateUtils;
 
 var
@@ -330,7 +330,7 @@ procedure TCERecycleBinCtrl.RefreshList;
       Exit
       else if PDateTime(NS.Tag)^ = PDateTime(fItems.Items[Result].Tag)^ then
       begin
-        if WideCompareText(NS.NameInFolder, fItems.Items[Result].NameInFolder) < 0  then
+        if AnsiCompareText(NS.NameInFolder, fItems.Items[Result].NameInFolder) < 0  then
         Exit;
       end;
     end;
@@ -469,7 +469,7 @@ begin
     begin
       ws:= CERecycleBinCtrl.GetLocation(NS);
       if ws <> '' then
-      ws:= WideIncludeTrailingPathDelimiter(ws) + NS.NameInFolder
+      ws:= IncludeTrailingPathDelimiter(ws) + NS.NameInFolder
       else
       ws:= NS.NameInFolder;
       ws:= _('Are you sure you want to restore?') + #13#10#13#10 + ws;

@@ -29,9 +29,7 @@ uses
   // Toolbar200
   TB2Toolbar, TB2Dock, TB2ToolWindow,
   // SpTBX
-  SpTBXItem, SpTBXTabs,
-  // TNT
-  TntSysUtils, TntClasses, TntActnList,
+  SpTBXItem, SpTBXTabs, ActnList,
   // JVCL
   JvAppStorage, JvDockVSNetStyle, JvDockInfo, JvDockControlForm,
   JvDockSupportProc, JvDockGlobals, JvAppXMLStorage, JvSimpleXML,
@@ -250,9 +248,9 @@ begin
   fFilePath:= AFilePath;
   AppStorage.BeginUpdate;
   try
-    if WideFileExists(fFilePath) then
+    if FileExists(fFilePath) then
     begin
-      s:= TTntFileStream.Create(fFilePath, fmOpenRead or fmShareDenyNone);
+      s:= TFileStream.Create(fFilePath, fmOpenRead or fmShareDenyNone);
       try
         s.Position:= 0;
         try
@@ -284,7 +282,7 @@ begin
   try
     if AFilePath <> '' then
     fFilePath:= AFilePath;
-    s:= TTntFileStream.Create(fFilePath, fmCreate);
+    s:= TFileStream.Create(fFilePath, fmCreate);
     try
       s.Position:= 0;
       AppStorage.Xml.SaveToStream(s);
@@ -1305,7 +1303,7 @@ procedure LoadToolbarItems(Toolbar: TSpTBXToolbar; ToolbarNode:
   var
     i: Integer;
     chNode: TJvSimpleXMLElem;
-    act: TTntAction;
+    act: TAction;
     item: TTBCustomItem;
     itemClass: TTBCustomItemClass;
   begin
@@ -1378,7 +1376,7 @@ procedure LoadToolbarItems(Toolbar: TSpTBXToolbar; ToolbarNode:
   var
     i, index: Integer;
     chNode: TJvSimpleXMLElem;
-    act: TTntAction;
+    act: TAction;
     item: TTBCustomItem;
     itemClass: TTBCustomItemClass;
   begin

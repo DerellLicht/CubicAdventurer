@@ -35,8 +35,6 @@ uses
   VirtualTrees,
   // VSTools
   MPCommonUtilities, MPCommonObjects, MPShellUtilities,
-  // Tnt Ctrls
-  TntWideStrUtils,
   // System Units
   Classes, Graphics, ImgList, Windows, ShlObj, SysUtils, Controls;
 

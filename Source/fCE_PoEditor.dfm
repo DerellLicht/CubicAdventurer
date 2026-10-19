@@ -142,7 +142,7 @@ object CEPoEditor: TCEPoEditor
           TabOrder = 1
           OnResize = PoItemStrMsg_panelResize
           TBXStyleBackground = True
-          object TntLabel6: TTntLabel
+          object TntLabel6: TLabel
             Left = 6
             Top = 6
             Width = 36
@@ -150,7 +150,7 @@ object CEPoEditor: TCEPoEditor
             Caption = 'Original'
             Transparent = True
           end
-          object PoItemStrID: TTntMemo
+          object PoItemStrID: TMemo
             Left = 5
             Top = 24
             Width = 190
@@ -179,7 +179,7 @@ object CEPoEditor: TCEPoEditor
           TabOrder = 0
           OnResize = PoItemStrMsg_panelResize
           TBXStyleBackground = True
-          object TntLabel5: TTntLabel
+          object TntLabel5: TLabel
             Left = 6
             Top = 6
             Width = 53
@@ -187,7 +187,7 @@ object CEPoEditor: TCEPoEditor
             Caption = 'Translation'
             Transparent = True
           end
-          object PoItemStrMsg: TTntMemo
+          object PoItemStrMsg: TMemo
             Left = 5
             Top = 24
             Width = 200
@@ -275,7 +275,7 @@ object CEPoEditor: TCEPoEditor
         Width = 349
         Height = 165
         TabOrder = 0
-        object TntLabel1: TTntLabel
+        object TntLabel1: TLabel
           Left = 16
           Top = 16
           Width = 86
@@ -283,7 +283,7 @@ object CEPoEditor: TCEPoEditor
           Caption = 'Translator'#39's Name'
           Transparent = True
         end
-        object TntLabel2: TTntLabel
+        object TntLabel2: TLabel
           Left = 16
           Top = 60
           Width = 132
@@ -291,7 +291,7 @@ object CEPoEditor: TCEPoEditor
           Caption = 'Translator'#39's Email (optional)'
           Transparent = True
         end
-        object TntLabel3: TTntLabel
+        object TntLabel3: TLabel
           Left = 16
           Top = 104
           Width = 47
@@ -299,7 +299,7 @@ object CEPoEditor: TCEPoEditor
           Caption = 'Language'
           Transparent = True
         end
-        object TntLabel4: TTntLabel
+        object TntLabel4: TLabel
           Left = 176
           Top = 16
           Width = 91
@@ -307,7 +307,7 @@ object CEPoEditor: TCEPoEditor
           Caption = 'Translation Version'
           Transparent = True
         end
-        object label1: TTntLabel
+        object label1: TLabel
           Left = 192
           Top = 103
           Width = 99
@@ -316,7 +316,7 @@ object CEPoEditor: TCEPoEditor
           Caption = 'Application Revision:'
           Transparent = True
         end
-        object label2: TTntLabel
+        object label2: TLabel
           Left = 191
           Top = 84
           Width = 100
@@ -325,14 +325,14 @@ object CEPoEditor: TCEPoEditor
           Caption = 'Translation Revision:'
           Transparent = True
         end
-        object label_pot_rev: TTntLabel
+        object label_pot_rev: TLabel
           Left = 297
           Top = 103
           Width = 3
           Height = 13
           Transparent = True
         end
-        object label_translation_rev: TTntLabel
+        object label_translation_rev: TLabel
           Left = 297
           Top = 84
           Width = 3
@@ -350,7 +350,7 @@ object CEPoEditor: TCEPoEditor
           TabOrder = 0
           OnChange = LanguageListChange
         end
-        object edit_translators_name: TTntEdit
+        object edit_translators_name: TEdit
           Left = 16
           Top = 32
           Width = 145
@@ -360,7 +360,7 @@ object CEPoEditor: TCEPoEditor
           TabOrder = 1
           OnChange = edit_translators_Change
         end
-        object edit_translators_email: TTntEdit
+        object edit_translators_email: TEdit
           Left = 16
           Top = 76
           Width = 145
@@ -370,7 +370,7 @@ object CEPoEditor: TCEPoEditor
           TabOrder = 2
           OnChange = edit_translators_Change
         end
-        object edit_translation_version: TTntEdit
+        object edit_translation_version: TEdit
           Left = 176
           Top = 32
           Width = 153
@@ -393,31 +393,31 @@ object CEPoEditor: TCEPoEditor
       end
     end
   end
-  object ActionList: TTntActionList
+  object ActionList: TActionList
     Images = CE_Images.SmallIcons
     Left = 528
     Top = 32
-    object act_save: TTntAction
+    object act_save: TAction
       Caption = 'Save'
       Hint = 'Save changes.'
       ImageIndex = 69
       OnExecute = act_saveExecute
       OnUpdate = act_Update
     end
-    object act_new: TTntAction
+    object act_new: TAction
       Caption = 'New'
       Hint = 'Create new translation.'
       ImageIndex = 36
       OnExecute = act_newExecute
       OnUpdate = act_Update
     end
-    object act_apply: TTntAction
+    object act_apply: TAction
       Caption = 'Apply'
       Hint = 'Apply changes.'
       OnExecute = act_applyExecute
       OnUpdate = act_Update
     end
-    object act_saveas: TTntAction
+    object act_saveas: TAction
       Caption = 'Save As...'
       ImageIndex = 71
       OnExecute = act_saveasExecute

@@ -26,8 +26,6 @@ interface
 uses
   // fcl-xml
   DOM, XMLRead, XMLWrite,
-  // Tnt
-  TntSysUtils,
   // System Units
   Windows, SysUtils, Messages, Classes, WideStrings;
 
@@ -150,7 +148,7 @@ begin
   while tmpNode <> nil do
   begin
     if tmpNode is TDOMElement then
-      if WideSameText(tmpNode.NodeName, NodeName) then
+      if AnsiSameText(tmpNode.NodeName, NodeName) then
       Break;
     tmpNode:= tmpNode.NextSibling;
   end;
@@ -322,7 +320,7 @@ begin
   tmpNode:= ParentNode.FirstChild;
   while tmpNode <> nil do
   begin
-    if WideSameText(tmpNode.NodeName, NodeName) then
+    if AnsiSameText(tmpNode.NodeName, NodeName) then
     Break;
     tmpNode:= tmpNode.NextSibling;
   end;
@@ -364,9 +362,9 @@ var
   ws: WideString;
 begin
   ws:= GetValue(APath, '');
-  if WideSameText(ws, 'true') then
+  if AnsiSameText(ws, 'true') then
   Result:= True
-  else if WideSameText(ws, 'false') then
+  else if AnsiSameText(ws, 'false') then
   Result:= False
   else
   Result:= ADefault;
@@ -412,7 +410,7 @@ end;
 --------------------------------------------------------------------------------}
 procedure TCEXmlStorage.LoadFromFile(AFilePath: WideString);
 begin
-  if WideFileExists(AFilePath) then
+  if FileExists(AFilePath) then
   begin
     fRootNode:= nil;
     fActiveNode:= nil;

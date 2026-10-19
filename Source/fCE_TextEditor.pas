@@ -40,9 +40,7 @@ uses
   SynHighlighterJScript, SynHighlighterPHP, SynHighlighterHtml,
   SynHighlighterCSS, SynEditHighlighter, SynHighlighterCpp,
   // VSTools
-  MPCommonObjects, MPCommonUtilities,
-  // TNT Controls
-  TntActnList, TntStdCtrls, TntSysUtils, TntDialogs, TntClasses,
+  MPCommonObjects, MPCommonUtilities, Dialogs,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   ExtCtrls, ActnList,  StdCtrls, fCE_FileView;
@@ -97,9 +95,9 @@ type
     label_path: TSpTBXLabelItem;
     FindPanel: TSpTBXPanel;
     SpTBXLabel1: TSpTBXLabel;
-    SearchMemo: TTntMemo;
+    SearchMemo: TMemo;
     SpTBXLabel2: TSpTBXLabel;
-    ReplaceMemo: TTntMemo;
+    ReplaceMemo: TMemo;
     SpTBXGroupBox1: TSpTBXGroupBox;
     opt_check1: TSpTBXCheckBox;
     opt_check2: TSpTBXCheckBox;
@@ -110,27 +108,27 @@ type
     SpTBXButton2: TSpTBXButton;
     SpTBXButton3: TSpTBXButton;
     opt_radio: TSpTBXRadioGroup;
-    ActionList: TTntActionList;
-    text_file_new: TTntAction;
-    text_edit_undo: TTntAction;
-    text_file_open: TTntAction;
-    text_file_save: TTntAction;
-    text_file_saveas: TTntAction;
-    text_file_close: TTntAction;
-    text_edit_redo: TTntAction;
-    text_edit_copy: TTntAction;
-    text_edit_cut: TTntAction;
-    text_edit_paste: TTntAction;
-    text_edit_delete: TTntAction;
-    text_edit_selall: TTntAction;
-    text_edit_search: TTntAction;
-    text_edit_findnext: TTntAction;
-    text_edit_findprev: TTntAction;
-    text_format_wrap: TTntAction;
-    text_format_options: TTntAction;
-    text_view_toolbar: TTntAction;
-    text_file_reload: TTntAction;
-    text_view_statusbar: TTntAction;
+    ActionList: TActionList;
+    text_file_new: TAction;
+    text_edit_undo: TAction;
+    text_file_open: TAction;
+    text_file_save: TAction;
+    text_file_saveas: TAction;
+    text_file_close: TAction;
+    text_edit_redo: TAction;
+    text_edit_copy: TAction;
+    text_edit_cut: TAction;
+    text_edit_paste: TAction;
+    text_edit_delete: TAction;
+    text_edit_selall: TAction;
+    text_edit_search: TAction;
+    text_edit_findnext: TAction;
+    text_edit_findprev: TAction;
+    text_format_wrap: TAction;
+    text_format_options: TAction;
+    text_view_toolbar: TAction;
+    text_file_reload: TAction;
+    text_view_statusbar: TAction;
     SynEditSearch: TSynEditSearch;
     SynEditRegexSearch: TSynEditRegexSearch;
     SynCppSyn1: TSynCppSyn;
@@ -426,18 +424,18 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.OpenDocument(FilePath: WideString = '');
 var
-  open1: TTntOpenDialog;
-  S: TTntFileStream;
+  open1: TOpenDialog;
+  S: TFileStream;
 begin
   if FilePath = '' then
   begin
-    open1:= TTntOpenDialog.Create(self);
+    open1:= TOpenDialog.Create(self);
     if open1.Execute then
     begin
       if CloseDocument then
       begin
         try
-          s:= TTntFileStream.Create(open1.FileName, fmOpenRead or fmShareDenyNone);
+          s:= TFileStream.Create(open1.FileName, fmOpenRead or fmShareDenyNone);
           try
             Editor.Lines.LoadFromStream(s);
             ActiveFile:= open1.FileName;
@@ -452,12 +450,12 @@ begin
     end;
     open1.Free;
   end
-  else if WideFileExists(FilePath) then
+  else if FileExists(FilePath) then
   begin
     if CloseDocument then
     begin
       try
-        s:= TTntFileStream.Create(FilePath, fmOpenRead or fmShareDenyNone);
+        s:= TFileStream.Create(FilePath, fmOpenRead or fmShareDenyNone);
         try
           Editor.Lines.LoadFromStream(s);
           ActiveFile:= FilePath;
@@ -477,11 +475,11 @@ end;
 -------------------------------------------------------------------------------}
 function TCETextEditorPage.SaveDocument: Boolean;
 var
-  S: TTntFileStream;
+  S: TFileStream;
 begin
-  if WideFileExists(ActiveFile) then
+  if FileExists(ActiveFile) then
   begin
-    s:= TTntFileStream.Create(ActiveFile, fmCreate);
+    s:= TFileStream.Create(ActiveFile, fmCreate);
     try
       Editor.Lines.SaveToStream(s);
     finally
@@ -501,15 +499,15 @@ end;
 -------------------------------------------------------------------------------}
 function TCETextEditorPage.SaveDocumentAs: Boolean;
 var
-  save1: TTntSaveDialog;
-  s: TTntFileStream;
+  save1: TSaveDialog;
+  s: TFileStream;
 begin
   Result:= false;
-  save1:= TTntSaveDialog.Create(self);
+  save1:= TSaveDialog.Create(self);
   save1.DefaultExt:= 'txt';
   if save1.Execute then
   begin
-    s:= TTntFileStream.Create(save1.FileName, fmCreate);
+    s:= TFileStream.Create(save1.FileName, fmCreate);
     try
       Editor.Lines.SaveToStream(s);
       ActiveFile:= save1.FileName;
@@ -879,10 +877,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_edit_Execute(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
   r: TRect;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   case act.Tag of
     201: Editor.Undo;
     202: Editor.Redo;
@@ -915,9 +913,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_edit_Update(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   act.Enabled:= true;
   case act.Tag of
     201: act.Enabled:= Editor.CanUndo;
@@ -933,9 +931,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_file_Execute(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   case act.Tag of
     101: NewDocument;
     102: OpenDocument;
@@ -951,13 +949,13 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_file_Update(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   act.Enabled:= true;
   case act.Tag of
     103: act.Enabled:= Editor.Modified;
-    106: act.Enabled:= WideFileExists(fActiveFile);
+    106: act.Enabled:= FileExists(fActiveFile);
   end;
 end;
 
@@ -966,9 +964,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_format_Execute(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   case act.Tag of
     301: Editor.WordWrap:= not Editor.WordWrap;
     302: ShowOptions;
@@ -980,9 +978,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_format_Update(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   act.Enabled:= true;
   case act.Tag of
     301: act.Checked:= Editor.WordWrap;
@@ -994,10 +992,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_view_Execute(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
   r: TRect;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   case act.Tag of
     402: begin
            if not StatusBar.Visible then
@@ -1020,9 +1018,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.text_view_Update(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   act.Enabled:= true;
   case act.Tag of
     402: act.Checked:= StatusBar.Visible;  
@@ -1054,7 +1052,7 @@ begin
   end
   else
   begin
-    TabCaption:= WideExtractFileName(fActiveFile);
+    TabCaption:= ExtractFileName(fActiveFile);
     label_path.Caption:= fActiveFile;
     TabItem.Images:= SmallSysImages;
     TabItem.ImageIndex:= GetIconIndex(fActiveFile);

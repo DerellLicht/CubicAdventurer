@@ -31,10 +31,7 @@ uses
   PngImageList,
   // EasyListview & VSTools
   EasyListview, VirtualExplorerTree, MPCommonUtilities, MPShellUtilities,
-  VirtualExplorerEasyListview, MPCommonObjects,
-  // Tnt
-  TntActnList, TntClipbrd, TntSysUtils, TntWindows, TntClasses, TntSystem,
-  TntMenus, 
+  VirtualExplorerEasyListview, MPCommonObjects, 
   // JVCL
   JvDockControlForm,
   // SpTBX
@@ -85,7 +82,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function AddHotkey(AAction: TAction; AHotkey: TShortcut): Integer;
-    function CanRegister(AAction: TTntAction; AHotkey: TShortcut): Boolean;
+    function CanRegister(AAction: TAction; AHotkey: TShortcut): Boolean;
     procedure Clear;
     procedure DeleteHotkey(Index: Integer);
     procedure ExecuteHotkey(id: Integer);
@@ -106,138 +103,138 @@ type
   end;
     
   TCEActions = class(TDataModule)
-    ActionList: TTntActionList;
-    act_gen_exit: TTntAction;
+    ActionList: TActionList;
+    act_gen_exit: TAction;
     UpdateTimer: TTimer;
-    act_navi_folderup: TTntAction;
-    act_navi_refresh: TTntAction;
-    act_view_folders: TTntAction;
-    act_view_bookmark: TTntAction;
-    act_view_large: TTntAction;
-    act_view_small: TTntAction;
-    act_view_list: TTntAction;
-    act_view_details: TTntAction;
-    act_view_thumbs: TTntAction;
-    act_view_tiles: TTntAction;
-    act_view_filmstrip: TTntAction;
-    act_edit_copy: TTntAction;
-    act_edit_cut: TTntAction;
-    act_edit_paste: TTntAction;
-    act_edit_delete: TTntAction;
-    act_edit_selall: TTntAction;
-    act_edit_invertsel: TTntAction;
-    act_edit_properties: TTntAction;
-    act_edit_rename: TTntAction;
-    act_quick_none: TTntAction;
-    act_quick_auto: TTntAction;
-    act_quick_text: TTntAction;
-    act_quick_image: TTntAction;
-    act_quick_hex: TTntAction;
-    act_help_home: TTntAction;
-    act_help_forum: TTntAction;
-    act_help_about: TTntAction;
-    act_view_quickview: TTntAction;
-    act_edit_duplicate: TTntAction;
-    act_navi_texteditor: TTntAction;
-    act_navi_filesearch: TTntAction;
+    act_navi_folderup: TAction;
+    act_navi_refresh: TAction;
+    act_view_folders: TAction;
+    act_view_bookmark: TAction;
+    act_view_large: TAction;
+    act_view_small: TAction;
+    act_view_list: TAction;
+    act_view_details: TAction;
+    act_view_thumbs: TAction;
+    act_view_tiles: TAction;
+    act_view_filmstrip: TAction;
+    act_edit_copy: TAction;
+    act_edit_cut: TAction;
+    act_edit_paste: TAction;
+    act_edit_delete: TAction;
+    act_edit_selall: TAction;
+    act_edit_invertsel: TAction;
+    act_edit_properties: TAction;
+    act_edit_rename: TAction;
+    act_quick_none: TAction;
+    act_quick_auto: TAction;
+    act_quick_text: TAction;
+    act_quick_image: TAction;
+    act_quick_hex: TAction;
+    act_help_home: TAction;
+    act_help_forum: TAction;
+    act_help_about: TAction;
+    act_view_quickview: TAction;
+    act_edit_duplicate: TAction;
+    act_navi_texteditor: TAction;
+    act_navi_filesearch: TAction;
     ApplicationEvents: TApplicationEvents;
-    act_tools_mapdrive: TTntAction;
-    act_tools_disconnectdrive: TTntAction;
+    act_tools_mapdrive: TAction;
+    act_tools_disconnectdrive: TAction;
     act_navi_back: TCEToolbarAction;
     act_navi_forward: TCEToolbarAction;
     act_edit_newfile: TCEToolbarAction;
     act_edit_copypath: TCEToolbarAction;
-    act_view_showhints: TTntAction;
-    act_tools_showcustomizer: TTntAction;
-    act_view_hiddenfiles: TTntAction;
-    act_edit_newfolder: TTntAction;
-    act_view_showheaderalways: TTntAction;
-    act_tools_cmd: TTntAction;
-    act_view_filters: TTntAction;
-    act_view_statusbar: TTntAction;
-    act_view_fullscreen: TTntAction;
-    BackgroundCMItems_up: TTntPopupMenu;
-    BackgroundCMItems_down: TTntPopupMenu;
-    View1: TTntMenuItem;
-    LargeIcons1: TTntMenuItem;
-    SmallIcons1: TTntMenuItem;
-    List1: TTntMenuItem;
-    Details1: TTntMenuItem;
-    iles1: TTntMenuItem;
-    humbnails1: TTntMenuItem;
-    Filmstrip1: TTntMenuItem;
-    N1: TTntMenuItem;
-    Refresh1: TTntMenuItem;
-    N2: TTntMenuItem;
-    Paste1: TTntMenuItem;
-    Properties1: TTntMenuItem;
-    CopyPath1: TTntMenuItem;
-    N3: TTntMenuItem;
-    act_view_showextensions: TTntAction;
-    N4: TTntMenuItem;
-    act_edit_paste_shortcut: TTntAction;
-    PasteShortcut1: TTntMenuItem;
-    act_help_poedit_form: TTntAction;
-    act_view_loadskin: TTntAction;
-    act_tools_showoptions: TTntAction;
-    act_sessions_save: TTntAction;
-    act_sessions_manage: TTntAction;
-    act_view_dropstack: TTntAction;
-    MenuItem_ArragneBy: TTntMenuItem;
+    act_view_showhints: TAction;
+    act_tools_showcustomizer: TAction;
+    act_view_hiddenfiles: TAction;
+    act_edit_newfolder: TAction;
+    act_view_showheaderalways: TAction;
+    act_tools_cmd: TAction;
+    act_view_filters: TAction;
+    act_view_statusbar: TAction;
+    act_view_fullscreen: TAction;
+    BackgroundCMItems_up: TPopupMenu;
+    BackgroundCMItems_down: TPopupMenu;
+    View1: TMenuItem;
+    LargeIcons1: TMenuItem;
+    SmallIcons1: TMenuItem;
+    List1: TMenuItem;
+    Details1: TMenuItem;
+    iles1: TMenuItem;
+    humbnails1: TMenuItem;
+    Filmstrip1: TMenuItem;
+    N1: TMenuItem;
+    Refresh1: TMenuItem;
+    N2: TMenuItem;
+    Paste1: TMenuItem;
+    Properties1: TMenuItem;
+    CopyPath1: TMenuItem;
+    N3: TMenuItem;
+    act_view_showextensions: TAction;
+    N4: TMenuItem;
+    act_edit_paste_shortcut: TAction;
+    PasteShortcut1: TMenuItem;
+    act_help_poedit_form: TAction;
+    act_view_loadskin: TAction;
+    act_tools_showoptions: TAction;
+    act_sessions_save: TAction;
+    act_sessions_manage: TAction;
+    act_view_dropstack: TAction;
+    MenuItem_ArragneBy: TMenuItem;
     act_view_arrangeby: TCEToolbarAction;
     act_view_viewstyle: TCEToolbarAction;
     act_view_groupby: TCEToolbarAction;
-    MenuItem_GroupBy: TTntMenuItem;
-    act_navi_scrollleft: TTntAction;
-    act_navi_scrollright: TTntAction;
-    act_view_alwaysontop: TTntAction;
-    act_tabs_closetab: TTntAction;
-    act_tabs_closeothertabs: TTntAction;
-    act_tabs_addtab: TTntAction;
-    act_tabs_duplicatetab: TTntAction;
-    act_tabs_closeonleft: TTntAction;
-    act_tabs_closeonright: TTntAction;
+    MenuItem_GroupBy: TMenuItem;
+    act_navi_scrollleft: TAction;
+    act_navi_scrollright: TAction;
+    act_view_alwaysontop: TAction;
+    act_tabs_closetab: TAction;
+    act_tabs_closeothertabs: TAction;
+    act_tabs_addtab: TAction;
+    act_tabs_duplicatetab: TAction;
+    act_tabs_closeonleft: TAction;
+    act_tabs_closeonright: TAction;
     act_gen_menu: TCEToolbarAction;
-    act_navi_quickview: TTntAction;
-    act_help_donate: TTntAction;
-    act_sessions_addhistoryitem: TTntAction;
-    act_sessions_clearhistory: TTntAction;
+    act_navi_quickview: TAction;
+    act_help_donate: TAction;
+    act_sessions_addhistoryitem: TAction;
+    act_sessions_clearhistory: TAction;
     act_bookmarks_menu: TCEToolbarAction;
     act_sessions_menu: TCEToolbarAction;
-    act_view_infobar: TTntAction;
-    act_edit_create_symlink: TTntAction;
-    CreateSymbolicLink1: TTntMenuItem;
-    N5: TTntMenuItem;
-    act_sessions_enablehistory: TTntAction;
-    act_gen_showhide: TTntAction;
+    act_view_infobar: TAction;
+    act_edit_create_symlink: TAction;
+    CreateSymbolicLink1: TMenuItem;
+    N5: TMenuItem;
+    act_sessions_enablehistory: TAction;
+    act_gen_showhide: TAction;
     act_tabs_undo: TCEToolbarAction;
-    act_tabs_next: TTntAction;
-    act_tabs_prev: TTntAction;
-    act_focus_addressbar: TTntAction;
+    act_tabs_next: TAction;
+    act_tabs_prev: TAction;
+    act_focus_addressbar: TAction;
     act_filters_menu: TCEToolbarAction;
     act_filters_pattern: TCEToolbarAction;
-    act_filters_clear: TTntAction;
-    act_view_checkbox_selection: TTntAction;
-    act_help_versionmgr: TTntAction;
-    act_view_archiver: TTntAction;
-    act_gen_new_instance: TTntAction;
-    act_help_checkupdates: TTntAction;
+    act_filters_clear: TAction;
+    act_view_checkbox_selection: TAction;
+    act_help_versionmgr: TAction;
+    act_view_archiver: TAction;
+    act_gen_new_instance: TAction;
+    act_help_checkupdates: TAction;
     act_edit_undo_delete: TCEToolbarAction;
-    act_tools_emptytrash: TTntAction;
+    act_tools_emptytrash: TAction;
     act_tools_systempower: TCEToolbarAction;
-    act_view_lock_toolbars: TTntAction;
-    act_navi_refresh_current: TTntAction;
-    act_filters_strict: TTntAction;
-    act_filters_exclude: TTntAction;
-    NewFolder1: TTntMenuItem;
-    act_help_restore_layout: TTntAction;
+    act_view_lock_toolbars: TAction;
+    act_navi_refresh_current: TAction;
+    act_filters_strict: TAction;
+    act_filters_exclude: TAction;
+    NewFolder1: TMenuItem;
+    act_help_restore_layout: TAction;
     act_tabs_menu: TCEToolbarAction;
-    act_edit_newemptyfile: TTntAction;
+    act_edit_newemptyfile: TAction;
     act_stack_open: TCEToolbarAction;
     act_stack_save: TCEToolbarAction;
-    act_stack_remove: TTntAction;
-    act_stack_clear: TTntAction;
-    act_stack_allowmove: TTntAction;
+    act_stack_remove: TAction;
+    act_stack_clear: TAction;
+    act_stack_allowmove: TAction;
     procedure ActionExecute(Sender: TObject);
     procedure ApplicationEventsActivate(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
@@ -246,7 +243,7 @@ type
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
-    fPageActionList: TTntActionList;
+    fPageActionList: TActionList;
     { Private declarations }
   protected
     procedure DoAssigneByClick(Sender: TObject);
@@ -260,7 +257,7 @@ type
     procedure DoGlobalContextMenuShow(Namespace: TNamespace; Menu: hMenu; var
         Allow: Boolean);
     procedure UpdateAll;
-    property PageActionList: TTntActionList read fPageActionList write
+    property PageActionList: TActionList read fPageActionList write
         fPageActionList;
     { Public declarations }
   end;
@@ -268,7 +265,7 @@ type
 
 // Global
 procedure ExecuteCEAction(ActionID: Integer);
-procedure UpdateCEAction(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateCEAction(ActionID: Integer; TargetAction: TAction);
 
 procedure ExecuteEditCategory(ActionID: Integer);
 procedure ExecuteSessionsCategory(ActionID: Integer);
@@ -279,15 +276,15 @@ procedure ExecuteQuickviewCategory(ActionID: Integer);
 procedure ExecuteBookmarksCategory(ActionID: Integer);
 
 // Action Updates
-procedure UpdateGeneralCategory(ActionID: Integer; TargetAction: TTntAction);
-procedure UpdateEditCategory(ActionID: Integer; TargetAction: TTntAction);
-procedure UpdateSessionsCategory(ActionID: Integer; TargetAction: TTntAction);
-procedure UpdateToolsCategory(ActionID: Integer; TargetAction: TTntAction);
-procedure UpdateHelpCategory(ActionID: Integer; TargetAction: TTntAction);
-procedure UpdateNavigationCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateGeneralCategory(ActionID: Integer; TargetAction: TAction);
+procedure UpdateEditCategory(ActionID: Integer; TargetAction: TAction);
+procedure UpdateSessionsCategory(ActionID: Integer; TargetAction: TAction);
+procedure UpdateToolsCategory(ActionID: Integer; TargetAction: TAction);
+procedure UpdateHelpCategory(ActionID: Integer; TargetAction: TAction);
+procedure UpdateNavigationCategory(ActionID: Integer; TargetAction: TAction);
 procedure UpdateQuickOptionsCategory(ActionID: Integer; TargetAction:
-    TTntAction);
-procedure UpdateBookmarksCategory(ActionID: Integer; TargetAction: TTntAction);
+    TAction);
+procedure UpdateBookmarksCategory(ActionID: Integer; TargetAction: TAction);
 
 procedure MouseAction(var Msg: tagMSG; var Handled: Boolean);
 
@@ -306,19 +303,19 @@ function IsSingleInstance: Boolean;
 
 procedure ExecuteQuickOptionsCategory(ActionID: Integer);
 
-procedure UpdateQuickviewCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateQuickviewCategory(ActionID: Integer; TargetAction: TAction);
 
 function HandleCmdParams(Str: WideString): Boolean;
 
 procedure ExecuteViewCategory(ActionID: Integer);
 
-procedure UpdateViewCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateViewCategory(ActionID: Integer; TargetAction: TAction);
 
 procedure UpdateAllActions;
 
 procedure HandleInputMessage(var Msg : TMessage; var Handled: Boolean);
 
-procedure UpdateTabsCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateTabsCategory(ActionID: Integer; TargetAction: TAction);
 
 procedure ExecuteToolsCategory(ActionID: Integer);
 
@@ -336,7 +333,7 @@ procedure ExecuteFocusCategory(ActionID: Integer);
 
 procedure ExecuteMiscCategory(ActionID: Integer);
 
-procedure UpdateMiscCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateMiscCategory(ActionID: Integer; TargetAction: TAction);
 
 procedure DoGlobalContextMenuShow(Sender: TObject; Namespace: TNamespace; Menu:
     hMenu; var Allow: Boolean);
@@ -423,9 +420,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEActions.ActionExecute(Sender: TObject);
 var
-  act: TTntAction;
+  act: TAction;
 begin
-  act:= TTntAction(Sender);
+  act:= TAction(Sender);
   ExecuteCEAction(act.Tag);
   UpdateTimerTimer(Sender);
 end;
@@ -468,7 +465,7 @@ end;
 {*------------------------------------------------------------------------------
   Update Action
 -------------------------------------------------------------------------------}
-procedure UpdateCEAction(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateCEAction(ActionID: Integer; TargetAction: TAction);
 begin
   case ActionID of
     100..199: UpdateGeneralCategory(ActionID, TargetAction);
@@ -504,14 +501,14 @@ begin
         MainForm.Shutdown;
         MainForm.SaveSettingsOnClose:= false;
         fDisableSingleInstanceTemporarily:= GetTickCount;
-        ExecShellEx(WideParamStr(0), '', '', SW_SHOWNORMAL, false, false, true);
+        ExecShellEx(ParamStr(0), '', '', SW_SHOWNORMAL, false, false, true);
         Sleep(1000);
         Application.MainForm.Close;
       end;
     end;
     103: begin
       fDisableSingleInstanceTemporarily:= GetTickCount;
-      WideShellExecute(0, 'open', WideParamStr(0), '', '', SW_SHOWNORMAL);
+      WideShellExecute(0, 'open', ParamStr(0), '', '', SW_SHOWNORMAL);
     end;
   end;
 end;
@@ -519,7 +516,7 @@ end;
 {*------------------------------------------------------------------------------
   File Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateGeneralCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateGeneralCategory(ActionID: Integer; TargetAction: TAction);
 begin
   TargetAction.Enabled:= true;
 end;
@@ -585,11 +582,11 @@ begin
       211: begin
              try
                if fileview.Selection.Count > 1 then
-               TntClipboard.AsText:= fileview.SelectedPaths.Text
+               Clipboard.AsText:= fileview.SelectedPaths.Text
                else if fileview.Selection.Count = 1 then
-               TntClipboard.AsText:= fileview.SelectedPath
+               Clipboard.AsText:= fileview.SelectedPath
                else
-               TntClipboard.AsText:= IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing);
+               Clipboard.AsText:= IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing);
              except
                s:= SysErrorMessage(GetLastError);
                MessageBox(0, PChar(s), 'Clipboard error!', MB_ICONERROR or MB_OK);
@@ -607,7 +604,7 @@ end;
 {*------------------------------------------------------------------------------
   Edit Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateEditCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateEditCategory(ActionID: Integer; TargetAction: TAction);
 var
   fileview: TCEFileView;
   NS: TNamespace;
@@ -728,7 +725,7 @@ end;
 {*------------------------------------------------------------------------------
   View Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateViewCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateViewCategory(ActionID: Integer; TargetAction: TAction);
 begin
   TargetAction.Enabled:= true;
   case ActionID of
@@ -787,9 +784,9 @@ begin
     454: begin
            if GlobalPathCtrl.ActivePage is TCEFileViewPage then
            ws:= TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.RootFolderNamespace.NameForParsing;
-           if not WideDirectoryExists(ws) then
+           if not DirectoryExists(ws) then
            ws:= '';
-           Tnt_ShellExecuteW(0,'open','cmd.exe','',PWideChar(ws), SW_SHOW);
+           ShellExecuteW(0,'open','cmd.exe','',PWideChar(ws), SW_SHOW);
          end;
   end;
 end;
@@ -797,7 +794,7 @@ end;
 {*------------------------------------------------------------------------------
   Tools Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateToolsCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateToolsCategory(ActionID: Integer; TargetAction: TAction);
 begin
   TargetAction.Enabled:= true;
   case ActionID of
@@ -829,10 +826,10 @@ begin
       form:= TCEPoEditorForm.CreateNew(MainForm,0);
       form.PoEditor.LocaleDir:= exePath + 'Locale\';
       form.PoEditor.OnTranslateUI:= MainForm.TranslateUI;
-      if WideFileExists(exePath + 'Locale\default.pot') then
+      if FileExists(exePath + 'Locale\default.pot') then
       form.PoEditor.POTFile.LoadFromFile(exePath + 'Locale\default.pot');
       form.PoEditor.TabControl.ActiveTabIndex:= 0;
-      form.PoEditor.POT_Rev:= GetFileVersionBuild(WideParamStr(0));
+      form.PoEditor.POT_Rev:= GetFileVersionBuild(ParamStr(0));
       form.PoEditor.ActiveLanguage:= MainForm.ActiveLanguage;
       form.Show;
     end;
@@ -865,7 +862,7 @@ end;
 {*------------------------------------------------------------------------------
   Help Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateHelpCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateHelpCategory(ActionID: Integer; TargetAction: TAction);
 begin
   case ActionID of
     507: TargetAction.Enabled:= not MainForm.AutoUpdater.CheckingUpdate;
@@ -898,7 +895,7 @@ end;
 {-------------------------------------------------------------------------------
   Update Misc Category
 -------------------------------------------------------------------------------}
-procedure UpdateMiscCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateMiscCategory(ActionID: Integer; TargetAction: TAction);
 begin
   TargetAction.Enabled:= true;
   case ActionID of
@@ -990,7 +987,7 @@ begin
            editor:= TCETextEditorPage(MainForm.TabSet.AddTab(TCETextEditorPage, MainForm.TabSet.Settings.NewTabSelect).Page);
            if (ws <> '') then
            begin
-            ext:= WideUpperCase(WideExtractFileExt(ws));
+            ext:= AnsiUpperCase(ExtractFileExt(ws));
             if (ext <> '.EXE') and (ext <> '.DLL') then
             editor.OpenDocument(ws);
            end;
@@ -1001,7 +998,7 @@ begin
            if GlobalPathCtrl.ActivePage is TCEFileViewPage then
            ws:= TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.RootFolderNamespace.NameForParsing;
            page:= TCECustomTabPage(MainForm.TabSet.AddTab(TCESearchPage, MainForm.TabSet.Settings.NewTabSelect).Page);
-           if WideDirectoryExists(ws) then
+           if DirectoryExists(ws) then
            begin
              TCESearchPage(page).edit_location.Text:= ws;
            end;
@@ -1043,7 +1040,7 @@ end;
 {*------------------------------------------------------------------------------
   Navigation Category  Update
 -------------------------------------------------------------------------------}
-procedure UpdateNavigationCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateNavigationCategory(ActionID: Integer; TargetAction: TAction);
 var
   L,R: Boolean;
 begin
@@ -1151,7 +1148,7 @@ end;
 {*------------------------------------------------------------------------------
   Tabs Category  Update
 -------------------------------------------------------------------------------}
-procedure UpdateTabsCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateTabsCategory(ActionID: Integer; TargetAction: TAction);
 begin
   case ActionID of
     661..662,664: TargetAction.Enabled:= assigned(MainForm.TabSet.ActivePopupTab) or (MainForm.TabSet.GetActiveTab <> nil);
@@ -1173,7 +1170,7 @@ end;
 {*------------------------------------------------------------------------------
   Quickview Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateQuickviewCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateQuickviewCategory(ActionID: Integer; TargetAction: TAction);
 begin
 
 end;
@@ -1208,7 +1205,7 @@ end;
 {*------------------------------------------------------------------------------
   Bookmarks Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateBookmarksCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateBookmarksCategory(ActionID: Integer; TargetAction: TAction);
 begin
   TargetAction.Enabled:= true;
 end;
@@ -1233,7 +1230,7 @@ end;
 {*------------------------------------------------------------------------------
   Session Category Update
 -------------------------------------------------------------------------------}
-procedure UpdateSessionsCategory(ActionID: Integer; TargetAction: TTntAction);
+procedure UpdateSessionsCategory(ActionID: Integer; TargetAction: TAction);
 begin
   TargetAction.Enabled:= true;
   if ActionID = 855 then
@@ -1269,11 +1266,11 @@ var
   editor: TCETextEditorPage;
   quickview: TCEQuickViewPage;
 begin
-  if WideFileExists(FilePath) then
+  if FileExists(FilePath) then
   begin
     GlobalFileViewSettings.AssignFromActivePage;
 
-    if GlobalQuickViewSettings.IsSupported(WideExtractFileExt(FilePath), true) then
+    if GlobalQuickViewSettings.IsSupported(ExtractFileExt(FilePath), true) then
     begin
       quickview:= TCEQuickViewPage(MainForm.TabSet.AddTab(TCEQuickViewPage, SelectTab).Page);
       quickview.OpenFile(FilePath);
@@ -1426,7 +1423,7 @@ end;
   Quick Options Category Update
 -------------------------------------------------------------------------------}
 procedure UpdateQuickOptionsCategory(ActionID: Integer; TargetAction:
-    TTntAction);
+    TAction);
 begin
   //
 end;
@@ -1438,7 +1435,7 @@ end;
 -------------------------------------------------------------------------------}
 function HandleCmdParams(Str: WideString): Boolean;
 var
-  list: TTntStrings;
+  list: TStrings;
   i: Integer;
   pidl: PItemIDList;
   path, path2: WideString;
@@ -1449,7 +1446,7 @@ var
   NS: TNamespace;
 begin
   Result:= false;
-  list:= TTntStringList.Create;
+  list:= TStringList.Create;
   try
     list.Delimiter:= ',';
     list.StrictDelimiter:= true;
@@ -1512,9 +1509,9 @@ begin
         path:= list.Strings[i];
         if IsIcon then
         begin
-          if not WideFileExists(path) then
+          if not FileExists(path) then
           path:= DecodeRelativePath(path);
-          if WideFileExists(path) then
+          if FileExists(path) then
           begin
             try
               Application.Icon.LoadFromFile(path);
@@ -1528,9 +1525,9 @@ begin
           // Open File
           if IsFile then
           begin
-            if not WideFileExists(path) then
+            if not FileExists(path) then
             path:= DecodeRelativePath(path);
-            if WideFileExists(path) then
+            if FileExists(path) then
             begin
               OpenFileInTab(path, true, true);
               Result:= true;
@@ -1541,9 +1538,9 @@ begin
           // Open Shortcut
           if IsShortcut then
           begin
-            if not WideFileExists(path) then
+            if not FileExists(path) then
             path:= DecodeRelativePath(path);
-            if WideFileExists(path) then
+            if FileExists(path) then
             begin
               NS:= TNamespace.CreateFromFileName(path);
               try
@@ -1835,10 +1832,10 @@ begin
   if IsWindowsVista then // NOTICE: at the moment there's nothing to do prior to vista.
   begin
     doShell:= false;
-    count:= WideParamCount;
+    count:= ParamCount;
     for index:= 1 to count do
     begin
-      ws:= WideParamStr(index);
+      ws:= ParamStr(index);
       if not doShell then
       begin
         if ws = '/shell' then
@@ -2059,12 +2056,12 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEActions.UpdateAll;
 var
-  act: TTntAction;
+  act: TAction;
   i: Integer;
 begin
   for i:= 0 to ActionList.ActionCount - 1 do
   begin
-    act:= TTntAction(ActionList.Actions[i]);
+    act:= TAction(ActionList.Actions[i]);
     UpdateCEAction(act.Tag, act);
   end;
 end;
@@ -2225,7 +2222,7 @@ end;
 {-------------------------------------------------------------------------------
   Can Register (returns true if can register)
 -------------------------------------------------------------------------------}
-function TCEGlobalHotkeys.CanRegister(AAction: TTntAction; AHotkey: TShortcut):
+function TCEGlobalHotkeys.CanRegister(AAction: TAction; AHotkey: TShortcut):
     Boolean;
 var
   key: Word;

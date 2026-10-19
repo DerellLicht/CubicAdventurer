@@ -21,7 +21,7 @@ object CEUpdateDlg: TCEUpdateDlg
     302)
   PixelsPerInch = 96
   TextHeight = 13
-  object TntLabel1: TTntLabel
+  object TntLabel1: TLabel
     Left = 8
     Top = 8
     Width = 71
@@ -37,7 +37,7 @@ object CEUpdateDlg: TCEUpdateDlg
     BevelOuter = bvLowered
     TabOrder = 2
   end
-  object but_cancel: TTntButton
+  object but_cancel: TButton
     Left = 251
     Top = 265
     Width = 95
@@ -47,7 +47,7 @@ object CEUpdateDlg: TCEUpdateDlg
     ModalResult = 2
     TabOrder = 1
   end
-  object but_update: TTntButton
+  object but_update: TButton
     Left = 119
     Top = 265
     Width = 126

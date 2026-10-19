@@ -34,8 +34,6 @@ uses
   SpTBXSkins,
   // EasyListView, VSTools
   EasyListView, MPShellUtilities, VirtualShellNotifier, VirtualExplorerTree,
-  // TNT
-  TntClasses, TntSysUtils,
   // SynEdit
   SynEditOptionsDialog, SynEdit,
   // System Units
@@ -408,9 +406,9 @@ begin
   fFilePath:= AFilePath;
   FileStorage.BeginUpdate;
   try
-    if WideFileExists(AFilePath) then
+    if FileExists(AFilePath) then
     begin
-      s:= TTntFileStream.Create(AFilePath,fmOpenRead or fmShareDenyNone);
+      s:= TFileStream.Create(AFilePath,fmOpenRead or fmShareDenyNone);
       try
         FileStorage.Xml.LoadFromStream(s);
       finally
@@ -459,7 +457,7 @@ begin
   fFilePath:= AFilePath;
 
   try
-    s:= TTntFileStream.Create(fFilePath,fmCreate);
+    s:= TFileStream.Create(fFilePath,fmCreate);
   except
     Exit;
   end;

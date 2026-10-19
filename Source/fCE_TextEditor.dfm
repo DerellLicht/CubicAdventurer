@@ -188,7 +188,7 @@ inherited CETextEditorPage: TCETextEditorPage
       Height = 19
       Caption = 'Search'
     end
-    object SearchMemo: TTntMemo
+    object SearchMemo: TMemo
       Left = 8
       Top = 20
       Width = 405
@@ -204,7 +204,7 @@ inherited CETextEditorPage: TCETextEditorPage
       Height = 19
       Caption = 'Replace'
     end
-    object ReplaceMemo: TTntMemo
+    object ReplaceMemo: TMemo
       Left = 8
       Top = 93
       Width = 405
@@ -312,24 +312,24 @@ inherited CETextEditorPage: TCETextEditorPage
         'Down')
     end
   end
-  object ActionList: TTntActionList
+  object ActionList: TActionList
     Left = 12
     Top = 32
-    object text_file_new: TTntAction
+    object text_file_new: TAction
       Tag = 101
       Category = 'File'
       Caption = 'New'
       OnExecute = text_file_Execute
       OnUpdate = text_file_Update
     end
-    object text_edit_undo: TTntAction
+    object text_edit_undo: TAction
       Tag = 201
       Category = 'Edit'
       Caption = 'Undo'
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_file_open: TTntAction
+    object text_file_open: TAction
       Tag = 102
       Category = 'File'
       Caption = 'Open...'
@@ -337,7 +337,7 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_file_Execute
       OnUpdate = text_file_Update
     end
-    object text_file_save: TTntAction
+    object text_file_save: TAction
       Tag = 103
       Category = 'File'
       Caption = 'Save'
@@ -345,7 +345,7 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_file_Execute
       OnUpdate = text_file_Update
     end
-    object text_file_saveas: TTntAction
+    object text_file_saveas: TAction
       Tag = 104
       Category = 'File'
       Caption = 'Save As...'
@@ -353,56 +353,56 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_file_Execute
       OnUpdate = text_file_Update
     end
-    object text_file_close: TTntAction
+    object text_file_close: TAction
       Tag = 105
       Category = 'File'
       Caption = 'Close'
       OnExecute = text_file_Execute
       OnUpdate = text_file_Update
     end
-    object text_edit_redo: TTntAction
+    object text_edit_redo: TAction
       Tag = 202
       Category = 'Edit'
       Caption = 'Redo'
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_copy: TTntAction
+    object text_edit_copy: TAction
       Tag = 203
       Category = 'Edit'
       Caption = 'Copy'
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_cut: TTntAction
+    object text_edit_cut: TAction
       Tag = 204
       Category = 'Edit'
       Caption = 'Cut'
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_paste: TTntAction
+    object text_edit_paste: TAction
       Tag = 205
       Category = 'Edit'
       Caption = 'Paste'
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_delete: TTntAction
+    object text_edit_delete: TAction
       Tag = 206
       Category = 'Edit'
       Caption = 'Delete'
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_selall: TTntAction
+    object text_edit_selall: TAction
       Tag = 207
       Category = 'Edit'
       Caption = 'Select All'
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_search: TTntAction
+    object text_edit_search: TAction
       Tag = 208
       Category = 'Edit'
       Caption = 'Search and Replace'
@@ -410,7 +410,7 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_findnext: TTntAction
+    object text_edit_findnext: TAction
       Tag = 209
       Category = 'Edit'
       Caption = 'Find Next'
@@ -418,7 +418,7 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_edit_findprev: TTntAction
+    object text_edit_findprev: TAction
       Tag = 210
       Category = 'Edit'
       Caption = 'Find Previous'
@@ -426,21 +426,21 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_edit_Execute
       OnUpdate = text_edit_Update
     end
-    object text_format_wrap: TTntAction
+    object text_format_wrap: TAction
       Tag = 301
       Category = 'Format'
       Caption = 'Word Wrap'
       OnExecute = text_format_Execute
       OnUpdate = text_format_Update
     end
-    object text_format_options: TTntAction
+    object text_format_options: TAction
       Tag = 302
       Category = 'Format'
       Caption = 'Editor Options...'
       OnExecute = text_format_Execute
       OnUpdate = text_format_Update
     end
-    object text_view_toolbar: TTntAction
+    object text_view_toolbar: TAction
       Tag = 401
       Category = 'View'
       Caption = 'Show Toolbar'
@@ -448,7 +448,7 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_view_Execute
       OnUpdate = text_view_Update
     end
-    object text_file_reload: TTntAction
+    object text_file_reload: TAction
       Tag = 106
       Category = 'File'
       Caption = 'Reload'
@@ -456,7 +456,7 @@ inherited CETextEditorPage: TCETextEditorPage
       OnExecute = text_file_Execute
       OnUpdate = text_file_Update
     end
-    object text_view_statusbar: TTntAction
+    object text_view_statusbar: TAction
       Tag = 402
       Category = 'View'
       Caption = 'Show Statusbar'

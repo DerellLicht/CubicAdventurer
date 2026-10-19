@@ -33,8 +33,6 @@ uses
   SpTBXTabs,
   // fcl-xml
   DOM,
-  // Tnt
-  TntForms,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Contnrs, ImgList, ComCtrls, ExtCtrls, Menus;
@@ -140,7 +138,7 @@ type
   TCEQuickViewForm
     - This is the detached QuickView window
 -------------------------------------------------------------------------------}
-  TCEQuickViewForm = class(TTntForm)
+  TCEQuickViewForm = class(TForm)
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DoClose(var Action: TCloseAction); override;
@@ -714,7 +712,7 @@ procedure TCEQuickView.HandlePreviewClick(Sender: TObject);
 begin
   ReadGlobalSettings;
 
-  if GlobalQuickViewSettings.IsSupported(WideExtractFileExt(fActiveFilePath)) then
+  if GlobalQuickViewSettings.IsSupported(ExtractFileExt(fActiveFilePath)) then
   begin
     Playlist.Clear;
     Playlist.Add(fActiveFilePath, true); // <-- opens the media player
@@ -740,7 +738,7 @@ begin
   // create media player
   CreateEmbededMediaPlayer;
   // create media engine
-  Ext:= WideLowerCase(WideExtractFileExt(AFilePath));
+  Ext:= AnsiLowerCase(ExtractFileExt(AFilePath));
   fMediaPlayer.Engine:= GlobalQuickViewSettings.CreateMediaEngine(Ext);
   // open file
   fMediaPlayer.OpenFile(AFilePath);
@@ -999,7 +997,7 @@ var
   ns: TNamespace;
 begin
   // get file location from LNK file.
-  if WideLowerCase(WideExtractFileExt(Value)) = '.lnk' then
+  if AnsiLowerCase(ExtractFileExt(Value)) = '.lnk' then
   begin
     ns:= TNamespace.CreateFromFileName(Value);
     try
@@ -1545,7 +1543,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewSettings.SetDirectShowExtensions(const Value: WideString);
 begin
-  fDirectShowExtensions:= WideLowerCase(Value);
+  fDirectShowExtensions:= AnsiLowerCase(Value);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1553,7 +1551,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewSettings.SetImageExtensions(const Value: WideString);
 begin
-  fImageExtensions:= WideLowerCase(Value);
+  fImageExtensions:= AnsiLowerCase(Value);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1561,7 +1559,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewSettings.SetMediaExtensions(const Value: WideString);
 begin
-  fMediaExtensions:= WideLowerCase(Value);
+  fMediaExtensions:= AnsiLowerCase(Value);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1569,7 +1567,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewSettings.SetTextExtensions(const Value: WideString);
 begin
-  fTextExtensions:= WideLowerCase(Value);
+  fTextExtensions:= AnsiLowerCase(Value);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1577,7 +1575,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewSettings.SetWMPExtensions(const Value: WideString);
 begin
-  fWMPExtensions:= WideLowerCase(Value);
+  fWMPExtensions:= AnsiLowerCase(Value);
 end;
 
 {##############################################################################}

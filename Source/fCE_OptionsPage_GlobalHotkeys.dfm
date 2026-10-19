@@ -1,12 +1,12 @@
 inherited TCEOptionsPage_GlobalHotkeys: TTCEOptionsPage_GlobalHotkeys
-  object TntBevel1: TTntBevel
+  object TntBevel1: TBevel
     Left = 241
     Top = 12
     Width = 192
     Height = 25
     Shape = bsBottomLine
   end
-  object TntLabel1: TTntLabel
+  object TntLabel1: TLabel
     Left = 249
     Top = 48
     Width = 39
@@ -78,14 +78,14 @@ inherited TCEOptionsPage_GlobalHotkeys: TTCEOptionsPage_GlobalHotkeys
     TabOrder = 2
     OnClick = list_actionhotkeysClick
   end
-  object TntGroupBox1: TTntGroupBox
+  object TntGroupBox1: TGroupBox
     Left = 249
     Top = 179
     Width = 176
     Height = 118
     Caption = 'Modify Hotkey'
     TabOrder = 3
-    object edit_hotkey: TTntEdit
+    object edit_hotkey: TEdit
       Left = 12
       Top = 21
       Width = 153
@@ -95,7 +95,7 @@ inherited TCEOptionsPage_GlobalHotkeys: TTCEOptionsPage_GlobalHotkeys
       OnKeyDown = edit_hotkeyKeyDown
       OnKeyPress = edit_hotkeyKeyPress
     end
-    object but_add: TTntButton
+    object but_add: TButton
       Left = 12
       Top = 48
       Width = 74
@@ -105,7 +105,7 @@ inherited TCEOptionsPage_GlobalHotkeys: TTCEOptionsPage_GlobalHotkeys
       TabOrder = 1
       OnClick = but_addClick
     end
-    object but_replace: TTntButton
+    object but_replace: TButton
       Left = 92
       Top = 48
       Width = 73
@@ -115,7 +115,7 @@ inherited TCEOptionsPage_GlobalHotkeys: TTCEOptionsPage_GlobalHotkeys
       TabOrder = 2
       OnClick = but_replaceClick
     end
-    object but_delete: TTntButton
+    object but_delete: TButton
       Left = 12
       Top = 79
       Width = 153

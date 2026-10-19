@@ -30,8 +30,6 @@ uses
   VirtualExplorerTree, MPCommonUtilities, VirtualShellNewMenu,
   // SpTBXLib
   SpTBXItem, SpTBXControls,  SpTBXDkPanels,
-  // Tnt
-  TntForms,
   // System Units
   SysUtils, ShlObj, Classes, Windows, Contnrs, Controls, Messages, Forms;
 
@@ -94,7 +92,7 @@ var
 implementation
 
 uses
-  Main, dCE_Actions, fCE_FileView, fCE_TextEditor, CE_FileUtils, TntSysUtils;
+  Main, dCE_Actions, fCE_FileView, fCE_TextEditor, CE_FileUtils;
 
 {##############################################################################}
 
@@ -147,7 +145,7 @@ begin
   end;
 
   fCurrentPath:= NewPath;
-  WideSetCurrentDir(fCurrentPath);
+  SetCurrentDir(fCurrentPath);
   fPathChanging:= false;
 end;
 
@@ -188,7 +186,7 @@ begin
 
   fCurrentPath:= PIDLToCEPath(APIDL);
   if ChangeCurrentDirVar then
-  WideSetCurrentDir(fCurrentPath);
+  SetCurrentDir(fCurrentPath);
   fPathChanging:= false;
 end;
 
@@ -275,7 +273,7 @@ begin
   if MainForm.PathInTitle then
   begin
     MainForm.Caption:= fGlobalPathCaption;
-    TntApplication.Title:= fGlobalPathCaption;
+    Application.Title:= fGlobalPathCaption;
   end;
 
   MainForm.TrayIcon.Hint:= 'CubicExplorer: ' +  fGlobalPathCaption;

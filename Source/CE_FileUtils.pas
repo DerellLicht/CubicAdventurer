@@ -28,8 +28,6 @@ uses
   CE_CommonObjects,
   // JCL
   JclMime,
-  // Tnt
-  TntSysUtils, TntWindows,
   // VSTools
   MPShellUtilities, MPCommonObjects, MPCommonUtilities,
   // System Units
@@ -116,7 +114,7 @@ function IsDefaultFileManager(AName: String): Boolean;
 implementation
 
 uses
-  TntRegistry, CE_Utils;
+  Registry, CE_Utils;
 
 {-------------------------------------------------------------------------------
   PIDL to CEPath
@@ -417,7 +415,7 @@ var
   proc: TCreateSymbolicLink;
   flag: Cardinal;
   s: String;
-  sr: TSearchRecW;
+  sr: TSearchRec;
   Buffer: PReparseMountPointDataBuffer;
   BufSize: integer;
   TargetName: WideString;
@@ -426,25 +424,25 @@ begin
   Result:= false;
   if (Win32Platform = VER_PLATFORM_WIN32_NT) then
   begin
-    ATarget:= WideExcludeTrailingPathDelimiter(ATarget);
-    ALink:= WideExcludeTrailingPathDelimiter(ALink);
+    ATarget:= ExcludeTrailingPathDelimiter(ATarget);
+    ALink:= ExcludeTrailingPathDelimiter(ALink);
     // Pre check: Make sure Link doesn't exist.
-    if WideFindFirst(ALink, faAnyFile or faDirectory, sr) = 0 then
+    if FindFirst(ALink, faAnyFile or faDirectory, sr) = 0 then
     begin
       if ShowErrors then
       MessageBox(0, 'File/Folder already exists.'#13#10'Please choose another link name.', 'Could not create symbolic link!', MB_ICONEXCLAMATION or MB_OK);
-      WideFindClose(sr);
+      FindClose(sr);
       Exit;
     end;
 
     // Pre checks: Make sure target exists. Is target folder of a file?
-    if WideFindFirst(ATarget, faAnyFile or faDirectory, sr) = 0 then
+    if FindFirst(ATarget, faAnyFile or faDirectory, sr) = 0 then
     begin
       if (sr.Attr and faDirectory) = faDirectory then
       flag:= 1
       else
       flag:= 0;
-      WideFindClose(sr);
+      FindClose(sr);
     end
     else
     begin
@@ -548,12 +546,12 @@ end;
 -------------------------------------------------------------------------------}
 function FileOrFolderExists(APath: WideString): Boolean;
 var
-  sr: TSearchRecW;
+  sr: TSearchRec;
 begin
-  APath:= WideExcludeTrailingPathDelimiter(APath);
-  Result:= WideFindFirst(APath, faAnyFile or faDirectory, sr) = 0;
+  APath:= ExcludeTrailingPathDelimiter(APath);
+  Result:= FindFirst(APath, faAnyFile or faDirectory, sr) = 0;
   if Result then
-  WideFindClose(sr);
+  FindClose(sr);
 end;
 
 {-------------------------------------------------------------------------------
@@ -585,7 +583,7 @@ var
 begin
   Result:= APath;
 
-  prog:= WideIncludeTrailingBackslash(WideExpandEnviromentString('%ProgramFiles%'));
+  prog:= IncludeTrailingBackslash(WideExpandEnviromentString('%ProgramFiles%'));
   if Pos(prog, APath) = 1 then
   begin
     c:= Length(prog);
@@ -594,7 +592,7 @@ begin
     if subPath <> '' then
     begin
       vstore:= WideExpandEnviromentString('%LocalAppData%' + '\VirtualStore\Program Files\' + subPath);
-      if WideFileExists(vstore) then
+      if FileExists(vstore) then
       Result:= vstore;
     end;
   end;
@@ -606,12 +604,12 @@ end;
 function RegisterDefaultFileManager(AName, ADescription: String; AFilePath:
     WideString): Boolean;
 var
-  reg: TTntRegistry;
+  reg: TRegistry;
   cmd: WideString;
   oldValue: String;
 begin
   Result:= false;
-  reg:= TTntRegistry.Create;
+  reg:= TRegistry.Create;
   try
     reg.RootKey:= HKEY_CLASSES_ROOT;
 
@@ -657,11 +655,11 @@ end;
 -------------------------------------------------------------------------------}
 function UnRegisterDefaultFileManager(AName: String): Boolean;
 var
-  reg: TTntRegistry;
+  reg: TRegistry;
   oldValue: string;
 begin
   Result:= false;
-  reg:= TTntRegistry.Create;
+  reg:= TRegistry.Create;
   try
     reg.RootKey:= HKEY_CLASSES_ROOT;
 
@@ -695,10 +693,10 @@ end;
 -------------------------------------------------------------------------------}
 function IsDefaultFileManager(AName: String): Boolean;
 var
-  reg: TTntRegistry;
+  reg: TRegistry;
 begin
   Result:= false;
-  reg:= TTntRegistry.Create;
+  reg:= TRegistry.Create;
   try
     // HKEY_CLASSES_ROOT\Folder\shell
     if reg.OpenKey('\Folder\shell', false) then

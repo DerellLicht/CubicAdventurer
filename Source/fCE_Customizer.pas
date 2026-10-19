@@ -31,8 +31,7 @@ uses
   VirtualTrees,
   // Toolbar2000
   TB2Dock, TB2Toolbar, TB2Item,
-  // TNT Controls
-  TntActnList, TntForms, TntCheckLst, TntStdCtrls,
+  ActnList,
   // Png Controls
   PngImageList,
   // SpTBXLib
@@ -50,7 +49,7 @@ type
 
   PCEActTreeData = ^TCEActTreeData;
   TCEActTreeData = record
-    ActionItem: TTntAction;
+    ActionItem: TAction;
     IsCategory: Boolean;
     Name: WideString;
     IconIndex: Integer;
@@ -58,7 +57,7 @@ type
     SeparatorType: TCESeparatorType;
   end;
 
-  TCEToolbarCustomizer = class(TTntForm)
+  TCEToolbarCustomizer = class(TForm)
     ActionTree: TVirtualStringTree;
     TabControl: TSpTBXTabControl;
     tab_toolbars: TSpTBXTabItem;
@@ -239,7 +238,7 @@ procedure TCEToolbarCustomizer.SetupForm;
 var
   i, index: Integer;
   toolbar: TObject;
-  act: TTntAction;
+  act: TAction;
   node, chNode: PVirtualNode;
   data: PCEActTreeData;
 begin
@@ -248,7 +247,7 @@ begin
   ActionTree.Clear;
   for i:= 0 to CEActions.ActionList.ActionCount - 1 do
   begin
-    act:= TTntAction(CEActions.ActionList.Actions[i]);
+    act:= TAction(CEActions.ActionList.Actions[i]);
     node:= GetCategory(act.Category, ActionTree);
     chNode:= ActionTree.AddChild(node);
     data:= ActionTree.GetNodeData(chNode);
@@ -365,7 +364,7 @@ begin
   if data1.IsSeparator and data1.IsSeparator then
   Result:= Ord(data1.SeparatorType) - Ord(data2.SeparatorType)
   else
-  Result:= WideCompareText(data1.Name, data2.Name);
+  Result:= AnsiCompareText(data1.Name, data2.Name);
 end;
 
 {*------------------------------------------------------------------------------

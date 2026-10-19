@@ -83,7 +83,7 @@ object CEOptionsDialog: TCEOptionsDialog
         BevelOuter = bvNone
         TabOrder = 1
       end
-      object PageTitlePanel: TTntPanel
+      object PageTitlePanel: TPanel
         Left = 4
         Top = 4
         Width = 441
@@ -149,7 +149,7 @@ object CEOptionsDialog: TCEOptionsDialog
     DesignSize = (
       590
       41)
-    object but_ok: TTntButton
+    object but_ok: TButton
       Left = 345
       Top = 6
       Width = 75
@@ -160,7 +160,7 @@ object CEOptionsDialog: TCEOptionsDialog
       TabOrder = 0
       OnClick = but_okClick
     end
-    object but_cancel: TTntButton
+    object but_cancel: TButton
       Left = 426
       Top = 6
       Width = 75
@@ -170,7 +170,7 @@ object CEOptionsDialog: TCEOptionsDialog
       TabOrder = 1
       OnClick = but_cancelClick
     end
-    object but_apply: TTntButton
+    object but_apply: TButton
       Left = 507
       Top = 6
       Width = 75

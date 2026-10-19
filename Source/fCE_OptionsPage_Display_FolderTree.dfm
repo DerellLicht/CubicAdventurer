@@ -1,5 +1,5 @@
 inherited CE_OptionsPage_Display_FolderTree: TCE_OptionsPage_Display_FolderTree
-  object check_autocollapse: TTntCheckBox
+  object check_autocollapse: TCheckBox
     Left = 16
     Top = 39
     Width = 401
@@ -8,7 +8,7 @@ inherited CE_OptionsPage_Display_FolderTree: TCE_OptionsPage_Display_FolderTree
     TabOrder = 0
     OnClick = HandleChange
   end
-  object check_autoexpand: TTntCheckBox
+  object check_autoexpand: TCheckBox
     Left = 16
     Top = 16
     Width = 401
@@ -17,7 +17,7 @@ inherited CE_OptionsPage_Display_FolderTree: TCE_OptionsPage_Display_FolderTree
     TabOrder = 1
     OnClick = HandleChange
   end
-  object check_newtabdefault: TTntCheckBox
+  object check_newtabdefault: TCheckBox
     Left = 16
     Top = 62
     Width = 401

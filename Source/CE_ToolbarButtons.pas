@@ -30,8 +30,7 @@ uses
   MPShellUtilities, MPCommonObjects, MPCommonUtilities, EasyListview,
   // TB2K, SpTBX
   SpTBXItem, TB2Item, SpTBXSkins, SpTBXEditors,
-  // Tnt Controls
-  TntActnList, TntClipbrd, TntSysUtils, TntClasses,
+  ActnList, Clipbrd,
   // System Units
   Classes, Windows, SysUtils, Controls, Messages, Graphics, ImgList, ShlObj,
   Variants;
@@ -132,7 +131,7 @@ type
   protected
     procedure DoChange(const AText: WideString); override;
     procedure DoClearButtonClick(Shift: TShiftState); override;
-    function GetComboItems: TTntStrings; override;
+    function GetComboItems: TStrings; override;
     procedure KeyPress(var Key: Char); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -424,58 +423,58 @@ end;
 procedure TCEFileViewCopyPathButton.OnSubClick(Sender: TObject);
 var
   fileView: TCEFileView;
-  list: TTntStrings;
+  list: TStrings;
   i: Integer;
 begin
   if GlobalPathCtrl.ActivePage is TCEFileViewPage then
   begin
     fileView:= TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView;
     case TComponent(Sender).Tag of
-      1: TntClipboard.AsText:= IncludeTrailingBackslashW(fileView.RootFolderNamespace.NameForParsing);
+      1: Clipboard.AsText:= IncludeTrailingBackslashW(fileView.RootFolderNamespace.NameForParsing);
       2: begin
            if fileview.Selection.Count > 1 then
-           TntClipboard.AsText:= fileview.SelectedFiles.Text
+           Clipboard.AsText:= fileview.SelectedFiles.Text
            else if fileview.Selection.Count = 1 then
-           TntClipboard.AsText:= fileview.SelectedFile
+           Clipboard.AsText:= fileview.SelectedFile
            else
-           TntClipboard.AsText:= fileview.RootFolderNamespace.NameInFolder;
+           Clipboard.AsText:= fileview.RootFolderNamespace.NameInFolder;
          end;
       3: begin
            if fileview.Selection.Count > 1 then
            begin
-             list:= TTntStringList.Create;
+             list:= TStringList.Create;
              try
                list.Assign(fileview.SelectedPaths);
                for i:= 0 to list.Count - 1 do
                list.Strings[i]:= ShortPath(list.Strings[i]);
-               TntClipboard.AsText:= list.Text;
+               Clipboard.AsText:= list.Text;
              finally
                list.Free;
              end;
            end
            else if fileview.Selection.Count = 1 then
-           TntClipboard.AsText:= ShortPath(fileview.SelectedPath)
+           Clipboard.AsText:= ShortPath(fileview.SelectedPath)
            else
-           TntClipboard.AsText:= ShortPath(IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing));
+           Clipboard.AsText:= ShortPath(IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing));
          end;
-      4: TntClipboard.AsText:= ShortPath(IncludeTrailingBackslashW(fileView.RootFolderNamespace.NameForParsing));
+      4: Clipboard.AsText:= ShortPath(IncludeTrailingBackslashW(fileView.RootFolderNamespace.NameForParsing));
       5: begin
            if fileview.Selection.Count > 1 then
            begin
-             list:= TTntStringList.Create;
+             list:= TStringList.Create;
              try
                list.Assign(fileview.SelectedPaths);
                for i:= 0 to list.Count - 1 do
-               list.Strings[i]:= WideExtractFileName(ShortPath(list.Strings[i]));
-               TntClipboard.AsText:= list.Text;
+               list.Strings[i]:= ExtractFileName(ShortPath(list.Strings[i]));
+               Clipboard.AsText:= list.Text;
              finally
                list.Free;
              end;
            end
            else if fileview.Selection.Count = 1 then
-           TntClipboard.AsText:= WideExtractFileName(ShortPath(fileview.SelectedPath))
+           Clipboard.AsText:= ExtractFileName(ShortPath(fileview.SelectedPath))
            else
-           TntClipboard.AsText:= WideExtractFileName(ShortPath(IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing)));
+           Clipboard.AsText:= ExtractFileName(ShortPath(IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing)));
          end;
     end;
   end;
@@ -861,7 +860,7 @@ end;
 {-------------------------------------------------------------------------------
   Get ComboItems
 -------------------------------------------------------------------------------}
-function TCEFilterPatternItem.GetComboItems: TTntStrings;
+function TCEFilterPatternItem.GetComboItems: TStrings;
 begin
   Result:= CEFiltersPanel.PatternHistory;
 end;

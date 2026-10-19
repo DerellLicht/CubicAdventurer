@@ -1,5 +1,5 @@
 inherited CEOptionsPage_General: TCEOptionsPage_General
-  object check_singleinstance: TTntCheckBox
+  object check_singleinstance: TCheckBox
     Left = 16
     Top = 296
     Width = 401
@@ -8,7 +8,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
     TabOrder = 0
     OnClick = HandleChange
   end
-  object group_startup: TTntGroupBox
+  object group_startup: TGroupBox
     Left = 16
     Top = 12
     Width = 241
@@ -18,7 +18,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
     DesignSize = (
       241
       129)
-    object radio_default: TTntRadioButton
+    object radio_default: TRadioButton
       Left = 11
       Top = 24
       Width = 227
@@ -28,7 +28,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       TabOrder = 0
       OnClick = radioClick
     end
-    object radio_lasttime: TTntRadioButton
+    object radio_lasttime: TRadioButton
       Left = 11
       Top = 47
       Width = 227
@@ -38,7 +38,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       TabOrder = 1
       OnClick = radioClick
     end
-    object radio_session: TTntRadioButton
+    object radio_session: TRadioButton
       Left = 11
       Top = 70
       Width = 227
@@ -48,7 +48,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       TabOrder = 2
       OnClick = radioClick
     end
-    object combo_sessions: TTntComboBox
+    object combo_sessions: TComboBox
       Left = 27
       Top = 93
       Width = 162
@@ -59,7 +59,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       OnChange = HandleChange
     end
   end
-  object TntGroupBox1: TTntGroupBox
+  object TntGroupBox1: TGroupBox
     Left = 16
     Top = 152
     Width = 409
@@ -69,7 +69,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
     DesignSize = (
       409
       121)
-    object check_tray_enable: TTntCheckBox
+    object check_tray_enable: TCheckBox
       Left = 11
       Top = 22
       Width = 395
@@ -79,7 +79,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       TabOrder = 0
       OnClick = HandleChange
     end
-    object check_tray_minimize: TTntCheckBox
+    object check_tray_minimize: TCheckBox
       Left = 27
       Top = 45
       Width = 379
@@ -89,7 +89,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       TabOrder = 1
       OnClick = HandleChange
     end
-    object check_tray_close: TTntCheckBox
+    object check_tray_close: TCheckBox
       Left = 27
       Top = 68
       Width = 379
@@ -99,7 +99,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       TabOrder = 2
       OnClick = HandleChange
     end
-    object check_tray_start: TTntCheckBox
+    object check_tray_start: TCheckBox
       Left = 27
       Top = 91
       Width = 379
@@ -110,7 +110,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       OnClick = HandleChange
     end
   end
-  object TntGroupBox2: TTntGroupBox
+  object TntGroupBox2: TGroupBox
     Left = 272
     Top = 12
     Width = 153

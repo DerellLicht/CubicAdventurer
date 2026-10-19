@@ -1,12 +1,12 @@
 inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
-  object TntLabel1: TTntLabel
+  object TntLabel1: TLabel
     Left = 16
     Top = 185
     Width = 76
     Height = 13
     Caption = 'File size format:'
   end
-  object check_fullrowselect: TTntCheckBox
+  object check_fullrowselect: TCheckBox
     Left = 16
     Top = 16
     Width = 401
@@ -15,7 +15,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
     TabOrder = 0
     OnClick = HandleChange
   end
-  object check_selectprev: TTntCheckBox
+  object check_selectprev: TCheckBox
     Left = 16
     Top = 39
     Width = 401
@@ -24,7 +24,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
     TabOrder = 1
     OnClick = HandleChange
   end
-  object check_autoselect: TTntCheckBox
+  object check_autoselect: TCheckBox
     Left = 16
     Top = 62
     Width = 401
@@ -33,7 +33,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
     TabOrder = 2
     OnClick = HandleChange
   end
-  object check_autosize_liststyle: TTntCheckBox
+  object check_autosize_liststyle: TCheckBox
     Left = 16
     Top = 85
     Width = 401
@@ -42,7 +42,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
     TabOrder = 3
     OnClick = HandleChange
   end
-  object check_sortfoldersfirst: TTntCheckBox
+  object check_sortfoldersfirst: TCheckBox
     Left = 16
     Top = 108
     Width = 401
@@ -51,7 +51,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
     TabOrder = 4
     OnClick = HandleChange
   end
-  object check_infotips: TTntCheckBox
+  object check_infotips: TCheckBox
     Left = 16
     Top = 131
     Width = 401
@@ -60,7 +60,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
     TabOrder = 5
     OnClick = HandleChange
   end
-  object check_singleclick: TTntCheckBox
+  object check_singleclick: TCheckBox
     Left = 16
     Top = 154
     Width = 401
@@ -69,7 +69,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
     TabOrder = 6
     OnClick = HandleChange
   end
-  object combo_sizeformat: TTntComboBox
+  object combo_sizeformat: TComboBox
     Left = 16
     Top = 200
     Width = 145

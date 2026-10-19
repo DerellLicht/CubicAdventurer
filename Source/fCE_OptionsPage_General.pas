@@ -26,26 +26,24 @@ interface
 uses
   // CE Units
   fCE_OptionsDialog, fCE_OptionsCustomPage, CE_LanguageEngine, dCE_Images,
-  // Tnt
-  TntStdCtrls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, SpTBXControls, SpTBXItem;
 
 type
   TCEOptionsPage_General = class(TCEOptionsCustomPage)
-    check_singleinstance: TTntCheckBox;
-    radio_default: TTntRadioButton;
-    group_startup: TTntGroupBox;
-    radio_lasttime: TTntRadioButton;
-    radio_session: TTntRadioButton;
-    combo_sessions: TTntComboBox;
-    check_tray_enable: TTntCheckBox;
-    check_tray_minimize: TTntCheckBox;
-    check_tray_close: TTntCheckBox;
-    check_tray_start: TTntCheckBox;
-    TntGroupBox1: TTntGroupBox;
-    TntGroupBox2: TTntGroupBox;
+    check_singleinstance: TCheckBox;
+    radio_default: TRadioButton;
+    group_startup: TGroupBox;
+    radio_lasttime: TRadioButton;
+    radio_session: TRadioButton;
+    combo_sessions: TComboBox;
+    check_tray_enable: TCheckBox;
+    check_tray_minimize: TCheckBox;
+    check_tray_close: TCheckBox;
+    check_tray_start: TCheckBox;
+    TntGroupBox1: TGroupBox;
+    TntGroupBox2: TGroupBox;
     but_register: TSpTBXButton;
     but_unregister: TSpTBXButton;
     procedure HandleChange(Sender: TObject);

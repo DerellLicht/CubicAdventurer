@@ -30,8 +30,6 @@ uses
   VirtualExplorerTree, MPCommonUtilities, MPShellUtilities,
   // VirtualTree
   VirtualTrees,
-  // Tnt Controls
-  TntClasses,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs;
@@ -47,7 +45,7 @@ type
     { Private declarations }
   protected
   public
-    CheckedFolders: TTntStringList;
+    CheckedFolders: TStringList;
     TriState: Boolean;
     function GetCheckedFolders(ParentsOnly: Boolean = false): WideString;
     procedure SetCheckedFolders(Folders: WideString);
@@ -63,7 +61,7 @@ implementation
 procedure TCEDestDlg.FormCreate(Sender: TObject);
 begin
   SetVistaFont(Font);
-  CheckedFolders:= TTntStringList.Create;
+  CheckedFolders:= TStringList.Create;
   CheckedFolders.Delimiter:= ',';
   CheckedFolders.StrictDelimiter:= true;
 end;

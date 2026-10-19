@@ -28,8 +28,6 @@ uses
 
   // JVCL
   JvSimpleXml,
-  // Tnt
-  TntClasses, TntSysUtils,
   // System Units
   Classes, SysUtils, Windows, Messages, ImgList, Controls, Contnrs, ActiveX;
 

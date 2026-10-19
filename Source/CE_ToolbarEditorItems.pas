@@ -26,11 +26,9 @@ interface
 uses
   // SpTBX
   SpTBXItem, SpTBXEditors, TB2Item, SpTBXSkins, TB2Toolbar, TB2Common,
-  // Tnt
-  TntStdCtrls,
   // System units
   Graphics, Windows, Classes, SysUtils, StdCtrls, Controls, Messages,
-  Forms, TntClasses;
+  Forms;
 
 type
   TCustomEditAccess = class(TCustomEdit);
@@ -108,7 +106,7 @@ type
     fComboItemIndex: Integer;
     procedure SetComboItemIndex(const Value: Integer);
   protected
-    function GetComboItems: TTntStrings; virtual;
+    function GetComboItems: TStrings; virtual;
     function GetItemViewerClass(AView: TTBView): TTBItemViewerClass; override;
     procedure KeyPress(var Key: Char); override;
   public
@@ -116,7 +114,7 @@ type
     destructor Destroy; override;
   published
     property ComboItemIndex: Integer read fComboItemIndex write SetComboItemIndex;
-    property ComboItems: TTntStrings read GetComboItems;
+    property ComboItems: TStrings read GetComboItems;
   end;
 
   TCEToolbarComboBoxItemViewer = class(TCEToolbarEditItemViewer)
@@ -725,7 +723,7 @@ begin
   inherited;
 end;
 
-function TCEToolbarComboBoxItem.GetComboItems: TTntStrings;
+function TCEToolbarComboBoxItem.GetComboItems: TStrings;
 begin
   Result:= nil;
 end;
@@ -1146,7 +1144,7 @@ begin
   Result := '';
   if Assigned(fComboBox) then
   begin
-    Result:= TTntComboBox(fComboBox).Text;
+    Result:= TComboBox(fComboBox).Text;
   end;
 end;
 

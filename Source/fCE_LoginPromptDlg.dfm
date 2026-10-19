@@ -21,21 +21,21 @@ object CELoginPromptDlg: TCELoginPromptDlg
     140)
   PixelsPerInch = 96
   TextHeight = 13
-  object TntLabel1: TTntLabel
+  object TntLabel1: TLabel
     Left = 12
     Top = 12
     Width = 48
     Height = 13
     Caption = 'Username'
   end
-  object TntLabel2: TTntLabel
+  object TntLabel2: TLabel
     Left = 163
     Top = 12
     Width = 46
     Height = 13
     Caption = 'Password'
   end
-  object label_warning: TTntLabel
+  object label_warning: TLabel
     Left = 12
     Top = 81
     Width = 297
@@ -45,14 +45,14 @@ object CELoginPromptDlg: TCELoginPromptDlg
     Enabled = False
     WordWrap = True
   end
-  object edit_username: TTntEdit
+  object edit_username: TEdit
     Left = 12
     Top = 31
     Width = 145
     Height = 21
     TabOrder = 0
   end
-  object edit_password: TTntEdit
+  object edit_password: TEdit
     Left = 163
     Top = 31
     Width = 146
@@ -60,7 +60,7 @@ object CELoginPromptDlg: TCELoginPromptDlg
     PasswordChar = '*'
     TabOrder = 1
   end
-  object check_save: TTntCheckBox
+  object check_save: TCheckBox
     Left = 12
     Top = 58
     Width = 297
@@ -68,7 +68,7 @@ object CELoginPromptDlg: TCELoginPromptDlg
     Caption = 'Remember'
     TabOrder = 2
   end
-  object but_ok: TTntButton
+  object but_ok: TButton
     Left = 153
     Top = 108
     Width = 75
@@ -79,7 +79,7 @@ object CELoginPromptDlg: TCELoginPromptDlg
     ModalResult = 1
     TabOrder = 3
   end
-  object but_cancel: TTntButton
+  object but_cancel: TButton
     Left = 234
     Top = 108
     Width = 75

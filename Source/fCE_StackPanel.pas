@@ -31,8 +31,6 @@ uses
   TB2Dock, SpTBXItem, TB2Item, TB2Toolbar, SpTBXEditors, SpTBXSkins,
   // VSTools
   MPCommonObjects, EasyListview, MPCommonUtilities,
-  // Tnt
-  TntClasses,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, VirtualTrees, ImgList;
@@ -55,13 +53,13 @@ type
     fSettings: TCEStackPanelSettings;
     { Private declarations }
   protected
-    fStackPaths: TTntStrings;
+    fStackPaths: TStrings;
     procedure HandleStackLoadClick(Sender: TObject);
     procedure HandleStackSaveClick(Sender: TObject);
   public
     StackTree: TCEStackTree;
     procedure DoFormShow; override;
-    function FindStackNames(AList: TTntStrings): Integer;
+    function FindStackNames(AList: TStrings): Integer;
     procedure ClearList;
     procedure DoStartUp; override;
     procedure LoadStartupStack;
@@ -156,7 +154,7 @@ begin
 
   GlobalAppSettings.AddItem('StackPanel', fSettings, true);
 
-  fStackPaths:= TTntStringList.Create;
+  fStackPaths:= TStringList.Create;
 
   CELayoutItems.Add(StackToolbar);
 end;
@@ -196,7 +194,7 @@ end;
 {-------------------------------------------------------------------------------
   Find Stack Names
 -------------------------------------------------------------------------------}
-function TCEStackPanel.FindStackNames(AList: TTntStrings): Integer;
+function TCEStackPanel.FindStackNames(AList: TStrings): Integer;
 var
   i: Integer;
 begin
@@ -211,7 +209,7 @@ begin
   AList.Clear;
   for i:= 0 to fStackPaths.Count - 1 do
   begin
-    AList.Add(WideExtractFileName(fStackPaths.Strings[i], true));
+    AList.Add(ExtractFileName(fStackPaths.Strings[i], true));
   end;
 end;
 
@@ -296,7 +294,7 @@ begin
     end;
     // Create new stack
     StackTree.ActiveStack:= TCEStackItem.Create;
-    StackTree.ActiveStack.StackName:= WideExtractFileName(ws, true);
+    StackTree.ActiveStack.StackName:= ExtractFileName(ws, true);
     StackTree.ActiveStack.LoadFromFile(ws);
     StackTree.LoadFromStack(StackTree.ActiveStack);
     if Settings.StartupType = stLastUsed then
@@ -332,7 +330,7 @@ begin
       dlg.ExistsWarningDescription:= _('Override existing stack?');
       dlg.ExistsWarningContent:= _('Do you want to override existing stack?');
       for i:= 0 to fStackPaths.Count - 1 do
-      dlg.combo.Items.Add(WideExtractFileName(fStackPaths.Strings[i], true));
+      dlg.combo.Items.Add(ExtractFileName(fStackPaths.Strings[i], true));
       dlg.combo.ItemIndex:= -1;
       dlg.combo.Text:= '';
       dlg.Position:= poDesigned;
@@ -356,7 +354,7 @@ begin
             end;
             stack:= TCEStackItem.Create;
             stack.StackPath:= fStackPaths.Strings[dlg.combo.ItemIndex];
-            stack.StackName:= WideExtractFileName(stack.StackPath, true);
+            stack.StackName:= ExtractFileName(stack.StackPath, true);
           end;
         end
         else
@@ -372,8 +370,8 @@ begin
         end;
 
         // Create stack dir if it doesn't exist
-        if not WideDirectoryExists(StackDirPath) then
-        WideCreateDir(StackDirPath);
+        if not DirectoryExists(StackDirPath) then
+        CreateDir(StackDirPath);
 
         StackTree.SaveToStack(stack);
         stack.SaveToFile(stack.StackPath);
@@ -406,7 +404,7 @@ begin
       end;
       stack:= TCEStackItem.Create;
       stack.StackPath:= ws;
-      stack.StackName:= WideExtractFileName(ws, true);
+      stack.StackName:= ExtractFileName(ws, true);
       StackTree.SaveToStack(stack);
       stack.SaveToFile(stack.StackPath);
       StackTree.ActiveStack:= stack;
@@ -427,7 +425,7 @@ begin
     FindStacks(StackDirPath, fStackPaths);
     for i:= 0 to fStackPaths.Count - 1 do
     begin
-      ws:= WideExtractFileName(fStackPaths.Strings[i], true);
+      ws:= ExtractFileName(fStackPaths.Strings[i], true);
       if ws = Settings.LoadOnStartup then
       begin
         StackTree.ActiveStack:= TCEStackItem.Create;
@@ -454,7 +452,7 @@ begin
   begin
     item:= TSpTBXItem.Create(AItem);
     ws:= fStackPaths.Strings[i];
-    item.Caption:= WideExtractFileName(ws, true);
+    item.Caption:= ExtractFileName(ws, true);
     item.Tag:= i;
     item.OnClick:= HandleStackLoadClick;
     item.Checked:= assigned(StackTree.ActiveStack) and (StackTree.ActiveStack.StackPath = ws);
@@ -491,7 +489,7 @@ begin
   begin
     item:= TSpTBXItem.Create(AItem);
     ws:= fStackPaths.Strings[i];
-    item.Caption:= WideExtractFileName(ws, true);
+    item.Caption:= ExtractFileName(ws, true);
     item.Checked:= assigned(StackTree.ActiveStack) and (StackTree.ActiveStack.StackPath = ws);
     item.Tag:= i;
     item.OnClick:= HandleStackSaveClick;

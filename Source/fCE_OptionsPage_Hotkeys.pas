@@ -31,16 +31,14 @@ uses
   VirtualTrees,
   // SpTBX
   SpTBXItem, SpTBXControls,
-  // TNT Controls
-  TntActnList, TntExtCtrls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, ImgList, StdCtrls, TntStdCtrls, ExtCtrls, ActnList;
+  Dialogs, Menus, ImgList, StdCtrls, ExtCtrls, ActnList;
 
 type
   PCEActTreeData = ^ACEActTreeData;
   ACEActTreeData = record
-    ActionItem: TTntAction;
+    ActionItem: TAction;
     IsCategory: Boolean;
     Name: WideString;
     IconIndex: Integer;
@@ -50,14 +48,14 @@ type
     HotkeyList: TVirtualStringTree;
     list_actionhotkeys: TListBox;
     label_action_name: TSpTBXLabel;
-    TntLabel1: TTntLabel;
-    edit_hotkey: TTntEdit;
-    TntBevel1: TTntBevel;
-    TntGroupBox1: TTntGroupBox;
-    but_add: TTntButton;
-    but_replace: TTntButton;
-    but_delete: TTntButton;
-    but_reset: TTntButton;
+    TntLabel1: TLabel;
+    edit_hotkey: TEdit;
+    TntBevel1: TBevel;
+    TntGroupBox1: TGroupBox;
+    but_add: TButton;
+    but_replace: TButton;
+    but_delete: TButton;
+    but_reset: TButton;
     procedure HotkeyListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
     procedure HotkeyListGetImageIndexEx(Sender: TBaseVirtualTree;
@@ -88,16 +86,16 @@ type
   private
     flist_mousedown: TPoint;
     fnewHotkey: TShortcut;
-    fselectedAction: TTntAction;
+    fselectedAction: TAction;
     procedure SetnewHotkey(const Value: TShortcut);
-    procedure SetselectedAction(const Value: TTntAction);
+    procedure SetselectedAction(const Value: TAction);
     { Private declarations }
   protected
     function CheckDuplicateHotkey(AShortcut: TShortcut; AShowWarning: Boolean):
         Boolean;
     procedure UpdateActionShortcuts;
     property newHotkey: TShortcut read fnewHotkey write SetnewHotkey;
-    property selectedAction: TTntAction read fselectedAction write
+    property selectedAction: TAction read fselectedAction write
         SetselectedAction;
   public
     constructor Create(AOwner: TComponent); override;
@@ -164,7 +162,7 @@ end;
 constructor TTCEOptionsPage_Hotkeys.Create(AOwner: TComponent);
 var
   i: Integer;
-  act: TTntAction;
+  act: TAction;
   node, chNode: PVirtualNode;
   data: PCEActTreeData;
 begin
@@ -183,7 +181,7 @@ begin
   HotkeyList.Clear;
   for i:= 0 to CEActions.ActionList.ActionCount - 1 do
   begin
-    act:= TTntAction(CEActions.ActionList.Actions[i]);
+    act:= TAction(CEActions.ActionList.Actions[i]);
     // move to next item if action can't execute
     if act is TCEToolbarAction then
       if not TCEToolbarAction(act).CanExecute then
@@ -452,7 +450,7 @@ end;
 {-------------------------------------------------------------------------------
   Set selectedAction
 -------------------------------------------------------------------------------}
-procedure TTCEOptionsPage_Hotkeys.SetselectedAction(const Value: TTntAction);
+procedure TTCEOptionsPage_Hotkeys.SetselectedAction(const Value: TAction);
 var
   i: Integer;
 begin
@@ -568,13 +566,13 @@ function TTCEOptionsPage_Hotkeys.CheckDuplicateHotkey(AShortcut: TShortcut;
     AShowWarning: Boolean): Boolean;
 var
   i: Integer;
-  act: TTntAction;
+  act: TAction;
   ws,ws2: String;
 begin
   Result:= true;
   for i:= 0 to CEActions.ActionList.ActionCount - 1 do
   begin
-    act:= TTntAction(CEActions.ActionList.Actions[i]);
+    act:= TAction(CEActions.ActionList.Actions[i]);
     if (act.ShortCut = AShortcut) or (act.SecondaryShortCuts.IndexOfShortCut(AShortcut) > -1) then
     begin
       if AShowWarning then

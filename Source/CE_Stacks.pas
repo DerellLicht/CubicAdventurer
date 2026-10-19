@@ -24,8 +24,6 @@ unit CE_Stacks;
 interface
 
 uses
-  // Tnt
-  TntClasses, TntSysUtils,
   // VS Tools
   MPShellUtilities, MPCommonUtilities,
   // System Units
@@ -38,11 +36,11 @@ type
     fStackName: WideString;
     fStackPath: WideString;
     function GetGroupCount: Integer;
-    function GetGroupItems(Index: Integer): TTntStrings;
+    function GetGroupItems(Index: Integer): TStrings;
     function GetGroupName(Index: Integer): WideString;
     procedure SetGroupName(Index: Integer; const Value: WideString);
   protected
-    fGroups: TTntStrings;
+    fGroups: TStrings;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -50,11 +48,11 @@ type
     procedure ClearGroups;
     procedure DeleteGroup(AIndex: Integer);
     procedure LoadFromFile(AFilePath: WideString);
-    procedure LoadFromList(AStrings: TTntStrings);
+    procedure LoadFromList(AStrings: TStrings);
     procedure SaveToFile(AFilePath: WideString);
-    procedure SaveToList(AStrings: TTntStrings);
+    procedure SaveToList(AStrings: TStrings);
     property GroupCount: Integer read GetGroupCount;
-    property GroupItems[Index: Integer]: TTntStrings read GetGroupItems;
+    property GroupItems[Index: Integer]: TStrings read GetGroupItems;
     property GroupName[Index: Integer]: WideString read GetGroupName write
         SetGroupName;
     property StackName: WideString read fStackName write fStackName;
@@ -65,7 +63,7 @@ type
   TCEStacks = class(TObject)
   private
     fStackDirPath: WideString;
-    fStackPaths: TTntStrings;
+    fStackPaths: TStrings;
     function GetCount: Integer;
     function GetItems(Index: Integer): TCEStackItem;
   protected
@@ -81,10 +79,10 @@ type
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TCEStackItem read GetItems;
     property StackDirPath: WideString read fStackDirPath write fStackDirPath;
-    property StackPaths: TTntStrings read fStackPaths;
+    property StackPaths: TStrings read fStackPaths;
   end;
 
-  function FindStacks(ADirPath: WideString; Results: TTntStrings): Integer;
+  function FindStacks(ADirPath: WideString; Results: TStrings): Integer;
 
 var
   StackDirPath: WideString;
@@ -98,22 +96,22 @@ uses WideStrings;
 {-------------------------------------------------------------------------------
   FindStacks
 -------------------------------------------------------------------------------}
-function FindStacks(ADirPath: WideString; Results: TTntStrings): Integer;
+function FindStacks(ADirPath: WideString; Results: TStrings): Integer;
 var
-  sr: TSearchRecW;
+  sr: TSearchRec;
 begin
   Result:= 0;
   if not assigned(Results) then
   Exit;
 
   Results.Clear;
-  ADirPath:= WideIncludeTrailingBackslash(ADirPath);
-  if WideFindFirst(ADirPath + '*.stk', faAnyFile, sr) = 0 then
+  ADirPath:= IncludeTrailingBackslash(ADirPath);
+  if FindFirst(ADirPath + '*.stk', faAnyFile, sr) = 0 then
   begin
     repeat
       Results.Add(ADirPath + sr.Name);
-    until WideFindNext(sr) <> 0;
-    WideFindClose(sr);
+    until FindNext(sr) <> 0;
+    FindClose(sr);
     Result:= Results.Count;
   end;
 end;
@@ -126,7 +124,7 @@ end;
 constructor TCEStackItem.Create;
 begin
   inherited;
-  fGroups:= TTntStringList.Create;
+  fGroups:= TStringList.Create;
 end;
 
 {-------------------------------------------------------------------------------
@@ -144,7 +142,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCEStackItem.AddGroup(AGroupName: WideString): Integer;
 begin
-  Result:= fGroups.AddObject(AGroupName, TTntStringList.Create);
+  Result:= fGroups.AddObject(AGroupName, TStringList.Create);
 end;
 
 {-------------------------------------------------------------------------------
@@ -179,9 +177,9 @@ end;
 {-------------------------------------------------------------------------------
   Get GroupItems
 -------------------------------------------------------------------------------}
-function TCEStackItem.GetGroupItems(Index: Integer): TTntStrings;
+function TCEStackItem.GetGroupItems(Index: Integer): TStrings;
 begin
-  Result:= TTntStrings(fGroups.Objects[Index]);
+  Result:= TStrings(fGroups.Objects[Index]);
 end;
 
 {-------------------------------------------------------------------------------
@@ -197,9 +195,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEStackItem.LoadFromFile(AFilePath: WideString);
 var
-  list: TTntStrings;
+  list: TStrings;
 begin
-  list:= TTntStringList.Create;
+  list:= TStringList.Create;
   try
     fStackPath:= AFilePath;
     list.LoadFromFile(AFilePath);
@@ -212,11 +210,11 @@ end;
 {-------------------------------------------------------------------------------
   Load From List
 -------------------------------------------------------------------------------}
-procedure TCEStackItem.LoadFromList(AStrings: TTntStrings);
+procedure TCEStackItem.LoadFromList(AStrings: TStrings);
 var
   i, c: Integer;
   ws: WideString;
-  items: TTntStrings;
+  items: TStrings;
 begin
   ClearGroups;
   items:= nil;
@@ -249,9 +247,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEStackItem.SaveToFile(AFilePath: WideString);
 var
-  list: TTntStrings;
+  list: TStrings;
 begin
-  list:= TTntStringList.Create;
+  list:= TStringList.Create;
   try
     SaveToList(list);
     list.SaveToFile(AFilePath);
@@ -263,10 +261,10 @@ end;
 {-------------------------------------------------------------------------------
   Save To List
 -------------------------------------------------------------------------------}
-procedure TCEStackItem.SaveToList(AStrings: TTntStrings);
+procedure TCEStackItem.SaveToList(AStrings: TStrings);
 var
   i, i2: Integer;
-  list: TTntStrings;
+  list: TStrings;
 begin
   if not assigned(AStrings) then
   Exit;
@@ -300,7 +298,7 @@ constructor TCEStacks.Create;
 begin
   inherited;
   fItems:= TObjectList.Create(true);
-  fStackPaths:= TTntStringList.Create;
+  fStackPaths:= TStringList.Create;
 end;
 
 {-------------------------------------------------------------------------------
@@ -352,20 +350,20 @@ end;
 -------------------------------------------------------------------------------}
 function TCEStacks.GetStackPaths(ADirPath: WideString = ''): Integer;
 var
-  sr: TSearchRecW;
+  sr: TSearchRec;
 begin
   Result:= -1;
   fStackPaths.Clear;
   if ADirPath = '' then
-  ADirPath:= WideIncludeTrailingBackslash(StackDirPath)
+  ADirPath:= IncludeTrailingBackslash(StackDirPath)
   else
-  ADirPath:= WideIncludeTrailingBackslash(ADirPath);
-  if WideFindFirst(ADirPath + '*.stk', faAnyFile, sr) = 0 then
+  ADirPath:= IncludeTrailingBackslash(ADirPath);
+  if FindFirst(ADirPath + '*.stk', faAnyFile, sr) = 0 then
   begin
     repeat
       fStackPaths.Add(ADirPath + sr.Name);
-    until WideFindNext(sr) <> 0;
-    WideFindClose(sr);
+    until FindNext(sr) <> 0;
+    FindClose(sr);
     Result:= fStackPaths.Count;
   end;
 end;
@@ -384,7 +382,7 @@ begin
     for i:= 0 to fStackPaths.Count - 1 do
     begin
       ws:= fStackPaths.Strings[i];
-      item:= AddStack(WideExtractFileName(ws, true));
+      item:= AddStack(ExtractFileName(ws, true));
       try
         item.LoadFromFile(ws);
       except
@@ -405,11 +403,11 @@ begin
   if ADirPath = '' then
   Exit;
   
-  ADirPath:= WideIncludeTrailingPathDelimiter(ADirPath);
+  ADirPath:= IncludeTrailingPathDelimiter(ADirPath);
 
   // Create stack dir if it doesn't exist
-  if not WideDirectoryExists(ADirPath) then
-  WideCreateDir(ADirPath);
+  if not DirectoryExists(ADirPath) then
+  CreateDir(ADirPath);
 
   for i:= 0 to Count - 1 do
   begin

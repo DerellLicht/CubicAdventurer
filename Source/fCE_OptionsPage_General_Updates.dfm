@@ -1,12 +1,12 @@
 inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
-  object TntLabel1: TTntLabel
+  object TntLabel1: TLabel
     Left = 16
     Top = 47
     Width = 195
     Height = 13
     Caption = 'Notify only about following update types'
   end
-  object check_autoupdates: TTntCheckBox
+  object check_autoupdates: TCheckBox
     Left = 16
     Top = 16
     Width = 413
@@ -15,7 +15,7 @@ inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
     TabOrder = 0
     OnClick = HandleChange
   end
-  object list_update_types: TTntCheckListBox
+  object list_update_types: TCheckListBox
     Left = 16
     Top = 66
     Width = 152
@@ -24,7 +24,7 @@ inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
     TabOrder = 1
     OnClick = HandleChange
   end
-  object group_proxy: TTntGroupBox
+  object group_proxy: TGroupBox
     Left = 16
     Top = 171
     Width = 409
@@ -34,14 +34,14 @@ inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
     DesignSize = (
       409
       130)
-    object label_proxy_address: TTntLabel
+    object label_proxy_address: TLabel
       Left = 29
       Top = 52
       Width = 39
       Height = 13
       Caption = 'Address'
     end
-    object label_proxy_port: TTntLabel
+    object label_proxy_port: TLabel
       Left = 327
       Top = 52
       Width = 20
@@ -50,7 +50,7 @@ inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
       Caption = 'Port'
       ExplicitLeft = 331
     end
-    object edit_proxy_address: TTntEdit
+    object edit_proxy_address: TEdit
       Left = 29
       Top = 71
       Width = 292
@@ -58,7 +58,7 @@ inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
     end
-    object edit_proxy_port: TTntEdit
+    object edit_proxy_port: TEdit
       Left = 327
       Top = 71
       Width = 66
@@ -66,7 +66,7 @@ inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
       Anchors = [akTop, akRight]
       TabOrder = 1
     end
-    object check_proxy_system: TTntCheckBox
+    object check_proxy_system: TCheckBox
       Left = 29
       Top = 98
       Width = 364
@@ -75,7 +75,7 @@ inherited CE_OptionsPage_General_Updates: TCE_OptionsPage_General_Updates
       TabOrder = 2
       OnClick = HandleChange
     end
-    object check_proxy: TTntCheckBox
+    object check_proxy: TCheckBox
       Left = 13
       Top = 25
       Width = 97

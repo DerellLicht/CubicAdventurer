@@ -28,8 +28,6 @@ uses
   VirtualTrees,
   // JCL
   JclCompressionWide,
-  // TNT
-  TntClasses,
   // System Units
   Classes, SysUtils, Windows, Forms, ImgList, Messages, Graphics;
 
@@ -105,7 +103,7 @@ type
     procedure PopulateAsTree; virtual;
     procedure RefreshItemSelection;
     function VerifyExtract(ADestinationDir: WideString; AConflictingPaths:
-        TTntStrings; AOverridesOnly: Boolean = true; AIgnorePathNotFound: Boolean =
+        TStrings; AOverridesOnly: Boolean = true; AIgnorePathNotFound: Boolean =
         true; ACheckedOnly: Boolean = false): Integer;
     property Archive: TJclCompressionArchive read fArchive;
     property CurrentFolder: WideString read GetCurrentFolder write SetCurrentFolder;
@@ -132,7 +130,7 @@ type
 implementation
 
 uses
-  MPCommonUtilities, ShellAPI, MPCommonObjects, TntSysUtils, CE_Utils;
+  MPCommonUtilities, ShellAPI, MPCommonObjects, CE_Utils;
 
 {-------------------------------------------------------------------------------
   FileTime To DateTime
@@ -205,7 +203,7 @@ begin
   Self.TreeOptions.SelectionOptions:= [toMultiSelect];
   fShowFilePathInFlat:= false;
   fSingleFolderMode:= false;
-  fLibraryMissing:= not WideFileExists(ExePath + '7z.dll');
+  fLibraryMissing:= not FileExists(ExePath + '7z.dll');
 end;
 
 {-------------------------------------------------------------------------------
@@ -460,11 +458,11 @@ begin
   begin
     Result:= Ord(data2.Kind) - Ord(data1.Kind);
     if Result = 0 then
-    Result:= WideCompareText(data1.Name, data2.Name);
+    Result:= AnsiCompareText(data1.Name, data2.Name);
   end
   else if (Column = 11) then // Path
   begin
-    Result:= WideCompareText(data1.Path, data2.Path);
+    Result:= AnsiCompareText(data1.Path, data2.Path);
   end
   else if assigned(data1.item) and assigned(data2.item) then
   begin
@@ -497,9 +495,9 @@ begin
       // CRC
       8: Result:= data1.item.CRC - data2.item.CRC;
       // Method
-      9: Result:= WideCompareText(data1.item.Method, data2.item.Method);
+      9: Result:= AnsiCompareText(data1.item.Method, data2.item.Method);
       // Host OS
-      10: Result:= WideCompareText(data1.item.HostOS, data2.item.HostOS);
+      10: Result:= AnsiCompareText(data1.item.HostOS, data2.item.HostOS);
     end;
   end;
 end;
@@ -608,7 +606,7 @@ procedure TCEArchiveTree.ExtractTo(ADestDir: WideString; ACreateSubDirs:
 begin
   if assigned(fArchive) then
   begin
-    fDestDir:= WideIncludeTrailingBackslash(ADestDir);
+    fDestDir:= IncludeTrailingBackslash(ADestDir);
     fCreateSubDirs:= ACreateSubDirs;
     TJclDecompressArchive(fArchive).ExtractAll(ADestDir, ACreateSubDirs);
   end;
@@ -689,7 +687,7 @@ var
   archiveClass: TJclDecompressArchiveClass;
 begin
   if fLibraryMissing then
-  fLibraryMissing:= not WideFileExists('7z.dll');
+  fLibraryMissing:= not FileExists('7z.dll');
   
   Result:= false;
 
@@ -743,9 +741,9 @@ begin
         if fShowFilePathInFlat then
         data.Name:= item.PackedName
         else
-        data.Name:= WideExtractFileName(item.PackedName);
+        data.Name:= ExtractFileName(item.PackedName);
         data.Kind:= item.Kind;
-        data.Path:= WideExtractFilePath(item.PackedName);
+        data.Path:= ExtractFilePath(item.PackedName);
         data.item:= item;
         data.fLastIconRefresh:= 0;
         Self.ValidateNode(node, false);
@@ -789,7 +787,7 @@ var
         Result:= Self.AddChild(nil);
         Self.CheckType[Result]:= ctTriStateCheckBox;
         data:= Self.GetNodeData(Result);
-        data.Name:= WideExtractFileName(WideExcludeTrailingBackslash(APath));
+        data.Name:= ExtractFileName(ExcludeTrailingBackslash(APath));
         data.Path:= APath;
         data.Kind:= ikDirectory;
         data.fLastIconRefresh:= 0;
@@ -822,7 +820,7 @@ begin
       // Add Node
       if not assigned(node) then
       begin
-        parentNode:= GetFolderNode(WideExtractFilePath(item.PackedName), true);
+        parentNode:= GetFolderNode(ExtractFilePath(item.PackedName), true);
         if parentNode = nil then
         parentNode:= Self.RootNode;
         node:= Self.AddChild(parentNode);
@@ -841,13 +839,13 @@ begin
       
       data:= Self.GetNodeData(node);
       // name
-      data.Name:= WideExtractFileName(item.PackedName);
+      data.Name:= ExtractFileName(item.PackedName);
       // kind
       data.Kind:= item.Kind;
 
       // path
       if data.Kind = ikDirectory then
-      data.Path:= WideIncludeTrailingBackslash(item.PackedName)
+      data.Path:= IncludeTrailingBackslash(item.PackedName)
       else
       data.Path:= item.PackedName;
       data.item:= item;
@@ -1070,7 +1068,7 @@ end;
   VerifyExtract (Returns number of conflicting paths. -1 is returned when destination dir doesn't exist)
 -------------------------------------------------------------------------------}
 function TCEArchiveTree.VerifyExtract(ADestinationDir: WideString;
-    AConflictingPaths: TTntStrings; AOverridesOnly: Boolean = true;
+    AConflictingPaths: TStrings; AOverridesOnly: Boolean = true;
     AIgnorePathNotFound: Boolean = true; ACheckedOnly: Boolean = false):
     Integer;
 var
@@ -1085,8 +1083,8 @@ begin
   if not assigned(AConflictingPaths) then
   raise Exception.Create('AConflictingPaths has to be assigned!');
 
-  ADestinationDir:= WideIncludeTrailingBackslash(ADestinationDir);
-  if WideDirectoryExists(ADestinationDir) then
+  ADestinationDir:= IncludeTrailingBackslash(ADestinationDir);
+  if DirectoryExists(ADestinationDir) then
   begin
     AConflictingPaths.Clear;
     if assigned(fArchive) then
@@ -1100,7 +1098,7 @@ begin
         if (item.Kind = ikFile) and (not ACheckedOnly or (ACheckedOnly and item.Selected)) then
         begin
           path:= ADestinationDir + item.PackedName;
-          if WideFileExists(path) then
+          if FileExists(path) then
           begin
             h:= WideFileOpen(path, fmOpenReadWrite);
             err:= GetLastError;
@@ -1120,8 +1118,8 @@ begin
             end
             else
             FileClose(h);
-            if WideFileExists(path) then
-            WideDeleteFile(path);
+            if FileExists(path) then
+            DeleteFile(path);
           end;
         end;
       end;

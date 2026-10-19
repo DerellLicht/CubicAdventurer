@@ -1,5 +1,5 @@
 inherited CEOptionsPage_Display: TCEOptionsPage_Display
-  object TntLabel1: TTntLabel
+  object TntLabel1: TLabel
     Left = 16
     Top = 16
     Width = 32
@@ -15,7 +15,7 @@ inherited CEOptionsPage_Display: TCEOptionsPage_Display
     TabOrder = 0
     OnChange = HandleChange
   end
-  object check_path_in_title: TTntCheckBox
+  object check_path_in_title: TCheckBox
     Left = 16
     Top = 71
     Width = 409
@@ -24,7 +24,7 @@ inherited CEOptionsPage_Display: TCEOptionsPage_Display
     TabOrder = 1
     OnClick = HandleChange
   end
-  object TntButton1: TTntButton
+  object TntButton1: TButton
     Left = 16
     Top = 288
     Width = 177

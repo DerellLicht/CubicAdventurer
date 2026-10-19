@@ -24,8 +24,6 @@ unit CE_AppPanel;
 interface
 
 uses
-  // Tnt
-  TntWindows, TntSysUtils,
   // System Units
   Windows, Messages, SysUtils, Classes, ExtCtrls, Forms, Dialogs, Controls;
 
@@ -200,7 +198,7 @@ begin
   StartInfoW.wShowWindow:= SW_HIDE;
   StartInfoW.dwFlags:= STARTF_USESHOWWINDOW;
   try
-    CreateOK:= Tnt_CreateProcessW(nil,
+    CreateOK:= CreateProcessW(nil,
                                   PWideChar(fCommandLine),
                                   nil,
                                   nil,

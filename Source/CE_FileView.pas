@@ -35,8 +35,6 @@ uses
   VirtualShellNewMenu, VirtualShellNotifier,
   // SpTBX, TB2K
   SpTBXItem, TB2Item,
-  // Tnt Controls
-  TntSysUtils,
   // System Units
   Windows, Messages, SysUtils, Classes, Controls, ExtCtrls, Forms,
   Graphics, Menus, ShellAPI, ShlObj, Math, ActiveX;
@@ -508,7 +506,7 @@ var
   NS: TNamespace;
   Item: TExplorerItem;
 begin
-  if (WideDirectoryExists(FileName) or WideFileExists(FileName)) then
+  if (DirectoryExists(FileName) or FileExists(FileName)) then
   begin
     Item:= Self.FindItemByPath(FileName) as TExplorerItem;
     if not assigned(Item) then
@@ -534,7 +532,7 @@ procedure TCEFileView.OnCreateNewFile(Sender: TMenu; const NewMenuItem:
     TVirtualShellNewItem; var Path, FileName: WideString; var Allow: Boolean);
 begin
   Path:= self.RootFolderNamespace.NameForParsing;
-  if not WideDirectoryExists(Path) then
+  if not DirectoryExists(Path) then
   Path:= '';
 end;
 
@@ -581,15 +579,15 @@ var
   item: TEasyItem;
   h: THandle;
 begin
-  if WideDirectoryExists(RootFolderNamespace.NameForParsing) then
+  if DirectoryExists(RootFolderNamespace.NameForParsing) then
   begin
-   path:= UniqueDirName(WideIncludeTrailingBackslash(RootFolderNamespace.NameForParsing) + _('New File'));
+   path:= UniqueDirName(IncludeTrailingBackslash(RootFolderNamespace.NameForParsing) + _('New File'));
 
    h:= CreateFileW(PWideChar(path),0,0,nil,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,0);
    if h <> INVALID_HANDLE_VALUE then
    begin
      CloseHandle(h);
-     if WideFileExists(path) then
+     if FileExists(path) then
      begin
        if not Self.Focused then
        Self.SetFocus;
@@ -615,11 +613,11 @@ var
   NS: TNamespace;
   item: TEasyItem;
 begin
-  if WideDirectoryExists(RootFolderNamespace.NameForParsing) then
+  if DirectoryExists(RootFolderNamespace.NameForParsing) then
   begin
-   path:= UniqueDirName(WideIncludeTrailingBackslash(RootFolderNamespace.NameForParsing) + _('New Folder'));
-   WideCreateDir(path);
-   if WideDirectoryExists(path) then
+   path:= UniqueDirName(IncludeTrailingBackslash(RootFolderNamespace.NameForParsing) + _('New Folder'));
+   CreateDir(path);
+   if DirectoryExists(path) then
    begin
      if not Self.Focused then
      Self.SetFocus;
@@ -1198,7 +1196,7 @@ begin
     begin
       useKernel:= not Namespace.IsNetworkNeighborhoodChild;
       if useKernel then
-      useKernel:= WideGetDriveType(WideIncludeTrailingBackslash(Namespace.NameForParsing)) = DRIVE_FIXED;
+      useKernel:= WideGetDriveType(IncludeTrailingBackslash(Namespace.NameForParsing)) = DRIVE_FIXED;
 
       if useKernel then
       ChangeNotifier.NotifyWatchFolder(Self, Namespace.NameForParsing)

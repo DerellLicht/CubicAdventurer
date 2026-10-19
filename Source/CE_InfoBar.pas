@@ -28,8 +28,6 @@ uses
   CE_LanguageEngine, CE_Utils,
   // SpTBX
   SpTBXSkins, SpTBXItem, SpTBXControls,
-  // TNT
-  TntGraphics, TntClasses,
   // VSTools
   MPShellUtilities, MPShellTypes, MPCommonObjects,
   // System Units
@@ -207,13 +205,13 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEInfoBar.BuildInfoList(AInfo: WideString = '');
 var
-  list: TTntStrings;
+  list: TStrings;
   i,c: Integer;
 begin
   if not assigned(fLatestNS) then
   Exit;
 
-  list:= TTntStringList.Create;
+  list:= TStringList.Create;
   list.NameValueSeparator:= ':';
   try
     fInfoList.Clear;

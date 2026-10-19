@@ -217,7 +217,7 @@ var
   J: TJPEGImage;
 begin
   Result:= nil;
-  Ext:= WideLowerCase(WideExtractFileExt(AFilePath));
+  Ext:= AnsiLowerCase(ExtractFileExt(AFilePath));
   GraphicClass:= FileFormatList.GraphicFromExtension(Ext);
   if GraphicClass <> nil then
   begin
@@ -279,7 +279,7 @@ var
   ar: Extended;
 begin
   Result:= nil;
-  Ext:= WideLowerCase(WideExtractFileExt(AFilePath));
+  Ext:= AnsiLowerCase(ExtractFileExt(AFilePath));
   // load jpeg and metafile
   if (Ext = '.jpg') or (Ext = '.jpeg') or (Ext = '.jif') or (Ext = '.jpe') or (Ext = '.wmf') or (Ext = '.emf') then
   begin
@@ -1043,9 +1043,9 @@ begin
   if AObject is TCVImageViewTask then
   begin
     task:= TCVImageViewTask(AObject);
-    if WideFileExists(task.FilePath) then
+    if FileExists(task.FilePath) then
     begin
-      Ext:= WideExtractFileExt(task.FilePath);
+      Ext:= ExtractFileExt(task.FilePath);
       // Thumbnail
       if task.Thumbnail then
       begin
@@ -1310,12 +1310,12 @@ begin
   // abort previous tasks
   Abort;
 
-  if WideFileExists(AFilePath) then
+  if FileExists(AFilePath) then
   begin
     fActiveFilePath:= AFilePath;
     if Async then
     begin
-      Ext:= WideLowerCase(WideExtractFileExt(fActiveFilePath));
+      Ext:= AnsiLowerCase(ExtractFileExt(fActiveFilePath));
       fSupportsOptimizedLoad:= fLoadOptimalSize and ((Ext = '.jpg') or (Ext = '.jpeg') or (Ext = '.jif') or (Ext = '.jpe') or (Ext = '.wmf') or (Ext = '.emf'));
       // Thumbnail
       if fUseThumbnailPreview and not fSupportsOptimizedLoad then

@@ -24,22 +24,20 @@ unit fCE_LoginPromptDlg;
 interface
 
 uses
-  // Tnt
-  TntStdCtrls, TntForms,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls;
 
 type
-  TCELoginPromptDlg = class(TTntForm)
-    TntLabel1: TTntLabel;
-    TntLabel2: TTntLabel;
-    edit_username: TTntEdit;
-    edit_password: TTntEdit;
-    check_save: TTntCheckBox;
-    label_warning: TTntLabel;
-    but_ok: TTntButton;
-    but_cancel: TTntButton;
+  TCELoginPromptDlg = class(TForm)
+    TntLabel1: TLabel;
+    TntLabel2: TLabel;
+    edit_username: TEdit;
+    edit_password: TEdit;
+    check_save: TCheckBox;
+    label_warning: TLabel;
+    but_ok: TButton;
+    but_cancel: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
   private

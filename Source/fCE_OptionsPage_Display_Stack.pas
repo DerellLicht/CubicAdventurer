@@ -27,22 +27,20 @@ uses
   // CE Units
   fCE_OptionsDialog, fCE_OptionsCustomPage, fCE_FolderPanel,
   CE_LanguageEngine,
-  // Tnt
-  TntStdCtrls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls;
 
 type
   TCE_OptionsPage_Display_Stack = class(TCEOptionsCustomPage)
-    check_autoexpand: TTntCheckBox;
-    check_autocollapse: TTntCheckBox;
-    check_fullexpand: TTntCheckBox;
-    group_startup: TTntGroupBox;
-    radio_empty: TTntRadioButton;
-    radio_lastused: TTntRadioButton;
-    radio_selected: TTntRadioButton;
-    combo_stacks: TTntComboBox;
+    check_autoexpand: TCheckBox;
+    check_autocollapse: TCheckBox;
+    check_fullexpand: TCheckBox;
+    group_startup: TGroupBox;
+    radio_empty: TRadioButton;
+    radio_lastused: TRadioButton;
+    radio_selected: TRadioButton;
+    combo_stacks: TComboBox;
     procedure radioClick(Sender: TObject);
   private
     { Private declarations }

@@ -29,8 +29,6 @@ requires
   rtl,
   vcl,
   dclstd,
-  TntUnicodeVcl,
-  TntUnicodeVcl_Design,
   tb2k_d10,
   tb2kdsgn_d10,
   SpTBXLib_d10,

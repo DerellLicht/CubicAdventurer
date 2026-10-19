@@ -31,9 +31,6 @@ uses
   MPCommonUtilities,
   // VT
   VirtualTrees,
-  // TNT
-  TntSysUtils, TntComCtrls, TntClasses, TntActnList, TntStdCtrls, TntButtons,
-  TntForms,
   // SpTBX, TBX, TB2000
   SpTBXTabs, SpTBXControls, SpTBXDkPanels,
   SpTBXItem, TB2Item, TB2ExtItems, SpTBXEditors, TB2Dock, TB2Toolbar,
@@ -53,10 +50,10 @@ type
     SpTBXItem2: TSpTBXItem;
     SpTBXItem3: TSpTBXItem;
     SpTBXSeparatorItem1: TSpTBXSeparatorItem;
-    ActionList: TTntActionList;
-    act_save: TTntAction;
-    act_new: TTntAction;
-    act_apply: TTntAction;
+    ActionList: TActionList;
+    act_save: TAction;
+    act_new: TAction;
+    act_apply: TAction;
     TabControl: TSpTBXTabControl;
     SpTBXTabItem1: TSpTBXTabItem;
     WordsSheet: TSpTBXTabSheet;
@@ -69,30 +66,30 @@ type
     PoItemStrMsg_panel: TSpTBXPanel;
     PoList_panel: TSpTBXPanel;
     PoList: TVirtualStringTree;
-    PoItemStrID: TTntMemo;
-    PoItemStrMsg: TTntMemo;
+    PoItemStrID: TMemo;
+    PoItemStrMsg: TMemo;
     SpTBXPanel1: TSpTBXPanel;
     SpTBXButton1: TSpTBXButton;
     SpTBXItem4: TSpTBXItem;
-    TntLabel5: TTntLabel;
-    TntLabel6: TTntLabel;
+    TntLabel5: TLabel;
+    TntLabel6: TLabel;
     LanguagesCombo: TSpTBXComboBox;
     TBControlItem1: TTBControlItem;
-    TntLabel1: TTntLabel;
-    TntLabel2: TTntLabel;
-    TntLabel3: TTntLabel;
-    TntLabel4: TTntLabel;
-    label1: TTntLabel;
-    label2: TTntLabel;
+    TntLabel1: TLabel;
+    TntLabel2: TLabel;
+    TntLabel3: TLabel;
+    TntLabel4: TLabel;
+    label1: TLabel;
+    label2: TLabel;
     LanguageList: TComboBox;
-    label_pot_rev: TTntLabel;
-    label_translation_rev: TTntLabel;
-    edit_translators_name: TTntEdit;
-    edit_translators_email: TTntEdit;
-    edit_translation_version: TTntEdit;
+    label_pot_rev: TLabel;
+    label_translation_rev: TLabel;
+    edit_translators_name: TEdit;
+    edit_translators_email: TEdit;
+    edit_translation_version: TEdit;
     panel_startup: TSpTBXPanel;
     label_startup: TSpTBXLabel;
-    act_saveas: TTntAction;
+    act_saveas: TAction;
     SpTBXItem1: TSpTBXItem;
     SpTBXItem5: TSpTBXItem;
     SpTBXSeparatorItem2: TSpTBXSeparatorItem;
@@ -135,7 +132,7 @@ type
     fLocaleDir: WideString;
     fOnTranslateUI: TNotifyEvent;
     fTranslationRev: Integer;
-    poFileList: TTntStrings;
+    poFileList: TStrings;
     procedure SetActiveLanguage(const Value: WideString);
     procedure SetDomainName(const Value: String);
     procedure SetIsChanged(const Value: Boolean);
@@ -145,7 +142,7 @@ type
   protected
     fActiveFile: WideString;
     fIsChanged: Boolean;
-    HeaderInfo: TTntStrings;
+    HeaderInfo: TStrings;
     procedure AssignListFromPoFile;
   public
     POFile: TCEPOFile;
@@ -169,7 +166,7 @@ type
     property OnTranslateUI: TNotifyEvent read fOnTranslateUI write fOnTranslateUI;
   end;
 
-  TCEPoEditorForm = class(TTntForm)
+  TCEPoEditorForm = class(TForm)
   protected
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure HandleKeyPress(Sender: TObject; var Key: Char);
@@ -181,12 +178,11 @@ type
 
 implementation
 
-uses
-  TntDialogs;
+
 
 {$R *.dfm}
 
-procedure TrimList(AList: TTntStrings);
+procedure TrimList(AList: TStrings);
 var
   i: Integer;
   nameW,valueW: WideString;
@@ -200,7 +196,7 @@ begin
   end;
 end;
 
-procedure AddSpaceToList(AList: TTntStrings);
+procedure AddSpaceToList(AList: TStrings);
 var
   i: Integer;
 begin
@@ -219,14 +215,14 @@ begin
   POList.NodeDataSize:= SizeOf(APOListItem);
   POFile:= TCEPOFile.Create;
   POTFile:= TCEPOFile.Create;
-  HeaderInfo:= TTntStringList.Create;
+  HeaderInfo:= TStringList.Create;
   HeaderInfo.NameValueSeparator:= ':';
   // Init stuff
   GetLanguageNames(LanguageList.Items);
   LanguageList.Sorted:= true;
   fDomainName:= 'default';
   fActiveLanguage:= '';
-  poFileList:= TTntStringList.Create;
+  poFileList:= TStringList.Create;
   poFileList.NameValueSeparator:= '=';
   IsChanged:= false;
   IsApplyed:= true;
@@ -289,8 +285,8 @@ begin
   begin
     list:= TStringList.Create;
     try
-      if not WideDirectoryExists(path) then
-      WideForceDirectories(path);
+      if not DirectoryExists(path) then
+      ForceDirectories(path);
       // Default data
       list.Add('# Translation for CubicExplorer');
       list.Add('#');
@@ -304,8 +300,8 @@ begin
       list.Add('"CE-Language: ' + lang + '\n"');
       list.Add('');
       // Save PO
-      ws:= WideIncludeTrailingBackslash(path) + DomainName + '.po';
-      s:= TTntFileStream.Create(ws, fmCreate);
+      ws:= IncludeTrailingBackslash(path) + DomainName + '.po';
+      s:= TFileStream.Create(ws, fmCreate);
       try
         s.Position:= 0;
         list.SaveToStream(s);
@@ -335,9 +331,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEPoEditor.act_saveasExecute(Sender: TObject);
 var
-  dlg: TTntSaveDialog;
+  dlg: TSaveDialog;
 begin
-  dlg:= TTntSaveDialog.Create(nil);
+  dlg:= TSaveDialog.Create(nil);
   try
     dlg.FileName:= fActiveFile;
     if dlg.Execute then
@@ -471,7 +467,7 @@ var
   i,i2: Integer;
 begin
   PoList.Clear;
-  if not WideFileExists(AFilePath) then
+  if not FileExists(AFilePath) then
   Exit;
   fActiveFile:= AFilePath;
   POFile.LoadFromFile(AFilePath);
@@ -557,9 +553,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEPoEditor.SaveToFile(AFilePath: WideString);
 var
-  list: TTntStrings;
+  list: TStrings;
 begin
-  list:= TTntStringList.Create;
+  list:= TStringList.Create;
   try
     list.Assign(HeaderInfo);
     AddSpaceToList(list);
@@ -662,9 +658,9 @@ begin
   data1:= PoList.GetNodeData(Node1);
   data2:= PoList.GetNodeData(Node2);
   if Column = 0 then
-  Result:= WideCompareText(data1.PoItem.MsgID, data2.PoItem.MsgID)
+  Result:= AnsiCompareText(data1.PoItem.MsgID, data2.PoItem.MsgID)
   else
-  Result:= WideCompareText(data1.PoItem.MsgStr, data2.PoItem.MsgStr);
+  Result:= AnsiCompareText(data1.PoItem.MsgStr, data2.PoItem.MsgStr);
 end;
 
 {*------------------------------------------------------------------------------
