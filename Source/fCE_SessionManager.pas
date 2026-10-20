@@ -26,8 +26,8 @@ interface
 uses
   // CubicExplorer
   CE_Sessions, CE_VistaFuncs,
-  // VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree
-  VirtualTrees,
+  // VirtualTrees
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, SpTBXControls, SpTBXEditors, SpTBXItem,

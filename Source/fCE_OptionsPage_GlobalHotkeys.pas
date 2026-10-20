@@ -27,8 +27,8 @@ uses
   // CE
   fCE_OptionsCustomPage, CE_LanguageEngine, fCE_OptionsDialog, dCE_Images,
   dCE_Actions, CE_Utils,
-  // VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree
-  VirtualTrees,
+  // VirtualTrees
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // SpTBX
   SpTBXItem, SpTBXControls,
   // System Units

@@ -7,8 +7,8 @@ uses
   ccThreadUtils, ccClasses, ccFileUtils,
   // VSTools
   VirtualShellNotifier, VirtualResources,
-  // VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree
-  VirtualTrees,
+  // VirtualTrees
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // SysUtils
   Windows, Messages, Controls, Classes, Graphics, ImgList, ActiveX, SysUtils;
 
@@ -40,19 +40,18 @@ type
     fOnIsSupported: TCVPlaylistIsSupportedEvent;
     fOnNavigationStateChange: TNotifyEvent;
     procedure AssignTo(Dest: TPersistent); override;
-    procedure DoDragDrop(Source: TObject; DataObject: IDataObject; Formats:
+    procedure DoDragDrop(Source: TObject; const DataObject: TVTDragDataObject; const Formats:
         TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode:
         TDropMode); override;
     function DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; Pt:
         TPoint; Mode: TDropMode; var Effect: Integer): Boolean; override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: Integer): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
         override;
     function DoGetNodeHint(Node: PVirtualNode; Column: TColumnIndex; var
         LineBreakStyle: TVTTooltipLineBreakStyle): UnicodeString; override;
-    procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex; TextType:
-        TVSTTextType; var Text: UnicodeString); override;
+    procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
     function DoKeyAction(var CharCode: Word; var Shift: TShiftState): Boolean;
         override;
     procedure DoNavigationStateChange; virtual;
@@ -131,7 +130,7 @@ type
     fThreadedIcons: Boolean;
     procedure AssignTo(Dest: TPersistent); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: Integer): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
         override;
     procedure HandleTaskDone(Sender: TObject; AObject: TObject; AData: Pointer;
         ATag: Integer); virtual;
@@ -287,8 +286,8 @@ end;
 {*------------------------------------------------------------------------------
   Get's called when a object is dropped.
 -------------------------------------------------------------------------------}
-procedure TCVPlaylist.DoDragDrop(Source: TObject; DataObject:
-    IDataObject; Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var
+procedure TCVPlaylist.DoDragDrop(Source: TObject; const DataObject:
+    TVTDragDataObject; const Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var
     Effect: Integer; Mode: TDropMode);
 var
  // data: PCEBookData;
@@ -470,7 +469,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCVPlaylist.DoGetImageIndex(Node: PVirtualNode; Kind:
     TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index:
-    Integer): TCustomImageList;
+    TImageIndex): TCustomImageList;
 var
   data: PCVPlaylistData;
   ns: TNamespace;
@@ -516,13 +515,13 @@ end;
 {-------------------------------------------------------------------------------
   Do GetText
 -------------------------------------------------------------------------------}
-procedure TCVPlaylist.DoGetText(Node: PVirtualNode; Column:
-    TColumnIndex; TextType: TVSTTextType; var Text: UnicodeString);
+procedure TCVPlaylist.DoGetText(var pEventArgs: TVSTGetCellTextEventArgs);
 var
   data: PCVPlaylistData;
 begin
-  data:= Self.GetNodeData(Node);
-  Text:= data.Title;
+  // revival: VirtualTrees 8+ passes node/column/text in one event-args record.
+  data:= Self.GetNodeData(pEventArgs.Node);
+  pEventArgs.CellText:= data.Title;
   inherited;
 end;
 
@@ -911,7 +910,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCVFilelist.DoGetImageIndex(Node: PVirtualNode; Kind:
     TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index:
-    Integer): TCustomImageList;
+    TImageIndex): TCustomImageList;
 var
   data: PCVPlaylistData;
   task: TCVFilelistTask;
@@ -996,7 +995,7 @@ var
     sr: TCCSearchRec;
     newTask: TCVFilelistTask;
   begin
-    if FindFirst(dirPath + '*.*', faAnyFile, sr) = S_OK then
+    if WideFindFirst(dirPath + '*.*', faAnyFile, sr) = S_OK then
     begin
       repeat
         // add file to list
@@ -1041,8 +1040,8 @@ var
             end;
           end;
         end;
-      until (FindNext(sr) <> S_OK) or Sender.IsAborted;
-      FindClose(sr);
+      until (WideFindNext(sr) <> S_OK) or Sender.IsAborted;
+      WideFindClose(sr);
       
       if (task.Results.Count > 0) and not Sender.IsAborted then
       Sender.SendSyncMessage(FilelistTask_FilesFound, 0, 0);
