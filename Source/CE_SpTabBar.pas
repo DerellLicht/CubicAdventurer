@@ -118,8 +118,6 @@ type
     function GetNextTab(ANextFrom: TTBCustomItem): TSpTBXTabItem;
     function GetPrevTab(APrevFrom: TTBCustomItem): TSpTBXTabItem;
     procedure HandleArrowClick(Sender: TObject); virtual;
-    procedure InternalDrawBackground(ACanvas: TCanvas; ARect: TRect; PaintOnNCArea:
-        Boolean; PaintBorders: Boolean = True); override;
     procedure RightAlignItems; override;
     procedure Scroll(ToRight: Boolean = true);
     procedure ScrollToView(AItem: TSpTBXTabItem; ACenter: Boolean = false);
@@ -1118,7 +1116,7 @@ begin
   begin
     ARect.Left:= ARect.Left - 2;
     ARect.Right:= ARect.Right + 3;
-    SpDrawXPTabControlBackground(Self, FBackground.Canvas, ARect, Color, TabPosition = ttpBottom);
+    SpDrawXPTabControlBackground(Self, ACanvas, ARect, Color, TabPosition = ttpBottom);
     PaintDefault:= false;
   end;
 end;
@@ -1602,8 +1600,6 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESpTabToolbar.DoItemNotification(Ancestor: TTBCustomItem; Relayed:
     Boolean; Action: TTBItemChangedAction; Index: Integer; Item: TTBCustomItem);
-var
-  I: Integer;
 begin
   if (csDestroying in ComponentState) or (csReading in ComponentState) then Exit;
 
@@ -1644,9 +1640,6 @@ begin
         end;
       tbicDeleting:
         begin
-          I := FAnchoredControlItems.IndexOf(Item);
-          if I > -1 then
-            FAnchoredControlItems.Delete(I);
           if Item = lastTab then
           begin
             lastTab:= GetPrevTab(Item);
@@ -1856,93 +1849,8 @@ begin
   Scroll(Sender = RightArrow);
 end;
 
-{-------------------------------------------------------------------------------
-  Internal Draw Background
--------------------------------------------------------------------------------}
-procedure TCESpTabToolbar.InternalDrawBackground(ACanvas: TCanvas; ARect:
-    TRect; PaintOnNCArea: Boolean; PaintBorders: Boolean = True);
-var
-  B: TBitmap;
-  R, BitmapR, DestR: TRect;
-  Tab: TSpTBXTabItem;
-  IV: TTBItemViewer;
-  T: TSpTBXSkinType;
-  PrevDelta, NextDelta: Integer;
-begin
-  inherited;
-  
-  T := SpTBXSkinType(SkinType);
-  if PaintOnNCArea and Assigned(FOwnerTabControl) then
-  begin
-    B:= TBitmap.Create;
-    B.Canvas.Lock;
-    try
-      R:= ARect;
-      R.Left:= R.Left - 2;
-      R.Right:= R.Right + 4;
-      B.Width:= (R.Right - R.Left);
-      B.Height:= R.Bottom - R.Top;
-
-      SpDrawXPToolbar(Self, B.Canvas, R, PaintOnNCArea, TabBackgroundBorders and (T <> sknNone), skncTabToolbar);
-
-      // Draw the bottom border of the active tab
-      Tab:= ActiveTab;
-      if Assigned(Tab) and Tab.Visible then
-      begin
-        IV:= SpFindItemViewer(View, Tab);
-        if Assigned(IV) then
-        begin
-          DestR:= IV.BoundsRect;
-          OffsetRect(DestR, 2, 2);  // Add the toolbar margins
-          TSpTBXTabItemViewerAccess(IV).DrawBottomBorder(B.Canvas, DestR);
-        end;
-        if T = sknWindows then
-        begin
-          if Tab.IsFirstVisibleTab or Assigned(Tab.GetNextTab(False, sivtInmediateSkipNonVisible)) then
-            PrevDelta:= 1
-          else
-            PrevDelta:= -1;
-          if Assigned(Tab.GetNextTab(True, sivtInmediateSkipNonVisible)) then
-            NextDelta:= 1
-          else
-            NextDelta:= -1;
-          if TabPosition = ttpTop then
-            ExcludeClipRect(B.Canvas.Handle, DestR.Left - PrevDelta, R.Bottom - 2, DestR.Right + NextDelta, R.Bottom + 4)
-          else
-            ExcludeClipRect(B.Canvas.Handle, DestR.Left - PrevDelta, R.Top + 2, DestR.Right + NextDelta, R.Top - 4);
-        end
-        else
-          if TabPosition = ttpTop then
-            ExcludeClipRect(B.Canvas.Handle, DestR.Left + 1, R.Bottom - 2, DestR.Right - 1, R.Bottom + 4)
-          else
-            ExcludeClipRect(B.Canvas.Handle, DestR.Left + 1, R.Top + 2, DestR.Right -1 , R.Top - 4);
-      end;
-
-      // Draw the bottom border of the tabs pane
-      BitmapR := Rect(0, 0, TSpTBXCustomTabSetAccess(FOwnerTabControl).FBackground.Width, TSpTBXCustomTabSetAccess(FOwnerTabControl).FBackground.Height);
-      case TabPosition of
-        ttpTop:
-          begin
-            DestR := Rect(R.Left, R.Bottom - 2, R.Right, R.Bottom);
-            BitmapR.Bottom := BitmapR.Top + 2;
-          end;
-        ttpBottom:
-          begin
-            DestR := Rect(R.Left, R.Top, R.Right, R.Top + 2);
-            BitmapR.Top := BitmapR.Bottom - 2;
-          end;
-      end;
-
-      B.Canvas.CopyRect(DestR, TSpTBXCustomTabSetAccess(FOwnerTabControl).FBackground.Canvas, BitmapR);
-      ACanvas.Draw(0, 0, B);
-    finally
-      B.Canvas.UnLock;
-      B.Free;
-    end;
-  end
-  else
-    SpDrawXPToolbar(Self, ACanvas, ARect, PaintOnNCArea, TabBackgroundBorders and (T <> sknNone), skncTabToolbar);
-end;
+// TODO(revival): the custom InternalDrawBackground override was removed; SpTBXLib's own tab-toolbar background
+// drawing (same logic, no FBackground bitmap) is used instead. Revisit if tab borders look wrong.
 
 {-------------------------------------------------------------------------------
   RightAlignItems
