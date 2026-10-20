@@ -576,7 +576,7 @@ begin
   thread.Data:= data;
   thread.FreeDataOnDestroy:= true;
   // Start
-  thread.Resume;
+  thread.Start;
 end;
 
 {-------------------------------------------------------------------------------
@@ -675,7 +675,7 @@ begin
         thread.Data:= data;
         thread.FreeDataOnDestroy:= true;
         // Start
-        thread.Resume;
+        thread.Start;
       end;
     end;
   finally

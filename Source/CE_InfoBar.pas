@@ -149,7 +149,33 @@ type
 implementation
 
 uses
-  CE_VistaFuncs;
+  CE_VistaFuncs, GR32, GR32_Resamplers;
+
+{-------------------------------------------------------------------------------
+  StretchLanczos
+
+  Replacement for GraphicEx's Stretch(w, h, sfLanczos3, 0, Source, Target).
+  Resamples Source to NewWidth x NewHeight with a Lanczos kernel (Graphics32)
+  and stores the result in Target. Source is not modified.
+-------------------------------------------------------------------------------}
+procedure StretchLanczos(NewWidth, NewHeight: Integer; Source, Target: TBitmap);
+var
+  src, dst: TBitmap32;
+begin
+  src:= TBitmap32.Create;
+  dst:= TBitmap32.Create;
+  try
+    src.Assign(Source);
+    src.ResamplerClassName:= 'TKernelResampler';
+    (src.Resampler as TKernelResampler).KernelClassName:= 'TLanczosKernel';
+    dst.SetSize(NewWidth, NewHeight);
+    src.DrawTo(dst, Rect(0, 0, NewWidth, NewHeight));
+    Target.Assign(dst);
+  finally
+    src.Free;
+    dst.Free;
+  end;
+end;
 
 {-------------------------------------------------------------------------------
   Create an instance of TCEInfoBar
@@ -369,7 +395,7 @@ begin
       t:= ARect.Top;
       w:= ARect.Right - ARect.Left;
       h:= ARect.Bottom - ARect.Top;
-      Stretch(w,h, sfLanczos3, 0, bit, bit2);
+      StretchLanczos(w, h, bit, bit2);
       BitBlt(ACanvas.Handle, l, t, w, h, bit2.Canvas.Handle, 0,0, SRCCOPY);
     finally
       bit.Free;
@@ -416,7 +442,7 @@ begin
   begin
     bit:= TBitmap.Create;
     try
-      Stretch(w,h, sfLanczos3, 0, fThumbnailBuffer, bit);
+      StretchLanczos(w, h, fThumbnailBuffer, bit);
       BitBlt(ACanvas.Handle, l, t, w, h, bit.Canvas.Handle, 0,0, SRCCOPY);
     finally
       bit.Free;
@@ -456,7 +482,7 @@ begin
       // Draw Name
       ACanvas.Font.Style:= [];
       ACanvas.Font.Size:= name_size;
-      ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+      ACanvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsNormal);
       item:= TCEInfoItem(fInfoList.Items[0]);
       // TCanvas.TextExtent is Unicode-aware in current Delphi, so it replaces the
       // old TNT helper WideCanvasTextExtent (same change made at every call below).
@@ -465,7 +491,7 @@ begin
 
       // Draw Other infos
       ACanvas.Font.Size:= original_font_size;
-      ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsDisabled);
+      ACanvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsDisabled);
       // selection count
       if fSelectionCount > 1 then
       begin
@@ -495,7 +521,7 @@ begin
     begin
       // Draw Name
       ACanvas.Font.Style:= [fsBold];
-      ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+      ACanvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsNormal);
       ACanvas.Font.Size:= name_size;
       r.Bottom:= r.Top + RowHeight-2;
       item:= TCEInfoItem(fInfoList.Items[0]);
@@ -505,7 +531,7 @@ begin
       begin
         size:= ACanvas.TextExtent(item.Text);
         ACanvas.Font.Style:= [];
-        ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsDisabled);
+        ACanvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsDisabled);
         r.Left:= r.Left + size.cx + 4;
         SpDrawXPText(ACanvas, item.Prefix, r, DT_END_ELLIPSIS or DT_SINGLELINE or DT_VCENTER);
       end;
@@ -553,7 +579,7 @@ begin
           end;
 
           // draw prefix
-          ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsDisabled);
+          ACanvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsDisabled);
           if prefix_size.cx > 0 then
           begin
             if size.cx > 0 then
@@ -564,7 +590,7 @@ begin
           end;
 
           // draw text
-          ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+          ACanvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsNormal);
           if size.cx > 0 then
           begin
             SpDrawXPText(ACanvas, item.Text, r, DT_END_ELLIPSIS or DT_SINGLELINE or DT_VCENTER);
@@ -579,7 +605,7 @@ begin
   begin
     // Draw "No Selection" notify.
     ACanvas.Font.Size:= name_size;
-    ACanvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsDisabled);
+    ACanvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsDisabled);
     if Height < (RowHeight + 10) then
     begin
       r.Left:= 10;
@@ -725,7 +751,7 @@ begin
     fLatestThumbThread.PIDL:= PIDLMgr.CopyPIDL(fLatestNS.AbsolutePIDL);
     fLatestThumbThread.ThumbnailSize.cx:= fIconRect.Right - fIconRect.Left;
     fLatestThumbThread.ThumbnailSize.cy:= fIconRect.Bottom - fIconRect.Top;
-    fLatestThumbThread.Resume;
+    fLatestThumbThread.Start;
   end;
 end;
 
@@ -747,7 +773,7 @@ begin
                                     fLatestNS.IsParentByNamespace(DesktopFolder, true) or
                                     fLatestNS.IsParentByNamespace(DrivesFolder, true) or
                                     fLatestNS.IsParentByNamespace(ControlPanelFolder, false);
-    fLatestInfoThread.Resume;
+    fLatestInfoThread.Start;
   end;
 end;
 
