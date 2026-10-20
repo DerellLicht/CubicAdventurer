@@ -26,7 +26,7 @@ interface
 
 uses
   // CubicCore
-  ccFileUtils, ccInterface,
+  ccFileUtils,
   // System Units
   Windows, SysUtils, Classes, Controls, Messages, Types, ExtCtrls, Contnrs;
 
@@ -39,6 +39,7 @@ const
   IID_ICVMediaEngineVideo: TGUID   = '{0597AE0E-C7EA-4621-925D-8DC1979D3227}';
   IID_ICVMediaEngineAudio: TGUID   = '{74205AAD-17EB-4E7C-82C4-933412EBCC5B}';
   IID_ICVMediaEngineStill: TGUID   = '{F0A1381F-55F6-4509-8A93-8D87A807BE12}';
+  IID_ICCWindowCtrl: TGUID         = '{F9700921-BB93-4C4E-8238-6239D356B046}';
 
 type
 {-------------------------------------------------------------------------------
@@ -251,6 +252,19 @@ type
     //   should be supported also).
     // - When the timer finishes, Status should be changed to mpsDone.
     procedure SetSlideshowInterval(AInterval: Integer); stdcall;
+  end;
+
+{-------------------------------------------------------------------------------
+  ICCWindowCtrl
+
+  revival: this interface was in the older ccInterfaces unit, which is not
+  available; definition taken from the author's later CV_MediaPlayer.pas.
+-------------------------------------------------------------------------------}
+  ICCWindowCtrl = interface(IInterface)
+  ['{F9700921-BB93-4C4E-8238-6239D356B046}']
+    procedure SetBounds(ARect: TRect); stdcall;
+    procedure SetFocus; stdcall;
+    procedure SetParentWindow(AParentWindow: HWND); stdcall;
   end;
 
 {-------------------------------------------------------------------------------
