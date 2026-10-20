@@ -750,7 +750,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESearchPage.LoadFromStream(AStream: TStream);
 var
-  ws: WideString;
+  ws: string;
 begin
   // edit_wordphrase
   LoadWideString(AStream, ws);
@@ -807,7 +807,7 @@ begin
   but_search_start.Tag:= 0;
   fLastStatusChange:= 0;
   // Location
-  Find.Criteria.Files.Location:= StringReplace(edit_location.Text, ',', ';', [rfReplaceAll], false);
+  Find.Criteria.Files.Location:= StringReplace(edit_location.Text, ',', ';', [rfReplaceAll]);
   Find.Criteria.Files.Subfolders:= check_subfolders.Checked;
   if check_minlevel.Checked then
   Find.Criteria.Files.MinLevel:= StrToIntDef(spin_minlevel.Text, 0)

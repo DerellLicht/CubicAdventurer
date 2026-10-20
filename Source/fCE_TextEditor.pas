@@ -831,7 +831,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditorPage.LoadFromStream(AStream: TStream);
 var
-  ws: WideString;
+  ws: string;
 begin
   LoadWideString(AStream, ws);
   if ws <> '' then
