@@ -705,13 +705,12 @@ begin
       NewHeight := Control.UndockHeight;
       TempX := DragPos.X - ((NewWidth) * MouseDeltaX);
       TempY := DragPos.Y - ((NewHeight) * MouseDeltaY);
-      with DockRect do
-      begin
-        Left := Round(TempX);
-        Top := Round(TempY);
-        Right := Left + NewWidth;
-        Bottom := Top + NewHeight;
-      end;
+      // revival: DockRect is now a property, so its fields cannot be assigned directly
+      R.Left := Round(TempX);
+      R.Top := Round(TempY);
+      R.Right := R.Left + NewWidth;
+      R.Bottom := R.Top + NewHeight;
+      DockRect := R;
       AdjustDockRect(DockRect);
     end
     else
