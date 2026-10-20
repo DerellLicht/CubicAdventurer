@@ -54,7 +54,7 @@ type
     procedure FolderTreeMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FolderTreeIncrementalSearch(Sender: TBaseVirtualTree;
-      Node: PVirtualNode; const SearchText: WideString; var Result: Integer);
+      Node: PVirtualNode; const SearchText: string; var Result: Integer);
     procedure FolderTreeKeyAction(Sender: TBaseVirtualTree; var CharCode: Word;
       var Shift: TShiftState; var DoDefault: Boolean);
     procedure GlobalPathChanged(Sender: TObject; NewPath: WideString); override;
@@ -250,7 +250,7 @@ end;
   Incremental Search
 -------------------------------------------------------------------------------}
 procedure TCEFolderPanel.FolderTreeIncrementalSearch(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; const SearchText: WideString; var Result: Integer);
+  Node: PVirtualNode; const SearchText: string; var Result: Integer);
 
   function DoCompare(Str1: WideString; Str2: WideString): Integer;
   begin
@@ -365,7 +365,7 @@ begin
   FolderPanel.FolderTree.DefaultNodeHeight:= SmallShellIconSize + 1;
 
   // resize nodes
-  if c <> FolderPanel.FolderTree.DefaultNodeHeight then
+  if c <> Integer(FolderPanel.FolderTree.DefaultNodeHeight) then
   begin
     FolderPanel.FolderTree.BeginUpdate;
     try
