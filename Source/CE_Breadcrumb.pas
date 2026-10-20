@@ -104,10 +104,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCEBreadcrumbItem.GetWidth(Buffer: TBitmap32): Integer;
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-  Result:= Buffer.TextWidth(Caption) + 8
-  else
-  Result:= Buffer.TextWidthW(Caption) + 8;
+  Result:= Buffer.TextWidth(Caption) + 8;
 end;
 
 {*------------------------------------------------------------------------------

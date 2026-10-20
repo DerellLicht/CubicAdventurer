@@ -776,10 +776,7 @@ begin
   DrawMenuItem(Buffer, ARect, Checked, ItemStyle);
 
   Buffer.Font.Color:= SkinManager.CurrentSkin.GetTextColor(nil, skncToolbarItem, state);
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-  Buffer.Textout(ARect,DT_CENTER+DT_VCENTER+DT_SINGLELINE,fCaption)
-  else
-  Buffer.TextoutW(ARect,DT_CENTER+DT_VCENTER+DT_SINGLELINE,fCaption);
+  Buffer.Textout(ARect,DT_CENTER+DT_VCENTER+DT_SINGLELINE,fCaption);
 end;
 
 {*------------------------------------------------------------------------------
@@ -787,10 +784,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCEScrollToolbarItem.GetWidth(Buffer: TBitmap32): Integer;
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-  Result:= Buffer.TextWidth(fCaption) + 20
-  else
-  Result:= Buffer.TextWidthW(fCaption) + 20;
+  Result:= Buffer.TextWidth(fCaption) + 20;
 end;
 
 {*------------------------------------------------------------------------------
