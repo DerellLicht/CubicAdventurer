@@ -1771,7 +1771,7 @@ var
 begin
   FileViewPage.FileView.BeginUpdate;
   try
-    i:= Pos('://', Value);
+    i:= Pos(WideString('://'), Value);
     if i > 0 then
     begin
       c:= Length(Value);

@@ -485,7 +485,7 @@ begin
   try
     // Translator's name and email
     ws:= HeaderInfo.Values['Last-Translator'];
-    i:= Pos('<', ws);
+    i:= Pos(WideString('<'), ws);
     if i = 0 then
     begin
       edit_translators_name.Text:= ws;
@@ -499,7 +499,7 @@ begin
       edit_translators_name.Text:= Copy(ws, 1, i-1);
 
       i:= i+1;
-      i2:= Pos('>',ws);
+      i2:= Pos(WideString('>'), ws);
       if i2 > i then
       edit_translators_email.Text:= Copy(ws, i, i2-i)
       else

@@ -1566,7 +1566,7 @@ begin
             if path[1] = ':' then
             begin
               // Open Control Panel in explorer.exe. CE won't work properly with Vista+ control panels.
-              if IsWindowsVista and (Pos('::{26EE0668-A00A-44D7-9371-BEB064C98683}', path) = 1) then
+              if IsWindowsVista and (Pos(WideString('::{26EE0668-A00A-44D7-9371-BEB064C98683}'), path) = 1) then
               begin
                 path2:= WideExpandEnviromentString('%windir%\explorer.exe');
 
@@ -1838,8 +1838,8 @@ begin
         if IsWindowsVista then
         begin
           // Control Panel
-          if (Pos('::{26EE0668-A00A-44D7-9371-BEB064C98683}', ws) = 1) or
-             (Pos('::{21EC2020-3AEA-1069-A2DD-08002B30309D}', ws) = 1) then
+          if (Pos(WideString('::{26EE0668-A00A-44D7-9371-BEB064C98683}'), ws) = 1) or
+             (Pos(WideString('::{21EC2020-3AEA-1069-A2DD-08002B30309D}'), ws) = 1) then
           begin
             path:= WideExpandEnviromentString('%windir%\explorer.exe');
             ShellExecuteW(0, 'open', PWideChar(path), PWideChar(ws), '', SW_SHOWNORMAL);
