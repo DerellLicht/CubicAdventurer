@@ -2580,7 +2580,7 @@ var
   I: Integer;
 begin
   for I := 0 to FIDRefs.Count-1 do
-    Dispose(PWideStrWrapper(FIDRefs.List^[I]));
+    Dispose(PWideStrWrapper(FIDRefs.List[I]));
   FIDRefs.Clear;  
 end;
 
@@ -2589,8 +2589,8 @@ var
   I: Integer;
 begin
   for I := 0 to FIDRefs.Count-1 do
-    if Doc.GetElementById(PWideStrWrapper(FIDRefs.List^[I])^.Value) = nil then
-      ValidationError('The ID ''%s'' does not match any element', [PWideStrWrapper(FIDRefs.List^[I])^.Value]);
+    if Doc.GetElementById(PWideStrWrapper(FIDRefs.List[I])^.Value) = nil then
+      ValidationError('The ID ''%s'' does not match any element', [PWideStrWrapper(FIDRefs.List[I])^.Value]);
   ClearIDRefs;
 end;
 
