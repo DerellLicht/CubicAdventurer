@@ -82,7 +82,7 @@ type
         override;
     procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
     procedure GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var Text: UnicodeString);
-    procedure DoHeaderClick(HitInfo: TVTHeaderHitInfo); override;
+    procedure DoHeaderClick(const HitInfo: TVTHeaderHitInfo); override;
     procedure HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo);
         override;
     procedure UpdateScrollBarHeight; virtual;
@@ -569,7 +569,7 @@ end;
 {-------------------------------------------------------------------------------
   DoHeaderClick
 -------------------------------------------------------------------------------}
-procedure TCEArchiveTree.DoHeaderClick(HitInfo: TVTHeaderHitInfo);
+procedure TCEArchiveTree.DoHeaderClick(const HitInfo: TVTHeaderHitInfo);
 begin
   if HitInfo.Column > -1 then
   begin
@@ -1124,7 +1124,7 @@ begin
             else
             FileClose(h);
             if FileExists(path) then
-            DeleteFile(path);
+            SysUtils.DeleteFile(path);
           end;
         end;
       end;
