@@ -1105,7 +1105,7 @@ begin
           path:= ADestinationDir + item.PackedName;
           if FileExists(path) then
           begin
-            h:= WideFileOpen(path, fmOpenReadWrite);
+            h:= FileOpen(path, fmOpenReadWrite);
             err:= GetLastError;
             if h < 0 then
             AConflictingPaths.AddObject(path, TObject(err))
@@ -1114,7 +1114,7 @@ begin
           end
           else if not AOverridesOnly then
           begin
-            h:= WideFileCreate(path);
+            h:= FileCreate(path);
             err:= GetLastError;
             if h < 0 then
             begin
