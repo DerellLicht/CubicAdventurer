@@ -140,7 +140,7 @@ begin
         else
         paramI:= 0;
 
-        UpdateCEFromZip(param1, param2, paramI, false);
+        // '/update' (self-update from zip) was removed together with the auto-updater (revival); arguments are consumed and ignored.
         doUpdate:= false;
       end
       else
