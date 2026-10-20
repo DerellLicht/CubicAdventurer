@@ -110,27 +110,11 @@ end;
   Set Name (name thread in debugger)
 -------------------------------------------------------------------------------}
 procedure TCCBaseThread.SetName;
-type
-  TThreadNameInfo = record
-    FType: LongWord; // must be 0x1000
-    FName: PAnsiChar; // pointer to name (in user address space)
-    FThreadID: LongWord; // thread ID (-1 indicates caller thread)
-    FFlags: LongWord; // reserved for future use, must be zero
-  end;
-
-var
-  ThreadNameInfo: TThreadNameInfo;
 begin
   if fName <> '' then
   begin
-    ThreadNameInfo.FType:= $1000;
-    ThreadNameInfo.FName:= PChar(fName);
-    ThreadNameInfo.FThreadID:= $FFFFFFFF;
-    ThreadNameInfo.FFlags:= 0;
-    try
-      RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(Longword), @ThreadNameInfo);
-    except
-    end;
+    // Standard RTL API replaces the manual RaiseException($406D1388) trick
+    TThread.NameThreadForDebugging(AnsiString(fName), ThreadID);
   end;
 end;
 
