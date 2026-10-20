@@ -27,7 +27,7 @@ uses
   // CE Units
   fCE_OptionsCustomPage, CE_LanguageEngine,
   // VirtualTree
-  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualTrees.DrawTree,
   // SpTBXLib
   SpTBXSkins,
   // System Units
