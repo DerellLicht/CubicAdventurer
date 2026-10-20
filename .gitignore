@@ -1,3 +1,13 @@
 report1.md
 tnt_report.md
 handoff-next-session.md
+*.dproj.local
+*.identcache
+*.dsk
+*.stat
+*.~*
+__history/
+__recovery/
+Win32/
+Win64/
+*.dcu

@@ -1,0 +1,369 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{1108A652-7B46-4A7B-9F49-D7827E418F1A}</ProjectGuid>
+        <MainSource>CubicExplorer.dpr</MainSource>
+        <Base>True</Base>
+        <Config Condition="'$(Config)'==''">Debug</Config>
+        <ProjectName Condition="'$(ProjectName)'==''">CubicExplorer</ProjectName>
+        <TargetedPlatforms>1</TargetedPlatforms>
+        <AppType>Application</AppType>
+        <FrameworkType>VCL</FrameworkType>
+        <ProjectVersion>20.3</ProjectVersion>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+        <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+        <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_DebugInformation>1</DCC_DebugInformation>
+        <DCC_E>false</DCC_E>
+        <DCC_F>false</DCC_F>
+        <DCC_K>false</DCC_K>
+        <DCC_N>true</DCC_N>
+        <DCC_S>false</DCC_S>
+        <DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_ImageBase>00400000</DCC_ImageBase>
+        <DCC_ExeOutput>..</DCC_ExeOutput>
+        <DCC_DcuOutput>..\dcu</DCC_DcuOutput>
+        <DCC_DcpOutput>..\dcu</DCC_DcpOutput>
+        <DCC_UnitSearchPath>Components\fcl-xml;Components\jvcl;Components\DirectX;Components\CRS-AppSettings;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UsePackage>rtl;vcl;vclx;dbrtl;vcldb;tb2k_d10;tbx_d10;OverbyteIcsDel100Package;Png10;VirtualTreesD10;S404_r100;S404br100;MPHexEditor_D7;mbTBXLibD9D;SortGridD10;madBasic_;madDisAsm_;madExcept_;PerlRegExD2006;KHexEditor_R7;SynEdit_R2006;SynWeb_R2006;ATBinHexD2006;Jcl;bdertl;JvUIBD10R;mbTBXJvLibD10D;delphi10;vclactnband;vclie;VclSmp;xmlrtl;inet;inetdbbde;inetdbxpress;TUOScript100;GR32_BDS2006;GR32_DSGN_BDS2006;JclVcl;JvCoreD10R;JvSystemD10R;JvStdCtrlsD10R;JvAppFrmD10R;JvBandsD10R;JvDBD10R;JvDlgsD10R;JvBDED10R;JvCustomD10R;JvDotNetCtrlsD10R;JvEDID10R;JvCryptD10R;JvGlobusD10R;JvHMID10R;JvInterpreterD10R;JvJansD10R;JvManagedThreadsD10R;JvCtrlsD10R;JvCmpD10R;JvMMD10R;JvNetD10R;JvPageCompsD10R;JvPluginD10R;JvPrintPreviewD10R;JvRuntimeDesignD10R;JvTimeFrameworkD10R;JvValidatorsD10R;JvWizardD10R;JvXPCtrlsD10R;OverbyteIcsSslDel100Package;$(DCC_UsePackage)</DCC_UsePackage>
+        <SanitizedProjectName>CubicExplorer</SanitizedProjectName>
+        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_AutoGenVersion>true</VerInfo_AutoGenVersion>
+        <VerInfo_MajorVer>0</VerInfo_MajorVer>
+        <VerInfo_MinorVer>96</VerInfo_MinorVer>
+        <VerInfo_Build>1512</VerInfo_Build>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=0.96.0.1512;InternalName=;LegalCopyright=Marko Savolainen 2006-2012;LegalTrademarks=;OriginalFilename=;ProductName=CubicExplorer;ProductVersion=SVN Snapshot;Comments=</VerInfo_Keys>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_Optimize>false</DCC_Optimize>
+        <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+        <DCC_RangeChecking>true</DCC_RangeChecking>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+    </PropertyGroup>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="Components\Mustangpeak\CommonLibrary\MPShellUtilities.pas"/>
+        <DCCReference Include="Main.pas">
+            <Form>MainForm</Form>
+        </DCCReference>
+        <DCCReference Include="CE_DockInfo.pas"/>
+        <DCCReference Include="CE_Utils.pas"/>
+        <DCCReference Include="CE_WideCompat.pas"/>
+        <DCCReference Include="CE_Layout.pas"/>
+        <DCCReference Include="fCE_TabPage.pas">
+            <Form>CECustomTabPage</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_FileView.pas">
+            <Form>CEFileViewPage</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_DockHostForm.pas">
+            <Form>CEDockHostForm</Form>
+        </DCCReference>
+        <DCCReference Include="fCE_DockableForm.pas">
+            <Form>CECustomDockableForm</Form>
+        </DCCReference>
+        <DCCReference Include="CE_GlobalCtrl.pas"/>
+        <DCCReference Include="CE_Consts.pas"/>
+        <DCCReference Include="CE_BaseFileView.pas"/>
+        <DCCReference Include="CE_FileView.pas"/>
+        <DCCReference Include="fCE_FolderPanel.pas">
+            <Form>CEFolderPanel</Form>
+        </DCCReference>
+        <DCCReference Include="fCE_BookmarkPanel.pas">
+            <Form>CEBookmarkPanel</Form>
+        </DCCReference>
+        <DCCReference Include="CE_GifAnim.pas"/>
+        <DCCReference Include="fCE_QuickViewPanel.pas">
+            <Form>CEQuickViewPanel</Form>
+        </DCCReference>
+        <DCCReference Include="dCE_Actions.pas">
+            <Form>CEActions</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Documents.pas"/>
+        <DCCReference Include="dCE_Images.pas">
+            <Form>CE_Images</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="CEJvDockVSNetStyleTBX.pas"/>
+        <DCCReference Include="fCE_TextEditor.pas">
+            <Form>CETextEditorPage</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_AboutBox.pas">
+            <Form>CEAboutBox</Form>
+        </DCCReference>
+        <DCCReference Include="CE_DriveBar.pas"/>
+        <DCCReference Include="CE_BookmarkBar.pas"/>
+        <DCCReference Include="fCE_Customizer.pas">
+            <Form>CEToolbarCustomizer</Form>
+        </DCCReference>
+        <DCCReference Include="CE_Toolbar.pas"/>
+        <DCCReference Include="CE_ToolbarButtons.pas"/>
+        <DCCReference Include="CE_StatusBar.pas"/>
+        <DCCReference Include="CE_VistaFuncs.pas"/>
+        <DCCReference Include="CE_StdBookmarkComps.pas"/>
+        <DCCReference Include="CE_Bookmarks.pas"/>
+        <DCCReference Include="CE_BookmarkTree.pas"/>
+        <DCCReference Include="dCE_Input.pas">
+            <Form>CEInput</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="CE_Breadcrumb.pas"/>
+        <DCCReference Include="CE_ScrollToolbar.pas"/>
+        <DCCReference Include="fCE_FolderTreeForm.pas">
+            <Form>CE_FolderTreeForm</Form>
+        </DCCReference>
+        <DCCReference Include="CE_XMLStorage.pas"/>
+        <DCCReference Include="CE_AddressToolbar.pas"/>
+        <DCCReference Include="fCE_ExtAppPage.pas">
+            <Form>CEExtAppTabPage</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_FiltersPanel.pas">
+            <Form>CEFiltersPanel</Form>
+        </DCCReference>
+        <DCCReference Include="CE_FilterPanel.pas"/>
+        <DCCReference Include="fCE_BookmarkPropDlg.pas">
+            <Form>BookmarkPropDlg</Form>
+        </DCCReference>
+        <DCCReference Include="CE_FolderTree.pas"/>
+        <DCCReference Include="CE_Classes.pas"/>
+        <DCCReference Include="CE_ContextMenu.pas"/>
+        <DCCReference Include="CE_CommonObjects.pas"/>
+        <DCCReference Include="CE_LanguageCodes.pas"/>
+        <DCCReference Include="fCE_PoEditor_NewForm.pas">
+            <Form>CENewTranslationDlg</Form>
+        </DCCReference>
+        <DCCReference Include="CE_ProcessUtils.pas"/>
+        <DCCReference Include="fCE_PoEditor.pas">
+            <Form>CEPoEditor</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="CE_LanguageUtils.pas"/>
+        <DCCReference Include="CE_LanguageEngine.pas"/>
+        <DCCReference Include="fCE_OptionsDialog.pas">
+            <Form>CEOptionsDialog</Form>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsCustomPage.pas">
+            <Form>CEOptionsCustomPage</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_General.pas">
+            <Form>CEOptionsPage_General</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_Tabs.pas">
+            <Form>CEOptionsPage_Tabs</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_Display.pas">
+            <Form>CEOptionsPage_Display</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_Display_Bookmarks.pas">
+            <Form>CE_OptionsPage_Display_Bookmarks</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_Display_FolderTree.pas">
+            <Form>CE_OptionsPage_Display_FolderTree</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_Display_FileView.pas">
+            <Form>CE_OptionsPage_Display_FileView</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_StackPanel.pas">
+            <Form>CEStackPanel</Form>
+        </DCCReference>
+        <DCCReference Include="CE_SpTabBar.pas"/>
+        <DCCReference Include="Components\jvcl\JvDockVSNetStyle.pas"/>
+        <DCCReference Include="Components\jvcl\JvDockControlForm.pas"/>
+        <DCCReference Include="Components\jvcl\JvDockTree.pas"/>
+        <DCCReference Include="fCE_QuickViewTab.pas">
+            <Form>CEQuickViewPage</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="CE_AppSettings.pas"/>
+        <DCCReference Include="CE_Sessions.pas"/>
+        <DCCReference Include="fCE_OptionsPage_Advanced.pas">
+            <Form>CEOptionsPage_Advanced</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_SessionManager.pas">
+            <Form>CESessionManager</Form>
+        </DCCReference>
+        <DCCReference Include="fCE_SearchPage.pas">
+            <Form>CESearchPage</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="CE_InfoBar.pas"/>
+        <DCCReference Include="Components\FindFile\FindFileW.pas"/>
+        <DCCReference Include="CE_ElevatedActions.pas"/>
+        <DCCReference Include="CE_FileUtils.pas"/>
+        <DCCReference Include="fCE_CreateSymlink.pas">
+            <Form>CreateSymlinkDlg</Form>
+        </DCCReference>
+        <DCCReference Include="Components\SpSkins\SpTBXChromeSkin.pas"/>
+        <DCCReference Include="fCE_OptionsPage_Hotkeys.pas">
+            <Form>TCEOptionsPage_Hotkeys</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_GlobalHotkeys.pas">
+            <Form>TCEOptionsPage_GlobalHotkeys</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_ColumnFormSpTBX.pas">
+            <Form>CEFormColumnSettings</Form>
+            <DesignClass>TForm</DesignClass>
+        </DCCReference>
+        <DCCReference Include="CE_Stacks.pas"/>
+        <DCCReference Include="CE_StackTree.pas"/>
+        <DCCReference Include="Components\Tb2K\TB2Item.pas"/>
+        <DCCReference Include="CE_ToolbarEditorItems.pas"/>
+        <DCCReference Include="Components\Mustangpeak\EasyListview\EasyListview.pas"/>
+        <DCCReference Include="Components\Mustangpeak\VSTools\VirtualExplorerEasyListview.pas"/>
+        <DCCReference Include="fCE_OptionsPage_Display_Stack.pas">
+            <Form>CE_OptionsPage_Display_Stack</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="AppCommand.pas"/>
+        <DCCReference Include="fCE_ItemSelectSaveDlg.pas">
+            <Form>CEItemSelectSaveDlg</Form>
+        </DCCReference>
+        <DCCReference Include="Components\Mustangpeak\VSTools\VirtualExplorerTree.pas"/>
+        <DCCReference Include="CE_VersionUpdater.pas"/>
+        <DCCReference Include="CE_XmlUtils.pas"/>
+        <DCCReference Include="fCE_UpdateDlg.pas">
+            <Form>CEUpdateDlg</Form>
+        </DCCReference>
+        <DCCReference Include="fCE_VersionMgrForm.pas">
+            <Form>CEVersionMgrForm</Form>
+            <DesignClass>TForm</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Components\CubicCore\CC_Threads.pas"/>
+        <DCCReference Include="CE_ArchiveTree.pas"/>
+        <DCCReference Include="Components\jcl\JclCompressionWide.pas"/>
+        <DCCReference Include="fCE_ArchivePanel.pas">
+            <Form>CEArchiverPanel</Form>
+        </DCCReference>
+        <DCCReference Include="fCE_OptionsPage_General_Updates.pas">
+            <Form>CE_OptionsPage_General_Updates</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fCE_LoginPromptDlg.pas">
+            <Form>CELoginPromptDlg</Form>
+        </DCCReference>
+        <DCCReference Include="CE_SystemUtils.pas"/>
+        <DCCReference Include="CE_SpTBXItems.pas"/>
+        <DCCReference Include="fCE_QuickView.pas">
+            <Form>CEQuickView</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="CE_FilePreview.pas"/>
+        <DCCReference Include="CV_ImageView.pas"/>
+        <DCCReference Include="CV_MediaPlayer.pas"/>
+        <DCCReference Include="CV_MediaPlayerEngines.pas"/>
+        <DCCReference Include="CV_Playlist.pas"/>
+        <None Include="Muokkaukset.txt">
+            <ContainerId>File</ContainerId>
+        </None>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Source>
+                    <Source Name="MainSource">CubicExplorer.dpr</Source>
+                </Source>
+            </Delphi.Personality>
+            <Platforms>
+                <Platform value="Win32">True</Platform>
+                <Platform value="Win64">False</Platform>
+            </Platforms>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+    <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
+</Project>

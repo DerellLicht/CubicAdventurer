@@ -59,8 +59,6 @@ implementation
 
 var
   tmpHandle: HWND;
-  tmpClassName: String;
-  tmpWndText: String;
   tmpClassNameW: WideString;
   tmpWndTextW: WideString;
 
@@ -69,7 +67,6 @@ var
 -------------------------------------------------------------------------------}
 function GetWindowProc(Handle: HWND; LParam: longint): bool; stdcall;
 var
-  Buffer: array [0..255] of char;
   BufferW: array [0..255] of widechar;
   tid: Integer;
 begin
@@ -77,46 +74,24 @@ begin
   tid:= GetWindowThreadProcessID(Handle,nil);
   if tid = LParam then
   begin
-    if Win32PlatformIsUnicode then
+    // CubicAdventurer: Win32PlatformIsUnicode (a TNT flag) is gone; Windows 9x
+    // is not supported, so only the Unicode branch is kept.
+    GetClassNameW(Handle,BufferW,255);
+    if BufferW = tmpClassNameW then
     begin
-      GetClassNameW(Handle,BufferW,255);
-      if BufferW = tmpClassNameW then
+      if tmpWndTextW <> '' then
       begin
-        if tmpWndTextW <> '' then
-        begin
-          GetWindowTextW(Handle,BufferW,255);
-          if BufferW = tmpWndTextW then
-          begin
-            tmpHandle:= Handle;
-            Result:= false;
-          end;
-        end
-        else
+        GetWindowTextW(Handle,BufferW,255);
+        if BufferW = tmpWndTextW then
         begin
           tmpHandle:= Handle;
           Result:= false;
         end;
-      end;
-    end
-    else
-    begin
-      GetClassName(Handle,Buffer,255);
-      if Buffer = tmpClassName then
+      end
+      else
       begin
-        if tmpWndText <> '' then
-        begin
-          GetWindowText(Handle,Buffer,255);
-          if Buffer = tmpWndText then
-          begin
-            tmpHandle:= Handle;
-            Result:= false;
-          end;
-        end
-        else
-        begin
-          tmpHandle:= Handle;
-          Result:= false;
-        end;
+        tmpHandle:= Handle;
+        Result:= false;
       end;
     end;
   end;
@@ -217,9 +192,7 @@ begin
   begin
     // init tmp values
     tmpHandle:= 0;
-    tmpClassName:= fAppWndClass;
     tmpClassNameW:= fAppWndClass;
-    tmpWndText:= fAppWndText;
     tmpWndTextW:= fAppWndText;
     // Get Main Form
     for i:= 0 to 30 do
@@ -317,7 +290,6 @@ end;
 -------------------------------------------------------------------------------}
 function TCEAppEmbedPanel.GetAppWndText: WideString;
 var
-  Buffer: array [0..255] of char;
   BufferW: array [0..255] of widechar;
 begin
   if not IsAppRunning then
@@ -326,16 +298,12 @@ begin
     Exit;
   end;
   
-  if Win32PlatformIsUnicode then
-  begin
-    GetWindowText(fAppWndHandle, Buffer, 255);
-    Result:= Buffer;
-  end
-  else
-  begin
-    GetWindowTextW(fAppWndHandle, BufferW, 255);
-    Result:= BufferW;
-  end;
+  // CubicAdventurer: Win32PlatformIsUnicode was a TNT flag (always true on
+  // NT). Windows 9x support is gone, so only the Unicode call remains. The
+  // old Unicode branch called the ANSI GetWindowText, which looked like a
+  // swapped-branch bug; the W version is used here.
+  GetWindowTextW(fAppWndHandle, BufferW, 255);
+  Result:= BufferW;
 end;
 
 {*------------------------------------------------------------------------------

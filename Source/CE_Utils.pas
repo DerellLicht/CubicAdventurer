@@ -280,27 +280,21 @@ end;
 function GetIconIndex(FilePath: WideString): Integer;
 var
   Flags: integer;
-  InfoA: TSHFileInfoA;
   InfoW: TSHFileInfoW;
 begin
   Flags := SHGFI_SYSICONINDEX or SHGFI_SHELLICONSIZE or SHGFI_SMALLICON;
 
-  if IsUnicode then
+  // CubicAdventurer: the ANSI (Windows 9x) branch is removed, and the standard
+  // SHGetFileInfoW API replaces the old Mustangpeak SHGetFileInfoW_MP wrapper.
+  FillChar(InfoW, SizeOf(InfoW), #0);
+  if SHGetFileInfoW(PWideChar(FilePath), 0, InfoW, SizeOf(InfoW), Flags) <> 0 then
   begin
-    FillChar(InfoW, SizeOf(InfoW), #0);
-    if SHGetFileInfoW_MP(PWideChar(FilePath), 0, InfoW, SizeOf(InfoW), Flags) <> 0 then
-      Result:= InfoW.iIcon
-    else
-      Result:= 0
+    Result:= InfoW.iIcon;
   end
   else
   begin
-    FillChar(InfoA, SizeOf(InfoA), #0);
-    if SHGetFileInfoA(PChar(String(FilePath)), 0, InfoA, SizeOf(InfoA), Flags) <> 0 then
-      Result:= InfoA.iIcon
-    else
-      Result:= 0
-  end
+    Result:= 0;
+  end;
 end;
 
 {*------------------------------------------------------------------------------
@@ -610,10 +604,9 @@ end;
 -------------------------------------------------------------------------------}
 function WideGetDriveType(lpRootPathName: WideString): Integer;
 begin
-  if Win32PlatformIsUnicode then
-  Result:= GetDriveTypeW(PWideChar(lpRootPathName))
-  else
-  Result:= GetDriveTypeA(PAnsiChar(AnsiString(lpRootPathName)));
+  // CubicAdventurer: Win32PlatformIsUnicode was a TNT flag; Windows 9x is no
+  // longer supported, so only the Unicode API is called.
+  Result:= GetDriveTypeW(PWideChar(lpRootPathName));
 end;
 
 {-------------------------------------------------------------------------------
@@ -886,7 +879,8 @@ begin
         begin
           if ws[1] <> ';' then
           begin
-            p:= Pos('[READONLY]', ws);
+            // CubicAdventurer: explicit WideString avoids the ambiguous Pos overload
+            p:= Pos(WideString('[READONLY]'), ws);
             IsReadOnly:= p = 1;
             if not IsReadOnly then
             begin
