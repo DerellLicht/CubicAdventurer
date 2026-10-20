@@ -27,7 +27,7 @@ uses
   // CubicCore
   ccThreadUtils,
   // GraphicEx
-  GraphicEx,
+  // GraphicEx,
   // Delphi units
   Windows, Controls, Graphics, SysUtils, Classes, ExtCtrls, Messages;
 

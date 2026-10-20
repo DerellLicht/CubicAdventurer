@@ -32,7 +32,8 @@ uses
   MPShellUtilities, MPShellTypes, MPCommonObjects,
   // System Units
   ExtCtrls, Classes, Controls, Windows, Graphics, Messages, Contnrs,
-  Forms, Math, SysUtils, ShlObj, ActiveX, UxTheme, Themes, GraphicEx;
+  Forms, Math, SysUtils, ShlObj, ActiveX, UxTheme, Themes;  
+  //, GraphicEx;
 
 type
   TCEIconSize = (itSmallIcon, itLargeIcon, itExtraLargeIcon, itJumboIcon);

@@ -27,12 +27,12 @@ uses
   // CubicCore
   ccThreadUtils, ccClasses, ccFileUtils,
   // GraphicEx
-  GraphicEx,
+  // GraphicEx,
   // Graphics32
   GR32, GR32_Image, GR32_Layers, GR32_Resamplers,
   // System Units
   SysUtils, Classes, Controls, StdCtrls, Forms, Messages, Windows, ExtCtrls,
-  Graphics, jpeg;
+  Graphics, pngimage, GIFImg, jpeg;
 
 type
 
@@ -204,6 +204,56 @@ uses
 {##############################################################################}
 // Public methods
 
+{
+  GraphicClassFromExtension
+
+  Maps a lower-case file extension, including the leading dot, to the TGraphic
+  descendant that can load it. Returns nil when the format is not supported,
+  which LoadGraphic() already treats as "not an image".
+
+  This replaces GraphicEx's FileFormatList.GraphicFromExtension. The old list
+  also knew PSD, TGA, PCX, SGI, PPM and a few other formats; those are NOT
+  supported any more. TIFF is handled through the Windows Imaging Component
+  (TWICImage), so it only loads if Windows has a TIFF codec (all current
+  Windows versions do). TWICImage needs COM initialised on the calling thread;
+  the main thread is fine, but a worker thread that loads a .tif must call
+  CoInitialize first.
+
+  The caller lower-cases the extension, so the comparisons here are exact.
+}
+function GraphicClassFromExtension(const Ext: string): TGraphicClass;
+begin
+  Result:= nil;
+  if (Ext = '.jpg') or (Ext = '.jpeg') or (Ext = '.jpe') or (Ext = '.jfif') then
+  begin
+    Result:= TJPEGImage;
+  end
+  else if Ext = '.png' then
+  begin
+    Result:= TPngImage;
+  end
+  else if Ext = '.gif' then
+  begin
+    Result:= TGIFImage;
+  end
+  else if (Ext = '.bmp') or (Ext = '.dib') then
+  begin
+    Result:= TBitmap;
+  end
+  else if Ext = '.ico' then
+  begin
+    Result:= TIcon;
+  end
+  else if (Ext = '.wmf') or (Ext = '.emf') then
+  begin
+    Result:= TMetafile;
+  end
+  else if (Ext = '.tif') or (Ext = '.tiff') then
+  begin
+    Result:= TWICImage;
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   Load Graphic
 -------------------------------------------------------------------------------}
@@ -218,7 +268,8 @@ var
 begin
   Result:= nil;
   Ext:= AnsiLowerCase(ExtractFileExt(AFilePath));
-  GraphicClass:= FileFormatList.GraphicFromExtension(Ext);
+  // GraphicClass:= FileFormatList.GraphicFromExtension(Ext);
+  GraphicClass:= GraphicClassFromExtension(Ext);
   if GraphicClass <> nil then
   begin
     fs:= TCCFileStream.Create(AFilePath, fmOpenRead or fmShareDenyNone);

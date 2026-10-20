@@ -1,9 +1,13 @@
 # CubicAdventurer revival checklist (survey of repo as of 2026-10-18; status updated 2026-10-19)
 
-## Status
-- IDE: Embarcadero Delphi 13 Florence Community Edition, version 37.0.60542.8024 (13.0 base, installer `7c1ba2_RADStudio_13_CE.exe`). Installed and registered as of 2026-10-19.
-- Done (branch `ce_convert`): `tnt_strip.py --in-place` run and committed (96 files). Follow-up patch adds `Source/CE_WideCompat.pas` and direct fixes for the leftover `Wide*` helpers (see below).
-- Next: install libraries (including the Mustangpeak Common Library), open `Source\CubicExplorer.dpr`, first Win32 compile.
+## Status (updated 2026-10-19, evening)
+- IDE: Embarcadero Delphi 13 Florence Community Edition, version 37.0.60542.8024. Installed and registered.
+- Done (branch `ce_convert`): `tnt_strip.py --in-place` (96 files); `CE_WideCompat.pas` and Wide* fixes; patch disabling `TNTSUPPORT` in vendored `Mustangpeak/Include/Addins.inc` delivered (confirm it was applied and pushed).
+- Libraries installed in the IDE (Win32): Mustangpeak Common Library + ListView (GetIt), Virtual Treeview V8.3 (GetIt), VirtualShellTools (manual, `Delphi/Jam-VT`), SynEdit (GetIt), TB2K + SpTBXLib (manual, packages `tb2k_d12`, `tb2kdsgn_d12`, `SpTBXLib`, `SpTBXLibDsgn`), JCL (manual, see below), JVCL (manual build succeeded, see below).
+- Community Edition cannot run the command-line compiler, so GetIt's installers for JCL/JVCL fail with "does not support command line compiling" and still report success. The GetIt "installed" label is not reliable for them. Workaround: GetIt only downloads the source into `CatalogRepository`; the packages are then built by hand from the group projects.
+- JCL: copied `source\include\jcl.template.inc` to `jcld37win32.inc`, built `packages\JclPackagesD370.groupproj` (Build All, ok). Library paths added (Win32): `lib\d37\win32`, `source\include`, `source\common`, `source\windows`, `source\vcl`.
+- JVCL: built `packages\D37 Packages.groupproj` (Build All, ok, about 3 million lines). Its library paths and design-package installs are NOT done yet.
+- Next: JVCL library paths; Graphics32; GraphicEx replacement; open `Source\CubicExplorer.dpr`; first Win32 compile.
 
 ## What the repo is
 - Delphi 2006 (BDS 2006) project: `Source/CubicExplorer.bdsproj`, `.dpr`, `.cfg`; package suffixes `_d10`.
@@ -23,7 +27,7 @@
 | Virtual Treeview | 23 uses | Current: JAM-Software/Virtual-TreeView (V8, RAD Studio 10 to 13). TurboPack copy is archived. V8 has breaking changes vs old 5.x |
 | Mustangpeak VirtualShellTools / EasyListview / Common Lib | core of the file views | TurboPack/GetIt "Mustangpeak VirtualShell" 2026.10 (13 Oct 2026), source-only, Win32/Win64, MPL 1.1. The project also needs `MPCommonUtilities`, which lives in the separate Common Library (github.com/TurboPack/MustangpeakCommonLib, last commit 2026-09-18); check GetIt for it too. Repo also carries 6 patched copies in Source/Components/Mustangpeak |
 | Toolbar2000 + SpTBXLib | 23 forms | SpTBXLib (SilverpointDev/sptbxlib) says XE2 or newer; needs TB2K plus its "TB2K Patch" step. Delphi 13 support unconfirmed |
-| JCL / JVCL | JvDock, JvSimpleXml (7 files), JCL (4 files) | project-jedi; repo says Delphi 6 and newer. Delphi 13 support unconfirmed. Repo carries a partial vendored JvDock |
+| JCL / JVCL | JvDock, JvSimpleXml (7 files), JCL (4 files) | project-jedi; repo says Delphi 6 and newer. Delphi 13 builds ok (JCL 2.7 lists D13 as supported). Repo carries a partial vendored JvDock; the app also needs the full JVCL for JvAppStorage, JvFormPlacement, JvSimpleXml, JvJVCLUtils and jvcl.inc |
 | Graphics32 | 9 files | graphics32/graphics32 on GitHub; Delphi 13 support unconfirmed. API changed since 1.8.x |
 | GraphicEx | 5 files | Old; needs a maintained fork or replacement (not yet researched) |
 | SynEdit | 3 files | TurboPack/SynEdit, Delphi 12 or later (Delphi 13 not stated) |
@@ -56,6 +60,7 @@
 5. Open `Source\CubicExplorer.dpr` in Delphi (it should generate a `.dproj`), set search paths, try a first build of Win32 only. Expect many compile errors; fix by category.
 6. Review Win32 W-suffix calls, PChar/PWideChar usage (about 100 spots) and the encoding list (the `Wide*` manual items are done, see above).
 7. Defer: Win64 build, DPI awareness (users report it is missing), translations, installer.
+8. Last step, once the program runs: write a new `Build_instructions.md` for the repo covering how to assemble the tools and build the project in 2026 (Delphi 13 CE, each library and how it was installed, library paths, the Community Edition command-line-compiler workaround, first-build steps). It does not need to describe the code changes. Collect the details as we go (the handoff document and this checklist are the source).
 
 ## Open questions
 - Whether SpTBXLib, JCL/JVCL and Graphics32 officially support Delphi 13.

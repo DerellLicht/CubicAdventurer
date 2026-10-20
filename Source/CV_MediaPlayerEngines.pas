@@ -34,7 +34,7 @@ uses
   // WMP
   WMPLib_TLB,
   // GraphicEx
-  GraphicEx,
+  // GraphicEx,
   // System Units
   ActiveX, SysUtils, Types, Windows, ExtCtrls, Controls, Messages, Classes,
   CV_ImageView, GR32, StdCtrls;

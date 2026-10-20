@@ -37,7 +37,7 @@ uses
   // SpTBX
   SpTBXSkins,
   // GraphicEx
-  GraphicEx,
+  // GraphicEx,
   // System Units
   SysUtils, Classes, ActnList, ImgList, Controls, Windows, ExtCtrls, Forms,
   ShellAPI, AppEvnts, Messages, ShlObj, Clipbrd, Menus, DOM, Contnrs;
