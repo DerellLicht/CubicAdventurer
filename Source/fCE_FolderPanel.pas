@@ -254,10 +254,7 @@ procedure TCEFolderPanel.FolderTreeIncrementalSearch(Sender: TBaseVirtualTree;
 
   function DoCompare(Str1: WideString; Str2: WideString): Integer;
   begin
-    if IsUnicode then
-    Result:= lstrcmpiW(PWideChar(Str1), PWideChar(Str2))
-    else
-    Result:= lstrcmpi(PChar(string(Str1)), PChar(string(Str2)));
+    Result:= lstrcmpiW(PWideChar(Str1), PWideChar(Str2));
   end;
 
 var

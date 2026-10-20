@@ -1751,7 +1751,6 @@ begin
   if Namespace.Folder then
   begin
     ws:= _('Open in new tab');
-    if IsUnicode then
     begin
       FillChar(infoW, SizeOf(infoW), #0);
       infoW.cbSize:= SizeOf(infoW);
@@ -1761,17 +1760,6 @@ begin
       infoW.cch:= Length(ws) + 1;
       infoW.wID:= 664;
       InsertMenuItemW(Menu, 0, true, infoW);
-    end
-    else
-    begin
-      FillChar(infoA, SizeOf(infoA), #0);
-      infoA.cbSize:= SizeOf(infoA);
-      infoA.fMask:= MIIM_TYPE or MIIM_ID or MIIM_STATE;
-      infoA.fType:= MFT_STRING;
-      infoA.dwTypeData:= PChar(String(ws));
-      infoA.cch:= Length(ws) + 1;
-      infoA.wID:= 664;
-      InsertMenuItemA(Menu, 0, true, infoA);
     end;
 
     // Add Separator

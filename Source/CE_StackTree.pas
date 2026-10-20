@@ -454,7 +454,6 @@ begin
   ws:= _('Remove from Stack') + ' (' + IntToStr(Self.SelectedCount) + ' ' + _('items') + ')'
   else
   ws:= _('Remove from Stack');
-  if IsUnicode then
   begin
     FillChar(infoW, SizeOf(infoW), #0);
     infoW.cbSize:= SizeOf(infoW);
@@ -464,18 +463,6 @@ begin
     infoW.cch:= Length(ws) + 1;
     infoW.wID:= 555;
     InsertMenuItemW(Menu, 0, true, infoW);
-  end
-  else
-  begin
-    s:= String(ws);
-    FillChar(infoA, SizeOf(infoA), #0);
-    infoA.cbSize:= SizeOf(infoA);
-    infoA.fMask:= MIIM_TYPE or MIIM_ID;
-    infoA.fType:= MFT_STRING;
-    infoA.dwTypeData:= PChar(s);
-    infoA.cch:= Length(s) + 1;
-    infoA.wID:= 555;
-    InsertMenuItemA(Menu, 0, true, infoA);
   end;
 
   // Add Separators
@@ -490,7 +477,6 @@ begin
   if ShowWarnings then
   begin
     InsertMenuItemA(Menu, 1, true, infoA);
-    if IsUnicode then
     begin
       ws:= _('WARNING: Real file operations below');
       FillChar(infoW, SizeOf(infoW), #0);
@@ -501,18 +487,6 @@ begin
       infoW.cch:= Length(ws) + 1;
       infoW.fState:= MFS_DISABLED	or MFS_HILITE;
       InsertMenuItemW(Menu, 2, true, infoW);
-    end
-    else
-    begin
-      ws:= _('WARNING: Real file operations below');
-      FillChar(infoA, SizeOf(infoA), #0);
-      infoA.cbSize:= SizeOf(infoA);
-      infoA.fMask:= MIIM_TYPE or MIIM_STATE;
-      infoA.fType:= MFT_STRING;
-      infoA.dwTypeData:= PChar(s);
-      infoA.cch:= Length(s) + 1;
-      infoA.fState:= MFS_DISABLED	or MFS_HILITE;
-      InsertMenuItemA(Menu, 2, true, infoA);
     end;
   end;
 end;

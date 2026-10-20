@@ -125,7 +125,6 @@ procedure TCEBackContextMenu.AddMenuItems(Menu:  hMenu);
         else
         ws:= chItem.Caption;
         // Initialize MenuItemInfo
-        if IsUnicode then
         begin
           FillChar(infoW, SizeOf(infoW), #0);
           infoW.cbSize:= SizeOf(infoW);
@@ -153,35 +152,6 @@ procedure TCEBackContextMenu.AddMenuItems(Menu:  hMenu);
             infoW.fMask:= infoW.fMask or MIIM_SUBMENU;
             infoW.hSubMenu:= CreatePopupMenu;
           end;
-        end
-        else
-        begin
-          FillChar(infoA, SizeOf(infoA), #0);
-          infoA.cbSize:= SizeOf(infoA);
-          infoA.fMask:= MIIM_TYPE or MIIM_ID or MIIM_STATE;
-          if chItem.Caption = '-' then
-          begin
-            infoA.fType:= MFT_SEPARATOR
-          end
-          else
-          begin
-            if chItem.RadioItem then
-            infoA.fType:= MFT_STRING or MFT_RADIOCHECK
-            else
-            infoA.fType:= MFT_STRING;
-            infoA.dwTypeData:= PChar(String(ws));
-            infoA.cch:= Length(chItem.Caption) + 1;
-            infoA.wID:= ItemID;
-            if not chItem.Enabled then
-              infoA.fState:= MFS_DISABLED	or MFS_GRAYED;
-            if chItem.Checked then
-              infoA.fState:= infoA.fState or MFS_CHECKED;
-          end;
-          if chItem.Count > 0 then
-          begin
-            infoA.fMask:= infoA.fMask or MIIM_SUBMENU;
-            infoA.hSubMenu:= CreatePopupMenu;
-          end;
         end;
 
         // Create ContextMenuItem
@@ -197,19 +167,15 @@ procedure TCEBackContextMenu.AddMenuItems(Menu:  hMenu);
         else
         pos:= GetMenuItemCount(ToMenu);
         // Insert to menu
-        if IsUnicode then
         InsertMenuItemW(ToMenu, pos, true, infoW)
-        else
-        InsertMenuItemA(ToMenu, pos, true, infoA);
+        ;
         // Change item id for next item
         ItemID:= ItemID + 1;
         // Enum child items
         if chItem.Count > 0 then
         begin
-          if IsUnicode then
           EnumItem(infoW.hSubMenu, chItem, ItemID, upper)
-          else
-          EnumItem(infoA.hSubMenu, chItem, ItemID, upper);
+          ;
         end;
       end;
     end;
@@ -424,7 +390,6 @@ function TCEBackContextMenu.ShowMenu(Pos: TPoint; RootFolder: TNamespace;
   begin
     // In Windows XP there is a crash in this procedure for some reason.
     // Trying unicode support to see if it helps.
-    if IsUnicode then
     begin
       // Remove dublicate separators
       b:= false;
@@ -438,45 +403,6 @@ function TCEBackContextMenu.ShowMenu(Pos: TPoint; RootFolder: TNamespace;
         if GetMenuItemInfoW(AMenu, i, true, infoW) then
         begin
           if (infoW.fType = MFT_SEPARATOR) then
-          begin
-            if b then
-            begin
-              DeleteMenu(AMenu, i, MF_BYPOSITION);
-              i2:= GetMenuItemCount(AMenu);
-            end
-            else
-            begin
-              b:= true;
-              i:= i + 1;
-            end;
-          end
-          else
-          begin
-            b:= false;
-            i:= i + 1;
-          end;
-        end
-        else
-        begin
-          i:= i + 1;
-          i2:= GetMenuItemCount(AMenu);
-        end;
-      end;
-    end
-    else
-    begin
-      // Remove dublicate separators
-      b:= false;
-      i:= 0;
-      i2:= GetMenuItemCount(AMenu);
-      while i < i2 do
-      begin
-        FillChar(infoA, SizeOf(infoA), #0);
-        infoA.cbSize := SizeOf(infoA);
-        infoA.fMask := MIIM_TYPE;
-        if GetMenuItemInfoA(AMenu, i, true, infoA) then
-        begin
-          if (infoA.fType = MFT_SEPARATOR) then
           begin
             if b then
             begin
@@ -635,31 +561,19 @@ begin
           if assigned(item.Menu) then
           begin
             cm:= item.Menu;
-            if IsUnicode then
             begin
               VerbW:= '';
               SetLength(VerbW, 128);
               VerbP := @VerbW[1];
               Flags := GCS_VERBW
-            end else
-            begin
-              VerbA:= '';
-              SetLength(VerbA, 128);
-              VerbP := @VerbA[1];
-              Flags := GCS_VERBA
             end;
 
             ResultID:= ResultID - item.Offset;
 
             if Succeeded(cm.GetCommandString(ResultID, Flags, nil, VerbP, 128)) then
             begin
-              if IsUnicode then
               begin
                 SetLength(VerbW, lstrlenW(PWideChar(VerbW)));
-              end else
-              begin
-                SetLength(VerbA, lstrlen(PChar(VerbA)));
-                VerbW := VerbA
               end;
             end;
 
@@ -668,16 +582,13 @@ begin
             begin
               { For some reason the lpVerbW won't work }
               lpVerb:= MakeIntResourceA(ResultID);
-              if IsUnicode then
               begin
                 fMask := CMIC_MASK_UNICODE;
                 lpVerbW := MakeIntResourceW(ResultID)
               end;
               // Win95 get confused if size = TCMInvokeCommandInfoEx
-              if IsUnicode then
-                cbSize := SizeOf(TCMInvokeCommandInfoEx)
-              else
-                cbSize := SizeOf(TCMInvokeCommandInfo);
+              cbSize := SizeOf(TCMInvokeCommandInfoEx)
+              ;
 
               hWnd := fHandle;
               nShow := SW_SHOWNORMAL;
