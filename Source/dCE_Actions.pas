@@ -586,7 +586,7 @@ begin
                else if fileview.Selection.Count = 1 then
                Clipboard.AsText:= fileview.SelectedPath
                else
-               Clipboard.AsText:= IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing);
+               Clipboard.AsText:= IncludeTrailingBackslash(fileview.RootFolderNamespace.NameForParsing);
              except
                s:= SysErrorMessage(GetLastError);
                MessageBox(0, PChar(s), 'Clipboard error!', MB_ICONERROR or MB_OK);

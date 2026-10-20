@@ -430,7 +430,7 @@ begin
   begin
     fileView:= TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView;
     case TComponent(Sender).Tag of
-      1: Clipboard.AsText:= IncludeTrailingBackslashW(fileView.RootFolderNamespace.NameForParsing);
+      1: Clipboard.AsText:= IncludeTrailingBackslash(fileView.RootFolderNamespace.NameForParsing);
       2: begin
            if fileview.Selection.Count > 1 then
            Clipboard.AsText:= fileview.SelectedFiles.Text
@@ -455,9 +455,9 @@ begin
            else if fileview.Selection.Count = 1 then
            Clipboard.AsText:= ShortPath(fileview.SelectedPath)
            else
-           Clipboard.AsText:= ShortPath(IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing));
+           Clipboard.AsText:= ShortPath(IncludeTrailingBackslash(fileview.RootFolderNamespace.NameForParsing));
          end;
-      4: Clipboard.AsText:= ShortPath(IncludeTrailingBackslashW(fileView.RootFolderNamespace.NameForParsing));
+      4: Clipboard.AsText:= ShortPath(IncludeTrailingBackslash(fileView.RootFolderNamespace.NameForParsing));
       5: begin
            if fileview.Selection.Count > 1 then
            begin
@@ -474,7 +474,7 @@ begin
            else if fileview.Selection.Count = 1 then
            Clipboard.AsText:= ExtractFileName(ShortPath(fileview.SelectedPath))
            else
-           Clipboard.AsText:= ExtractFileName(ShortPath(IncludeTrailingBackslashW(fileview.RootFolderNamespace.NameForParsing)));
+           Clipboard.AsText:= ExtractFileName(ShortPath(IncludeTrailingBackslash(fileview.RootFolderNamespace.NameForParsing)));
          end;
     end;
   end;
