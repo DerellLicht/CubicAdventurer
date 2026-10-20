@@ -12,4 +12,8 @@ Win32/
 Win64/
 *.dcu
 *.res
+*.drc
+*.map
+*.exe
+call.stack.*.txt
 
