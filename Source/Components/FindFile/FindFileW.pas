@@ -1039,7 +1039,7 @@ var
   Level: WideString;
 begin
   Result := Info;
-  P := WideTextPos(IncludeSign, Info);
+  P := Pos(WideString(WideUpperCase(IncludeSign)), WideString(WideUpperCase(Info))); // revival: was TNT WideTextPos
   if P <> 0 then
   begin
     System.Delete(Result, 1, P);
@@ -1071,11 +1071,7 @@ begin
     end;
   end;
   Result := WideExpandUNCFileName(Trim(Result));
-  {$IFDEF COMPILER7_UP}
-  Result := WideIncludeTrailingPathDelimiter(Result);
-  {$ELSE}
-  Result := WideIncludeTrailingBackslash(Result);
-  {$ENDIF}
+  Result := IncludeTrailingPathDelimiter(Result); // revival: was TNT WideIncludeTrailingPathDelimiter
 end;
 
 function TTargetPaths.GetItems(Index: Integer): TTargetPath;
