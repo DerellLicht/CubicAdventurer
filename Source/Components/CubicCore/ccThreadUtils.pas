@@ -248,7 +248,7 @@ begin
   MgrThread.FreeOnTerminate:= false;
   MgrThread.Name:= 'TaskPool_Mgr';
   MgrThread.Pool:= Self;
-  MgrThread.Resume;
+  MgrThread.Start;
 end;
 
 {-------------------------------------------------------------------------------
@@ -753,7 +753,7 @@ begin
       thread.TaskPool:= Pool;
       thread.Data:= Data^;
       thread.Timeout:= Pool.KeepAliveTimeout;
-      thread.Resume;
+      thread.Start;
       Result:= true;
     end;
   finally
