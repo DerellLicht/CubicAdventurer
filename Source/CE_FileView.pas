@@ -107,9 +107,9 @@ type
     procedure HistoryChange(Sender: TBaseVirtualShellPersistent; ItemIndex:
         Integer; ChangeType: TVSHChangeType);
     procedure OnAfterFileCreate(Sender: TMenu; const NewMenuItem:
-        TVirtualShellNewItem; const FileName: WideString);
+        TVirtualShellNewItem; const FileName: string);
     procedure OnCreateNewFile(Sender: TMenu; const NewMenuItem:
-        TVirtualShellNewItem; var Path, FileName: WideString; var Allow: Boolean);
+        TVirtualShellNewItem; var Path, FileName: string; var Allow: Boolean);
     procedure SetNotifyFolder(Namespace: TNamespace);
     procedure SetView(Value: TEasyListStyle); override;
     procedure UpdateBackgroundText;
@@ -501,7 +501,7 @@ end;
   On ShellNewMenu.AfterFileCreate
 -------------------------------------------------------------------------------}
 procedure TCEFileView.OnAfterFileCreate(Sender: TMenu; const NewMenuItem:
-    TVirtualShellNewItem; const FileName: WideString);
+    TVirtualShellNewItem; const FileName: string);
 var
   NS: TNamespace;
   Item: TExplorerItem;
@@ -529,7 +529,7 @@ end;
   Get's called when new file is created from ShellNewMenu.
 -------------------------------------------------------------------------------}
 procedure TCEFileView.OnCreateNewFile(Sender: TMenu; const NewMenuItem:
-    TVirtualShellNewItem; var Path, FileName: WideString; var Allow: Boolean);
+    TVirtualShellNewItem; var Path, FileName: string; var Allow: Boolean);
 begin
   Path:= self.RootFolderNamespace.NameForParsing;
   if not DirectoryExists(Path) then
