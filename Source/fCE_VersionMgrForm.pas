@@ -80,7 +80,7 @@ type
     procedure ItemListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure ItemListGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
         Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var
-        ImageIndex: Integer);
+        ImageIndex: TImageIndex);
     procedure ItemListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column:
         TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure ItemListPaintText(Sender: TBaseVirtualTree; const TargetCanvas:
