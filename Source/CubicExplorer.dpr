@@ -139,7 +139,6 @@ uses
   fCE_VersionMgrForm in 'fCE_VersionMgrForm.pas' {CEVersionMgrForm: TForm},
   CC_Threads in 'Components\CubicCore\CC_Threads.pas',
   CE_ArchiveTree in 'CE_ArchiveTree.pas',
-  JclCompressionWide in 'Components\jcl\JclCompressionWide.pas',
   fCE_ArchivePanel in 'fCE_ArchivePanel.pas' {CEArchiverPanel},
   fCE_OptionsPage_General_Updates in 'fCE_OptionsPage_General_Updates.pas' {CE_OptionsPage_General_Updates: TFrame},
   fCE_LoginPromptDlg in 'fCE_LoginPromptDlg.pas' {CELoginPromptDlg},

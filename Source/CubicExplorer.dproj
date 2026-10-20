@@ -308,7 +308,6 @@
         </DCCReference>
         <DCCReference Include="Components\CubicCore\CC_Threads.pas"/>
         <DCCReference Include="CE_ArchiveTree.pas"/>
-        <DCCReference Include="Components\jcl\JclCompressionWide.pas"/>
         <DCCReference Include="fCE_ArchivePanel.pas">
             <Form>CEArchiverPanel</Form>
         </DCCReference>

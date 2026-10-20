@@ -27,7 +27,7 @@ uses
   // VT
   VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // JCL
-  JclCompressionWide,
+  JclCompression,
   // System Units
   Classes, SysUtils, Windows, Forms, ImgList, Messages, Graphics;
 
