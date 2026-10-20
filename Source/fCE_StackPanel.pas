@@ -209,7 +209,7 @@ begin
   AList.Clear;
   for i:= 0 to fStackPaths.Count - 1 do
   begin
-    AList.Add(ExtractFileName(fStackPaths.Strings[i], true));
+    AList.Add(ChangeFileExt(ExtractFileName(fStackPaths.Strings[i]), ''));
   end;
 end;
 
@@ -294,7 +294,7 @@ begin
     end;
     // Create new stack
     StackTree.ActiveStack:= TCEStackItem.Create;
-    StackTree.ActiveStack.StackName:= ExtractFileName(ws, true);
+    StackTree.ActiveStack.StackName:= ChangeFileExt(ExtractFileName(ws), '');
     StackTree.ActiveStack.LoadFromFile(ws);
     StackTree.LoadFromStack(StackTree.ActiveStack);
     if Settings.StartupType = stLastUsed then
@@ -330,7 +330,7 @@ begin
       dlg.ExistsWarningDescription:= _('Override existing stack?');
       dlg.ExistsWarningContent:= _('Do you want to override existing stack?');
       for i:= 0 to fStackPaths.Count - 1 do
-      dlg.combo.Items.Add(ExtractFileName(fStackPaths.Strings[i], true));
+      dlg.combo.Items.Add(ChangeFileExt(ExtractFileName(fStackPaths.Strings[i]), ''));
       dlg.combo.ItemIndex:= -1;
       dlg.combo.Text:= '';
       dlg.Position:= poDesigned;
@@ -354,7 +354,7 @@ begin
             end;
             stack:= TCEStackItem.Create;
             stack.StackPath:= fStackPaths.Strings[dlg.combo.ItemIndex];
-            stack.StackName:= ExtractFileName(stack.StackPath, true);
+            stack.StackName:= ChangeFileExt(ExtractFileName(stack.StackPath), '');
           end;
         end
         else
@@ -404,7 +404,7 @@ begin
       end;
       stack:= TCEStackItem.Create;
       stack.StackPath:= ws;
-      stack.StackName:= ExtractFileName(ws, true);
+      stack.StackName:= ChangeFileExt(ExtractFileName(ws), '');
       StackTree.SaveToStack(stack);
       stack.SaveToFile(stack.StackPath);
       StackTree.ActiveStack:= stack;
@@ -425,7 +425,7 @@ begin
     FindStacks(StackDirPath, fStackPaths);
     for i:= 0 to fStackPaths.Count - 1 do
     begin
-      ws:= ExtractFileName(fStackPaths.Strings[i], true);
+      ws:= ChangeFileExt(ExtractFileName(fStackPaths.Strings[i]), '');
       if ws = Settings.LoadOnStartup then
       begin
         StackTree.ActiveStack:= TCEStackItem.Create;
@@ -452,7 +452,7 @@ begin
   begin
     item:= TSpTBXItem.Create(AItem);
     ws:= fStackPaths.Strings[i];
-    item.Caption:= ExtractFileName(ws, true);
+    item.Caption:= ChangeFileExt(ExtractFileName(ws), '');
     item.Tag:= i;
     item.OnClick:= HandleStackLoadClick;
     item.Checked:= assigned(StackTree.ActiveStack) and (StackTree.ActiveStack.StackPath = ws);
@@ -489,7 +489,7 @@ begin
   begin
     item:= TSpTBXItem.Create(AItem);
     ws:= fStackPaths.Strings[i];
-    item.Caption:= ExtractFileName(ws, true);
+    item.Caption:= ChangeFileExt(ExtractFileName(ws), '');
     item.Checked:= assigned(StackTree.ActiveStack) and (StackTree.ActiveStack.StackPath = ws);
     item.Tag:= i;
     item.OnClick:= HandleStackSaveClick;

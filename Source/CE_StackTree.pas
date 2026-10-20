@@ -1143,7 +1143,7 @@ begin
     data.Offline:= true;
     data.CEPath:= PIDLToCEPath(APIDL);
     data.PathType:= GetCEPathType(data.CEPath);
-    data.Caption:= ExtractFileName(data.CEPath, false);
+    data.Caption:= ExtractFileName(data.CEPath);
     data.IconIndex:= -1;
     data.OverlayIndex:= -1;
     data.fLastOfflineCheck:= 0;
@@ -1192,7 +1192,7 @@ begin
             if l.Count > 1 then
             data.Caption:= l.Strings[1]
             else
-            data.Caption:= ExtractFileName(data.CEPath, false);
+            data.Caption:= ExtractFileName(data.CEPath);
             data.IconIndex:= -1;
             data.OverlayIndex:= -1;
             data.fLastOfflineCheck:= 0;
@@ -1659,7 +1659,7 @@ begin
                   begin
                     data:= Self.GetNodeData(node);
                     data.CEPath:= PIDLToCEPath(ShellEvent.PIDL2);
-                    data.Caption:= ExtractFileName(data.CEPath, false);
+                    data.Caption:= ExtractFileName(data.CEPath);
                     data.IconIndex:= -1;
                     data.OverlayIndex:= -1;
                     data.fLastOfflineCheck:= 0;

@@ -111,7 +111,7 @@ begin
     repeat
       Results.Add(ADirPath + sr.Name);
     until FindNext(sr) <> 0;
-    FindClose(sr);
+    SysUtils.FindClose(sr);
     Result:= Results.Count;
   end;
 end;
@@ -363,7 +363,7 @@ begin
     repeat
       fStackPaths.Add(ADirPath + sr.Name);
     until FindNext(sr) <> 0;
-    FindClose(sr);
+    SysUtils.FindClose(sr);
     Result:= fStackPaths.Count;
   end;
 end;
@@ -382,7 +382,7 @@ begin
     for i:= 0 to fStackPaths.Count - 1 do
     begin
       ws:= fStackPaths.Strings[i];
-      item:= AddStack(ExtractFileName(ws, true));
+      item:= AddStack(ChangeFileExt(ExtractFileName(ws), ''));
       try
         item.LoadFromFile(ws);
       except
