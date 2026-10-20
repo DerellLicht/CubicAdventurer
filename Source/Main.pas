@@ -398,7 +398,7 @@ var
 implementation
 
 uses
-  madExcept, Clipbrd, CE_Stacks, MPResources,
+  {$IFDEF madExcept}madExcept,{$ENDIF} Clipbrd, CE_Stacks, MPResources,
   fCE_OptionsDialog, fCE_StackPanel, CE_Consts, CE_CommonObjects,
   CE_ElevatedActions, CE_FileUtils, CE_WideCompat;
 
