@@ -958,7 +958,7 @@ object CEAboutBox: TCEAboutBox
       0057ABF9FE1FF56EFD365A7F699D83CE963CCEEF5FFFD9}
     ExplicitTop = -6
   end
-  object SynMemo1: TSynMemo
+  object SynMemo1: TSynEdit
     Left = 0
     Top = 94
     Width = 450
@@ -979,7 +979,7 @@ object CEAboutBox: TCEAboutBox
     Gutter.Visible = False
     Gutter.Width = 0
     Highlighter = SynURISyn1
-    Lines.UnicodeStrings = 
+    Lines.Strings = 
       'Copyright 2006-2012 Marko Savolainen.'#13#10#13#10'Homepage - http://www.c' +
       'ubicreality.com'#13#10'Support - http://www.cubicreality.com/forum'#13#10#13#10 +
       '================================================================' +

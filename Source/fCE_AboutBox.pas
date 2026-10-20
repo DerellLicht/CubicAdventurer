@@ -29,7 +29,7 @@ uses
   // PNG Controls
   pngimage,
   // Syn Edit
-  SynEditHighlighter, SynHighlighterURI, SynURIOpener, SynEdit, SynMemo,
+  SynEditHighlighter, SynHighlighterURI, SynURIOpener, SynEdit,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, jpeg, SpTBXItem, SpTBXControls;
@@ -37,7 +37,7 @@ uses
 type
   TCEAboutBox = class(TForm)
     Image1: TImage;
-    SynMemo1: TSynMemo;
+    SynMemo1: TSynEdit;
     SynURIOpener1: TSynURIOpener;
     SynURISyn1: TSynURISyn;
     but_close: TButton;
