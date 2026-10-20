@@ -44,7 +44,7 @@ function Elevated_UnRegisterDefaultFileManager(AParentHWND: HWND): Boolean;
 implementation
 
 uses
-  CE_VersionUpdater, dCE_Input, dCE_Actions, Main, CE_Utils;
+  dCE_Input, dCE_Actions, Main, CE_Utils;
 
 {-------------------------------------------------------------------------------
   Handle Elevated Commands

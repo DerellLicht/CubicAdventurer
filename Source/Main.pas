@@ -28,7 +28,7 @@ uses
   fCE_ExtAppPage, fCE_FiltersPanel, fCE_BookmarkPropDlg,
   fCE_DockHostForm, fCE_DockableForm, fCE_TabPage, fCE_FileView,
   fCE_FolderPanel, fCE_QuickViewPanel, fCE_BookmarkPanel, fCE_Customizer,
-  fCE_PoEditor, CE_VersionUpdater,
+  fCE_PoEditor,
   // CE Data Modules
   dCE_Actions, dCE_Images, dCE_Input,
   // CE Units
@@ -265,8 +265,6 @@ type
     procedure WMShellNotify(var Msg: TMessage); message WM_SHELLNOTIFY;
     procedure WMSyscommand(var Message: TWmSysCommand); message WM_SYSCOMMAND;
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure HandleUpdateFound(Sender: TObject; BuildType: TCEBuildType; Version:
-        TCEVersionNumber; Notes: WideString; var DoUpdate: Boolean);
     procedure WMAppCommand(var Message: TWMAppCommand); message WM_APPCOMMAND;
     procedure WMHotkey(var Message: TMessage); message WM_HOTKEY;
   public
@@ -274,7 +272,6 @@ type
     Layouts: TCELayoutController;
     TabSet: TCESpTabSet;
     AddressBarToolbar: TCEAddressBarToolbar;
-    AutoUpdater: TCEAutoUpdater;
     BreadcrumbBar: TCEBreadcrumbBar;
     DriveToolbar: TCEDriveToolbar;
     BookmarkToolbar: TCEBookmarkToolbar;
@@ -330,8 +327,6 @@ type
     function GetSkin: string;
     function GetAutoLoadSession: WideString;
     function GetChangeCurrentDirVar: Boolean;
-    function GetCheckForUpdateTypes: TCEBuildTypes;
-    function GetLastUpdateCheck: TDateTime;
     function GetLockToolbars: Boolean;
     function GetProxyAddress: WideString;
     function GetProxyPassword: String;
@@ -349,8 +344,6 @@ type
     procedure SetSkin(const Value: string);
     procedure SetAutoLoadSession(const Value: WideString);
     procedure SetChangeCurrentDirVar(const Value: Boolean);
-    procedure SetCheckForUpdateTypes(const Value: TCEBuildTypes);
-    procedure SetLastUpdateCheck(const Value: TDateTime);
     procedure SetLockToolbars(const Value: Boolean);
     procedure SetProxyAddress(const Value: WideString);
     procedure SetProxyPassword(const Value: String);
@@ -383,13 +376,9 @@ type
         SetAutoLoadSession;
     property ChangeCurrentDirVar: Boolean read GetChangeCurrentDirVar write
         SetChangeCurrentDirVar;
-    property CheckForUpdateTypes: TCEBuildTypes read GetCheckForUpdateTypes write
-        SetCheckForUpdateTypes;
     property CloseToTray: Boolean read fCloseToTray write fCloseToTray;
     property ExitOnLastTabClose: Boolean read fExitOnLastTabClose write
         fExitOnLastTabClose;
-    property LastUpdateCheck: TDateTime read GetLastUpdateCheck write
-        SetLastUpdateCheck;
     property LockToolbars: Boolean read GetLockToolbars write SetLockToolbars;
     property MinimizeToTray: Boolean read fMinimizeToTray write fMinimizeToTray;
     property ProxyAddress: WideString read GetProxyAddress write SetProxyAddress;
@@ -670,13 +659,6 @@ begin
   end;
 
   InitLanguage;
-
-  // Create Auto Updater
-  AutoUpdater:= TCEAutoUpdater.Create;
-  AutoUpdater.CurrentVersionStr:= GetAppVersionStr;
-  AutoUpdater.VersionFolder:= SettingsDirPath + 'Versions\';
-  AutoUpdater.OutputFolder:= exePath;
-  AutoUpdater.OnUpdateFound:= HandleUpdateFound;
 end;
 
 {*------------------------------------------------------------------------------
@@ -684,7 +666,6 @@ end;
 -------------------------------------------------------------------------------}
 procedure TMainForm.FinalizeUI;
 begin
-  AutoUpdater.Free;
   TabSet.Free;
   Layouts.Free;
   DockHostForm.Free;
@@ -879,8 +860,8 @@ end;
 -------------------------------------------------------------------------------}
 procedure TMainForm.AutoUpdateTimerTimer(Sender: TObject);
 begin
+  // Auto-update support was removed (revival); the timer is kept only because Main.dfm references it.
   AutoUpdateTimer.Enabled:= false;
-  AutoUpdater.CheckForUpdates;
 end;
 
 {*------------------------------------------------------------------------------
@@ -1614,49 +1595,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Handle UpdateFound
--------------------------------------------------------------------------------}
-procedure TMainForm.HandleUpdateFound(Sender: TObject; BuildType: TCEBuildType;
-    Version: TCEVersionNumber; Notes: WideString; var DoUpdate: Boolean);
-var
-  ws: WideString;
-  list: TStrings;
-begin
-  list:= TStringList.Create;
-  list.Text:= Notes;
-  if list.Count > 20 then
-  begin
-    while list.Count > 20 do
-    list.Delete(list.Count - 1);
-    list.Add('...');
-  end;
-
-  try
-    try
-      ws:= Format(_('New version (%s) is available. Do you want to update now?'), [VersionNumberToStr(Version)]);
-    except
-      ws:= Format('New version (%s) is available. Do you want to update now?', [VersionNumberToStr(Version)]);
-    end;
-
-    ws:= ws + #13#10 + '____________________' + #13#10;
-    ws:= ws + _('Build:') + ' ' + VersionNumberToStr(Version) + #13#10;
-    ws:= ws + _('Update type:') + ' ' + GetBuildTypeDescription(BuildType) + #13#10#13#10;
-    ws:= ws + list.Text;
-    if TaskDialog(Self.Handle,
-                  _('New Version Available'),
-                  _('Do you want to update?'),
-                  ws,
-                  TD_ICON_QUESTION,
-                  TD_BUTTON_YES+TD_BUTTON_NO) = mrYes then
-    begin
-      DoUpdate:= true;
-    end;
-  finally
-
-  end;
-end;
-
-{-------------------------------------------------------------------------------
   Set Lock Toolbars
 -------------------------------------------------------------------------------}
 procedure TMainForm.SetLockToolbars(const Value: Boolean);
@@ -1943,30 +1881,6 @@ begin
   MainForm.TrayIcon.ShowApplication;
   
   MainForm.TrayIcon.Active:= Value;
-end;
-
-{-------------------------------------------------------------------------------
-  Get/Set LastUpdateCheck
--------------------------------------------------------------------------------}
-function TMainFormSettings.GetLastUpdateCheck: TDateTime;
-begin
-  Result:= CELastVersionCheck;
-end;
-procedure TMainFormSettings.SetLastUpdateCheck(const Value: TDateTime);
-begin
-  CELastVersionCheck:= Value;
-end;
-
-{-------------------------------------------------------------------------------
-  Get/Set CheckForUpdateTypes
--------------------------------------------------------------------------------}
-function TMainFormSettings.GetCheckForUpdateTypes: TCEBuildTypes;
-begin
-  Result:= MainForm.AutoUpdater.BuildTypes;
-end;
-procedure TMainFormSettings.SetCheckForUpdateTypes(const Value: TCEBuildTypes);
-begin
-  MainForm.AutoUpdater.BuildTypes:= Value;
 end;
 
 {-------------------------------------------------------------------------------

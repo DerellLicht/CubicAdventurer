@@ -297,23 +297,11 @@
             <Form>CEItemSelectSaveDlg</Form>
         </DCCReference>
         <DCCReference Include="Components\Mustangpeak\VSTools\VirtualExplorerTree.pas"/>
-        <DCCReference Include="CE_VersionUpdater.pas"/>
         <DCCReference Include="CE_XmlUtils.pas"/>
-        <DCCReference Include="fCE_UpdateDlg.pas">
-            <Form>CEUpdateDlg</Form>
-        </DCCReference>
-        <DCCReference Include="fCE_VersionMgrForm.pas">
-            <Form>CEVersionMgrForm</Form>
-            <DesignClass>TForm</DesignClass>
-        </DCCReference>
         <DCCReference Include="Components\CubicCore\CC_Threads.pas"/>
         <DCCReference Include="CE_ArchiveTree.pas"/>
         <DCCReference Include="fCE_ArchivePanel.pas">
             <Form>CEArchiverPanel</Form>
-        </DCCReference>
-        <DCCReference Include="fCE_OptionsPage_General_Updates.pas">
-            <Form>CE_OptionsPage_General_Updates</Form>
-            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="fCE_LoginPromptDlg.pas">
             <Form>CELoginPromptDlg</Form>

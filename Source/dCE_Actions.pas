@@ -358,7 +358,7 @@ uses
   CE_ToolbarButtons, fCE_Customizer, fCE_TabPage, fCE_FiltersPanel,
   fCE_PoEditor, fCE_OptionsDialog, CE_Sessions, fCE_StackPanel,
   CE_BaseFileView, fCE_QuickViewTab, fCE_SearchPage, fCE_CreateSymlink,
-  fCE_VersionMgrForm, fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView, CE_WideCompat;
+  fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView, CE_WideCompat;
 
 {##############################################################################}
 
@@ -834,8 +834,7 @@ begin
       form.Show;
     end;
     505: ShellExecute(0,'open','http://www.cubicreality.com/donate/','','',SW_NORMAL);
-    506: ShowVersionManager;
-    507: MainForm.AutoUpdater.CheckForUpdates(true);
+    506, 507: ; // Version manager / update check removed (revival)
     508: begin
       if assigned(CEOptionsDialog) then
       h:= CEOptionsDialog.Handle
@@ -865,7 +864,10 @@ end;
 procedure UpdateHelpCategory(ActionID: Integer; TargetAction: TAction);
 begin
   case ActionID of
-    507: TargetAction.Enabled:= not MainForm.AutoUpdater.CheckingUpdate;
+    506, 507: begin
+      TargetAction.Enabled:= false;
+      TargetAction.Visible:= false;
+    end;
     else
     TargetAction.Enabled:= true;
   end;
