@@ -64,12 +64,12 @@
         <SanitizedProjectName>CubicExplorer</SanitizedProjectName>
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_AutoGenVersion>true</VerInfo_AutoGenVersion>
-        <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_MinorVer>96</VerInfo_MinorVer>
-        <VerInfo_Build>1512</VerInfo_Build>
+        <VerInfo_AutoGenVersion>false</VerInfo_AutoGenVersion>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <VerInfo_MinorVer>0</VerInfo_MinorVer>
+        <VerInfo_Build>0</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=0.96.0.1512;InternalName=;LegalCopyright=Marko Savolainen 2006-2012;LegalTrademarks=;OriginalFilename=;ProductName=CubicExplorer;ProductVersion=SVN Snapshot;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=1.0.0.0;InternalName=;LegalCopyright=Marko Savolainen 2006-2012; Derell Licht 2026;LegalTrademarks=;OriginalFilename=;ProductName=CubicExplorer;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
