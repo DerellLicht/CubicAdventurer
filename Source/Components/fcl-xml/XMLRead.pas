@@ -153,8 +153,10 @@ type
 
   TXMLCharSource = class(TObject)
   private
-    FBuf: PChar;
-    FBufEnd: PChar;
+    // NOTE: byte pointers. PChar is a WideChar pointer in Delphi 2009+, which broke the
+    // byte-wise decoding (UTF-8 etc.) and the pointer arithmetic below.
+    FBuf: PAnsiChar;
+    FBufEnd: PAnsiChar;
     FEof: Boolean;
     FSurrogate: WideChar;
     FReader: TObject;   // weak reference
@@ -192,7 +194,7 @@ type
 
   TXMLStreamInputSource = class(TXMLDecodingSource)
   private
-    FAllocated: PChar;
+    FAllocated: PAnsiChar;
     FStream: TStream;
     FBufSize: Integer;
     FOwnStream: Boolean;
@@ -205,7 +207,7 @@ type
   TXMLFileInputSource = class(TXMLDecodingSource)
   private
     FFile: ^Text;
-    FString: string;
+    FString: AnsiString;
   public
     constructor Create(var AFile: Text);
     procedure FetchData; override;
@@ -579,7 +581,7 @@ end;
 constructor TXMLCharSource.Create(const AData: WideString);
 begin
   inherited Create;
-  FBuf := PChar(PWideChar(AData));
+  FBuf := PAnsiChar(PWideChar(AData));
   FBufEnd := FBuf + Length(AData) * sizeof(WideChar);
 end;
 
@@ -763,7 +765,7 @@ end;
 procedure TXMLStreamInputSource.FetchData;
 var
   Remainder, BytesRead: Integer;
-  OldBuf: PChar;
+  OldBuf: PAnsiChar;
 begin
   Assert(FBufEnd - FBuf < 8);
 
@@ -783,7 +785,7 @@ constructor TXMLFileInputSource.Create(var AFile: Text);
 begin
   FFile := @AFile;
   ReadLn(FFile^, FString);
-  FBuf := PChar(FString);
+  FBuf := PAnsiChar(FString);
   FBufEnd := FBuf + Length(FString);
 end;
 
@@ -794,7 +796,7 @@ begin
   begin
     ReadLn(FFile^, FString);
     FString := FString + #10;    // bad solution...
-    FBuf := PChar(FString);
+    FBuf := PAnsiChar(FString);
     FBufEnd := FBuf + Length(FString);
   end;
 end;
@@ -814,7 +816,7 @@ function TISO8859_1Decoder.DecodeNext: WideChar;
 begin
   with FSource do
   begin
-    Result := WideChar(FBuf[0]);
+    Result := WideChar(Byte(FBuf[0]));
     Inc(FBuf);
   end;
 end;
@@ -864,7 +866,7 @@ var
 begin
   with FSource do
   begin
-    Result := WideChar(FBuf[0]);
+    Result := WideChar(Byte(FBuf[0]));
     Inc(FBuf);
     if Result < #$80 then
       Exit;

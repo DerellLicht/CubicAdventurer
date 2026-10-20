@@ -44,10 +44,10 @@ type
     FInsideTextNode: Boolean;
     FIndent: WideString;
     FIndentCount: Integer;
-    FBuffer: PChar;
-    FBufPos: PChar;
+    FBuffer: PAnsiChar;   // byte buffer (UTF-8 output); PChar would be WideChar* now
+    FBufPos: PAnsiChar;
     FCapacity: Integer;
-    FLineBreak: string;
+    FLineBreak: AnsiString;
     procedure wrtChars(Src: PWideChar; Length: Integer);
     procedure IncIndent;
     procedure DecIndent; {$IFDEF HAS_INLINE} inline; {$ENDIF}
@@ -109,11 +109,11 @@ end;
 
 procedure TTextXMLWriter.Write(const Buffer; Count: Longint);
 var
-  s: string;
+  s: AnsiString;
 begin
   if Count>0 then
   begin
-    SetString(s, PChar(@Buffer), Count);
+    SetString(s, PAnsiChar(@Buffer), Count);
     system.Write(f^, s);
   end;
 end;
@@ -169,7 +169,7 @@ end;
 
 procedure TXMLWriter.wrtChars(Src: PWideChar; Length: Integer);
 var
-  pb: PChar;
+  pb: PAnsiChar;
   wc: Cardinal;
   SrcEnd: PWideChar;
   I: Integer;
@@ -194,12 +194,12 @@ begin
             end;
 
       0..$09, $0B..$7F:  begin
-        pb^ := char(wc); Inc(pb);
+        pb^ := AnsiChar(wc); Inc(pb);
       end;
 
       $80..$7FF: begin
-        pb^ := Char($C0 or (wc shr 6));   Inc(pb);
-        pb^ := Char($80 or (wc and $3F)); Inc(pb);
+        pb^ := AnsiChar($C0 or (wc shr 6));   Inc(pb);
+        pb^ := AnsiChar($80 or (wc and $3F)); Inc(pb);
       end;
 
       $D800..$DBFF: begin
@@ -208,10 +208,10 @@ begin
           wc := ((wc - $D7C0) shl 10) + (word(Src^) xor $DC00);
           Inc(Src);
 
-          pb^ := Char($F0 or (wc shr 18));           Inc(pb);
-          pb^ := Char($80 or ((wc shr 12) and $3F)); Inc(pb);
-          pb^ := Char($80 or ((wc shr 6) and $3F));  Inc(pb);
-          pb^ := Char($80 or (wc and $3F));          Inc(pb);
+          pb^ := AnsiChar($F0 or (wc shr 18));           Inc(pb);
+          pb^ := AnsiChar($80 or ((wc shr 12) and $3F)); Inc(pb);
+          pb^ := AnsiChar($80 or ((wc shr 6) and $3F));  Inc(pb);
+          pb^ := AnsiChar($80 or (wc and $3F));          Inc(pb);
         end
         else
           raise EConvertError.Create('High surrogate without low one');
@@ -220,9 +220,9 @@ begin
         raise EConvertError.Create('Low surrogate without high one');
       else   // $800 >= wc > $FFFF, excluding surrogates
       begin
-        pb^ := Char($E0 or (wc shr 12));          Inc(pb);
-        pb^ := Char($80 or ((wc shr 6) and $3F)); Inc(pb);
-        pb^ := Char($80 or (wc and $3F));         Inc(pb);
+        pb^ := AnsiChar($E0 or (wc shr 12));          Inc(pb);
+        pb^ := AnsiChar($80 or ((wc shr 6) and $3F)); Inc(pb);
+        pb^ := AnsiChar($80 or (wc and $3F));         Inc(pb);
       end;
     end;
   end;
