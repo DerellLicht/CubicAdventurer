@@ -26,7 +26,7 @@ interface
 uses
   // CubicExplorer
   CE_Sessions, CE_VistaFuncs,
-  // VirtualTrees
+  // VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree
   VirtualTrees,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,

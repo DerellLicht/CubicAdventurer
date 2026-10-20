@@ -27,7 +27,7 @@ uses
   // CE
   CE_Stacks, CE_Utils, CE_CommonObjects, CE_FileUtils,
   // VT
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // VS Tools
   MPDataObject, MPShellUtilities, MPCommonObjects, MPCommonUtilities,
   VirtualExplorerTree, VirtualResources, VirtualShellNotifier,

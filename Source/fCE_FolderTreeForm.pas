@@ -27,7 +27,7 @@ uses
   // CE Units
   CE_GlobalCtrl, CE_VistaFuncs, CE_Utils,
   // VSTools, VT
-  VirtualTrees, VirtualExplorerTree, MPShellUtilities,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualExplorerTree, MPShellUtilities,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, StdCtrls;

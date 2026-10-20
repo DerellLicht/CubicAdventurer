@@ -30,7 +30,7 @@ uses
   // CE Frames
   fCE_TabPage, fCE_FileSearchDestDlg,
   // VSTools
-  MPCommonObjects, EasyListview, VirtualExplorerEasyListview, VirtualTrees,
+  MPCommonObjects, EasyListview, VirtualExplorerEasyListview, VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   VirtualExplorerTree, MPShellUtilities, MPCommonUtilities,
   // SpTBX
   SpTBXItem, SpTBXTabs, TB2Item, SpTBXSkins, SpTBXEditors, SpTBXControls,

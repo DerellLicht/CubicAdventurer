@@ -7,7 +7,7 @@ uses
   ccThreadUtils, ccClasses, ccFileUtils,
   // VSTools
   VirtualShellNotifier, VirtualResources,
-  // VirtualTrees
+  // VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree
   VirtualTrees,
   // SysUtils
   Windows, Messages, Controls, Classes, Graphics, ImgList, ActiveX, SysUtils;

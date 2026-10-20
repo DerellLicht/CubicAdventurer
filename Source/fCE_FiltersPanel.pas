@@ -31,7 +31,7 @@ uses
   // TB2k, TBX, SpTBX
   TB2Dock, SpTBXItem,
   // Virtual Trees
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // VSTools
   VirtualExplorerEasyListview,
   // Graphics32

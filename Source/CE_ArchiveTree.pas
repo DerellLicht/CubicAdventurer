@@ -25,7 +25,7 @@ interface
 
 uses
   // VT
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // JCL
   JclCompressionWide,
   // System Units

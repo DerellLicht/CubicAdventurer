@@ -31,7 +31,7 @@ uses
   // VSTools
   MPShellUtilities, MPCommonObjects, MPDataObject, MPCommonUtilities,
   // VT
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // SpTBX
   SpTBXItem,
   // System Units

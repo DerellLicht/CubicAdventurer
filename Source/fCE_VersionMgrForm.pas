@@ -32,7 +32,7 @@ uses
   SpTBXTabs, TB2Item, SpTBXItem, SpTBXControls, 
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, VirtualTrees, StdCtrls, XSBuiltIns, ExtCtrls;
+  Dialogs, VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, StdCtrls, XSBuiltIns, ExtCtrls;
 
 type
   PItemData = ^AItemData;

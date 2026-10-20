@@ -30,7 +30,7 @@ uses
   // JVCL
   JvDockVSNetStyle,
   // VSTools
-  VirtualTrees, VirtualExplorerTree, MPCommonUtilities, MPShellUtilities,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualExplorerTree, MPCommonUtilities, MPShellUtilities,
   VirtualShellNotifier, VirtualResources,
   // PNG Controls
   PngImageList,

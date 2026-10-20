@@ -29,7 +29,7 @@ uses
   // VSTools
   VirtualExplorerTree, MPCommonUtilities, MPShellUtilities,
   // VirtualTree
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs;

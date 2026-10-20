@@ -44,7 +44,7 @@ uses
   // VSTools
   VirtualShellNewMenu, EasyListview, VirtualExplorerEasyListview,
   MPCommonObjects, VirtualShellNotifier, VirtualResources, MPShellTypes,
-  VirtualTrees, MPShellUtilities, MPCommonUtilities,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, MPShellUtilities, MPCommonUtilities,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ShellAPI, Menus, ShlObj, XPMan, ActiveX,

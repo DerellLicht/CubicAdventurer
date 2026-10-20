@@ -31,7 +31,7 @@ uses
   SpTBXEditors, SpTBXFormPopupMenu, SpTBXControls,
   // VSTools
   MPCommonObjects, MPShellUtilities,
-  // VirtualTrees
+  // VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree
   VirtualTrees,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,

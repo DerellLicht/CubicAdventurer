@@ -28,7 +28,7 @@ uses
   dCE_Actions, dCE_Images,  CE_Utils, CE_Toolbar, CE_TBActions, CE_VistaFuncs,
   CE_LanguageEngine,
   // VirtualTree
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // Toolbar2000
   TB2Dock, TB2Toolbar, TB2Item,
   ActnList,

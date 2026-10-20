@@ -28,7 +28,7 @@ uses
   fCE_DockableForm, CE_GlobalCtrl, dCE_Images, CE_VistaFuncs, CE_FolderTree,
   CE_AppSettings,
   // VSTools
-  VirtualTrees, VirtualExplorerTree, MPCommonUtilities, MPShellUtilities,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualExplorerTree, MPCommonUtilities, MPShellUtilities,
   VirtualShellNotifier,
   // PNG Controls
   PngImageList,

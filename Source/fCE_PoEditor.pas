@@ -30,7 +30,7 @@ uses
   // VSTools
   MPCommonUtilities,
   // VT
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // SpTBX, TBX, TB2000
   SpTBXTabs, SpTBXControls, SpTBXDkPanels,
   SpTBXItem, TB2Item, TB2ExtItems, SpTBXEditors, TB2Dock, TB2Toolbar,

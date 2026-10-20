@@ -40,7 +40,7 @@ uses
   // Graphics32
   GR32, StdCtrls,
   // VT
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // System Units
   Windows, Messages, SysUtils, Classes, Controls, ExtCtrls, Forms,
   Graphics, Menus, ShellAPI, Math, ShlObj, ActiveX, CommCtrl;

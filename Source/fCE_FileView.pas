@@ -35,7 +35,7 @@ uses
   VirtualExplorerTree, MPCommonUtilities, ColumnFormSpTBX,
   VirtualShellNotifier,
   // VT
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // SpTBX
   SpTBXItem, SpTBXControls, SpTBXDkPanels, SpTBXSkins,
   // TB2K

@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  StdCtrls, ExtCtrls, VirtualTrees, ActiveX,
+  StdCtrls, ExtCtrls, VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, ActiveX,
   SpTBXDkPanels, SpTBXControls, SpTBXEditors, SpTBXItem, SpTBXTabs, TB2Item;
 
 

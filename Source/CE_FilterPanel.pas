@@ -27,7 +27,7 @@ uses
   // CE Units
   CE_LanguageEngine, CE_Utils,
   // VT
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.BaseTree, VirtualTrees.Types,
   // JVCL
   JvSimpleXml, JvAppStorage,    
   // VSTools
@@ -77,8 +77,7 @@ type
     procedure DoChecked(Node: PVirtualNode); override;
     function DoCompare(Node1, Node2: PVirtualNode; Column: TColumnIndex): Integer;
         override;
-    procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex; TextType:
-        TVSTTextType; var Text: WideString); override;
+    procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
     procedure DoPaintText(Node: PVirtualNode; const Canvas: TCanvas; Column:
         TColumnIndex; TextType: TVSTTextType); override;
     procedure HandleMouseDown(var Message: TWMMouse; var HitInfo: THitInfo);
@@ -385,22 +384,28 @@ end;
 {*------------------------------------------------------------------------------
   DoGetText
 -------------------------------------------------------------------------------}
-procedure TCEFilterList.DoGetText(Node: PVirtualNode; Column: TColumnIndex;
-    TextType: TVSTTextType; var Text: WideString);
+procedure TCEFilterList.DoGetText(var pEventArgs: TVSTGetCellTextEventArgs);
 var
   data: PFilterItem;
 begin
-  data:= Self.GetNodeData(Node);
+  // revival: VirtualTrees 8+ passes node/column/text in one event-args record.
+  data:= Self.GetNodeData(pEventArgs.Node);
   if data.ShowAllItem then
-  Text:= _('Show All Files') + ' (' + IntToStr(data.count) + ')'
+  begin
+    pEventArgs.CellText:= _('Show All Files') + ' (' + IntToStr(data.count) + ')';
+  end
   else if data.ShowFoldersItem then
-  Text:= _('Show Folders') + ' (' + IntToStr(data.count) + ')'
+  begin
+    pEventArgs.CellText:= _('Show Folders') + ' (' + IntToStr(data.count) + ')';
+  end
   else if data.Extension = '' then
   begin
-    Text:= _('No Extension') + ' (' + IntToStr(data.count) + ')';
+    pEventArgs.CellText:= _('No Extension') + ' (' + IntToStr(data.count) + ')';
   end
   else
-  Text:= data.extension + ' (' + IntToStr(data.count) + ')';
+  begin
+    pEventArgs.CellText:= data.extension + ' (' + IntToStr(data.count) + ')';
+  end;
 end;
 
 {*------------------------------------------------------------------------------

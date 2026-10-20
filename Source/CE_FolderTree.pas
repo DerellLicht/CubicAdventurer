@@ -27,7 +27,7 @@ uses
   // CE Units
   CE_Utils,
   // VSTools, VT
-  VirtualTrees, VirtualExplorerTree, MPShellUtilities, VirtualShellNotifier,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualExplorerTree, MPShellUtilities, VirtualShellNotifier,
   MPCommonObjects, MPThreadManager,
   // System Units
   Classes, Windows, Messages, SysUtils, Graphics, Forms, Controls, ExtCtrls;

@@ -49,7 +49,7 @@ type
     fArrowSize: Integer;
   protected
     procedure DoDrawCaption(ACanvas: TCanvas; ClientAreaRect: TRect; State:
-        TSpTBXSkinStatesType; var ACaption: WideString; var CaptionRect: TRect; var
+        TSpTBXSkinStatesType; var ACaption: string; var CaptionRect: TRect; var
         CaptionFormat: Cardinal; IsTextRotated: Boolean; const PaintStage:
         TSpTBXPaintStage; var PaintDefault: Boolean); override;
   public
@@ -2575,7 +2575,7 @@ begin
 end;
 
 procedure TCEScrollArrowItem.DoDrawCaption(ACanvas: TCanvas; ClientAreaRect:
-    TRect; State: TSpTBXSkinStatesType; var ACaption: WideString; var
+    TRect; State: TSpTBXSkinStatesType; var ACaption: string; var
     CaptionRect: TRect; var CaptionFormat: Cardinal; IsTextRotated: Boolean;
     const PaintStage: TSpTBXPaintStage; var PaintDefault: Boolean);
 var
@@ -2597,7 +2597,7 @@ begin
       r.Left:= Round((r.Right - r.Left) / 2);
       r.Top:= Round(((r.Bottom - r.Top) - i) / 2);
     end;
-    c:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, State);
+    c:= SkinManager.CurrentSkin.GetTextColor(nil, skncToolbarItem, State);
     case ArrowDirection of
       adLeft: SpDrawArrow(ACanvas, r.Left, r.Top, c, false, true, i);
       adRight: SpDrawArrow(ACanvas, r.Left, r.Top, c, false, false, i);

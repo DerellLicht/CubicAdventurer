@@ -33,7 +33,7 @@ uses
   MPCommonObjects, EasyListview, MPCommonUtilities,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, VirtualTrees, ImgList;
+  Dialogs, Menus, VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, ImgList;
 
 type
   TControlHack = class(TControl);

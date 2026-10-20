@@ -32,7 +32,7 @@ uses
   // SpTBXLib
   SpTBXItem, SpTBXSkins,
   // VirtualTree
-  VirtualTrees,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // VSTools
   MPCommonUtilities, MPCommonObjects, MPShellUtilities,
   // System Units
