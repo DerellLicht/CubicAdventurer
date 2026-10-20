@@ -2343,7 +2343,7 @@ end;
 
 procedure TJvDockVIDTree.IgnoreZoneInfor(Stream: TMemoryStream);
 var
-  CompName: string;
+  CompName: AnsiString; // revival: ReadControlName takes a var AnsiString
 begin
   Stream.Position := Stream.Position + 6;
   ReadControlName(Stream, CompName);
