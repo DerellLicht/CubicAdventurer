@@ -22,7 +22,7 @@ unit FindFileW;
 interface
 
 uses
-  Windows, Messages, Classes, SysUtils, TntClasses, TntSysUtils;
+  Windows, Messages, Classes, SysUtils;
 
 const
   FILE_ATTRIBUTE_READONLY            = $00000001;
@@ -91,7 +91,7 @@ type
   TTargetPath = class(TObject)
   private
     fFolder: WideString;
-    fFileMasks: TTntStringList;
+    fFileMasks: TStringList;
     fRecursive: Boolean;
     fMinLevel: Word;
     fMaxLevel: Word;
@@ -99,7 +99,7 @@ type
     constructor Create;
     destructor Destroy; override;
     property Folder: WideString read fFolder write fFolder;
-    property FileMasks: TTntStringList read fFileMasks;
+    property FileMasks: TStringList read fFileMasks;
     property Recursive: Boolean read fRecursive write fRecursive;
     property MinLevel: Word read fMinLevel write fMinLevel;
     property MaxLevel: Word read fMaxLevel write fMaxLevel;
@@ -117,7 +117,7 @@ type
     function AddPath(const PathInfo: WideString; Recursive: Boolean;
       MinLevel, MaxLevel: Integer): TTargetPath;
     function AddFolderAndMasks(const FolderInfo: WideString;
-      FileMasks: TTntStringList; Recursive: Boolean;
+      FileMasks: TStringList; Recursive: Boolean;
       MinLevel, MaxLevel: Integer): TTargetPath;
     property Items[Index: Integer]: TTargetPath read GetItems; default;
   end;
@@ -131,20 +131,20 @@ type
   private
     fFileName: WideString;
     fLocation: WideString;
-    fPaths: TTntStringList;
+    fPaths: TStringList;
     fSubfolders: Boolean;
     fMinLevel: Word;
     fMaxLevel: Word;
-    fFilters: TTntStringList;
+    fFilters: TStringList;
     fTargetPaths: TTargetPaths;
     function GetTargetPaths: TTargetPaths;
     procedure SetFileName(const Value: WideString);
     procedure SetLocation(const Value: WideString);
-    procedure SetPaths(Value: TTntStringList);
+    procedure SetPaths(Value: TStringList);
     procedure SetMinLevel(Value: Word);
     procedure SetMaxLevel(Value: Word);
     procedure SetSubfolders(Value: Boolean);
-    procedure SetFilters(Value: TTntStringList);
+    procedure SetFilters(Value: TStringList);
     procedure TargetPathsChanged(Sender: TObject);
   protected
     property TargetPaths: TTargetPaths read GetTargetPaths;
@@ -157,11 +157,11 @@ type
   published
     property FileName: WideString read fFileName write SetFileName;
     property Location: WideString read fLocation write SetLocation;
-    property Paths: TTntStringList read fPaths write SetPaths;
+    property Paths: TStringList read fPaths write SetPaths;
     property Subfolders: Boolean read fSubfolders write SetSubfolders default True;
     property MinLevel: Word read fMinLevel write SetMinLevel default 0;
     property MaxLevel: Word read fMaxLevel write SetMaxLevel default 0;
-    property Filters: TTntStringList read fFilters write SetFilters;
+    property Filters: TStringList read fFilters write SetFilters;
   end;
 
   TFileAttributeStatus = (fsIgnore, fsSet, fsUnset, fsAnySet, fsAnyUnset);
@@ -502,7 +502,7 @@ end;
 function WideExpandUNCFileName(const FileName: WideString): WideString;
 begin
   { First get the local resource version of the file name }
-  Result := WideExpandFileName(FileName);
+  Result := ExpandFileName(FileName);
   if (Length(Result) >= 3) and (Result[2] = ':') and
      (WideLowerCharMap[Result[1]] >= 'a') and
      (WideLowerCharMap[Result[1]] <= 'z')
@@ -924,14 +924,14 @@ begin
 end;
 
 function StringListFromString(const Str: WideString;
-  Delimiter: WideChar): TTntStringList;
+  Delimiter: WideChar): TStringList;
 var
   Item: WideString;
   StartIndex: Integer;
   DelimiterPos: Integer;
   StrLen: Integer;
 begin
-  Result := TTntStringList.Create;
+  Result := TStringList.Create;
   StrLen := Length(Str);
   StartIndex := 1;
   repeat
@@ -953,7 +953,7 @@ end;
 constructor TTargetPath.Create;
 begin
   inherited Create;
-  fFileMasks := TTntStringList.Create;
+  fFileMasks := TStringList.Create;
   fFileMasks.Duplicates := dupIgnore;
   fFileMasks.CaseSensitive := False;
 end;
@@ -1010,7 +1010,7 @@ begin
 end;
 
 function TTargetPaths.AddFolderAndMasks(const FolderInfo: WideString;
-  FileMasks: TTntStringList; Recursive: Boolean;
+  FileMasks: TStringList; Recursive: Boolean;
   MinLevel, MaxLevel: Integer): TTargetPath;
 var
   Folder: WideString;
@@ -1088,14 +1088,14 @@ end;
 constructor TFileCriteria.Create;
 begin
   inherited Create;
-  fPaths := TTntStringList.Create;
+  fPaths := TStringList.Create;
   fPaths.Duplicates := dupIgnore;
   fPaths.CaseSensitive := False;
   fPaths.OnChange := TargetPathsChanged;
   fSubfolders := True;
   fMinLevel := 0;
   fMaxLevel := 0;
-  fFilters := TTntStringList.Create;
+  fFilters := TStringList.Create;
   fFilters.Duplicates := dupIgnore;
   fFilters.CaseSensitive := False;
 end;
@@ -1174,8 +1174,8 @@ end;
 function TFileCriteria.GetTargetPaths: TTargetPaths;
 var
   I: Integer;
-  Files: TTntStringList;
-  Folders: TTntStringList;
+  Files: TStringList;
+  Folders: TStringList;
   Path: WideString;
 begin
   if not Assigned(fTargetPaths) then
@@ -1226,12 +1226,12 @@ begin
   end;
 end;
 
-procedure TFileCriteria.SetPaths(Value: TTntStringList);
+procedure TFileCriteria.SetPaths(Value: TStringList);
 begin
   fPaths.Assign(Value);
 end;
 
-procedure TFileCriteria.SetFilters(Value: TTntStringList);
+procedure TFileCriteria.SetFilters(Value: TStringList);
 begin
   fFilters.Assign(Value);
 end;
