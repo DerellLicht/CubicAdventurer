@@ -977,7 +977,6 @@ object CEAboutBox: TCEAboutBox
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
     Gutter.Visible = False
-    Gutter.Width = 0
     Highlighter = SynURISyn1
     Lines.Strings = 
       'Copyright 2006-2012 Marko Savolainen.'#13#10#13#10'Homepage - http://www.c' +
@@ -1004,6 +1003,7 @@ object CEAboutBox: TCEAboutBox
       '=============='#13#10#13#10'Thank you for using CubicExplorer.'#13#10#13#10'Regards,' +
       #13#10'Marko Savolainen.'
     Options = [eoAutoIndent, eoDragDropEditing, eoEnhanceEndKey, eoNoCaret, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces]
+    ScrollOptions = [eoHideShowScrollbars, eoShowScrollHint]
     ReadOnly = True
     RightEdgeColor = clWindow
   end

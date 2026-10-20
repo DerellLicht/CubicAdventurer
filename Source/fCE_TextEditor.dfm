@@ -139,8 +139,8 @@ inherited CETextEditorPage: TCETextEditorPage
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
     Gutter.Visible = False
-    Gutter.Width = 0
-    Options = [eoAltSetsColumnMode, eoAutoIndent, eoAutoSizeMaxScrollWidth, eoDragDropEditing, eoEnhanceEndKey, eoGroupUndo, eoHideShowScrollbars, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces]
+    Options = [eoAutoIndent, eoDragDropEditing, eoEnhanceEndKey, eoGroupUndo, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces]
+    ScrollOptions = [eoHideShowScrollbars, eoShowScrollHint]
     RightEdgeColor = clWindow
     WantTabs = True
     OnReplaceText = EditorReplaceText
