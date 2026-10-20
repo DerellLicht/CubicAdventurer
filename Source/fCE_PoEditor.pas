@@ -681,7 +681,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEPoEditor.PoListGetText(Sender: TBaseVirtualTree; Node:
     PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText:
-    WideString);
+    string);
 var
   data: PPOListItem;
 begin
@@ -718,7 +718,7 @@ begin
       else
       Sender.SortDirection := sdAscending;
     end;
-    Sender.Treeview.SortTree(Sender.SortColumn, Sender.SortDirection, False);
+    TBaseVirtualTree(Sender.Treeview).SortTree(Sender.SortColumn, Sender.SortDirection, False);
   end;
 end;
 
