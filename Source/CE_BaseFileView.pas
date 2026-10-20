@@ -84,8 +84,8 @@ type
     procedure CEColumnHeaderMenuItemClick(Sender: TObject);
     procedure CEColumnSettingCallback(Sender: TObject);
     procedure HandleContextMenuAfterCmdCallback(Namespace: TNamespace; Verb:
-        WideString; MenuItemID: Integer; Successful: Boolean);
-    procedure HandleContextMenuCmdCallback(Namespace: TNamespace; Verb: WideString;
+        string; MenuItemID: Integer; Successful: Boolean);
+    procedure HandleContextMenuCmdCallback(Namespace: TNamespace; Verb: string;
         MenuItemID: Integer; var Handled: Boolean);
     procedure HandleContextMenuShowCallback(Namespace: TNamespace; Menu: hMenu; var
         Allow: Boolean);
@@ -1172,7 +1172,7 @@ end;
   Handle ContextMenuAfterCmdCallback
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.HandleContextMenuAfterCmdCallback(Namespace:
-    TNamespace; Verb: WideString; MenuItemID: Integer; Successful: Boolean);
+    TNamespace; Verb: string; MenuItemID: Integer; Successful: Boolean);
 begin
   DoContextMenuAfterCmd(Namespace, Verb, MenuItemID, Successful);
 end;
@@ -1181,7 +1181,7 @@ end;
   Handle ContextMenuCmdCallback
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.HandleContextMenuCmdCallback(Namespace: TNamespace;
-    Verb: WideString; MenuItemID: Integer; var Handled: Boolean);
+    Verb: string; MenuItemID: Integer; var Handled: Boolean);
 begin
   if Assigned(Parent) then
   Handled:= DoContextMenuCmd(Namespace, Verb, MenuItemID)

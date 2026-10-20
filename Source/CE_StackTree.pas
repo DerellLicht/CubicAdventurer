@@ -84,7 +84,7 @@ type
     procedure DoCanEdit(Node: PVirtualNode; Column: TColumnIndex; var Allowed:
         Boolean); override;
     procedure DoCollapsed(Node: PVirtualNode); override;
-    procedure DoContextMenuCmdCallback(Namespace: TNamespace; Verb: WideString;
+    procedure DoContextMenuCmdCallback(Namespace: TNamespace; Verb: string;
         MenuItemID: Integer; var Handled: Boolean); virtual;
     procedure DoContextMenuShowCallback(Namespace: TNamespace; Menu: hMenu; var
         Allow: Boolean); virtual;
@@ -111,8 +111,8 @@ type
         TColumnIndex; TextType: TVSTTextType); override;
     procedure DoPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Position:
         TPoint); override;
-    procedure DragAndDrop(AllowedEffects: Integer; DataObject: IDataObject;
-        DragEffect: Integer); override;
+    procedure DragAndDrop(AllowedEffects: DWord; const DataObject:
+        TVTDragDataObject; var DragEffect: Integer); override;
     procedure FreeNamespaceArray(NamespaceArray: TNamespaceArray);
     procedure HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo);
         override;
@@ -242,10 +242,7 @@ end;
 function TCEStackTree.CanShowDragImage: Boolean;
 begin
   // Vista and up
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6) and Assigned(SHDoDragDrop_MP) then
-  Result:= False
-  else // Older Windows versions
-  Result:= inherited CanShowDragImage;
+  Result:= False;
 end;
 
 {-------------------------------------------------------------------------------
@@ -421,7 +418,7 @@ end;
   Do ContextMenuCmdCallback
 -------------------------------------------------------------------------------}
 procedure TCEStackTree.DoContextMenuCmdCallback(Namespace: TNamespace; Verb:
-    WideString; MenuItemID: Integer; var Handled: Boolean);
+    string; MenuItemID: Integer; var Handled: Boolean);
 begin
   if MenuItemID = 555 then
   begin
@@ -1005,20 +1002,24 @@ end;
 {-------------------------------------------------------------------------------
   Drag And Drop
 -------------------------------------------------------------------------------}
-procedure TCEStackTree.DragAndDrop(AllowedEffects: Integer; DataObject:
-    IDataObject; DragEffect: Integer);
+procedure TCEStackTree.DragAndDrop(AllowedEffects: DWord; const DataObject:
+    TVTDragDataObject; var DragEffect: Integer);
 var
   effect: Integer;
+  resultEffect: DWord;
 begin
   if SafeOperationsOnly then
-  effect:= DROPEFFECT_COPY or DROPEFFECT_LINK
+  begin
+    effect:= DROPEFFECT_COPY or DROPEFFECT_LINK;
+  end
   else
-  effect:= DROPEFFECT_COPY or DROPEFFECT_LINK or DROPEFFECT_MOVE;
-  // Vista and up
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6) and Assigned(SHDoDragDrop_MP) then
-  SHDoDragDrop_MP(Handle, DataObject, nil, effect, DragEffect)
-  else // Older Windows versions
-  inherited DragAndDrop(effect, DataObject, DragEffect);
+  begin
+    effect:= DROPEFFECT_COPY or DROPEFFECT_LINK or DROPEFFECT_MOVE;
+  end;
+  // TODO(revival): the Win2000/XP fallback (inherited DragAndDrop) was dropped; Vista+ shell API only.
+  resultEffect:= DWord(DragEffect);
+  SHDoDragDrop(Handle, DataObject, nil, DWord(effect), resultEffect);
+  DragEffect:= Integer(resultEffect);
 end;
 
 {-------------------------------------------------------------------------------

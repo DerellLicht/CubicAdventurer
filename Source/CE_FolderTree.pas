@@ -27,7 +27,7 @@ uses
   // CE Units
   CE_Utils,
   // VSTools, VT
-  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualExplorerTree, MPShellUtilities, VirtualShellNotifier,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualTrees.EditLink, VirtualExplorerTree, MPShellUtilities, VirtualShellNotifier,
   MPCommonObjects, MPThreadManager,
   // System Units
   Classes, Windows, Messages, SysUtils, Graphics, Forms, Controls, ExtCtrls;
@@ -49,10 +49,10 @@ type
     procedure SetHiddenFiles(const Value: Boolean);
     procedure WMKeyDown(var Message: TWMKeyDown); message WM_KEYDOWN;
   protected
-    function DoContextMenuCmd(Namespace: TNamespace; Verb: WideString; MenuItemID:
-        Integer): Boolean; override;
-    function DoContextMenuShow(Namespace: TNamespace; Menu: hMenu): Boolean;
-        override;
+    procedure HandleContextMenuCmd(Sender: TCustomVirtualExplorerTree; Namespace:
+        TNamespace; Verb: string; MenuItemID: Integer; var Handled: Boolean);
+    procedure HandleContextMenuShow(Sender: TCustomVirtualExplorerTree; Namespace:
+        TNamespace; Menu: hMenu; var Allow: Boolean);
     function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink;
         override;
     procedure DoEnumFolder(const Namespace: TNamespace; var AllowAsChild: Boolean);
@@ -97,7 +97,7 @@ type
 
   TCE_StringEditLink = class(TStringEditLink)
   public
-    constructor Create; override;
+    constructor Create; reintroduce;
   end;
 
 implementation
@@ -124,6 +124,9 @@ begin
   Self.VETColors.CompressedTextColor:= clWindowText;
   Self.VETColors.EncryptedTextColor:= clWindowText;
   Self.OnEnumFolder:= HandleEnumFolder;
+  // TODO(revival): VirtualExplorerTree's DoContextMenuCmd/Show are no longer virtual, so use its events
+  Self.OnContextMenuCmd:= HandleContextMenuCmd;
+  Self.OnContextMenuShow:= HandleContextMenuShow;
   HiddenFiles:= false;
 
   fSelectionTimer:= TTimer.Create(Self);
@@ -134,26 +137,24 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Do ContextMenuCmd
+  Handle ContextMenuCmd (OnContextMenuCmd event)
 -------------------------------------------------------------------------------}
-function TCEFolderTree.DoContextMenuCmd(Namespace: TNamespace; Verb:
-    WideString; MenuItemID: Integer): Boolean;
+procedure TCEFolderTree.HandleContextMenuCmd(Sender: TCustomVirtualExplorerTree;
+    Namespace: TNamespace; Verb: string; MenuItemID: Integer; var Handled: Boolean);
 begin
-  Result:= inherited DoContextMenuCmd(Namespace, Verb, MenuItemID);
-  if not Result then
-  DoGlobalContextMenuCmd(Self, Namespace, Verb, MenuItemID, Result);
+  if not Handled then
+  DoGlobalContextMenuCmd(Self, Namespace, Verb, MenuItemID, Handled);
 end;
 
 {-------------------------------------------------------------------------------
-  Do ContextMenuShow
+  Handle ContextMenuShow (OnContextMenuShow event)
 -------------------------------------------------------------------------------}
-function TCEFolderTree.DoContextMenuShow(Namespace: TNamespace; Menu: hMenu):
-    Boolean;
+procedure TCEFolderTree.HandleContextMenuShow(Sender: TCustomVirtualExplorerTree;
+    Namespace: TNamespace; Menu: hMenu; var Allow: Boolean);
 begin
-  Result:= inherited DoContextMenuShow(Namespace, Menu);
-  if Result then
+  if Allow then
   begin
-    DoGlobalContextMenuShow(Self, Namespace, Menu, Result);
+    DoGlobalContextMenuShow(Self, Namespace, Menu, Allow);
   end;
 end;
 
@@ -581,16 +582,14 @@ end;
   Create instance of TCE_StringEditLink
 -------------------------------------------------------------------------------}
 constructor TCE_StringEditLink.Create;
-var
-  fEdit: TVTEdit;
 begin
-  //inherited;
+  inherited Create;
+  // Replace the default TVTEdit with our own subclass
+  FEdit.Free;
   FEdit := TCE_VTEdit.Create(Self);
-  fEdit.Visible := False;
-  fEdit.BorderStyle := bsSingle;
-  fEdit.AutoSize := False;
-
-  Self.Edit:= fEdit;
+  Edit.Visible := False;
+  Edit.BorderStyle := bsSingle;
+  Edit.AutoSize := False;
 end;
 
 

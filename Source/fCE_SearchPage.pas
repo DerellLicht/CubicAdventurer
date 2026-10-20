@@ -154,7 +154,7 @@ type
       Menu: HMENU; var Allow: Boolean);
     procedure ResultViewContextMenuCmd(
       Sender: TCustomVirtualExplorerEasyListview; Namespace: TNamespace;
-      Verb: WideString; MenuItemID: Integer; var Handled: Boolean);
+      Verb: string; MenuItemID: Integer; var Handled: Boolean);
     procedure timer_statusTimer(Sender: TObject);
     procedure ResultViewHintCustomInfo(Sender: TCustomEasyListview;
       TargetObj: TEasyCollectionItem; Info: TEasyHintInfo);
@@ -644,7 +644,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESearchPage.ResultViewContextMenuCmd(
   Sender: TCustomVirtualExplorerEasyListview; Namespace: TNamespace;
-  Verb: WideString; MenuItemID: Integer; var Handled: Boolean);
+  Verb: string; MenuItemID: Integer; var Handled: Boolean);
 begin
   if MenuItemID = fOpenFolderID then
   begin

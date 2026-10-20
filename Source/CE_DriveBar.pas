@@ -78,7 +78,7 @@ type
     Settings: TCEDriceBarSettings;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure HandleContextMenuCmd(Namespace: TNamespace; Verb: WideString;
+    procedure HandleContextMenuCmd(Namespace: TNamespace; Verb: string;
         MenuItemID: Integer;  var Handled: Boolean);
     procedure HandleContextMenuShow(Namespace: TNamespace; Menu: hMenu; var Allow:
         Boolean);
@@ -258,7 +258,7 @@ end;
   Handle ContextMenuCmd
 -------------------------------------------------------------------------------}
 procedure TCEDriveToolbar.HandleContextMenuCmd(Namespace: TNamespace; Verb:
-    WideString; MenuItemID: Integer;  var Handled: Boolean);
+    string; MenuItemID: Integer;  var Handled: Boolean);
 begin
   DoGlobalContextMenuCmd(Self, Namespace, Verb, MenuItemID, Handled);
 end;

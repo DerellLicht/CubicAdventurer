@@ -252,7 +252,7 @@ type
     GlobalHotkeys: TCEGlobalHotkeys;
     HotkeySettings: TCEHotkeySettings;
     procedure AssignCustomToolbarActions;
-    procedure DoGlobalContextMenuCmd(Namespace: TNamespace; Verb: WideString;
+    procedure DoGlobalContextMenuCmd(Namespace: TNamespace; Verb: string;
         MenuItemID: Integer;  var Handled: Boolean);
     procedure DoGlobalContextMenuShow(Namespace: TNamespace; Menu: hMenu; var
         Allow: Boolean);
@@ -339,7 +339,7 @@ procedure DoGlobalContextMenuShow(Sender: TObject; Namespace: TNamespace; Menu:
     hMenu; var Allow: Boolean);
 
 procedure DoGlobalContextMenuCmd(Sender: TObject; Namespace: TNamespace; Verb:
-    WideString; MenuItemID: Integer; var Handled: Boolean);
+    string; MenuItemID: Integer; var Handled: Boolean);
 
 function HandleExeCommands: Boolean;
 
@@ -1775,7 +1775,7 @@ end;
   Do GlobalContextMenuCmd
 -------------------------------------------------------------------------------}
 procedure DoGlobalContextMenuCmd(Sender: TObject; Namespace: TNamespace; Verb:
-    WideString; MenuItemID: Integer; var Handled: Boolean);
+    string; MenuItemID: Integer; var Handled: Boolean);
 var
   item: TEasyItem;
   ns: TNamespace;
@@ -1993,7 +1993,7 @@ end;
   Do GlobalContextMenuCmd
 -------------------------------------------------------------------------------}
 procedure TCEActions.DoGlobalContextMenuCmd(Namespace: TNamespace; Verb:
-    WideString; MenuItemID: Integer;  var Handled: Boolean);
+    string; MenuItemID: Integer;  var Handled: Boolean);
 begin
   dCE_Actions.DoGlobalContextMenuCmd(MainForm, Namespace, Verb, MenuItemID, Handled);
 end;
