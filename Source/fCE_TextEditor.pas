@@ -887,7 +887,7 @@ begin
     203: Editor.CopyToClipboard;
     204: Editor.CutToClipboard;
     205: Editor.PasteFromClipboard;
-    206: Editor.ClearSelection;
+    206: Editor.SelText:= ''; // ClearSelection no longer exists in SynEdit
     207: Editor.SelectAll;
     208: begin
            if not FindPanel.Visible then
