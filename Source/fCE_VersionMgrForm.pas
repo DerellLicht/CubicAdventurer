@@ -82,7 +82,7 @@ type
         Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var
         ImageIndex: Integer);
     procedure ItemListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column:
-        TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+        TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure ItemListPaintText(Sender: TBaseVirtualTree; const TargetCanvas:
         TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
     procedure TntFormClose(Sender: TObject; var Action: TCloseAction);
@@ -430,7 +430,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEVersionMgrForm.ItemListGetImageIndex(Sender: TBaseVirtualTree;
     Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted:
-    Boolean; var ImageIndex: Integer);
+    Boolean; var ImageIndex: TImageIndex);
 var
   data: PItemData;
 begin

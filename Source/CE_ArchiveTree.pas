@@ -962,7 +962,7 @@ begin
         end
         else // Hide nodes
         begin
-          node.States:= node.States + [vsHidden];
+          Self.IsVisible[node]:= False; // TODO(revival): was vsHidden state flag
           node:= Self.GetNext(node);
         end;
       end;
@@ -981,7 +981,7 @@ begin
       // Show child nodes
       while assigned(node) do
       begin
-        node.States:= node.States - [vsHidden];
+        Self.IsVisible[node]:= True; // TODO(revival): was vsHidden state flag
         node:= Self.GetNextSibling(node);
       end;
 
@@ -1039,7 +1039,7 @@ begin
           end
           else // Make nodes visible
           begin
-            node.States:= node.States - [vsHidden];
+            Self.IsVisible[node]:= True; // TODO(revival): was vsHidden state flag
             node:= Self.GetNext(node);
           end;
         end;

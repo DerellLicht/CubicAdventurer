@@ -57,10 +57,10 @@ type
     but_delete: TButton;
     but_reset: TButton;
     procedure HotkeyListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure HotkeyListGetImageIndexEx(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-      var Ghosted: Boolean; var ImageIndex: Integer;
+      var Ghosted: Boolean; var ImageIndex: TImageIndex;
       var ImageList: TCustomImageList);
     procedure HotkeyListPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
@@ -260,7 +260,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TTCEOptionsPage_Hotkeys.HotkeyListGetImageIndexEx(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
-  Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: Integer;
+  Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: TImageIndex;
   var ImageList: TCustomImageList);
 var
   data: PCEActTreeData;
@@ -281,7 +281,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TTCEOptionsPage_Hotkeys.HotkeyListGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: WideString);
+  var CellText: string);
 var
   data: PCEActTreeData;
 begin

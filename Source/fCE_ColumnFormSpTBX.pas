@@ -80,7 +80,7 @@ type
     {$else}
     procedure VSTColumnNamesGetText(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: WideString);
+      var CellText: string);
     {$endif}
   private
     FDragNode: PVirtualNode;
@@ -300,7 +300,7 @@ end;
 {$else}
 procedure TCEFormColumnSettings.VSTColumnNamesGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: WideString);
+  var CellText: string);
 var
   ColData: PColumnData;
 begin

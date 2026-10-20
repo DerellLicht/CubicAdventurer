@@ -91,9 +91,9 @@ type
         Integer; var Accept: Boolean);
     procedure ActionTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node:
         PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted:
-        Boolean; var ImageIndex: Integer; var ImageList: TCustomImageList);
+        Boolean; var ImageIndex: TImageIndex; var ImageList: TCustomImageList);
     procedure ActionTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-        Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+        Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure ActionTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas:
         TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
     procedure ActionTreeStartDrag(Sender: TObject; var DragObject: TDragObject);
@@ -372,7 +372,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEToolbarCustomizer.ActionTreeGetImageIndexEx(Sender:
     TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column:
-    TColumnIndex; var Ghosted: Boolean; var ImageIndex: Integer; var ImageList:
+    TColumnIndex; var Ghosted: Boolean; var ImageIndex: TImageIndex; var ImageList:
     TCustomImageList);
 var
   data: PCEActTreeData;

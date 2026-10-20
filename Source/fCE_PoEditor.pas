@@ -112,7 +112,7 @@ type
     procedure PoListEdited(Sender: TBaseVirtualTree; Node: PVirtualNode; Column:
         TColumnIndex);
     procedure PoListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column:
-        TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+        TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure PoListHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure PoListKeyAction(Sender: TBaseVirtualTree; var CharCode: Word; var
         Shift: TShiftState; var DoDefault: Boolean);
@@ -121,7 +121,7 @@ type
     procedure PoListMouseUp(Sender: TObject; Button: TMouseButton; Shift:
         TShiftState; X, Y: Integer);
     procedure PoListNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column:
-        TColumnIndex; NewText: WideString);
+        TColumnIndex; NewText: string);
     procedure SpTBXItem4Click(Sender: TObject);
   private
     fActiveLanguage: WideString;
@@ -784,7 +784,7 @@ end;
   On PoList NewText
 -------------------------------------------------------------------------------}
 procedure TCEPoEditor.PoListNewText(Sender: TBaseVirtualTree; Node:
-    PVirtualNode; Column: TColumnIndex; NewText: WideString);
+    PVirtualNode; Column: TColumnIndex; NewText: string);
 var
   data: PPOListItem;
 begin
