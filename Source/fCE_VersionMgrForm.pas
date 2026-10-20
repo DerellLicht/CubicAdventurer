@@ -449,7 +449,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEVersionMgrForm.ItemListGetText(Sender: TBaseVirtualTree; Node:
     PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText:
-    WideString);
+    string);
 var
   data: PItemData;
 begin

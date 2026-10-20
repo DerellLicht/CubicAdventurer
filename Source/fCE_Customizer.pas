@@ -393,7 +393,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEToolbarCustomizer.ActionTreeGetText(Sender: TBaseVirtualTree;
     Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var
-    CellText: WideString);
+    CellText: string);
 var
   data: PCEActTreeData;
 begin
