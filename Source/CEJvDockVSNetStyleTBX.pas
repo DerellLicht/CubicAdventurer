@@ -55,7 +55,8 @@ Type
     procedure DrawCloseButton(Canvas: TCanvas;
      Zone: TJvDockZone; Left, Top: Integer); override;
     procedure DrawSplitterRect(const ARect: TRect); override;
-    procedure HideControl(Control: TControl); override;
+    // TODO(revival): HideControl is no longer virtual in current JVCL; MakeHideEvent hook disabled.
+    // procedure HideControl(Control: TControl); override;
     //procedure GetCaptionRect(var Rect: TRect); override;
   public
     constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
@@ -141,8 +142,9 @@ Type
 
   TJvDockVSNetStyleTBX = class(TJvDockVSNetStyle)
   protected
-    procedure BeginPopup(AChannel: TJvDockVSChannel); override;
-    procedure EndPopup(AChannel: TJvDockVSChannel); override;
+    // TODO(revival): BeginPopup/EndPopup are no longer virtual in current JVCL; MakeShowEvent/MakeHideEvent hooks disabled.
+    // procedure BeginPopup(AChannel: TJvDockVSChannel); override;
+    // procedure EndPopup(AChannel: TJvDockVSChannel); override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -212,7 +214,7 @@ end;
 //  end;
 //end;
 
-procedure PaintItem(Canvas: TCanvas; R: TRect; state: string; Orientation: TTabPosition);
+procedure PaintItem(AControl: TControl; Canvas: TCanvas; R: TRect; state: string; Orientation: TTabPosition);
 var
  Bmp: TBitmap;
  SourceR, DestR: TRect;
@@ -229,7 +231,7 @@ begin
     Bmp.Transparent:= true;
     SourceR:= Rect(0, 0, Bmp.Width, Bmp.Height);
 
-    SkinType:= SkinManager.GetSkinType;
+    SkinType:= SkinManager.GetSkinType(AControl);
 
     DestR:= R;
     
@@ -314,13 +316,13 @@ begin
   end;
 end;
 
-procedure SetBtnItemInfo(var IInfo: TSpTBXMenuItemInfo; BtnState: TJvDockBtnState);
+procedure SetBtnItemInfo(AControl: TControl; var IInfo: TSpTBXMenuItemInfo; BtnState: TJvDockBtnState);
 begin
   FillChar(IInfo, SizeOf(TSpTBXMenuItemInfo), 0);
   IInfo.ToolbarStyle:= true;
   IInfo.IsVertical := False;
   IInfo.Enabled := true;
-  IInfo.SkinType:= SkinManager.GetSkinType;
+  IInfo.SkinType:= SkinManager.GetSkinType(AControl);
 
    case BtnState of
      bsNormal :
@@ -401,12 +403,12 @@ begin
     AZone := TCrackJvDockVSNETZone(Zone);
     R := Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight);
 
-    SetBtnItemInfo(ii, AZone.AutoHideBtnState);
-    SpDrawXPMenuItem(Canvas, R, ii);
+    SetBtnItemInfo(DockSite, ii, AZone.AutoHideBtnState);
+    SpDrawXPMenuItem(DockSite, Canvas, R, ii);
 
-    c:= SkinManager.CurrentSkin.GetTextColor(skncDockablePanelTitleBar, ii.State);
+    c:= SkinManager.CurrentSkin.GetTextColor(DockSite, skncDockablePanelTitleBar, ii.State);
     if c = clNone then
-    c:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, ii.State);
+    c:= SkinManager.CurrentSkin.GetTextColor(DockSite, skncToolbarItem, ii.State);
     Canvas.Pen.Color:= c;
     
     if DockSite.Align in [alLeft, alRight, alTop, alBottom] then
@@ -473,12 +475,12 @@ begin
 
     R := Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight);
 
-    SetBtnItemInfo(ii, AZone.CloseBtnState);
-    SpDrawXPMenuItem(Canvas, R, ii);
+    SetBtnItemInfo(DockSite, ii, AZone.CloseBtnState);
+    SpDrawXPMenuItem(DockSite, Canvas, R, ii);
 
-    c:= SkinManager.CurrentSkin.GetTextColor(skncDockablePanelTitleBar, ii.State);
+    c:= SkinManager.CurrentSkin.GetTextColor(DockSite, skncDockablePanelTitleBar, ii.State);
     if c = clNone then
-    c:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, ii.State);
+    c:= SkinManager.CurrentSkin.GetTextColor(DockSite, skncToolbarItem, ii.State);
     Canvas.Pen.Color:= c;
 
     DrawRect.Left := Left + 4;
@@ -578,14 +580,14 @@ begin
 
       if Option <> nil then
       begin
-        SpDrawXPDockablePanelTitleBar(Canvas,DrawRect,false,false);
+        SpDrawXPDockablePanelTitleBar(DockSite, Canvas, DrawRect, false, false, DockSite.CurrentPPI);
 
-        c:= SkinManager.CurrentSkin.GetTextColor(skncDockablePanelTitleBar, sknsNormal);
+        c:= SkinManager.CurrentSkin.GetTextColor(DockSite, skncDockablePanelTitleBar, sknsNormal);
         if c = clNone then
-        c:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+        c:= SkinManager.CurrentSkin.GetTextColor(DockSite, skncToolbarItem, sknsNormal);
         Canvas.Font.Color:= c;
         SpDrawXPText(Canvas,
-                     UTF8Decode(TForm(Control).Caption),
+                     TForm(Control).Caption,
                      CRect,
                      DT_SINGLELINE+DT_VCENTER+DT_END_ELLIPSIS);
 
@@ -622,6 +624,7 @@ begin
   CurrentSkin.PaintBackground(Canvas, ARect, skncSplitter, state, True, False, IsVertical);
 end;
 
+(* TODO(revival): disabled, see class declaration
 procedure TJvDockVSNETTreeTBX.HideControl(Control: TControl);
 var
   DC: TJvDockClient;
@@ -648,6 +651,7 @@ begin
     end;
   end;
 end;
+*)
 
 procedure TJvDockVSNETTreeTBX.TBMThemeChange(var Message: TMessage);
 begin
@@ -672,6 +676,7 @@ begin
   SetAnimationInterval(10);
 end;
 
+(* TODO(revival): disabled, see class declaration
 procedure TJvDockVSNetStyleTBX.BeginPopup(AChannel: TJvDockVSChannel);
 var
   DC: TJvDockClient;
@@ -685,7 +690,9 @@ begin
     DC.MakeShowEvent;
   end;
 end;
+*)
 
+(* TODO(revival): disabled, see class declaration
 procedure TJvDockVSNetStyleTBX.EndPopup(AChannel: TJvDockVSChannel);
 var
   DC: TJvDockClient;
@@ -698,6 +705,7 @@ begin
     DC.MakeHideEvent;
   end;
 end;
+*)
 
 
 { TJvDockVSNETTabPageControlTBX }
@@ -812,7 +820,7 @@ procedure TJvDockVSNETTabPanelTBX.Paint;
 
   procedure PaintSeparator(Canvas: TCanvas; R: TRect);
   begin
-    SpDrawXPMenuSeparator(Canvas, R, false, true);
+    SpDrawXPMenuSeparator(Self, Canvas, R, false, true, CurrentPPI);
   end;
 
 var
@@ -836,7 +844,7 @@ begin
   // Draw background
   ARect := Rect(0, 0, PanelWidth, PanelHeight);
 
-  case SkinManager.GetSkinType of
+  case SkinManager.GetSkinType(Self) of
     sknNone: begin
       Canvas.Brush.Color := clBtnFace;
       Canvas.FillRect(ARect);
@@ -852,7 +860,7 @@ begin
       CurrentSkin.PaintBackground(Canvas, ARect, skncDock, sknsNormal, True, False);
       CurrentSkin.PaintBackground(Canvas, ARect, skncToolbar, sknsNormal, True, False);
       ARect.Bottom:= ARect.Top+2;
-      SpDrawXPTabControlBackground(Canvas, ARect, clBtnFace, true, sknSkin);
+      SpDrawXPTabControlBackground(Self, Canvas, ARect, clBtnFace, true);
     end;
   end;
 
@@ -886,12 +894,12 @@ begin
     begin
       // paint the background of selected tabs
       if Page.HotTrack and (FSelectHotIndex = I) then
-        PaintItem(Canvas, ARect, 'checked-hot', Page.TabPosition)
+        PaintItem(Self, Canvas, ARect, 'checked-hot', Page.TabPosition)
       else
-        PaintItem(Canvas, ARect, 'checked', Page.TabPosition);
+        PaintItem(Self, Canvas, ARect, 'checked', Page.TabPosition);
 
      Canvas.Font.Assign(Page.ActiveFont);
-     Canvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(skncTab, sknsChecked);
+     Canvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(Self, skncTab, sknsChecked);
     end
     else
     begin
@@ -924,7 +932,7 @@ begin
 //        PaintItem(Canvas, ARect, 'normal', Page.TabPosition);
         
       Canvas.Font.Assign(Page.InactiveFont);
-      Canvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(skncTab, sknsNormal);
+      Canvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(Self, skncTab, sknsNormal);
     end;
 
     // now paint the caption
@@ -957,7 +965,7 @@ begin
     end;
 
     Canvas.Brush.Style:= bsClear;
-    CaptionString:= UTF8Decode(Page.Pages[I].Caption);
+    CaptionString:= Page.Pages[I].Caption;
 
     SpDrawXPText(Canvas, CaptionString, ARect, DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS);
     //DrawText(Canvas.Handle, PChar(CaptionString), Length(CaptionString),
@@ -966,15 +974,12 @@ begin
     // finally paint the image
     if ShowTabImages and (Page.Images <> nil) and (CurrTabWidth > ImageWidth + 2 * CaptionLeftOffset) then
     begin
-       SpDrawImageList(Canvas,
-                       Rect(CompleteWidth + TabLeftOffset + CaptionLeftOffset,
-                            TabBottomOffset + CaptionTopOffset,
-                            CompleteWidth + TabLeftOffset + CaptionLeftOffset + Page.Images.Width -1,
-                            TabBottomOffset + CaptionTopOffset + Page.Images.Height-1),
-                       Page.Images,
-                       Page.Pages[I].ImageIndex,
-                       true,
-                       false);
+       // revival: SpDrawImageList was removed from SpTBXLib; draw straight from the image list
+       Page.Images.Draw(Canvas,
+                        CompleteWidth + TabLeftOffset + CaptionLeftOffset,
+                        TabBottomOffset + CaptionTopOffset,
+                        Page.Pages[I].ImageIndex,
+                        true);
     end;
 
     Inc(CompleteWidth, CurrTabWidth + TabSplitterWidth);
@@ -1202,24 +1207,24 @@ var
       begin
         if Block.VSPane[I].Active then
         begin
-          SetBtnItemInfo(ii, bsDown);
-          Canvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsPushed);
+          SetBtnItemInfo(Self, ii, bsDown);
+          Canvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsPushed);
         end
         else
         begin
-          SetBtnItemInfo(ii, bsNormal);
-          Canvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+          SetBtnItemInfo(Self, ii, bsNormal);
+          Canvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsNormal);
         end;
-        SpDrawXPMenuItem(Canvas, BlockRect, ii);
+        SpDrawXPMenuItem(Self, Canvas, BlockRect, ii);
       end
       else
       begin
-        SetBtnItemInfo(ii, bsNormal);
-        SpDrawXPMenuItem(Canvas, BlockRect, ii);
-        Canvas.Font.Color:= CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+        SetBtnItemInfo(Self, ii, bsNormal);
+        SpDrawXPMenuItem(Self, Canvas, BlockRect, ii);
+        Canvas.Font.Color:= CurrentSkin.GetTextColor(Self, skncToolbarItem, sknsNormal);
       end;
 
-      SpDrawXPMenuSeparator(Canvas, SepRect,false,not IsVertical);
+      SpDrawXPMenuSeparator(Self, Canvas, SepRect, false, not IsVertical, CurrentPPI);
 
       AdjustImagePos;
       
@@ -1266,7 +1271,7 @@ var
         OldGraphicsMode := SetGraphicsMode(Canvas.Handle, GM_ADVANCED);
         Canvas.Brush.Style := bsClear;
 
-        SpDrawXPText(Canvas, UTF8Decode(Block.VSPane[I].DockForm.Caption), DrawRect, DT_END_ELLIPSIS or DT_NOCLIP);
+        SpDrawXPText(Canvas, (Block.VSPane[I].DockForm.Caption), DrawRect, DT_END_ELLIPSIS or DT_NOCLIP);
 //        else
 //        DrawText(Canvas.Handle, PChar(Block.VSPane[I].DockForm.Caption), -1, DrawRect, DT_END_ELLIPSIS or DT_NOCLIP);
         SetGraphicsMode(Canvas.Handle, OldGraphicsMode);
@@ -1281,7 +1286,7 @@ var
 begin
   IsVertical:= (Align = alLeft) or (Align = alRight);
   // Paint background
-  case SkinManager.GetSkinType of
+  case SkinManager.GetSkinType(Self) of
     sknNone: begin
       Canvas.Brush.Color := clBtnFace;
       Canvas.FillRect(ClientRect);
