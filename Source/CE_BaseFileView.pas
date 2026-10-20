@@ -1211,7 +1211,7 @@ procedure TCECustomFileView.HandleContextMenuShowCallback(Namespace:
 
 var
   i: Integer;
-  S: AnsiString;
+  S: string;
   Done: Boolean;
 begin
   if Assigned(Parent) then
@@ -1223,7 +1223,7 @@ begin
       while not Done and (i < GetMenuItemCount(Menu)) do
       begin
         S := Namespace.ContextMenuVerb(GetMenuItemID(Menu, i));
-        if StrComp(PAnsiChar(S), 'link') = 0 then
+        if S = 'link' then
         begin
           DeleteMenu(Menu, i, MF_BYPOSITION);
           if IndexIsSeparator(i - 1) then
