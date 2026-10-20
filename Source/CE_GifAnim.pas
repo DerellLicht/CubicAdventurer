@@ -79,6 +79,8 @@ end;
   Load image from file
 -------------------------------------------------------------------------------}
 function TCEGifImage.LoadFromFile(FilePath: String): Boolean;
+var
+  textRect: TRect;
 begin
   Result:= false;
   try
@@ -96,7 +98,8 @@ begin
     begin
       Bitmap.SetSize(150,40);
       Bitmap.Clear(clWhite32);
-      Bitmap.Textout(Bitmap.BoundsRect, DT_CENTER+DT_VCENTER+DT_SINGLELINE, 'Invalid dimensions!');
+      textRect:= Bitmap.BoundsRect; // Textout needs a variable (var parameter)
+      Bitmap.Textout(textRect, DT_CENTER+DT_VCENTER+DT_SINGLELINE, 'Invalid dimensions!');
     end;
 
     if Result then
@@ -120,7 +123,8 @@ begin
   if (GifImage.FrameIndex < 0) or (GifImage.FrameIndex >= GifImage.Count) then
   begin
     Bitmap.Clear(clWhite32);
-    Bitmap.Textout(Bitmap.BoundsRect,DT_SINGLELINE+DT_VCENTER+DT_CENTER,'Invalid Frame');
+    r:= Bitmap.BoundsRect; // Textout needs a variable (var parameter)
+    Bitmap.Textout(r,DT_SINGLELINE+DT_VCENTER+DT_CENTER,'Invalid Frame');
   end;
 
   try
