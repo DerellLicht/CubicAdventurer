@@ -99,8 +99,9 @@ type
     procedure DoColumnVisibilityChanged(Column: TEasyColumn); override;
     procedure DoCustomColumnAdd; override;
     procedure DoCustomColumnGetCaption(Column: TExplorerColumn; Item:
-        TExplorerItem; var Caption: WideString); override;
-    procedure DoGroupCheckChanged(Group: TEasyGroup); override;
+        TExplorerItem; var Caption: string); override;
+    // TODO(revival): author's EasyListview patch (OnGroupCheckChanged) not in upstream; reapply, then restore.
+    // procedure DoGroupCheckChanged(Group: TEasyGroup); override;
     procedure DoItemCheckChanged(Item: TEasyItem); override;
     function DoItemCompare(Column: TEasyColumn; Group: TEasyGroup; Item1:
         TEasyItem; Item2: TEasyItem): Integer; override;
@@ -112,15 +113,15 @@ type
         Boolean); override;
     procedure DoItemEdited(Item: TEasyItem; var NewValue: Variant; var Accept:
         Boolean); override;
-    procedure DoItemGetCaption(Item: TEasyItem; Column: Integer; var ACaption:
-        WideString); override;
+    procedure DoItemGetCaption(Item: TEasyItem; Column: NativeInt; var ACaption:
+        string); override;
     procedure DoItemGetEditCaption(Item: TEasyItem; Column: TEasyColumn; var
-        Caption: WideString); override;
+        Caption: string); override;
     procedure DoItemPaintText(Item: TEasyItem; Position: Integer; ACanvas:
         TCanvas); override;
     procedure DoItemSelectionsChanged; override;
-    procedure DoItemSetCaption(Item: TEasyItem; Column: Integer; const Caption:
-        WideString); override;
+    procedure DoItemSetCaption(Item: TEasyItem; Column: NativeInt; const Caption:
+        string); override;
     procedure DoItemThumbnailDraw(Item: TEasyItem; ACanvas: TCanvas; ARect: TRect;
         AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
     procedure DoKeyAction(var CharCode: Word; var Shift: TShiftState; var
@@ -695,8 +696,8 @@ end;
 {*------------------------------------------------------------------------------
   Get's called when item caption is needed.
 -------------------------------------------------------------------------------}
-procedure TCECustomFileView.DoItemGetCaption(Item: TEasyItem; Column: Integer;
-    var ACaption: WideString);
+procedure TCECustomFileView.DoItemGetCaption(Item: TEasyItem; Column: NativeInt;
+    var ACaption: string);
 var
   NS: TNamespaceHack;
 begin
@@ -1074,7 +1075,7 @@ end;
   Get Item Edit Caption
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.DoItemGetEditCaption(Item: TEasyItem; Column:
-    TEasyColumn; var Caption: WideString);
+    TEasyColumn; var Caption: string);
 var
   NS: TNamespace;
 begin
@@ -1090,8 +1091,8 @@ end;
 {*------------------------------------------------------------------------------
   Set Item Caption
 -------------------------------------------------------------------------------}
-procedure TCECustomFileView.DoItemSetCaption(Item: TEasyItem; Column: Integer;
-    const Caption: WideString);
+procedure TCECustomFileView.DoItemSetCaption(Item: TEasyItem; Column: NativeInt;
+    const Caption: string);
 const
   ALL_FOLDERS = SHCONTF_FOLDERS or SHCONTF_NONFOLDERS or SHCONTF_INCLUDEHIDDEN or SHGDN_FORPARSING;
 var
@@ -1443,7 +1444,7 @@ end;
   Do CustomColumnGetCaption
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.DoCustomColumnGetCaption(Column: TExplorerColumn;
-    Item: TExplorerItem; var Caption: WideString);
+    Item: TExplorerItem; var Caption: string);
 begin
   if Column.Index = ExtColumnIndex then
   begin
@@ -1461,12 +1462,15 @@ end;
 {-------------------------------------------------------------------------------
   Do GroupCheckChanged
 -------------------------------------------------------------------------------}
+// TODO(revival): disabled until the author's EasyListview patch is reapplied.
+(*
 procedure TCECustomFileView.DoGroupCheckChanged(Group: TEasyGroup);
 begin
   inherited;
   if CheckBoxSelection then
   Self.DoItemSelectionsChanged;
 end;
+*)
 
 {-------------------------------------------------------------------------------
   Do ItemCheckChanged

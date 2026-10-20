@@ -57,7 +57,7 @@ type
     fDynSpacersList: TList;
     fLastFullSize: Integer;
     fStretchedItemsList: TList;
-    procedure AnchorItems(UpdateControlItems: Boolean = True); override;
+    procedure AnchorItems(Delta: Integer); override;
     procedure Resize; override;
     procedure SetLargeImages(const Value: Boolean); virtual;
   public
@@ -176,7 +176,7 @@ end;
 {-------------------------------------------------------------------------------
   AnchorItems
 -------------------------------------------------------------------------------}
-procedure TCEToolbar.AnchorItems(UpdateControlItems: Boolean);
+procedure TCEToolbar.AnchorItems(Delta: Integer);
 begin
   // do nothing
 end;

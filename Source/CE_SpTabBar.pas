@@ -1640,7 +1640,7 @@ begin
             end;
           end;
           RightAlignItems;
-          AnchorItems(True);
+          AnchorItems(0);
         end;
       tbicDeleting:
         begin
@@ -1660,7 +1660,7 @@ begin
             firstTab:= GetPrevTab(Item);
           end;
           RightAlignItems;
-          AnchorItems(True);
+          AnchorItems(0);
           // Exit app or open new tab if last tab has closed.
           if not Self.IsUpdating and not MainForm.CEIsClosing and (GetTabsCount(true) = 0) then
           begin
