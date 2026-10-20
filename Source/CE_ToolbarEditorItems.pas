@@ -53,7 +53,7 @@ type
   protected
     fResizingEditControl: Boolean;
     fViewer: TCEToolbarEditItemViewer;
-    procedure DoChange(const AText: WideString); override;
+    procedure DoChange(const AText: string); override;
     procedure DoClearButtonClick(Shift: TShiftState); virtual;
     function GetItemViewerClass(AView: TTBView): TTBItemViewerClass; override;
     procedure KeyPress(var Key: Char); virtual;
@@ -82,7 +82,7 @@ type
     function DoExecute: Boolean; override;
     procedure GetClearButtonRect(var R: TRect); virtual;
     procedure GetCursor(const Pt: TPoint; var ACursor: HCURSOR); override;
-    function GetEditControlText: WideString; virtual;
+    function GetEditControlText: string; virtual;
     procedure GetEditRect(var R: TRect); override;
     function GetIndentAfter: Integer; override;
     function GetIndentBefore: Integer; override;
@@ -129,7 +129,7 @@ type
         TSpTBXMenuItemInfo); override;
     procedure DoChange(NeedResize: Boolean);
     function EditLoop(const CapHandle: HWND): Boolean; override;
-    function GetEditControlText: WideString; override;
+    function GetEditControlText: string; override;
     procedure GetEditRect(var R: TRect); override;
     procedure InternalEditControlExit; override;
     procedure InternalEditControlChange(Sender: TObject); override;
@@ -164,7 +164,7 @@ end;
 {-------------------------------------------------------------------------------
   DoChange
 -------------------------------------------------------------------------------}
-procedure TCEToolbarEditItem.DoChange(const AText: WideString);
+procedure TCEToolbarEditItem.DoChange(const AText: string);
 begin
   inherited;
   if fAutoShowClearButton then
@@ -280,7 +280,7 @@ end;
 {-------------------------------------------------------------------------------
   Get EditControlText
 -------------------------------------------------------------------------------}
-function TCEToolbarEditItemViewer.GetEditControlText: WideString;
+function TCEToolbarEditItemViewer.GetEditControlText: string;
 begin
   Result := '';
   if Assigned(FEditControl) then begin
@@ -343,7 +343,7 @@ begin
 //    SpDrawGlyphPattern(ACanvas, R, 0, clWindowText)
 //    else
 
-    SpDrawGlyphPattern(ACanvas, R, 0, clGrayText);
+    SpDrawGlyphPattern(ACanvas, R, gptClose, clGrayText, View.Window.CurrentPPI);
   end;
 end;
 
@@ -480,7 +480,7 @@ function TCEToolbarEditItemViewer.EditLoop(const CapHandle: HWND): Boolean;
 var
   R: TRect;
   ActiveWnd, FocusWnd: HWND;
-  S: WideString;
+  S: string;
 begin
   GetEditRect(R);
   if IsRectEmpty(R) then begin
@@ -575,7 +575,7 @@ procedure TCEToolbarEditItemViewer.EditWndProc(var Message: TMessage);
 
   procedure AcceptText;
   var
-    S: WideString;
+    S: string;
   begin
     S := GetEditControlText;
     if TSpTBXEditItemAccess(Item).DoAcceptText(S) then
@@ -816,7 +816,7 @@ begin
   Result.Bottom:= Self.BoundsRect.Bottom - Self.BoundsRect.Top;
 
 
-  T:= SkinManager.GetSkinType;
+  T:= SkinManager.GetSkinType(View.Window);
   case T of
     sknNone:
       begin
@@ -878,11 +878,11 @@ var
   T: TSpTBXSkinType;
 begin
   inherited;
-  T:= SkinManager.GetSkinType;
+  T:= SkinManager.GetSkinType(View.Window);
 
   R:= GetDropDownButtonRect;
   fMouseOverDropButton:= GetMouseInDropDownButton;
-  SpDrawXPComboButton(ACanvas, R, ItemInfo.Enabled,  ItemInfo.HotTrack, fMouseOverDropButton, false, True, T);
+  SpDrawXPComboButton(View.Window, ACanvas, R, ItemInfo.Enabled,  ItemInfo.HotTrack, fMouseOverDropButton, false, True, View.Window.CurrentPPI);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1055,7 +1055,8 @@ begin
     //fComboBox.WindowProc:= EditWndProc;
 
     fComboBox.ParentWindow:= View.Window.Handle;
-    fComboBox.SkinType:= SkinManager.GetSkinType;
+    // TODO(revival): TSpTBXComboBox no longer has SkinType in current SpTBXLib (skin follows the control).
+    // fComboBox.SkinType:= SkinManager.GetSkinType;
 
     fComboBox.Font.Assign(View.GetFont);
     Item.EditorFontSettings.Apply(fComboBox.Font);
@@ -1139,7 +1140,7 @@ end;
 {-------------------------------------------------------------------------------
   Get EditControlText
 -------------------------------------------------------------------------------}
-function TCEToolbarComboBoxItemViewer.GetEditControlText: WideString;
+function TCEToolbarComboBoxItemViewer.GetEditControlText: string;
 begin
   Result := '';
   if Assigned(fComboBox) then
@@ -1157,7 +1158,7 @@ begin
   R.Left:= R.Left + GetIndentBefore;
   R.Right:= R.Right - GetIndentAfter;
 
-  case SkinManager.GetSkinType of
+  case SkinManager.GetSkinType(View.Window) of
     sknNone:
       begin
         InflateRect(R, 0, -1);
