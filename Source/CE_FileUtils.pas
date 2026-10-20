@@ -171,7 +171,7 @@ begin
   c:= Length(APath);
   if c = 0 then Exit;
   // PIDL
-  if Pos('pidl://', APath) = 1 then
+  if Pos(WideString('pidl://'), APath) = 1 then
   begin
     if c > 7 then
     begin
@@ -180,7 +180,7 @@ begin
     end;
   end
   // Special folder id
-  else if Pos('special://', APath) = 1 then
+  else if Pos(WideString('special://'), APath) = 1 then
   begin
     if c > 10 then
     begin
@@ -327,9 +327,9 @@ end;
 -------------------------------------------------------------------------------}
 function GetCEPathType(APath: WideString): TCEPathType;
 begin
-  if Pos('pidl://', APath) = 1 then
+  if Pos(WideString('pidl://'), APath) = 1 then
   Result:= ptPIDL
-  else if Pos('special://', APath) = 1 then
+  else if Pos(WideString('special://'), APath) = 1 then
   Result:= ptSpecial
   else
   Result:= ptPath;       
@@ -365,7 +365,7 @@ begin
   // Special
   else if APathType = ptSpecial then
   begin
-    if Pos('special://', APath) = 1 then //
+    if Pos(WideString('special://'), APath) = 1 then //
     begin
       c:= Length(APath);
       if c > 10 then
@@ -387,10 +387,7 @@ end;
 -------------------------------------------------------------------------------}
 function PathExists(Path: WideString): Boolean;
 begin
-  if IsUnicode then
-  Result:= GetFileAttributesW(PWideChar(Path)) <> INVALID_FILE_ATTRIBUTES
-  else
-  Result:= GetFileAttributesA(PChar(String(Path))) <> INVALID_FILE_ATTRIBUTES;
+  Result:= GetFileAttributesW(PWideChar(Path)) <> INVALID_FILE_ATTRIBUTES;
 end;
 
 {-------------------------------------------------------------------------------
