@@ -32,7 +32,7 @@ uses
   EasyListview, 
   // VSTools
   VirtualExplorerEasyListview, MPCommonObjects, MPShellUtilities,
-  VirtualExplorerTree, MPCommonUtilities, ColumnFormSpTBX,
+  VirtualExplorerTree, MPCommonUtilities,
   VirtualShellNotifier,
   // VT
   VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
