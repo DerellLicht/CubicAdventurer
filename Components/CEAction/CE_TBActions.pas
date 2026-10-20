@@ -21,14 +21,15 @@ type
     property CanExecute: Boolean read fCanExecute write fCanExecute default true;
   end;
 
-procedure Register;
+// revival: the design-time Register procedure (RegisterActions) was removed from
+// this runtime unit because it no longer compiles here. It belongs in a separate
+// design-time package unit; see the revival checklist.
+// procedure Register;
+// begin
+//   RegisterActions('CubicExplorer', [TCEToolbarAction], nil);
+// end;
 
 implementation
-
-procedure Register;
-begin
-  RegisterActions('CubicExplorer', [TCEToolbarAction], nil);
-end;
 
 {##############################################################################}
 
