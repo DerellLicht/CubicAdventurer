@@ -1,9 +1,11 @@
 object CEActions: TCEActions
+  OldCreateOrder = False
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
   Height = 305
   Width = 385
   object ActionList: TActionList
+    Images = CE_Images.SmallIcons
     Left = 28
     Top = 12
     object act_tabs_closetab: TAction
@@ -12,9 +14,9 @@ object CEActions: TCEActions
       Caption = 'Close Tab'
       Hint = 'Close Tab'
       ImageIndex = 10
+      ShortCut = 16471
       SecondaryShortCuts.Strings = (
         'Ctrl+F4')
-      ShortCut = 16471
       OnExecute = ActionExecute
     end
     object act_gen_exit: TAction
@@ -40,6 +42,22 @@ object CEActions: TCEActions
       ImageIndex = 47
       OnExecute = ActionExecute
     end
+    object act_navi_forward: TCEToolbarAction
+      Tag = 604
+      Category = 'Navigation'
+      Caption = 'Forward'
+      ImageIndex = 6
+      ShortCut = 32807
+      OnExecute = ActionExecute
+    end
+    object act_navi_back: TCEToolbarAction
+      Tag = 603
+      Category = 'Navigation'
+      Caption = 'Back'
+      ImageIndex = 5
+      ShortCut = 32805
+      OnExecute = ActionExecute
+    end
     object act_navi_folderup: TAction
       Tag = 605
       Category = 'Navigation'
@@ -61,6 +79,13 @@ object CEActions: TCEActions
       Caption = 'Folders'
       ImageIndex = 28
       ShortCut = 16433
+      OnExecute = ActionExecute
+    end
+    object act_edit_undo_delete: TCEToolbarAction
+      Tag = 215
+      Category = 'Edit'
+      Caption = 'Undo Delete'
+      ImageIndex = 55
       OnExecute = ActionExecute
     end
     object act_view_bookmark: TAction
@@ -141,6 +166,22 @@ object CEActions: TCEActions
       ImageIndex = 60
       OnExecute = ActionExecute
     end
+    object act_view_groupby: TCEToolbarAction
+      Tag = 374
+      Category = 'View'
+      Caption = 'Group By'
+      ImageIndex = 31
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
+    object act_view_viewstyle: TCEToolbarAction
+      Tag = 373
+      Category = 'View'
+      Caption = 'View Style'
+      ImageIndex = 16
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
     object act_view_filmstrip: TAction
       Tag = 358
       Category = 'View'
@@ -160,9 +201,9 @@ object CEActions: TCEActions
       Category = 'Edit'
       Caption = 'Copy'
       ImageIndex = 1
+      ShortCut = 16451
       SecondaryShortCuts.Strings = (
         'Ctrl+Ins')
-      ShortCut = 16451
       OnExecute = ActionExecute
     end
     object act_edit_cut: TAction
@@ -178,9 +219,9 @@ object CEActions: TCEActions
       Category = 'Edit'
       Caption = 'Paste'
       ImageIndex = 3
+      ShortCut = 16470
       SecondaryShortCuts.Strings = (
         'Shift+Ins')
-      ShortCut = 16470
       OnExecute = ActionExecute
     end
     object act_edit_delete: TAction
@@ -318,6 +359,22 @@ object CEActions: TCEActions
       Caption = 'Disconnect Network Drive...'
       OnExecute = ActionExecute
     end
+    object act_edit_newfile: TCEToolbarAction
+      Tag = 210
+      Category = 'Edit'
+      Caption = 'New'
+      ImageIndex = 36
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
+    object act_edit_copypath: TCEToolbarAction
+      Tag = 211
+      Category = 'Edit'
+      Caption = 'Copy Path'
+      ImageIndex = 50
+      ShortCut = 16466
+      OnExecute = ActionExecute
+    end
     object act_view_showhints: TAction
       Tag = 330
       Category = 'View'
@@ -408,6 +465,14 @@ object CEActions: TCEActions
       Hint = 'Show Session Manager'
       OnExecute = ActionExecute
     end
+    object act_view_arrangeby: TCEToolbarAction
+      Tag = 372
+      Category = 'View'
+      Caption = 'Arrange By'
+      ImageIndex = 30
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
     object act_navi_scrollleft: TAction
       Tag = 608
       Category = 'Navigation'
@@ -461,6 +526,14 @@ object CEActions: TCEActions
       ImageIndex = 33
       OnExecute = ActionExecute
     end
+    object act_gen_menu: TCEToolbarAction
+      Tag = -1
+      Category = 'General'
+      Caption = 'Menu'
+      ImageIndex = 49
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
     object act_navi_quickview: TAction
       Tag = 652
       Category = 'Navigation'
@@ -482,6 +555,22 @@ object CEActions: TCEActions
       Caption = 'Clear History'
       Hint = 'Show Session Manager'
       OnExecute = ActionExecute
+    end
+    object act_bookmarks_menu: TCEToolbarAction
+      Tag = -1
+      Category = 'Bookmarks'
+      Caption = 'Bookmarks'
+      ImageIndex = 18
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
+    object act_sessions_menu: TCEToolbarAction
+      Tag = -1
+      Category = 'Sessions'
+      Caption = 'Sessions'
+      ImageIndex = 41
+      OnExecute = ActionExecute
+      CanExecute = False
     end
     object act_view_infobar: TAction
       Tag = 336
@@ -509,32 +598,56 @@ object CEActions: TCEActions
       Caption = 'Show/Hide'
       OnExecute = ActionExecute
     end
+    object act_tabs_undo: TCEToolbarAction
+      Tag = 667
+      Category = 'Tabs'
+      Caption = 'Undo Tab Close'
+      Hint = 'Undo Tab Close'
+      ImageIndex = 42
+      ShortCut = 24660
+      OnExecute = ActionExecute
+    end
     object act_tabs_next: TAction
       Tag = 668
       Category = 'Tabs'
       Caption = 'Switch to Next Tab'
+      ShortCut = 16393
       SecondaryShortCuts.Strings = (
         'Ctrl+PgDn')
-      ShortCut = 16393
       OnExecute = ActionExecute
     end
     object act_tabs_prev: TAction
       Tag = 669
       Category = 'Tabs'
       Caption = 'Swith to Previous Tab'
+      ShortCut = 24585
       SecondaryShortCuts.Strings = (
         'Ctrl+PgUp')
-      ShortCut = 24585
       OnExecute = ActionExecute
     end
     object act_focus_addressbar: TAction
       Tag = 951
       Category = 'Focus'
       Caption = 'Set focus to address bar'
+      ShortCut = 32836
       SecondaryShortCuts.Strings = (
         'F4')
-      ShortCut = 32836
       OnExecute = ActionExecute
+    end
+    object act_filters_menu: TCEToolbarAction
+      Tag = 375
+      Category = 'Filters'
+      Caption = 'Filters'
+      ImageIndex = 29
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
+    object act_filters_pattern: TCEToolbarAction
+      Category = 'Filters'
+      Caption = 'Text Filter'
+      ImageIndex = 29
+      OnExecute = ActionExecute
+      CanExecute = False
     end
     object act_filters_clear: TAction
       Tag = 901
@@ -578,6 +691,15 @@ object CEActions: TCEActions
       ImageIndex = 24
       OnExecute = ActionExecute
     end
+    object act_tools_systempower: TCEToolbarAction
+      Tag = 455
+      Category = 'Tools'
+      Caption = 'System Power'
+      Hint = 'System Power'
+      ImageIndex = 59
+      OnExecute = ActionExecute
+      CanExecute = False
+    end
     object act_view_lock_toolbars: TAction
       Tag = 390
       Category = 'View'
@@ -614,12 +736,33 @@ object CEActions: TCEActions
       Caption = 'Restore Default Layout'
       OnExecute = ActionExecute
     end
+    object act_tabs_menu: TCEToolbarAction
+      Tag = 670
+      Category = 'Tabs'
+      Caption = 'Tabs'
+      ImageIndex = 67
+      OnExecute = ActionExecute
+    end
     object act_edit_newemptyfile: TAction
       Tag = 217
       Category = 'Edit'
       Caption = 'New File'
       ImageIndex = 36
       ShortCut = 24654
+      OnExecute = ActionExecute
+    end
+    object act_stack_open: TCEToolbarAction
+      Tag = 921
+      Category = 'Stack'
+      Caption = 'Open'
+      ImageIndex = 68
+      OnExecute = ActionExecute
+    end
+    object act_stack_save: TCEToolbarAction
+      Tag = 922
+      Category = 'Stack'
+      Caption = 'Save'
+      ImageIndex = 69
       OnExecute = ActionExecute
     end
     object act_stack_remove: TAction
@@ -714,6 +857,7 @@ object CEActions: TCEActions
       Action = act_edit_paste_shortcut
     end
     object CopyPath1: TMenuItem
+      Action = act_edit_copypath
     end
     object N4: TMenuItem
       Caption = '-'
