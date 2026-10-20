@@ -1063,7 +1063,7 @@ begin
   end
   else
   begin
-    P := WideTextPos(ExcludeSign, Info);
+    P := Pos(WideString(WideUpperCase(ExcludeSign)), WideString(WideUpperCase(Info))); // revival: was TNT WideTextPos
     if P <> 0 then
     begin
       System.Delete(Result, 1, P);
