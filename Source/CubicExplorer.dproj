@@ -59,7 +59,7 @@
         <DCC_ExeOutput>..</DCC_ExeOutput>
         <DCC_DcuOutput>..\dcu</DCC_DcuOutput>
         <DCC_DcpOutput>..\dcu</DCC_DcpOutput>
-        <DCC_UnitSearchPath>Components\fcl-xml;Components\jvcl;Components\DirectX;Components\CRS-AppSettings;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>Components\fcl-xml;Components\DirectX;Components\CRS-AppSettings;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;dbrtl;vcldb;tb2k_d10;tbx_d10;OverbyteIcsDel100Package;Png10;VirtualTreesD10;S404_r100;S404br100;MPHexEditor_D7;mbTBXLibD9D;SortGridD10;madBasic_;madDisAsm_;madExcept_;PerlRegExD2006;KHexEditor_R7;SynEdit_R2006;SynWeb_R2006;ATBinHexD2006;Jcl;bdertl;JvUIBD10R;mbTBXJvLibD10D;delphi10;vclactnband;vclie;VclSmp;xmlrtl;inet;inetdbbde;inetdbxpress;TUOScript100;GR32_BDS2006;GR32_DSGN_BDS2006;JclVcl;JvCoreD10R;JvSystemD10R;JvStdCtrlsD10R;JvAppFrmD10R;JvBandsD10R;JvDBD10R;JvDlgsD10R;JvBDED10R;JvCustomD10R;JvDotNetCtrlsD10R;JvEDID10R;JvCryptD10R;JvGlobusD10R;JvHMID10R;JvInterpreterD10R;JvJansD10R;JvManagedThreadsD10R;JvCtrlsD10R;JvCmpD10R;JvMMD10R;JvNetD10R;JvPageCompsD10R;JvPluginD10R;JvPrintPreviewD10R;JvRuntimeDesignD10R;JvTimeFrameworkD10R;JvValidatorsD10R;JvWizardD10R;JvXPCtrlsD10R;OverbyteIcsSslDel100Package;$(DCC_UsePackage)</DCC_UsePackage>
         <SanitizedProjectName>CubicExplorer</SanitizedProjectName>
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
@@ -245,9 +245,6 @@
             <Form>CEStackPanel</Form>
         </DCCReference>
         <DCCReference Include="CE_SpTabBar.pas"/>
-        <DCCReference Include="Components\jvcl\JvDockVSNetStyle.pas"/>
-        <DCCReference Include="Components\jvcl\JvDockControlForm.pas"/>
-        <DCCReference Include="Components\jvcl\JvDockTree.pas"/>
         <DCCReference Include="fCE_QuickViewTab.pas">
             <Form>CEQuickViewPage</Form>
             <DesignClass>TFrame</DesignClass>
