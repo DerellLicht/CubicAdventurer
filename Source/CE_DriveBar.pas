@@ -45,7 +45,7 @@ type
     fShortName: Boolean;
   protected
     procedure DoDrawCaption(ACanvas: TCanvas; ClientAreaRect: TRect; State:
-        TSpTBXSkinStatesType; var ACaption: WideString; var CaptionRect: TRect; var
+        TSpTBXSkinStatesType; var ACaption: string; var CaptionRect: TRect; var
         CaptionFormat: Cardinal; IsTextRotated: Boolean; const PaintStage:
         TSpTBXPaintStage; var PaintDefault: Boolean); override;
     procedure DoDrawImage(ACanvas: TCanvas; State: TSpTBXSkinStatesType; const
@@ -134,7 +134,7 @@ end;
   Get's called when Caption is drawn
 -------------------------------------------------------------------------------}
 procedure TCEShellToolbarItem.DoDrawCaption(ACanvas: TCanvas; ClientAreaRect:
-    TRect; State: TSpTBXSkinStatesType; var ACaption: WideString; var
+    TRect; State: TSpTBXSkinStatesType; var ACaption: string; var
     CaptionRect: TRect; var CaptionFormat: Cardinal; IsTextRotated: Boolean;
     const PaintStage: TSpTBXPaintStage; var PaintDefault: Boolean);
 begin

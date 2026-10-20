@@ -44,7 +44,7 @@ type
   TCEBookmarkItem = class(TSpTBXItem)
   protected
     procedure DoDrawCaption(ACanvas: TCanvas; ClientAreaRect: TRect; State:
-        TSpTBXSkinStatesType; var ACaption: WideString; var CaptionRect: TRect; var
+        TSpTBXSkinStatesType; var ACaption: string; var CaptionRect: TRect; var
         CaptionFormat: Cardinal; IsTextRotated: Boolean; const PaintStage:
         TSpTBXPaintStage; var PaintDefault: Boolean); override;
     procedure DoDrawImage(ACanvas: TCanvas; State: TSpTBXSkinStatesType; const
@@ -59,7 +59,7 @@ type
   TCEBookmarkSubItem = class(TSpTBXSubmenuItem)
   protected
     procedure DoDrawCaption(ACanvas: TCanvas; ClientAreaRect: TRect; State:
-        TSpTBXSkinStatesType; var ACaption: WideString; var CaptionRect: TRect; var
+        TSpTBXSkinStatesType; var ACaption: string; var CaptionRect: TRect; var
         CaptionFormat: Cardinal; IsTextRotated: Boolean; const PaintStage:
         TSpTBXPaintStage; var PaintDefault: Boolean); override;
     procedure DoDrawImage(ACanvas: TCanvas; State: TSpTBXSkinStatesType; const
@@ -275,7 +275,7 @@ end;
   Called when on Caption draw
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkItem.DoDrawCaption(ACanvas: TCanvas; ClientAreaRect:
-    TRect; State: TSpTBXSkinStatesType; var ACaption: WideString; var
+    TRect; State: TSpTBXSkinStatesType; var ACaption: string; var
     CaptionRect: TRect; var CaptionFormat: Cardinal; IsTextRotated: Boolean;
     const PaintStage: TSpTBXPaintStage; var PaintDefault: Boolean);
 begin
@@ -342,7 +342,7 @@ end;
   Called when on Caption draw
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkSubItem.DoDrawCaption(ACanvas: TCanvas; ClientAreaRect:
-    TRect; State: TSpTBXSkinStatesType; var ACaption: WideString; var
+    TRect; State: TSpTBXSkinStatesType; var ACaption: string; var
     CaptionRect: TRect; var CaptionFormat: Cardinal; IsTextRotated: Boolean;
     const PaintStage: TSpTBXPaintStage; var PaintDefault: Boolean);
 begin
