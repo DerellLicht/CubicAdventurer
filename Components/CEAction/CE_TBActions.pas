@@ -5,14 +5,13 @@ interface
 uses
   // TB2k, TBX, SpTBX
   TB2Item, SpTBXItem,
-  // Tnt Control
-  TntActnList,
   // System Units
   ActnList, Classes;
 
 type
 
-  TCEToolbarAction = class(TTntAction)
+  // revival: was TTntAction; plain TAction is Unicode-aware in current Delphi
+  TCEToolbarAction = class(TAction)
   private
     fCanExecute: Boolean;
   public
