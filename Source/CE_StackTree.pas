@@ -389,7 +389,11 @@ end;
 function TCEStackTree.DoCancelEdit: Boolean;
 begin
   Result:= inherited DoCancelEdit;
-  Self.InvalidateNode(Self.FocusedNode);
+  // VirtualTrees 8 asserts on a nil node (older versions tolerated it)
+  if Assigned(Self.FocusedNode) then
+  begin
+    Self.InvalidateNode(Self.FocusedNode);
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -735,7 +739,11 @@ end;
 function TCEStackTree.DoEndEdit(pCancel: Boolean): Boolean;
 begin
   Result:= inherited DoEndEdit(pCancel);
-  Self.InvalidateNode(Self.FocusedNode);
+  // VirtualTrees 8 asserts on a nil node (older versions tolerated it)
+  if Assigned(Self.FocusedNode) then
+  begin
+    Self.InvalidateNode(Self.FocusedNode);
+  end;
 end;
 
 {-------------------------------------------------------------------------------
