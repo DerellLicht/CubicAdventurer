@@ -216,6 +216,6 @@ end;
 {##############################################################################}
 
 initialization
-  SkinManager.SkinsList.AddSkin('Chrome', TSpTBXChromeSkin);
+  SkinManager.AddSkin('Chrome', TSpTBXChromeSkin);
 
 end.
