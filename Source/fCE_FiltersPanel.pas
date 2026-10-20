@@ -68,7 +68,7 @@ type
   protected
     fDock: TSpTBXDock;
     FilterBackgroundBitmap: TBitmap;
-    procedure DoMenuEditChange(Sender: TObject; const AText: WideString); virtual;
+    procedure DoMenuEditChange(Sender: TObject; const AText: string); virtual;
     procedure DoMenuItemClick(Sender: TObject); virtual;
     procedure DoPatternChanged; virtual;
     procedure DrawFilterBitmap;
@@ -350,7 +350,7 @@ end;
   Do MenuEditChange
 -------------------------------------------------------------------------------}
 procedure TCEFiltersPanel.DoMenuEditChange(Sender: TObject; const AText:
-    WideString);
+    string);
 begin
   PatternText:= AText;
 end;
@@ -617,7 +617,7 @@ begin
   FilterPanel.Filters.DefaultNodeHeight:= SmallShellIconSize + 1;
 
   // resize nodes
-  if i <> FilterPanel.Filters.DefaultNodeHeight then
+  if i <> Integer(FilterPanel.Filters.DefaultNodeHeight) then
   begin
     FilterPanel.Filters.BeginUpdate;
     try
