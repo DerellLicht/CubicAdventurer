@@ -154,6 +154,7 @@ var
   R: TRect;
   Rgn: HRGN;
   Offset: Integer;
+  ThumbState: TSpTBXSkinStatesType;
 begin
   if Message.NMHdr.code = NM_CUSTOMDRAW then
   begin
@@ -188,7 +189,18 @@ begin
                   begin
                     SendMessage(Handle, TBM_GETTHUMBRECT, 0, LPARAM(@R));
                     if DoDrawThumb(ACanvas, R, pstPrePaint) then
-                    SpDrawXPTrackBar(ACanvas, R, TBCD_THUMB, Orientation = trVertical, MouseInThumb, False, TickMarks, Min, Max, SelStart, SelEnd, SkinType);
+                    // revival: SpTBXLib's TrackBar drawing takes a thumb state and DPI instead of a hot flag and skin type.
+                    begin
+                      if MouseInThumb then
+                      begin
+                        ThumbState:= sknsHotTrack;
+                      end
+                      else
+                      begin
+                        ThumbState:= sknsNormal;
+                      end;
+                      SpDrawXPTrackBar(Self, ACanvas, R, TBCD_THUMB, Orientation = trVertical, False, ThumbState, TickMarks, Min, Max, SelStart, SelEnd, CurrentPPI);
+                    end;
 
                     DoDrawThumb(ACanvas, R, pstPostPaint);
                     Message.Result:= CDRF_SKIPDEFAULT;
@@ -219,7 +231,7 @@ begin
                     R:= ChannelRect;
 
                     if DoDrawChannel(ACanvas, R, pstPrePaint) then
-                      SpDrawXPTrackBar(ACanvas, R, TBCD_CHANNEL, Orientation = trVertical, False, FCanDrawChannelSelection, TickMarks, Min, Max, SelStart, SelEnd, SkinType);
+                      SpDrawXPTrackBar(Self, ACanvas, R, TBCD_CHANNEL, Orientation = trVertical, FCanDrawChannelSelection, sknsNormal, TickMarks, Min, Max, SelStart, SelEnd, CurrentPPI);
                     DoDrawChannel(ACanvas, R, pstPostPaint);
 
                     // Draw channel tics
