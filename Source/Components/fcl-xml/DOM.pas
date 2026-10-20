@@ -1301,7 +1301,7 @@ begin
     BuildList;
 
   if index < LongWord(FList.Count) then
-    Result := TDOMNode(FList.List^[index])
+    Result := TDOMNode(FList.List[index])
   else
     Result := nil;
 end;
@@ -1379,7 +1379,7 @@ end;
 function TDOMNamedNodeMap.GetItem(index: LongWord): TDOMNode;
 begin
   if index < LongWord(FList.Count) then
-    Result := TDOMNode(FList.List^[index])
+    Result := TDOMNode(FList.List[index])
   else
     Result := nil;
 end;
@@ -1399,7 +1399,7 @@ begin
   while L <= H do
   begin
     I := (L + H) shr 1;
-    C := TDOMNode(FList.List^[I]).CompareName(name);
+    C := TDOMNode(FList.List[I]).CompareName(name);
     if C > 0 then L := I + 1 else
     begin
       H := I - 1;
@@ -1418,7 +1418,7 @@ var
   i: Cardinal;
 begin
   if Find(name, i) then
-    Result := TDOMNode(FList.List^[i])
+    Result := TDOMNode(FList.List[i])
   else
     Result := nil;
 end;
@@ -1455,8 +1455,8 @@ begin
 
   if Exists then
   begin
-    Result := TDOMNode(FList.List^[i]);
-    FList.List^[i] := arg;
+    Result := TDOMNode(FList.List[i]);
+    FList.List[i] := arg;
     exit;
   end;
   FList.Insert(i, arg);
@@ -1476,7 +1476,7 @@ begin
   Result := nil;
   if Find(name, i) then
   begin
-    Result := TDOMNode(FList.List^[i]);
+    Result := TDOMNode(FList.List[i]);
     FList.Delete(I);
     if Result.NodeType = ATTRIBUTE_NODE then
       TDOMAttr(Result).FOwnerElement := nil;
@@ -1676,7 +1676,7 @@ begin
   while L <= H do
   begin
     I := (L + H) shr 1;
-    P := PIDItem(FIDList.List^[I]);
+    P := PIDItem(FIDList.List[I]);
     C := CompareDOMStrings(PWideChar(aID), PWideChar(P^.ID), Length(aID), Length(P^.ID));
     if C > 0 then L := I + 1 else
     begin
@@ -1698,7 +1698,7 @@ begin
   if Assigned(FIDList) then
   begin
     for I := 0 to FIDList.Count-1 do
-      Dispose(PIDItem(FIDList.List^[I]));
+      Dispose(PIDItem(FIDList.List[I]));
     FIDList.Clear;
   end;    
 end;
@@ -1847,7 +1847,7 @@ var
 begin
   // TODO: Implement TDOMDocument.GetElementById
   if FindID(ElementID, I) then
-    Result := PIDItem(FIDList.List^[I])^.Element
+    Result := PIDItem(FIDList.List[I])^.Element
   else
     Result := nil;
 end;
