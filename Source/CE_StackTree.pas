@@ -89,26 +89,24 @@ type
     procedure DoContextMenuShowCallback(Namespace: TNamespace; Menu: hMenu; var
         Allow: Boolean); virtual;
     function DoCreateDataObject: IDataObject; override;
-    procedure DoDragDrop(Source: TObject; DataObject: IDataObject; Formats:
-        TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode:
+    procedure DoDragDrop(Source: TObject; const DataObject: TVTDragDataObject; const Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode:
         TDropMode); override;
     function DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; Pt:
         TPoint; Mode: TDropMode; var Effect: Integer): Boolean; override;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
-    function DoEndEdit: Boolean; override;
+    function DoEndEdit(pCancel: Boolean = False): Boolean; override;
     procedure DoExpanded(Node: PVirtualNode); override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: Integer): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
         override;
     function DoGetNodeHint(Node: PVirtualNode; Column: TColumnIndex; var
         LineBreakStyle: TVTTooltipLineBreakStyle): UnicodeString; override;
-    procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex; TextType:
-        TVSTTextType; var Text: UnicodeString); override;
+    procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
+    procedure GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var Text: UnicodeString);
     function DoKeyAction(var CharCode: Word; var Shift: TShiftState): Boolean;
         override;
-    procedure DoNewText(Node: PVirtualNode; Column: TColumnIndex; Text:
-        UnicodeString); override;
+    procedure DoNewText(Node: PVirtualNode; Column: TColumnIndex; const Text: string); override;
     procedure DoPaintText(Node: PVirtualNode; const Canvas: TCanvas; Column:
         TColumnIndex; TextType: TVSTTextType); override;
     procedure DoPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Position:
@@ -531,8 +529,7 @@ end;
 {-------------------------------------------------------------------------------
   Do DragDrop
 -------------------------------------------------------------------------------}
-procedure TCEStackTree.DoDragDrop(Source: TObject; DataObject: IDataObject;
-    Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer;
+procedure TCEStackTree.DoDragDrop(Source: TObject; const DataObject: TVTDragDataObject; const Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer;
     Mode: TDropMode);
 var
   hd: TCommonShellIDList;
@@ -738,9 +735,9 @@ end;
 {-------------------------------------------------------------------------------
   Do EndEdit
 -------------------------------------------------------------------------------}
-function TCEStackTree.DoEndEdit: Boolean;
+function TCEStackTree.DoEndEdit(pCancel: Boolean): Boolean;
 begin
-  Result:= inherited DoEndEdit;
+  Result:= inherited DoEndEdit(pCancel);
   Self.InvalidateNode(Self.FocusedNode);
 end;
 
@@ -770,7 +767,7 @@ end;
   Do GetImageIndex
 -------------------------------------------------------------------------------}
 function TCEStackTree.DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
-    Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer):
+    Column: TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex):
     TCustomImageList;
 var
   data: PCEStackItemData;
@@ -864,7 +861,15 @@ end;
 {-------------------------------------------------------------------------------
   Do GetText
 -------------------------------------------------------------------------------}
-procedure TCEStackTree.DoGetText(Node: PVirtualNode; Column: TColumnIndex;
+procedure TCEStackTree.DoGetText(var pEventArgs: TVSTGetCellTextEventArgs);
+begin
+  GetTextLegacy(pEventArgs.Node, pEventArgs.Column, ttNormal, pEventArgs.CellText);
+  if toShowStaticText in TreeOptions.StringOptions then
+  GetTextLegacy(pEventArgs.Node, pEventArgs.Column, ttStatic, pEventArgs.StaticText);
+  inherited;
+end;
+
+procedure TCEStackTree.GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex;
     TextType: TVSTTextType; var Text: UnicodeString);
 var
   data: PCEStackItemData;
@@ -894,7 +899,6 @@ begin
       Text:= data.Caption;
     end;
   end;
-  inherited;
 end;
 
 {*------------------------------------------------------------------------------
@@ -915,7 +919,7 @@ end;
   Do NewText
 -------------------------------------------------------------------------------}
 procedure TCEStackTree.DoNewText(Node: PVirtualNode; Column: TColumnIndex;
-    Text: UnicodeString);
+    const Text: string);
 var
   data: PCEStackItemData;
 begin

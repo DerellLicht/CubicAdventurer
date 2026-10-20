@@ -50,21 +50,19 @@ type
     fSingleClickMode: Boolean;
   protected
     procedure ClearDropNode;
-    procedure DoDragDrop(Source: TObject; DataObject: IDataObject; Formats:
-        TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode:
+    procedure DoDragDrop(Source: TObject; const DataObject: TVTDragDataObject; const Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode:
         TDropMode); override;
     function DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; Pt:
         TPoint; Mode: TDropMode; var Effect: Integer): Boolean; override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: Integer): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
         override;
-    procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex; TextType:
-        TVSTTextType; var Text: WideString); override;
+    procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
+    procedure GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var Text: UnicodeString);
     function DoKeyAction(var CharCode: Word; var Shift: TShiftState): Boolean;
         override;
-    procedure DoNewText(Node: PVirtualNode; Column: TColumnIndex; Text:
-        WideString); override;
+    procedure DoNewText(Node: PVirtualNode; Column: TColumnIndex; const Text: string); override;
     procedure DoPaintText(Node: PVirtualNode; const Canvas: TCanvas; Column:
         TColumnIndex; TextType: TVSTTextType); override;
     procedure HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo);
@@ -372,8 +370,13 @@ end;
 {*------------------------------------------------------------------------------
   Get Node Text
 -------------------------------------------------------------------------------}
-procedure TCEBookmarkTree.DoGetText(Node: PVirtualNode; Column: TColumnIndex;
-    TextType: TVSTTextType; var Text: WideString);
+procedure TCEBookmarkTree.DoGetText(var pEventArgs: TVSTGetCellTextEventArgs);
+begin
+  GetTextLegacy(pEventArgs.Node, pEventArgs.Column, ttNormal, pEventArgs.CellText);
+end;
+
+procedure TCEBookmarkTree.GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex;
+    TextType: TVSTTextType; var Text: UnicodeString);
 var
   data: PCEBookData;
 begin
@@ -386,7 +389,7 @@ end;
   Get's called when a new Text is assigned to a Node.
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkTree.DoNewText(Node: PVirtualNode; Column: TColumnIndex;
-    Text: WideString);
+    const Text: string);
 var
   data: PCEBookData;
 begin
@@ -418,8 +421,7 @@ end;
   Get Image Index
 -------------------------------------------------------------------------------}
 function TCEBookmarkTree.DoGetImageIndex(Node: PVirtualNode; Kind:
-    TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index:
-    Integer): TCustomImageList;
+    TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
 var
   data: PCEBookData;
 begin
@@ -561,8 +563,7 @@ end;
 {*------------------------------------------------------------------------------
   Get's called when a object is dropped.
 -------------------------------------------------------------------------------}
-procedure TCEBookmarkTree.DoDragDrop(Source: TObject; DataObject: IDataObject;
-    Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer;
+procedure TCEBookmarkTree.DoDragDrop(Source: TObject; const DataObject: TVTDragDataObject; const Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer;
     Mode: TDropMode);
 var
  // data: PCEBookData;

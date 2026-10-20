@@ -78,10 +78,10 @@ type
         override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: Integer): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
         override;
-    procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex; TextType:
-        TVSTTextType; var Text: UnicodeString); override;
+    procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
+    procedure GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var Text: UnicodeString);
     procedure DoHeaderClick(HitInfo: TVTHeaderHitInfo); override;
     procedure HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo);
         override;
@@ -300,7 +300,12 @@ end;
 {-------------------------------------------------------------------------------
   Do GetText
 -------------------------------------------------------------------------------}
-procedure TCEArchiveTree.DoGetText(Node: PVirtualNode; Column: TColumnIndex;
+procedure TCEArchiveTree.DoGetText(var pEventArgs: TVSTGetCellTextEventArgs);
+begin
+  GetTextLegacy(pEventArgs.Node, pEventArgs.Column, ttNormal, pEventArgs.CellText);
+end;
+
+procedure TCEArchiveTree.GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex;
     TextType: TVSTTextType; var Text: UnicodeString);
 var
   data: PItemData;
@@ -519,7 +524,7 @@ end;
   Do GetImageIndex
 -------------------------------------------------------------------------------}
 function TCEArchiveTree.DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
-    Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer):
+    Column: TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex):
     TCustomImageList;
 var
   data: PItemData;
