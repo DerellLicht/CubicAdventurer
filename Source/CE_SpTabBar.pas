@@ -1118,7 +1118,7 @@ begin
   begin
     ARect.Left:= ARect.Left - 2;
     ARect.Right:= ARect.Right + 3;
-    SpDrawXPTabControlBackground(FBackground.Canvas, ARect, Color, TabPosition = ttpBottom, SkinType);
+    SpDrawXPTabControlBackground(Self, FBackground.Canvas, ARect, Color, TabPosition = ttpBottom);
     PaintDefault:= false;
   end;
 end;
@@ -1231,7 +1231,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESpTabSet.HandleToolbarResize(Sender: TObject);
 begin
-  if SkinManager.GetSkinType = sknSkin then
+  if SkinManager.GetSkinType(Self) = sknSkin then
   Self.Height:= Toolbar.Height + 2
   else
   Self.Height:= Toolbar.Height + 4

@@ -129,7 +129,7 @@ type
   
   TCEFilterPatternItem = class(TCEToolbarComboBoxItem)
   protected
-    procedure DoChange(const AText: WideString); override;
+    procedure DoChange(const AText: string); override;
     procedure DoClearButtonClick(Shift: TShiftState); override;
     function GetComboItems: TStrings; override;
     procedure KeyPress(var Key: Char); override;
@@ -842,7 +842,7 @@ end;
 {-------------------------------------------------------------------------------
   Do Change
 -------------------------------------------------------------------------------}
-procedure TCEFilterPatternItem.DoChange(const AText: WideString);
+procedure TCEFilterPatternItem.DoChange(const AText: string);
 begin
   inherited;
   CEFiltersPanel.PatternText:= AText;

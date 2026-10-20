@@ -133,7 +133,7 @@ begin
   
   if DrawBackground then
   begin
-    case SkinManager.GetSkinType of
+    case SkinManager.GetSkinType(nil) of
       sknNone:
         begin
           Buffer.Canvas.Brush.Color := clBtnFace;
@@ -159,7 +159,7 @@ begin
   if Checked then
   state:= sknsChecked;
 
-  case SkinManager.GetSkinType of
+  case SkinManager.GetSkinType(nil) of
     sknNone: begin
       Buffer.Canvas.Brush.Color := clBtnFace;
       Buffer.Canvas.FillRect(ARect);
@@ -535,7 +535,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEScrollToolbar.DrawBackground;
 begin
-  case SkinManager.GetSkinType of
+  case SkinManager.GetSkinType(Self) of
     sknNone:
       begin
         Bitmap.Canvas.Brush.Color := clBtnFace;
@@ -579,7 +579,7 @@ begin
   i:= fArrowsize div 3;
   r.Left:= Round((fArrowSize - i) / 2);
   r.Top:= r.Top + Round((r.Bottom - r.Top) / 2);
-  c:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, state);
+  c:= SkinManager.CurrentSkin.GetTextColor(Self, skncToolbarItem, state);
   SpDrawArrow(Bitmap.Canvas,r.Left,r.Top, c, false, true, i);
 end;
 
@@ -610,7 +610,7 @@ begin
   i:= fArrowsize div 3;
   r.Left:= r.Left + Round((fArrowSize - i) / 2);
   r.Top:= r.Top + Round((r.Bottom - r.Top) / 2);
-  c:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, state);
+  c:= SkinManager.CurrentSkin.GetTextColor(Self, skncToolbarItem, state);
   SpDrawArrow(Bitmap.Canvas,r.Left,r.Top, c, false, false, i);
 end;
 
@@ -699,10 +699,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEScrollToolbar.DrawSeparator(ARect: TRect);
 begin
-  if SkinManager.GetSkinType = sknNone then
+  if SkinManager.GetSkinType(Self) = sknNone then
   DrawEdge(Bitmap.Handle, ARect, EDGE_ETCHED, BF_LEFT)
   else
-  SpDrawXPMenuSeparator(Bitmap.Canvas, ARect, true, true);
+  SpDrawXPMenuSeparator(Self, Bitmap.Canvas, ARect, true, true, CurrentPPI);
 end;
 
 {*------------------------------------------------------------------------------
@@ -775,7 +775,7 @@ begin
 
   DrawMenuItem(Buffer, ARect, Checked, ItemStyle);
 
-  Buffer.Font.Color:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, state);
+  Buffer.Font.Color:= SkinManager.CurrentSkin.GetTextColor(nil, skncToolbarItem, state);
   if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
   Buffer.Textout(ARect,DT_CENTER+DT_VCENTER+DT_SINGLELINE,fCaption)
   else

@@ -279,11 +279,11 @@ begin
   CurrentSkin.PaintBackground(Canvas, r, skncToolbar, sknsNormal, True, False);
   if (FState in [bsDown, bsExclusive]) or fChecked then
   begin
-    SpDrawXPButton(Canvas, r, true, true, true, false, false, false, SkinManager.GetSkinType);
+    SpDrawXPButton(Self, Canvas, r, true, true, true, false, false, false, CurrentPPI);
   end
   else
   begin
-    SpDrawXPButton(Canvas, r, true, false, false, false, false, false, SkinManager.GetSkinType);
+    SpDrawXPButton(Self, Canvas, r, true, false, false, false, false, false, CurrentPPI);
   end;
   if fDropDownArrow then
   begin
@@ -470,7 +470,7 @@ begin
   Canvas.Brush.Color:= clWindow;
   r:= BoundsRect;
   Canvas.FillRect(r);
-  SpDrawXPEditFrame(Canvas,r,true,true,SkinManager.GetSkinType);
+  SpDrawXPEditFrame(Self, Canvas, r, true, true, false, false, CurrentPPI);
 end;
 
 {*------------------------------------------------------------------------------

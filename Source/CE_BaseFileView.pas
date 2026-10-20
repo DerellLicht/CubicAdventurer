@@ -472,7 +472,7 @@ procedure TCECustomFileView.DoPaintHeaderBkGnd(ACanvas: TCanvas; ARect: TRect; v
     Handled: Boolean);
 begin
   inherited;
-  SpDrawXPHeader(ACanvas, ARect, false, false, SkinManager.GetSkinType);
+  SpDrawXPHeader(Self, ACanvas, ARect, false, false, CurrentPPI);
   Handled:= true;
 end;
 
@@ -1747,7 +1747,7 @@ begin
   state:= sknsPushed
   else
   state:= sknsNormal;
-  ACanvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(skncHeader, state);
+  ACanvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(Column.OwnerListview, skncHeader, state);
 end;
 
 {*------------------------------------------------------------------------------
@@ -1758,7 +1758,7 @@ procedure TCEViewColumn.PaintBkGnd(Column: TEasyColumn;
   RectArray: TEasyRectArrayObject);
 begin
   inherited;
-  SpDrawXPHeader(ACanvas, RectArray.BoundsRect, Column.PaintMouseHovering, Column.Clicking, SkinManager.GetSkinType);
+  SpDrawXPHeader(Column.OwnerListview, ACanvas, RectArray.BoundsRect, Column.PaintMouseHovering, Column.Clicking, Column.OwnerListview.CurrentPPI);
 end;
 
 end.
