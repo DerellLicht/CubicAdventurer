@@ -458,7 +458,13 @@ begin
   // Horizontally
   if AHorizontal then
   begin
-    level:= GetNodeLevel(ANode)-1;
+    // GetNodeLevel returns a Cardinal; for a top level node (level 0) the "-1"
+    // wrapped around and raised EIntOverflow. Do the math in Integer and clamp.
+    level:= Integer(GetNodeLevel(ANode)) - 1;
+    if level < 0 then
+    begin
+      level:= 0;
+    end;
     indentW:= Integer(Indent) * level;
     r:= GetDisplayRect(ANode, NoColumn, false, true);
     if ((r.Right - r.Left) + indentW) > Self.ClientWidth then
