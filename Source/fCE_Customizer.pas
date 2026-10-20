@@ -313,7 +313,7 @@ begin
   ActionTree.FullExpand;
 
   // Populate Theme list
-  SkinManager.SkinsList.GetSkinNames(ThemeList.Items.AnsiStrings);
+  SkinManager.GetSkinsAndDelphiStyles(ThemeList.Items, True);
   ThemeList.Sorted:= true;
   i:= ThemeList.Items.IndexOf('Default');
   if i > -1 then ThemeList.Items.Move(i, 0);
@@ -534,7 +534,7 @@ var
 begin
   CEActions.act_view_loadskin.Execute;
   // Populate Theme list
-  SkinManager.SkinsList.GetSkinNames(ThemeList.Items.AnsiStrings);
+  SkinManager.GetSkinsAndDelphiStyles(ThemeList.Items, True);
   ThemeList.Sorted:= true;
   i:= ThemeList.Items.IndexOf('Default');
   if i > -1 then ThemeList.Items.Move(i, 0);

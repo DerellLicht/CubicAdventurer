@@ -63,6 +63,7 @@ uses
 constructor TCEOptionsPage_Display.Create(AOwner: TComponent);
 var
   i: Integer;
+  skins: TStringList;
 begin
   inherited;
   PageName:= _('Display');
@@ -71,11 +72,19 @@ begin
   ImageIndex:= 2;
   PageListPosition:= 2;
   // Fill themes combo
-  SkinManager.SkinsList.GetSkinNames(combo_theme.Items);
-  SkinManager.SkinsList.Sort;
-  I:= SkinManager.SkinsList.IndexOf('Default');
-  if I > -1 then
-  SkinManager.SkinsList.Move(I, 0);
+  skins:= TStringList.Create;
+  try
+    SkinManager.GetSkinsAndDelphiStyles(skins, True);
+    skins.Sort;
+    I:= skins.IndexOf('Default');
+    if I > -1 then
+    begin
+      skins.Move(I, 0);
+    end;
+    combo_theme.Items.Assign(skins);
+  finally
+    skins.Free;
+  end;
 end;
 
 {-------------------------------------------------------------------------------

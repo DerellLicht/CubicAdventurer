@@ -332,7 +332,6 @@ type
     function GetProxyPassword: String;
     function GetProxyUsername: String;
     function GetShowTray: Boolean;
-    function GetUpdateURL: WideString;
     function GetUseProxy: Boolean;
     function GetUseSystemProxy: Boolean;
     procedure SetAlphaBlend(const Value: Integer);
@@ -349,7 +348,6 @@ type
     procedure SetProxyPassword(const Value: String);
     procedure SetProxyUsername(const Value: String);
     procedure SetShowTray(const Value: Boolean);
-    procedure SetUpdateURL(const Value: WideString);
     procedure SetUseProxy(const Value: Boolean);
     procedure SetUseSystemProxy(const Value: Boolean);
   public
@@ -387,7 +385,6 @@ type
     property ShowTray: Boolean read GetShowTray write SetShowTray;
     property StartInTray: Boolean read fStartInTray write fStartInTray;
     property StartupType: TCEStartupType read fStartupType write fStartupType;
-    property UpdateURL: WideString read GetUpdateURL write SetUpdateURL;
     property UseProxy: Boolean read GetUseProxy write SetUseProxy;
     property UseSystemProxy: Boolean read GetUseSystemProxy write SetUseSystemProxy;
   end;
@@ -1103,7 +1100,7 @@ begin
       begin
         path:= AFolderPath + list.Strings[i];
         if FileExists(path) then
-        SkinManager.SkinsList.AddSkinFromFile(path);
+        SkinManager.AddSkinFromFile(path);
       end;
     finally
       list.Free;
@@ -1274,7 +1271,7 @@ end;
 procedure TMainForm.OpenSkin;
 var
   open: TOpenDialog;
-  i: Integer;
+  skinName: string;
 begin
   open:= TOpenDialog.Create(nil);
   open.InitialDir:= exePath + 'Skins\';
@@ -1282,10 +1279,10 @@ begin
   try
     if open.Execute then
     begin
-      i:= SkinManager.SkinsList.AddSkinFromFile(open.FileName);
-      if I > -1 then
+      skinName:= SkinManager.AddSkinFromFile(open.FileName);
+      if skinName <> '' then
       begin
-        SkinManager.SetSkin(SkinManager.SkinsList[i]);
+        SkinManager.SetSkin(skinName);
         SkinGroupItem.Recreate;
       end;
     end;
@@ -1917,21 +1914,6 @@ end;
 procedure TMainFormSettings.SetUseSystemProxy(const Value: Boolean);
 begin
   CE_UseSystemProxy:= Value;
-end;
-
-{-------------------------------------------------------------------------------
-  Get/Set UpdateURL
--------------------------------------------------------------------------------}
-function TMainFormSettings.GetUpdateURL: WideString;
-begin
-  Result:= UpdateConfURL;
-end;
-procedure TMainFormSettings.SetUpdateURL(const Value: WideString);
-begin
-  if Value <> '' then
-  begin
-    UpdateConfURL:= Value;
-  end;
 end;
 
 {-------------------------------------------------------------------------------
