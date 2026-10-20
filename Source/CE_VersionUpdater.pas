@@ -195,8 +195,8 @@ var
 implementation
 
 uses
-  CE_XmlUtils, Math, MPCommonUtilities, Classes, SysUtils,
-  Windows, fCE_UpdateDlg, Controls, CE_VistaFuncs, Messages, dCE_Input,
+  CE_XmlUtils, Math, MPCommonUtilities,
+  fCE_UpdateDlg, Controls, CE_VistaFuncs, Messages, dCE_Input,
   Forms, CE_FileUtils, CE_LanguageEngine, CE_Consts, CE_Utils,
   fCE_LoginPromptDlg, CE_WideCompat;
 

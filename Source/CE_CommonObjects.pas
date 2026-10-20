@@ -86,7 +86,7 @@ var
 implementation
 
 uses
-  MPShellTypes, Variants, CE_Utils, Forms, MPCommonUtilities, SysUtils,
+  MPShellTypes, Variants, CE_Utils, Forms, MPCommonUtilities,
   CE_LanguageEngine, DateUtils, CE_WideCompat;
 
 var
