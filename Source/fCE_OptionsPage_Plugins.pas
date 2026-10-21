@@ -23,12 +23,12 @@ type
   end;
 
   TCEOptionsPage_Plugins = class(TCEOptionsCustomPage)
-    TntPageControl1: TTntPageControl;
-    sheet_libraries: TTntTabSheet;
-    sheet_formats: TTntTabSheet;
+    TntPageControl1: TPageControl;
+    sheet_libraries: TTabSheet;
+    sheet_formats: TTabSheet;
     tree_libraries: TVirtualStringTree;
     label_library_name: TSpTBXLabel;
-    TntTabSheet1: TTntTabSheet;
+    TntTabSheet1: TTabSheet;
     tree_plugins: TVirtualStringTree;
     label_plugin_name: TSpTBXLabel;
     VirtualStringTree2: TVirtualStringTree;

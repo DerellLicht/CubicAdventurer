@@ -5640,7 +5640,7 @@ inherited CEOptionsPage_Plugins: TCEOptionsPage_Plugins
     ExplicitWidth = 105
     ExplicitHeight = 105
   end
-  object TntPageControl1: TTntPageControl
+  object TntPageControl1: TPageControl
     Left = 3
     Top = 3
     Width = 435
@@ -5648,7 +5648,7 @@ inherited CEOptionsPage_Plugins: TCEOptionsPage_Plugins
     ActivePage = TntTabSheet1
     TabOrder = 0
     Visible = False
-    object TntTabSheet1: TTntTabSheet
+    object TntTabSheet1: TTabSheet
       Caption = 'Active Plugins'
       DesignSize = (
         427
@@ -5731,7 +5731,7 @@ inherited CEOptionsPage_Plugins: TCEOptionsPage_Plugins
         Visible = False
       end
     end
-    object sheet_formats: TTntTabSheet
+    object sheet_formats: TTabSheet
       Caption = 'Formats'
       object VirtualStringTree2: TVirtualStringTree
         Left = 8
@@ -5753,7 +5753,7 @@ inherited CEOptionsPage_Plugins: TCEOptionsPage_Plugins
         Columns = <>
       end
     end
-    object sheet_libraries: TTntTabSheet
+    object sheet_libraries: TTabSheet
       Caption = 'Libraries'
       object tree_libraries: TVirtualStringTree
         Left = 8

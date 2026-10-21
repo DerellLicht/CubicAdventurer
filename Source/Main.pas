@@ -1288,7 +1288,7 @@ begin
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXRadioButton);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXLabel);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXLabelItem);
-  CEGlobalTranslator.IncludeClasses.Add(TTntTabSheet);
+  CEGlobalTranslator.IncludeClasses.Add(TTabSheet);
 
   //CEGlobalTranslator.IgnoredProperties.Add('Name'); <-- name is ignored always
   //CEGlobalTranslator.IgnoredProperties.Add('Category'); <-- hotkeys list shows the category for actions so keep it translated.

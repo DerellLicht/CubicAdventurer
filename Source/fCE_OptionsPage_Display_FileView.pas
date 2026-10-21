@@ -52,9 +52,9 @@ type
     check_infotips: TCheckBox;
     check_singleclick: TCheckBox;
     check_perfolder: TCheckBox;
-    TntPageControl1: TTntPageControl;
-    sheet_options: TTntTabSheet;
-    sheet_colors: TTntTabSheet;
+    TntPageControl1: TPageControl;
+    sheet_options: TTabSheet;
+    sheet_colors: TTabSheet;
     check_browse_zip: TCheckBox;
     list_exts: TVirtualStringTree;
     but_add: TButton;
@@ -65,7 +65,7 @@ type
     color_extension: TColorBox;
     check_extension_colors: TCheckBox;
     TntLabel2: TLabel;
-    sheet_display: TTntTabSheet;
+    sheet_display: TTabSheet;
     TntLabel1: TLabel;
     combo_sizeformat: TComboBox;
     color_background: TColorBox;

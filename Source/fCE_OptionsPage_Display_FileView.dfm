@@ -1,12 +1,12 @@
 inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
-  object TntPageControl1: TTntPageControl
+  object TntPageControl1: TPageControl
     Left = 3
     Top = 3
     Width = 435
     Height = 330
     ActivePage = sheet_options
     TabOrder = 0
-    object sheet_options: TTntTabSheet
+    object sheet_options: TTabSheet
       Caption = 'Options'
       object check_selectprev: TCheckBox
         Left = 16
@@ -90,7 +90,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
         OnClick = HandleChange
       end
     end
-    object sheet_display: TTntTabSheet
+    object sheet_display: TTabSheet
       Caption = 'Display'
       object TntLabel1: TLabel
         Left = 192
@@ -201,7 +201,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
         OnClick = HandleChange
       end
     end
-    object sheet_colors: TTntTabSheet
+    object sheet_colors: TTabSheet
       Caption = 'Colors'
       object TntLabel2: TLabel
         Left = 16
