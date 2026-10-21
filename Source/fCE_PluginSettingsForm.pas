@@ -35,9 +35,9 @@ type
         Column: TColumnIndex; var Allowed: Boolean);
     procedure tree_settingsFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tree_settingsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-        Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+        Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure tree_settingsNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-        Column: TColumnIndex; NewText: WideString);
+        Column: TColumnIndex; NewText: string);
   private
   protected
     fEditor: ICEPluginSettingsEditor;
@@ -331,7 +331,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEPluginSettingsForm.tree_settingsGetText(Sender: TBaseVirtualTree;
     Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var
-    CellText: WideString);
+    CellText: string);
 var
   data: PSettingItem;
 begin
@@ -346,7 +346,7 @@ end;
   On tree_settings.NewText
 -------------------------------------------------------------------------------}
 procedure TCEPluginSettingsForm.tree_settingsNewText(Sender: TBaseVirtualTree;
-    Node: PVirtualNode; Column: TColumnIndex; NewText: WideString);
+    Node: PVirtualNode; Column: TColumnIndex; NewText: string);
 var
   data: PSettingItem;
 begin

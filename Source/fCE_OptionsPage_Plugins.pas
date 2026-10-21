@@ -39,9 +39,9 @@ type
     procedure tree_plug_FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tree_plug_GetHint(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle;
-      var HintText: WideString);
+      var HintText: string);
     procedure tree_plug_GetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure tree_plugPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
@@ -260,7 +260,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEOptionsPage_Plugins.tree_plug_GetHint(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex;
-  var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: WideString);
+  var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: string);
 var
   data: PPlugData;
 begin
@@ -276,7 +276,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEOptionsPage_Plugins.tree_plug_GetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: WideString);
+  var CellText: string);
 var
   data: PPlugData;
 begin

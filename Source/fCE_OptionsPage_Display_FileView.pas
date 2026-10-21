@@ -81,9 +81,9 @@ type
     check_remember_thumbs: TCheckBox;
     procedure HandleChange(Sender: TObject);
     procedure list_extsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure list_extsNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; NewText: WideString);
+      Column: TColumnIndex; NewText: string);
     procedure list_extsFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure but_addClick(Sender: TObject);
     procedure list_extsFocusChanged(Sender: TBaseVirtualTree;
@@ -371,7 +371,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCE_OptionsPage_Display_FileView.list_extsGetText(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: WideString);
+  TextType: TVSTTextType; var CellText: string);
 var
   data: PExtListData;
 begin
@@ -384,7 +384,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCE_OptionsPage_Display_FileView.list_extsNewText(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  NewText: WideString);
+  NewText: string);
 var
   data: PExtListData;
 begin
