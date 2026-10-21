@@ -8560,8 +8560,16 @@ begin
 end;
 
 function TExtensionColorCode.GetExtensionMask: WideString;
+var
+  i: Integer;
 begin
-  Result := Extensions.CommaText
+  Result:= '';
+  for i:= 0 to Extensions.Count - 1 do begin
+    if i > 0 then begin
+      Result:= Result + ',';
+    end;
+    Result:= Result + Extensions[i];
+  end;
 end;
 
 procedure TExtensionColorCode.LoadFromStream(S: TStream; Version: integer = 0; ReadVerFromStream: Boolean = False);
@@ -8587,7 +8595,7 @@ begin
  end;
 
 {-------------------------------------------------------------------------------
-  CleanExtensionList
+  FillExtensionList
 
   revival: replaces WideValidateDelimitedExtList(Value, [vdwcPeriod], vdeComma)
   from the Mustangpeak common library, whose current version raises an
@@ -8597,7 +8605,7 @@ begin
   characters are dropped, empty entries are skipped. Output is comma separated,
   for example '.txt,.pdf,.doc'.
 -------------------------------------------------------------------------------}
-function CleanExtensionList(const AValue: WideString): WideString;
+procedure FillExtensionList(const AValue: WideString; AList: TStrings);
 var
   i: Integer;
   entry: WideString;
@@ -8608,16 +8616,13 @@ var
       if entry[1] <> '.' then begin
         entry:= '.' + entry;
       end;
-      if Result <> '' then begin
-        Result:= Result + ',';
-      end;
-      Result:= Result + entry;
+      AList.Add(entry);
     end;
     entry:= '';
   end;
 
 begin
-  Result:= '';
+  AList.Clear;
   entry:= '';
   for i:= 1 to Length(AValue) do begin
     case AValue[i] of
@@ -8632,7 +8637,8 @@ end;
 
 procedure TExtensionColorCode.SetExtensionMask(const Value: WideString);
 begin
-  Extensions.CommaText := CleanExtensionList(Value)
+  // not Extensions.CommaText: avoid the RTL's TStringBuilder based code path
+  FillExtensionList(Value, Extensions);
 end;
 
 { TExplorerColumn }
