@@ -8,7 +8,7 @@ uses
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls,
-  SynEditMiscClasses, MPShellUtilities, Contnrs;
+  SynEditMiscClasses, SynEditTypes, MPShellUtilities, Contnrs;
 {==============================================================================}
 
 type
@@ -201,7 +201,7 @@ function GlobalTextEditorSettings: TCETextEditorSettings;
 implementation
 
 uses
-  fCE_TextEditor, CE_LanguageEngine;
+  SynEdit, fCE_TextEditor, CE_LanguageEngine;
 
 var
   fGlobalTextEditorSettings: TCETextEditorSettings;
