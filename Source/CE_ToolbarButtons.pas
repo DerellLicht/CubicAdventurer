@@ -208,7 +208,7 @@ type
 
   TCEFilterPatternItem2 = class(TCEToolbarEditItem)
   protected
-    procedure DoChange(const AText: WideString); override;
+    procedure DoChange(const AText: string); override;
     procedure DoClearButtonClick(Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1398,7 +1398,7 @@ end;
 {-------------------------------------------------------------------------------
   Do Change
 -------------------------------------------------------------------------------}
-procedure TCEFilterPatternItem2.DoChange(const AText: WideString);
+procedure TCEFilterPatternItem2.DoChange(const AText: string);
 begin
   inherited;
   CEFiltersPanel.PatternText:= AText;
