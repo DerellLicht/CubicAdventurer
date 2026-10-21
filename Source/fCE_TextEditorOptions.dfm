@@ -21,7 +21,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
     426)
   PixelsPerInch = 96
   TextHeight = 13
-  object PageControl: TTntPageControl
+  object PageControl: TPageControl
     Left = 8
     Top = 8
     Width = 385
@@ -29,7 +29,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
     ActivePage = sheet_options
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
-    object sheet_display: TTntTabSheet
+    object sheet_display: TTabSheet
       Caption = 'Display'
       object TntLabel9: TLabel
         Left = 197
@@ -239,7 +239,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
         OnChange = color_fontChange
       end
     end
-    object sheet_gutter: TTntTabSheet
+    object sheet_gutter: TTabSheet
       Caption = 'Gutter'
       DesignSize = (
         377
@@ -475,7 +475,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
         end
       end
     end
-    object sheet_options: TTntTabSheet
+    object sheet_options: TTabSheet
       Caption = 'Options'
       DesignSize = (
         377
@@ -634,7 +634,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
         TabOrder = 16
       end
     end
-    object sheet_export: TTntTabSheet
+    object sheet_export: TTabSheet
       Caption = 'Export'
       DesignSize = (
         377

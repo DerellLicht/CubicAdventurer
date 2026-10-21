@@ -85,12 +85,12 @@ type
   TCETextEditorOptionsForm
 -------------------------------------------------------------------------------}
   TCETextEditorOptionsForm = class(TForm)
-    PageControl: TTntPageControl;
+    PageControl: TPageControl;
     but_apply: TButton;
     but_cancel: TButton;
     but_ok: TButton;
-    sheet_display: TTntTabSheet;
-    sheet_options: TTntTabSheet;
+    sheet_display: TTabSheet;
+    sheet_options: TTabSheet;
     group_right_edge: TGroupBox;
     TntLabel2: TLabel;
     edit_right_edge: TEdit;
@@ -103,7 +103,7 @@ type
     TntLabel5: TLabel;
     TntGroupBox1: TGroupBox;
     but_font: TButton;
-    sheet_gutter: TTntTabSheet;
+    sheet_gutter: TTabSheet;
     TntLabel1: TLabel;
     check_gutter_visible: TCheckBox;
     check_gutter_line_numbers: TCheckBox;
@@ -155,7 +155,7 @@ type
     TntLabel15: TLabel;
     color_gutter_font: TColorBox;
     panel_gutter_font: TPanel;
-    sheet_export: TTntTabSheet;
+    sheet_export: TTabSheet;
     check_inline_css_on_copy: TCheckBox;
     check_inline_css_on_export: TCheckBox;
     check_export_use_background: TCheckBox;
