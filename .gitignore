@@ -18,3 +18,7 @@ Win64/
 *.exe
 call.stack.*.txt
 
+# CubicAdventurer runtime settings written next to the exe (repo root)
+/settings.xml
+/layout.xml
+/sessions.xml
