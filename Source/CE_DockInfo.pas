@@ -289,6 +289,21 @@ var
   I: Integer;
   OldPath: string;
 
+  // CubicAdventurer: read an integer that will be cast to an enum type.
+  // With range checking on, a value outside the enum range makes the cast
+  // raise ERangeError (this killed startup when loading a layout.xml written
+  // by the original CubicExplorer). An out-of-range value is reported to the
+  // debugger event log (OutputDebugString) and replaced by 0 instead.
+  function ReadEnumOrd(const Key: string; MaxValue: Integer): Integer;
+  begin
+    Result:= FAppStorage.ReadInteger(Key);
+    if (Result < 0) or (Result > MaxValue) then begin
+      OutputDebugString(PChar(Format('CE_DockInfo: %s %s = %d is out of range 0..%d, using 0',
+        [FAppStorage.Path, Key, Result, MaxValue])));
+      Result:= 0;
+    end;
+  end;
+
   procedure CreateZoneAndAddInfo(Index: Integer);
   var
     I: Integer;
@@ -321,10 +336,10 @@ var
         TreeZone.VSPaneWidth := ReadInteger('VSPaneWidth');
         
         TreeZone.Visible := ReadBoolean('Visible');
-        TreeZone.BorderStyle:= TFormBorderStyle(ReadInteger('BorderStyle'));
-        TreeZone.FormStyle := TFormStyle(ReadInteger('FormStyle'));
-        TreeZone.WindowState := TWindowState(ReadInteger('WindowState'));
-        TreeZone.DockFormStyle := TJvDockFormStyle(ReadInteger('DockFormStyle'));
+        TreeZone.BorderStyle:= TFormBorderStyle(ReadEnumOrd('BorderStyle', Ord(High(TFormBorderStyle))));
+        TreeZone.FormStyle := TFormStyle(ReadEnumOrd('FormStyle', Ord(High(TFormStyle))));
+        TreeZone.WindowState := TWindowState(ReadEnumOrd('WindowState', Ord(High(TWindowState))));
+        TreeZone.DockFormStyle := TJvDockFormStyle(ReadEnumOrd('DockFormStyle', Ord(High(TJvDockFormStyle))));
         TreeZone.CanDocked := ReadBoolean('CanDocked');
         TreeZone.EachOtherDocked := ReadBoolean('EachOtherDocked');
 
