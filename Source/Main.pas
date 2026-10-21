@@ -24,11 +24,13 @@ unit Main;
 interface
 
 uses
+  // CubicCore
+  ccStrings,
   // CE Frames   
   fCE_ExtAppPage, fCE_FiltersPanel, fCE_BookmarkPropDlg,
   fCE_DockHostForm, fCE_DockableForm, fCE_TabPage, fCE_FileView,
   fCE_FolderPanel, fCE_QuickViewPanel, fCE_BookmarkPanel, fCE_Customizer,
-  fCE_PoEditor,
+  fCE_PoEditor, fCE_PluginLog,
   // CE Data Modules
   dCE_Actions, dCE_Images, dCE_Input,
   // CE Units
@@ -37,6 +39,7 @@ uses
   CE_ToolbarButtons, CE_TBActions, CE_LanguageCodes, CE_LanguageEngine,
   CE_LanguageUtils, CE_Sessions, CE_SpTabBar,
   CE_AppSettings, CE_Toolbar, AppCommand,
+  CEJvDockVSNetStyleTBX, CE_Plugins, CE_PluginsIntf,
   // Toolbar2000
   TB2Dock, TB2Item, TB2Toolbar, TB2ToolWindow, TB2ExtItems,
   // SpTBX
@@ -44,11 +47,13 @@ uses
   // VSTools
   VirtualShellNewMenu, EasyListview, VirtualExplorerEasyListview,
   MPCommonObjects, VirtualShellNotifier, VirtualResources, MPShellTypes,
-  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, MPShellUtilities, MPCommonUtilities,
+  VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, MPShellUtilities, MPCommonUtilities, MPDataObject,
+  // JVCL
+  JvComponentBase, JvTrayIcon,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ShellAPI, Menus, ShlObj, XPMan, ActiveX,
-  ImgList, Registry, AppEvnts, ActnList, Math, JvComponentBase, JvTrayIcon,
+  ImgList, Registry, AppEvnts, ActnList, Math,
   Contnrs;
 
 type
@@ -92,7 +97,7 @@ type
     SpTBXItem5: TSpTBXItem;
     toolbarsMenuItem: TSpTBXSubmenuItem;
     SpTBXSeparatorItem4: TSpTBXSeparatorItem;
-    SpTBXSubmenuItem9: TSpTBXSubmenuItem;
+    sub_panels: TSpTBXSubmenuItem;
     SpTBXItem18: TSpTBXItem;
     SpTBXItem26: TSpTBXItem;
     SpTBXItem27: TSpTBXItem;
@@ -146,7 +151,6 @@ type
     SpTBXItem53: TSpTBXItem;
     ToolbarPopupMenu: TSpTBXPopupMenu;
     SpTBXItem52: TSpTBXItem;
-    SpTBXSeparatorItem17: TSpTBXSeparatorItem;
     SpTBXItem56: TSpTBXItem;
     SpTBXItem74: TSpTBXItem;
     StartUpTimer: TTimer;
@@ -199,7 +203,6 @@ type
     TrayPopupMenu: TSpTBXPopupMenu;
     SpTBXItem92: TSpTBXItem;
     SpTBXSeparatorItem25: TSpTBXSeparatorItem;
-    SpTBXItem93: TSpTBXItem;
     SpTBXSeparatorItem2: TSpTBXSeparatorItem;
     sub_closed_tab_list: TSpTBXSubmenuItem;
     SpTBXSeparatorItem19: TSpTBXSeparatorItem;
@@ -219,6 +222,14 @@ type
     SpTBXSeparatorItem31: TSpTBXSeparatorItem;
     but_reset_layout: TSpTBXItem;
     panel_curtain: TPanel;
+    SpTBXSeparatorItem32: TSpTBXSeparatorItem;
+    PanelsPopupMenu: TSpTBXPopupMenu;
+    SpTBXItem99: TSpTBXItem;
+    sep_tabs_copymove: TSpTBXSeparatorItem;
+    SpTBXItem93: TSpTBXItem;
+    SpTBXItem100: TSpTBXItem;
+    SpTBXSeparatorItem17: TSpTBXSeparatorItem;
+    item_lock_panels: TSpTBXItem;
     procedure AutoUpdateTimerTimer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -233,8 +244,11 @@ type
     procedure sub_closed_tab_listPopup(Sender: TTBCustomItem; FromLink: Boolean);
     procedure TabPopupMenuPopup(Sender: TObject);
     procedure TntFormResize(Sender: TObject);
+    procedure TrayIconClick(Sender: TObject; Button: TMouseButton; Shift:
+        TShiftState; X, Y: Integer);
     procedure TrayIconMouseUp(Sender: TObject; Button: TMouseButton; Shift:
         TShiftState; X, Y: Integer);
+    procedure TrayPopupMenuPopup(Sender: TObject);
   private
     fFullscreen: Boolean;
     fActiveLanguage: WideString;
@@ -265,6 +279,9 @@ type
     procedure WMShellNotify(var Msg: TMessage); message WM_SHELLNOTIFY;
     procedure WMSyscommand(var Message: TWmSysCommand); message WM_SYSCOMMAND;
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure HandleTabSetOleDrop(ASender: TCESpTabSet; ADropTab: TCESpTabItem;
+        const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint; var dwEffect:
+        Longint; var hr: HResult);
     procedure WMAppCommand(var Message: TWMAppCommand); message WM_APPCOMMAND;
     procedure WMHotkey(var Message: TMessage); message WM_HOTKEY;
   public
@@ -350,6 +367,13 @@ type
     procedure SetShowTray(const Value: Boolean);
     procedure SetUseProxy(const Value: Boolean);
     procedure SetUseSystemProxy(const Value: Boolean);
+  protected
+    fWow64Enabled: Boolean;
+    function GetFullscreen: Boolean;
+    function GetLockPanels: Boolean;
+    procedure SetFullscreen(const Value: Boolean);
+    procedure SetLockPanels(const Value: Boolean);
+    procedure SetWow64Enabled(const Value: Boolean);
   public
     Form: TMainForm;
     constructor Create;
@@ -377,6 +401,8 @@ type
     property CloseToTray: Boolean read fCloseToTray write fCloseToTray;
     property ExitOnLastTabClose: Boolean read fExitOnLastTabClose write
         fExitOnLastTabClose;
+    property Fullscreen: Boolean read GetFullscreen write SetFullscreen;
+    property LockPanels: Boolean read GetLockPanels write SetLockPanels;
     property LockToolbars: Boolean read GetLockToolbars write SetLockToolbars;
     property MinimizeToTray: Boolean read fMinimizeToTray write fMinimizeToTray;
     property ProxyAddress: WideString read GetProxyAddress write SetProxyAddress;
@@ -387,6 +413,7 @@ type
     property StartupType: TCEStartupType read fStartupType write fStartupType;
     property UseProxy: Boolean read GetUseProxy write SetUseProxy;
     property UseSystemProxy: Boolean read GetUseSystemProxy write SetUseSystemProxy;
+    property Wow64Enabled: Boolean read fWow64Enabled write SetWow64Enabled;
   end;
 
 var
@@ -397,7 +424,8 @@ implementation
 uses
   {$IFDEF madExcept}madExcept,{$ENDIF} Clipbrd, CE_Stacks, MPResources,
   fCE_OptionsDialog, fCE_StackPanel, CE_Consts, CE_CommonObjects,
-  CE_ElevatedActions, CE_FileUtils, CE_WideCompat;
+  CE_ElevatedActions, CE_FileUtils, CE_WideCompat, fCE_TextEditorOptions,
+  fCE_WorkspacePanel, ComCtrls;
 
 {$R *.dfm}
 
@@ -454,30 +482,6 @@ begin
   //  flash on screen before the curtain is drawn.
   panel_curtain.BringToFront;
   
-  // (Removed: the hack that hid Application.Handle and made it a toolwindow.
-  //  CubicAdventurer.dpr now sets Application.MainFormOnTaskbar := true, so the
-  //  main form is the only window with a taskbar button.)
-
-  ChangeNotifier.RegisterShellChangeNotify(Self);
-  fLanguageList:= TStringList.Create;
-  fLanguageList.NameValueSeparator:= '=';
-  fIsReady:= false;
-  fUpdatingCount:= 0;
-  fCEIsClosing:= false;
-  fPathInTitle:= false;
-  fSaveSettingsOnClose:= true;
-  SetVistaFont(Self.Font);
-  Settings:= TMainFormSettings.Create;
-  Settings.Form:= Self;
-  GlobalAppSettings.AddItem('MainForm', Settings, true, true);
-
-  StackDirPath:= SettingsDirPath + 'Stacks\';
-  
-  if Assigned(MP_SHSetInstanceExplorer) then
-  MP_SHSetInstanceExplorer(ExplorerThreadInstance);
-  if Assigned(MP_SHSetThreadRef) then
-  MP_SHSetThreadRef(ExplorerThreadInstance);
-
   // Fix date formating bug in Delphi
   if IsWindowsVista then
   begin
@@ -485,7 +489,38 @@ begin
     GetFormatSettings;
   end;
 
+  // (Removed: the hack that hid Application.Handle and made it a toolwindow.
+  //  CubicAdventurer.dpr now sets Application.MainFormOnTaskbar := true, so the
+  //  main form is the only window with a taskbar button.)
+
+  // create instance
+  fLanguageList:= TStringList.Create;
+  fLanguageList.NameValueSeparator:= '=';
+    // mainform settings
+  Settings:= TMainFormSettings.Create;
+  Settings.Form:= Self;
+  GlobalAppSettings.AddItem('MainForm', Settings, true, true);
+
   fPanels:= TComponentList.Create(false);
+
+  // init values
+  fIsReady:= false;
+  fUpdatingCount:= 0;
+  fCEIsClosing:= false;
+  fPathInTitle:= false;
+  fSaveSettingsOnClose:= true;
+  StackDirPath:= SettingsDirPath + 'Stacks\';
+
+  SetVistaFont(Self.Font);
+  Self.OnContextPopup:= CEActions.HandleGlobalContextPopup;
+
+  // VSTools stuff
+  ChangeNotifier.RegisterShellChangeNotify(Self);
+
+  if Assigned(MP_SHSetInstanceExplorer) then
+  MP_SHSetInstanceExplorer(ExplorerThreadInstance);
+  if Assigned(MP_SHSetThreadRef) then
+  MP_SHSetThreadRef(ExplorerThreadInstance);
 end;
 
 {-------------------------------------------------------------------------------
@@ -504,9 +539,17 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   ChangeNotifier.UnRegisterShellChangeNotify(Self);
+
   fIsReady:= false;
   CEActions.UpdateTimer.Enabled:= false;
+
+  // unload plugins
+  GlobalPluginHost.Finalize;
+
+  // finalize UI
   FinalizeUI;
+
+  // free instances
   fLanguageList.Free;
   Settings.Free;
   fPanels.Free;
@@ -523,8 +566,11 @@ begin
   CE_Images:= TCE_Images.Create(self);
   CEInput:= TCEInput.Create(self);
 
+  // Assign settings
+  GlobalAppSettings.AddItem('TextEditor', GlobalTextEditorSettings, true);
+
   // Create/Init layout controller
-  Layouts:= TCELayoutController.Create(self);
+  Layouts:= TCELayoutController.Create(nil);
   // Create/Init DockingFrame
   DockHostForm:= TCEDockHostForm.Create(self);
   DockHostForm.Name:= 'DockHost';
@@ -537,6 +583,7 @@ begin
 
   // Create TabSet
   TabSet:= TCESpTabSet.Create(nil);
+  tabSet.OnOleDrop:= HandleTabSetOleDrop;
   TabSet.Parent:= MainPanel;
   TabSet.Align:= alTop;
   TabSet.Name:= 'TabBar';
@@ -547,12 +594,9 @@ begin
   TabSet.LayoutController:= Layouts;
   TabSet.Toolbar.Customizable:= true;
   TabSet.Images:= CE_Images.SmallIcons;
-  TabSet.TabPopupMenu:= TabPopupMenu;
+  //TabSet.TabPopupMenu:= TabPopupMenu;
+  TabSet.PopupMenu:= TabPopupMenu;
   GlobalFocusCtrl.CtrlList.Add(TabSet.Toolbar);
-
-    // Add panes
-  //Tabset.Panes.Add(DockHostForm.DualViewHost.MainPane);
-  //Tabset.Panes.Add(DockHostForm.DualViewHost.DualPane);
 
   //TCESpTabToolbar(TabSet.Toolbar).OnMouseWheel:= GlobalFocusCtrl.DoMouseWheel;
 
@@ -625,7 +669,6 @@ begin
   CELayoutItems.Add(BreadcrumbBar);
   CELayoutItems.Add(TabSet);
   CELayoutItems.Add(StatusBar);
-  //CELayoutItems.Add(DockHostForm.DualViewHost.Toolbar);
   // Add Toolbar Docks
   CEToolbarDocks.Add(LeftToolDock);
   CEToolbarDocks.Add(TopToolDock);
@@ -753,16 +796,34 @@ begin
   else
   GlobalSessions.LoadFromFile(exePath + 'sessions.xml');
   SessionsToolbar.Recreate;
+  
+  // Set PerFolder Storage path
+  GlobalFileViewSettings.StorageFilePath:= SettingsDirPath + 'perfolder.dat';
+
   // Load Settings
-  if FileExists(SettingsDirPath + 'settings.xml') then
-  GlobalAppSettings.LoadFromFile(SettingsDirPath + 'settings.xml')
-  else if FileExists(exePath + 'settings.xml') then       
-  GlobalAppSettings.LoadFromFile(exePath + 'settings.xml')
-  else
-  GlobalAppSettings.LoadFromResource(hInstance, 'DEFAULT_SETTINGS_DATA');
+  GlobalFileViewSettings.BeginUpdate;
+  try
+    if FileExists(SettingsDirPath + 'settings.xml') then
+    GlobalAppSettings.LoadFromFile(SettingsDirPath + 'settings.xml')
+    else if FileExists(exePath + 'settings.xml') then
+    GlobalAppSettings.LoadFromFile(exePath + 'settings.xml')
+    else
+    GlobalAppSettings.LoadFromResource(hInstance, 'DEFAULT_SETTINGS_DATA');
+  finally
+    GlobalFileViewSettings.EndUpdate(true);
+  end;
   Settings.ApplyPositionInfo(Settings.StartInTray);
   if not Settings.StartInTray then
   MainForm.Show;
+
+  // TODO: remove this!!!!
+  //ShowPluginLog;
+
+  // Load Plugins
+  GlobalPluginHost.LoadPlugins(ExePath + 'Plugins\', 'dll', true);
+  if not WideIsSameText(SettingsDirPath, ExePath) then
+  GlobalPluginHost.LoadPlugins(SettingsDirPath + 'Plugins\', 'dll', true);
+  GlobalPluginHost.SetSettingsFolder(SettingsDirPath + 'Plugins\.settings\');
 
   // Load Bookmarks
   CEBookmarkPanel.BookmarkMenuItems.Add(BookmarkToolbar.Items);
@@ -818,6 +879,8 @@ begin
   // Start Update timer
   CEActions.UpdateTimer.Enabled:= true;
 
+
+
   // Testing stuff!!!
   if DebugHook <> 0 then
   begin
@@ -866,6 +929,9 @@ procedure TMainForm.Shutdown;
 begin
   if not ReadOnlySettings and SaveSettingsOnClose then
   begin
+    if GlobalFileViewSettings.PerFolderSettings then
+    GlobalFileViewSettings.SaveStorage;
+
     GlobalSessions.SaveToFile(SettingsDirPath + 'sessions.xml');
 
     Settings.UpdatePositionInfo;
@@ -996,9 +1062,16 @@ begin
   fFullscreen:= Value;
   if fFullscreen then
   begin
-    fOldWindowState:= Self.WindowState;
-    Self.BorderStyle:= bsNone;
-    Self.WindowState:= wsMaximized;
+    Self.Hide;
+    try
+      fOldWindowState:= Self.WindowState;
+      Self.BorderStyle:= bsNone;
+      if Self.WindowState = wsMaximized then
+      Self.WindowState:= wsNormal;
+      Self.WindowState:= wsMaximized;
+    finally
+      Self.Show;
+    end;
   end
   else
   begin
@@ -1193,6 +1266,8 @@ begin
   GetLanguageList;
   // Add Ignore items
   CEGlobalTranslator.RegisterIgnoredClass(TFont);
+
+  // Add Include items
   CEGlobalTranslator.UseIncludeList:= true;
   CEGlobalTranslator.IncludeInheritedAlso:= true;
   CEGlobalTranslator.IncludeClasses.Add(TAction);
@@ -1212,10 +1287,13 @@ begin
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXRadioGroup);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXRadioButton);
   CEGlobalTranslator.IncludeClasses.Add(TSpTBXLabel);
+  CEGlobalTranslator.IncludeClasses.Add(TSpTBXLabelItem);
+  CEGlobalTranslator.IncludeClasses.Add(TTntTabSheet);
 
+  //CEGlobalTranslator.IgnoredProperties.Add('Name'); <-- name is ignored always
+  //CEGlobalTranslator.IgnoredProperties.Add('Category'); <-- hotkeys list shows the category for actions so keep it translated.
   CEGlobalTranslator.IgnoredProperties.Add('HelpKeyword');
   CEGlobalTranslator.IgnoredProperties.Add('ImeName');
-  CEGlobalTranslator.IgnoredProperties.Add('Name');
   CEGlobalTranslator.RegisterIgnoredClassHandler(TSpTBXItem, MenuItemTranslateHandler);
 end;
 
@@ -1266,6 +1344,9 @@ begin
   IsIgnored:= TSpTBXItem(Obj).Action <> nil;  
 end;
 
+{-------------------------------------------------------------------------------
+  OpenSkin
+-------------------------------------------------------------------------------}
 procedure TMainForm.OpenSkin;
 var
   open: TOpenDialog;
@@ -1364,6 +1445,7 @@ begin
   begin
     CEGlobalTranslator.TranslateComponent(Self);
   end;
+  CEGlobalTranslator.TranslateComponent(CEQuickViewPanel.QuickView);
   EndUIUpdate;
 end;
 
@@ -1374,29 +1456,11 @@ procedure TMainForm.MakeVisible;
 begin
   if TrayIcon.Active and not TrayIcon.ApplicationVisible then
   TrayIcon.ShowApplication;
-
-//////////////////// Doesn't bring on top always, taskbar button just blinks.
-//  if IsIconic(Handle) then
-//  begin
-//    ShowWindow(Handle, SW_RESTORE);
-//  end;
-//
-//  Application.BringToFront;
-////////////////////
-
-//////////////////// Brings window to top but doesn't activate the window.
-//  ForceForegroundWindow(Handle);
-////////////////////
-
-//////////////////// Doesn't bring on top always, taskbar button just blinks.
-//  SwitchToThisWindow(Handle, false);
-////////////////////
-
-//////////////////// Seems to work
+  // restore if needed
   if IsIconic(Handle) then
   ShowWindow(Handle, SW_RESTORE);
-  ForceForegroundWindow2(Handle);
-////////////////////
+  // set foreground
+  SetForegroundWindow(Handle);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1480,7 +1544,6 @@ begin
                 begin
                   if item.CloseTab then
                   begin
-                    item.Free;
                     i2:= i2 - 1;
                   end;
                 end;
@@ -1590,6 +1653,34 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Handle TabSet.OleDrop
+-------------------------------------------------------------------------------}
+procedure TMainForm.HandleTabSetOleDrop(ASender: TCESpTabSet; ADropTab:
+    TCESpTabItem; const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint;
+    var dwEffect: Longint; var hr: HResult);
+var
+  hd: TCommonShellIDList;
+  i: Integer;
+  ns: TNamespace;
+begin
+  // open new tab(s)
+  if not assigned(ADropTab) and assigned(dataObj) then
+  begin
+    dwEffect:= DROPEFFECT_LINK;
+    hd:= TCommonShellIDList.Create;
+    try
+      hd.LoadFromDataObject(dataObj);
+      for i:= 0 to hd.PIDLCount-1 do
+      begin
+        OpenPIDLInTab(TabSet, hd.AbsolutePIDL(i), TabSet.Settings.OpenTabSelect);
+      end;
+    finally
+      hd.Free;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Set Lock Toolbars
 -------------------------------------------------------------------------------}
 procedure TMainForm.SetLockToolbars(const Value: Boolean);
@@ -1636,13 +1727,23 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  On TrayIcon.Click
+-------------------------------------------------------------------------------}
+procedure TMainForm.TrayIconClick(Sender: TObject; Button: TMouseButton; Shift:
+    TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+  ToggleVisibility;
+end;
+
+{-------------------------------------------------------------------------------
   On TrayIcon.MouseUp
 -------------------------------------------------------------------------------}
 procedure TMainForm.TrayIconMouseUp(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer);
 begin
-  if Button = mbLeft then
-  ToggleVisibility;
+  if (Button = mbLeft) and (MainForm.WindowState = wsNormal) then
+  MakeVisible;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1669,6 +1770,7 @@ end;
 procedure TMainForm.TabPopupMenuPopup(Sender: TObject);
 begin
   sub_closed_tab_list.Enabled:= TabSet.CanUndoTabClose;
+  CEActions.UpdateAll;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1679,6 +1781,22 @@ begin
   // resize curtain
   if assigned(panel_curtain) then
   panel_curtain.BoundsRect:= ClientRect;
+end;
+
+{-------------------------------------------------------------------------------
+  On TrayPopupMenu.Popup
+-------------------------------------------------------------------------------}
+procedure TMainForm.TrayPopupMenuPopup(Sender: TObject);
+var
+  item: TSpTBXItem;
+begin
+  PopulateBookmarkItem(TrayPopupMenu.Items, CEBookmarkPanel.BookmarkTree);
+  // separator
+  TrayPopupMenu.Items.Add(TSpTBXSeparatorItem.Create(TrayPopupMenu));
+  // exit
+  item:= TSpTBXItem.Create(TrayPopupMenu);
+  item.Action:= CEActions.act_gen_exit;
+  TrayPopupMenu.Items.Add(item);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1718,6 +1836,7 @@ begin
   fStartInTray:= false;
   fExitOnLastTabClose:= false;
   fAutoCheckUpdates:= false;
+  fWow64Enabled:= false;
 end;
 {-------------------------------------------------------------------------------
   Get PositionInfo
@@ -1960,6 +2079,40 @@ end;
 procedure TMainFormSettings.SetChangeCurrentDirVar(const Value: Boolean);
 begin
   GlobalPathCtrl.ChangeCurrentDirVar:= Value;
+end;
+
+{-------------------------------------------------------------------------------
+  Get/Set Fullscreen
+-------------------------------------------------------------------------------}
+function TMainFormSettings.GetFullscreen: Boolean;
+begin
+  Result:= Form.Fullscreen;
+end;
+procedure TMainFormSettings.SetFullscreen(const Value: Boolean);
+begin
+  Form.Fullscreen:= Value;
+end;
+
+{-------------------------------------------------------------------------------
+  Get/Set LockPanels
+-------------------------------------------------------------------------------}
+function TMainFormSettings.GetLockPanels: Boolean;
+begin
+  Result:= CE_LockPanels;
+end;
+procedure TMainFormSettings.SetLockPanels(const Value: Boolean);
+begin
+  CE_LockPanels:= Value;
+end;
+
+{-------------------------------------------------------------------------------
+  Set Wow64Enabled
+-------------------------------------------------------------------------------}
+procedure TMainFormSettings.SetWow64Enabled(const Value: Boolean);
+begin
+  fWow64Enabled:= Value;
+  if IsWindows64 then
+  MPCommonUtilities.Wow64Enabled:= fWow64Enabled;
 end;
 
 {##############################################################################}

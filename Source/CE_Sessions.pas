@@ -174,8 +174,9 @@ function GetSessionNames(AResults: TStrings): Integer;
 function CreateSaveSessionDlg(SelectActiveSession: Boolean = true):
     TCEItemSelectSaveDlg;
 
-var
-  GlobalSessions: TCESessions;
+function GlobalSessions: TCESessions;
+
+
 
 implementation
 
@@ -183,6 +184,9 @@ uses
   fCE_TabPage, WideSupport, XMLWrite, Main, CE_SpTabBar,
   fCE_SessionManager, CE_LanguageEngine, dCE_Images, fCE_FileView,
   CE_VistaFuncs, Forms;
+
+var
+  fGlobalSessions: TCESessions;  
 
 {-------------------------------------------------------------------------------
   CompareSessionTime
@@ -246,6 +250,19 @@ begin
     Result.combo.ItemIndex:= GlobalSessions.ActiveSessionIndex;
   end;
   Result.AllowEmptyText:= false;
+end;
+
+{-------------------------------------------------------------------------------
+  GlobalSessions
+-------------------------------------------------------------------------------}
+function GlobalSessions: TCESessions;
+begin
+  if not assigned(fGlobalSessions) then
+  begin
+    fGlobalSessions:= TCESessions.Create;
+    GlobalAppSettings.AddItem('Sessions', fGlobalSessions);
+  end;
+  Result:= fGlobalSessions;
 end;
 
 {##############################################################################}
@@ -742,15 +759,13 @@ procedure TCESessionList.LoadSession(ASession: TCESessionItem);
 
         AStorage.LoadObjectProperties(page.Settings, chNode);
 
-//        if pageClass = TCEFileViewPage then
-//        page.SelectPage; //TODO: This is a hack around a bug. TCustomEasyListview.Destroy will eventually cause crash without this for some unknown reason.
-
         page.Active:= true;
         page.UpdateCaption;
       end;
       chNode:= chNode.NextSibling;
     end;
     MainForm.TabSet.CEActiveTabIndex:= StrToIntDef(TDOMElement(ATabsNode).AttribStrings['active'], 0);
+    MainForm.TabSet.MakeSureTabIsSelected;
   end;
 
 var
@@ -1147,10 +1162,9 @@ end;
 {##############################################################################}
 
 initialization
-  GlobalSessions:= TCESessions.Create;
-  GlobalAppSettings.AddItem('Sessions', GlobalSessions);
 
 finalization
-  FreeAndNil(GlobalSessions);
+  if assigned(fGlobalSessions) then
+  FreeAndNil(fGlobalSessions);
   
 end.

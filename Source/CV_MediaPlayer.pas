@@ -26,7 +26,7 @@ interface
 
 uses
   // CubicCore
-  ccFileUtils,
+  ccFileUtils, ccInterface,
   // System Units
   Windows, SysUtils, Classes, Controls, Messages, Types, ExtCtrls, Contnrs;
 
@@ -39,7 +39,8 @@ const
   IID_ICVMediaEngineVideo: TGUID   = '{0597AE0E-C7EA-4621-925D-8DC1979D3227}';
   IID_ICVMediaEngineAudio: TGUID   = '{74205AAD-17EB-4E7C-82C4-933412EBCC5B}';
   IID_ICVMediaEngineStill: TGUID   = '{F0A1381F-55F6-4509-8A93-8D87A807BE12}';
-  IID_ICCWindowCtrl: TGUID         = '{F9700921-BB93-4C4E-8238-6239D356B046}';
+  IID_ICVMediaEngineEditor: TGUID  = '{B81F8A3A-F77B-475B-BE7E-F44CEA14A9E2}';
+  IID_ICCWindowCtrl: TGUID  = '{F9700921-BB93-4C4E-8238-6239D356B046}';
 
 type
 {-------------------------------------------------------------------------------
@@ -56,6 +57,9 @@ type
 
   ICVMediaPlayer = interface(IInterface)
   ['{A5DE5CBA-62B5-4B07-81D6-4652FD29D40B}']
+    // CanClose
+    // - Returns true if currently loaded file can be closed
+    function CanClose: Boolean; stdcall;
     // Close
     // - Frees file from memory
     procedure Close; stdcall;
@@ -67,6 +71,10 @@ type
     // GetPosition
     // - Returns current position in milliseconds.
     function GetPosition: Int64; stdcall;
+
+    // GetPlaybackEnabled
+    // - Return True if current engine wants playback support (play/pause toolbar, playlist... etc)
+    function GetPlaybackEnabled: Boolean; stdcall;
 
     // GetStatus
     function GetStatus: TCVMediaPlayerStatus; stdcall;
@@ -145,6 +153,10 @@ type
     // - Return unique TGuid
     function GetID: TGUID; stdcall;
 
+    // GetPlaybackEnabled
+    // - Return True if the engine wants playback support (play/pause toolbar, playlist... etc)
+    function GetPlaybackEnabled: Boolean; stdcall;
+
     // GetStatus
     function GetStatus: TCVMediaPlayerStatus; stdcall;
 
@@ -168,6 +180,9 @@ type
     // - AHandler is called when status changes
     procedure SetStatusChangedEvent(AHandler: TCVEngineNotifyEvent); stdcall;
 
+    // SetTitleChangedEvent
+    // - AHandler is called when title changes
+    procedure SetTitleChangedEvent(AHandler: TCVEngineNotifyEvent); stdcall;
   end;
 
 {-------------------------------------------------------------------------------
@@ -255,10 +270,23 @@ type
   end;
 
 {-------------------------------------------------------------------------------
-  ICCWindowCtrl
+  ICVMediaEngineEditor
+  - Used when the engine can modifie the data.
+-------------------------------------------------------------------------------}
+  ICVMediaEngineEditor = interface(IInterface)
+  ['{B81F8A3A-F77B-475B-BE7E-F44CEA14A9E2}']
+    // CanClose
+    // - Return true if currently loaded file can be closed.
+    // - The engine should save modifications to the file when this is called.
+    function CanClose: Boolean; stdcall;
+    // SetEditorCloseEvent
+    // - MediaPlayer will call this to set a EditorClose event handler.
+    // - If the engine want's to close itself, it can call the AHandler.
+    procedure SetEditorCloseEvent(AHandler: TNotifyEvent); stdcall;
+  end;
 
-  revival: this interface was in the older ccInterfaces unit, which is not
-  available; definition taken from the author's later CV_MediaPlayer.pas.
+{-------------------------------------------------------------------------------
+  ICCWindowCtrl
 -------------------------------------------------------------------------------}
   ICCWindowCtrl = interface(IInterface)
   ['{F9700921-BB93-4C4E-8238-6239D356B046}']
@@ -272,9 +300,17 @@ type
 -------------------------------------------------------------------------------}
   TCVCustomMediaEngine = class(TInterfacedObject, ICVMediaEngine, ICCWindowCtrl)
   protected
+    fBoundsRect: TRect;
+    fParentWindow: HWND;
+    fPlaybackEnabled: Boolean;
     fStatus: TCVMediaPlayerStatus;
     fStatusChangedEvent: TCVEngineNotifyEvent;
+    fTitleChangedEvent: TCVEngineNotifyEvent;
     procedure ChangeStatus(AStatus: TCVMediaPlayerStatus); virtual;
+    procedure DoTitleChanged; virtual;
+    // GetPlaybackEnabled
+    // - Return True if the media player should show playback controls (play, pause, next file... etc.).
+    function GetPlaybackEnabled: Boolean; virtual; stdcall;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -299,6 +335,12 @@ type
     procedure SetParentWindow(AParentWindow: HWND); virtual; stdcall;
     procedure SetStatusChangedEvent(AHandler: TCVEngineNotifyEvent); virtual;
         stdcall;
+    // SetTitleChangedEvent
+    // - AHandler is called when title changes
+    procedure SetTitleChangedEvent(AHandler: TCVEngineNotifyEvent); virtual;
+        stdcall;
+    property PlaybackEnabled: Boolean read GetPlaybackEnabled write
+        fPlaybackEnabled;
   end;
 
 
@@ -319,6 +361,8 @@ type
     fEngine: ICVMediaEngine;
     fEngineWindow: ICCWindowCtrl;
     fMute: Boolean;
+    fOnEditorClose: TNotifyEvent;
+    fOnTitleChange: TNotifyEvent;
     fPositionInterval: Integer;
     fProgressTimer: TTimer;
     fSlideshowInterval: Integer;
@@ -330,6 +374,7 @@ type
     function GetVolume: Integer; virtual; stdcall;
     procedure HandleProgressTimer(Sender: TObject); virtual;
     procedure HandleStatusChange(ASender: ICVMediaEngine); virtual;
+    procedure HandleTitleChange(ASender: ICVMediaEngine); virtual;
     procedure Paint; override;
     procedure Resize; override;
     procedure SetEngine(const Value: ICVMediaEngine); virtual;
@@ -342,9 +387,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    // CanClose
+    // - Returns true if currently loaded file can be closed
+    function CanClose: Boolean; virtual; stdcall;
     procedure Close; virtual; stdcall;
     function GetDuration: Int64; virtual; stdcall;
     function GetPosition: Int64; virtual; stdcall;
+    // GetPlaybackEnabled
+    // - Return True if the media player should show playback controls (play, pause, next file... etc.).
+    function GetPlaybackEnabled: Boolean; virtual; stdcall;
     function GetStatus: TCVMediaPlayerStatus; virtual; stdcall;
     function GetStatusText: WideString; virtual; stdcall;
     // GetTitle
@@ -376,10 +427,12 @@ type
         SetSlideshowInterval;
     property Volume: Integer read fVolume write SetVolume;
   published
+    property OnEditorClose: TNotifyEvent read fOnEditorClose write fOnEditorClose;
     property OnPositionChange: TCVMediaPlayerPositionEvent read fOnPositionChange
         write fOnPositionChange;
     property OnStatusChanged: TNotifyEvent read fOnStatusChanged write
         fOnStatusChanged;
+    property OnTitleChange: TNotifyEvent read fOnTitleChange write fOnTitleChange;
     property PopupMenu;
     property Color;
   end;
@@ -493,6 +546,19 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  CanClose
+-------------------------------------------------------------------------------}
+function TCVMediaPlayer.CanClose: Boolean;
+var
+  editor: ICVMediaEngineEditor;
+begin
+  if CheckEngine and supports(Engine, IID_ICVMediaEngineEditor, editor) then
+  Result:= editor.CanClose
+  else
+  Result:= true;
+end;
+
+{-------------------------------------------------------------------------------
   CreateParams
 -------------------------------------------------------------------------------}
 procedure TCVMediaPlayer.CreateParams(var Params: TCreateParams);
@@ -547,6 +613,17 @@ begin
   Result:= seeking.GetPosition
   else
   Result:= 0;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PlaybackEnabled
+-------------------------------------------------------------------------------}
+function TCVMediaPlayer.GetPlaybackEnabled: Boolean;
+begin
+  if CheckEngine then
+  Result:= Engine.GetPlaybackEnabled
+  else
+  Result:= true;
 end;
 
 {-------------------------------------------------------------------------------
@@ -615,6 +692,15 @@ procedure TCVMediaPlayer.HandleStatusChange(ASender: ICVMediaEngine);
 begin
   if assigned(fOnStatusChanged) then
   fOnStatusChanged(Self);
+end;
+
+{-------------------------------------------------------------------------------
+  Handle TitleChange
+-------------------------------------------------------------------------------}
+procedure TCVMediaPlayer.HandleTitleChange(ASender: ICVMediaEngine);
+begin
+  if assigned(fOnTitleChange) then
+  fOnTitleChange(Self);
 end;
 
 {-------------------------------------------------------------------------------
@@ -764,6 +850,8 @@ end;
   Set Engine
 -------------------------------------------------------------------------------}
 procedure TCVMediaPlayer.SetEngine(const Value: ICVMediaEngine);
+var
+  editor: ICVMediaEngineEditor;
 begin
   // Disable position timer
   fProgressTimer.Enabled:= false;
@@ -773,6 +861,9 @@ begin
   fEngineWindow:= nil;
   if assigned(fEngine) then
   begin
+    if Supports(value, IID_ICVMediaEngineEditor, editor) then
+    editor.SetEditorCloseEvent(nil);
+    
     fEngine.Close;
     fEngine:= nil;
   end;
@@ -783,6 +874,7 @@ begin
     fEngine:= Value;
     // assign events
     fEngine.SetStatusChangedEvent(HandleStatusChange);
+    fEngine.SetTitleChangedEvent(HandleTitleChange);
 
     // setup window
     if Supports(value, IID_ICCWindowCtrl, fEngineWindow) then
@@ -790,6 +882,10 @@ begin
       fEngineWindow.SetParentWindow(Self.Handle);
       fEngineWindow.SetBounds(Self.ClientRect);
     end;
+
+    // setup editor
+    if Supports(value, IID_ICVMediaEngineEditor, editor) then
+    editor.SetEditorCloseEvent(fOnEditorClose);
   end;
 end;
 
@@ -828,14 +924,25 @@ end;
   Paint
 -------------------------------------------------------------------------------}
 procedure TCVMediaPlayer.Paint;
+var
+  r: TRect;
+  ws: WideString;
+  s: String;
 begin
   // Paint background
   if assigned(Engine) then
   begin
-    if Engine.GetStatus = mpsClosed then
+    if (Engine.GetStatus = mpsClosed) or (Engine.GetStatus = mpsError) then
     begin
       Canvas.Brush.Color:= clGray;
       Canvas.FillRect(ClientRect);
+      if (Engine.GetStatus = mpsError) then
+      begin
+        Canvas.Font.Color:= clBlack;
+        r:= ClientRect;
+        ws:= Engine.GetStatusText;
+        DrawTextW(Canvas.Handle, PWideChar(ws), Length(ws), r, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
+      end;
     end
     else
     begin
@@ -946,6 +1053,11 @@ begin
   inherited;
   // Initilize values
   fStatus:= mpsClosed;
+  fPlaybackEnabled:= true;
+  fStatusChangedEvent:= nil;
+  fTitleChangedEvent:= nil;
+  fBoundsRect:= Rect(0,0,0,0);
+  fParentWindow:= 0;  
 end;
 
 {-------------------------------------------------------------------------------
@@ -976,11 +1088,28 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Do TitleChanged
+-------------------------------------------------------------------------------}
+procedure TCVCustomMediaEngine.DoTitleChanged;
+begin
+  if assigned(fTitleChangedEvent) then
+  fTitleChangedEvent(self);
+end;
+
+{-------------------------------------------------------------------------------
   GetID
 -------------------------------------------------------------------------------}
 function TCVCustomMediaEngine.GetID: TGUID;
 begin
   // override from descendant
+end;
+
+{-------------------------------------------------------------------------------
+  GetPlaybackEnabled
+-------------------------------------------------------------------------------}
+function TCVCustomMediaEngine.GetPlaybackEnabled: Boolean;
+begin
+  Result:= fPlaybackEnabled;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1037,7 +1166,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCVCustomMediaEngine.SetBounds(ARect: TRect);
 begin
-  // override from descendant
+  fBoundsRect:= ARect;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1053,7 +1182,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCVCustomMediaEngine.SetParentWindow(AParentWindow: HWND);
 begin
-  // override from descendant
+  fParentWindow:= AParentWindow;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1063,6 +1192,15 @@ procedure TCVCustomMediaEngine.SetStatusChangedEvent(AHandler:
     TCVEngineNotifyEvent);
 begin
   fStatusChangedEvent:= AHandler;
+end;
+
+{-------------------------------------------------------------------------------
+  SetTitleChangedEvent
+-------------------------------------------------------------------------------}
+procedure TCVCustomMediaEngine.SetTitleChangedEvent(AHandler:
+    TCVEngineNotifyEvent);
+begin
+  fTitleChangedEvent:= AHandler; 
 end;
 
 {##############################################################################}

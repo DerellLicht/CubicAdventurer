@@ -35,7 +35,10 @@ uses
   DOM,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Contnrs, ImgList, ComCtrls, ExtCtrls, Menus;
+  Dialogs, Contnrs, ImgList, ComCtrls, ExtCtrls, Menus, VirtualTrees;
+
+const
+  WM_QuickViewCtrl = WM_APP + 100;
 
 type
   TCEQuickViewForm = class;
@@ -81,6 +84,7 @@ type
     fMediaPlayer: TCVMediaPlayer;
     fOnCurrentFileChange: TNotifyEvent;
     fOnDetach: TNotifyEvent;
+    fOnEditorClose: TNotifyEvent;
     fShowPreview: Boolean;
     Preview: TCEFilePreview;
     procedure AssignTo(Dest: TPersistent); override;
@@ -88,9 +92,12 @@ type
     procedure CreateEmbededMediaPlayer; virtual;
     procedure HandleControlClick(Sender: TObject); virtual;
     procedure HandleActiveChange(Sender: TObject); virtual;
+    procedure HandleEditorClose(Sender: TObject); virtual;
     procedure HandleNavigationStateChange(Sender: TObject); virtual;
     procedure HandleIsSupported(Sender: TObject; AExtension: WideString; var
         AIsSupported: Boolean); virtual;
+    procedure HandleListFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode;
+        Column: TColumnIndex); virtual;
     procedure HandlePreviewClick(Sender: TObject); virtual;
     procedure HandleSeekbarAfterChange(Sender: TObject); virtual;
     procedure HandleShowHintQuery(Sender: TObject; var AHint: String; var
@@ -106,6 +113,7 @@ type
     procedure WriteGlobalSettings; virtual;
     procedure UpdateSeekbarState(Sender: TObject; APosition: Int64; ADuration:
         Int64); virtual;
+    procedure WMQuickViewCtrl(var Message: TMessage); message WM_QuickViewCtrl;
   public
     Filelist: TCVFilelist;
     Playlist: TCVPlaylist;
@@ -119,6 +127,10 @@ type
     procedure PlayNextFile; virtual;
     procedure PopulateControlsToolbar(AToolbar: TCEToolbar); virtual;
     procedure PopulateSeekToolbar(AToolbar: TCEToolbar); virtual;
+    function CanClose: Boolean; virtual;
+    function GetCurrentTitle: WideString; virtual;
+    procedure OpenTextFile(AFilePath: WideString); virtual;
+    procedure SetFocusToMediaPlayer;
     property Active: Boolean read fActive write SetActive;
     property ActiveFilePath: WideString read fActiveFilePath write
         SetActiveFilePath;
@@ -132,6 +144,7 @@ type
     property OnCurrentFileChange: TNotifyEvent read fOnCurrentFileChange write
         fOnCurrentFileChange;
     property OnDetach: TNotifyEvent read fOnDetach write fOnDetach;
+    property OnEditorClose: TNotifyEvent read fOnEditorClose write fOnEditorClose;
   end;
 
 {-------------------------------------------------------------------------------
@@ -167,11 +180,15 @@ type
     fRememberPanelLayout: Boolean;
   protected
     fDirectShowExtensions: WideString;
+    fFilePreviewBackgroundColor: TColor;
+    fFilePreviewTextColor: TColor;
     fImageExtensions: WideString;
     fLoopMode: TCEQuickViewLoopMode;
     fMediaPlayer: TCEMediaPlayerType;
     fTextExtensions: WideString;
     fMediaExtensions: WideString;
+    fOpenOnFilelistSelect: Boolean;
+    fOpenOnPlaylistSelect: Boolean;
     fPlaylistVisibility: TCEPlaylistVisibility;
     fSlideshowInterval: Integer;
     fWMPExtensions: WideString;
@@ -189,6 +206,10 @@ type
   published
     property DirectShowExtensions: WideString read fDirectShowExtensions write
         SetDirectShowExtensions;
+    property FilePreviewBackgroundColor: TColor read fFilePreviewBackgroundColor
+        write fFilePreviewBackgroundColor;
+    property FilePreviewTextColor: TColor read fFilePreviewTextColor write
+        fFilePreviewTextColor;
     property ImageExtensions: WideString read fImageExtensions write
         SetImageExtensions;
     property LoopMode: TCEQuickViewLoopMode read fLoopMode write fLoopMode;
@@ -203,6 +224,10 @@ type
         fRememberPanelLayout;
     property MediaExtensions: WideString read fMediaExtensions write
         SetMediaExtensions;
+    property OpenOnFilelistSelect: Boolean read fOpenOnFilelistSelect write
+        fOpenOnFilelistSelect;
+    property OpenOnPlaylistSelect: Boolean read fOpenOnPlaylistSelect write
+        fOpenOnPlaylistSelect;
     property PlaylistVisibility: TCEPlaylistVisibility read fPlaylistVisibility
         write fPlaylistVisibility;
     property SlideshowInterval: Integer read fSlideshowInterval write
@@ -257,6 +282,7 @@ begin
   Playlist.OnIsSupported:= HandleIsSupported;
   Playlist.OnActiveItemChange:= HandleActiveChange;
   Playlist.OnNavigationStateChange:= HandleNavigationStateChange;
+  Playlist.OnFocusChanged:= HandleListFocusChanged;
 
   // create Filelist
   Filelist:= TCVFilelist.Create(Self);
@@ -266,12 +292,15 @@ begin
   Filelist.OnIsSupported:= HandleIsSupported;
   Filelist.OnActiveItemChange:= HandleActiveChange;
   Filelist.OnNavigationStateChange:= HandleNavigationStateChange;
+  Filelist.OnFocusChanged:= HandleListFocusChanged;
 
   // create control items
   fControlItems:= TComponentList.Create(false);
   PopulateControlsToolbar(toolbar_controls);
   PopulateSeekToolbar(toolbar_seekbar);
   UpdateControlStates(Self);
+  
+  // translate
 end;
 
 {-------------------------------------------------------------------------------
@@ -339,6 +368,7 @@ begin
     fLastMute:= fMediaPlayer.Mute;
     fMediaPlayer.OnPositionChange:= UpdateSeekbarState;
     fMediaPlayer.OnStatusChanged:= UpdateControlStates;
+    fMediaPlayer.OnEditorClose:= HandleEditorClose;
   end;
 end;
 
@@ -386,7 +416,7 @@ begin
   // create form
   Result:= TCEQuickViewForm.CreateNew(Application.MainForm);
   // initilize values
-  Result.FormStyle:= fsStayOnTop;
+  Result.FormStyle:= fsStayOnTop; 
   Result.ScreenSnap:= true;
   // size
   p:= Self.ClientToScreen(Point(0,0));
@@ -410,13 +440,15 @@ begin
   begin
     fMediaPlayer:= TCVMediaPlayer.Create(nil);
     fMediaPlayer.Parent:= panel_content;
-    fMediaPlayer.Color:= clBlack;
+    fMediaPlayer.Color:= clGray;
     fMediaPlayer.Align:= alClient;
     fMediaPlayer.Volume:= fLastVolume;
     fMediaPlayer.Mute:= fLastMute;
     fMediaPlayer.BringToFront;
     fMediaPlayer.OnPositionChange:= UpdateSeekbarState;
     fMediaPlayer.OnStatusChanged:= UpdateControlStates;
+    fMediaPlayer.OnEditorClose:= HandleEditorClose;
+    fMediaPlayer.OnTitleChange:= fOnCurrentFileChange;
     fMediaPlayer.PopupMenu:= QuickViewPopup;
     fMediaPlayer.SetSlideshowInterval(GlobalQuickViewSettings.SlideshowInterval);
   end;
@@ -461,7 +493,7 @@ begin
           else
           fMediaPlayer.Play;
         end;
-        // stop
+        // stop/close
         2: begin
           if TSpTBXItem(Sender).ImageIndex = 2 then
           fMediaPlayer.Stop
@@ -683,11 +715,18 @@ begin
     begin
       status:= fMediaPlayer.GetStatus;
       if (status = mpsClosed) or (status = mpsDone) or (status = mpsError) or (status = mpsStopped)  then
-      Close;
+      begin
+        if CanClose then
+        Close
+        else
+        Exit;
+      end;
     end;
     // open file
     if not assigned(fMediaPlayer) then
     begin
+      Preview.Color:= GlobalQuickViewSettings.fFilePreviewBackgroundColor;
+      Preview.Font.Color:= GlobalQuickViewSettings.fFilePreviewTextColor;
       Preview.OpenFile(AFilePath);
       CurrentFilePath:= AFilePath;
     end;  
@@ -720,6 +759,12 @@ begin
 
     if assigned(fMediaPlayer) then
     fMediaPlayer.SetFocus;
+  end
+  else
+  begin
+    OpenTextFile(fActiveFilePath);
+    if assigned(fMediaPlayer) then
+    fMediaPlayer.SetFocus;    
   end;
 end;
 
@@ -730,22 +775,25 @@ procedure TCEQuickView.OpenFileInMediaPlayer(AFilePath: WideString);
 var
   Ext: WideString;
 begin
-  CurrentFilePath:= AFilePath;
-  
   if AFilePath = '' then
   Exit;
 
   // create media player
   CreateEmbededMediaPlayer;
-  // create media engine
-  Ext:= AnsiLowerCase(ExtractFileExt(AFilePath));
-  fMediaPlayer.Engine:= GlobalQuickViewSettings.CreateMediaEngine(Ext);
-  // open file
-  fMediaPlayer.OpenFile(AFilePath);
-  // clear preview (no need to keep it in memory since it's hidden)
-  Preview.Clear;
-  
-  UpdateControlStates(Self);
+
+  if fMediaPlayer.CanClose then
+  begin
+    // create media engine
+    Ext:= AnsiLowerCase(ExtractFileExt(AFilePath));
+    fMediaPlayer.Engine:= GlobalQuickViewSettings.CreateMediaEngine(Ext);
+    // open file
+    if fMediaPlayer.OpenFile(AFilePath) then
+    CurrentFilePath:= AFilePath;
+    // clear preview (no need to keep it in memory since it's hidden)
+    Preview.Clear;
+
+    UpdateControlStates(Self);
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -791,7 +839,7 @@ begin
   // play (1)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 1;
-  item.Caption:= 'Play';
+  item.Caption:= _('Play');
   item.ImageIndex:= 0;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
@@ -799,7 +847,7 @@ begin
   // stop (2)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 2;
-  item.Caption:= 'Stop';
+  item.Caption:= _('Stop');
   item.ImageIndex:= 2;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
@@ -807,7 +855,7 @@ begin
   // previous (3)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 3;
-  item.Caption:= 'Previous';
+  item.Caption:= _('Previous');
   item.ImageIndex:= 3;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
@@ -815,7 +863,7 @@ begin
   // next (4)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 4;
-  item.Caption:= 'Next';
+  item.Caption:= _('Next');
   item.ImageIndex:= 4;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
@@ -824,7 +872,7 @@ begin
   // previous file (5)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 5;
-  item.Caption:= 'Previous File';
+  item.Caption:= _('Previous File');
   item.ImageIndex:= 5;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
@@ -833,7 +881,7 @@ begin
   // next file (6)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 6;
-  item.Caption:= 'Next File';
+  item.Caption:= _('Next File');
   item.ImageIndex:= 6;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
@@ -885,7 +933,7 @@ begin
   // playlist (8)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 8;
-  item.Caption:= 'Playlist';
+  item.Caption:= _('Playlist');
   item.ImageIndex:= 7;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
@@ -893,13 +941,14 @@ begin
   // mute (9)
   item:= TSpTBXItem.Create(AToolbar);
   item.Tag:= 9;
-  item.Caption:= 'Mute';
+  item.Caption:= _('Mute');
   item.ImageIndex:= 8;
   item.OnClick:= HandleControlClick;
   AToolbar.Items.Add(item);
   fControlItems.Add(item);
   // volume (10)
   track:= TCETrackBar.Create(AToolbar);
+  track.Hint:= _('Volume');
   track.Tag:= 10;
   track.Parent:= AToolbar;
   track.ShowFocusRect:= false;
@@ -984,8 +1033,10 @@ begin
     fActive:= Value;
     if fActive then
     OpenFile(fActiveFilePath)
+    else if CanClose then
+    Close
     else
-    Close;
+    fActive:= true;
   end;
 end;
 
@@ -999,14 +1050,18 @@ begin
   // get file location from LNK file.
   if AnsiLowerCase(ExtractFileExt(Value)) = '.lnk' then
   begin
-    ns:= TNamespace.CreateFromFileName(Value);
     try
-      if ns.Link then
-      fActiveFilePath:= ns.ShellLink.TargetPath
-      else
-      fActiveFilePath:= Value;
-    finally
-      ns.Free;
+      ns:= TNamespace.CreateFromFileName(Value);
+      try
+        if ns.Link and assigned(ns.ShellLink) then
+        fActiveFilePath:= ns.ShellLink.TargetPath
+        else
+        fActiveFilePath:= Value;
+      finally
+        ns.Free;
+      end;
+    except
+      // catch exceptions
     end;
   end
   else  
@@ -1057,7 +1112,7 @@ var
   loaded: Boolean;
 begin
   // loaded, show toolbar(s)
-  if assigned(fMediaPlayer) then
+  if assigned(fMediaPlayer) and fMediaPlayer.GetPlaybackEnabled then
   begin
     status:= fMediaPlayer.GetStatus;
 
@@ -1066,8 +1121,9 @@ begin
     begin
       if (status = mpsDone) or ((status = mpsError) and fIsSlideshowPlaying) then
       begin
-        PlayNextFile;
-        status:= fMediaPlayer.GetStatus;
+        PostMessage(Self.Handle, WM_QuickViewCtrl, 100, 0);
+        //PlayNextFile;
+        //status:= fMediaPlayer.GetStatus;
       end;
       fIsSlideshowPlaying:= (status <> mpsClosed) and (status <> mpsStopped);
     end;
@@ -1084,10 +1140,16 @@ begin
                          ((fLoopMode = lmPlaylist) and not Playlist.IsEmpty) or
                          ((fLoopMode = lmFilelist) and not Filelist.IsEmpty);
 
-          if (status = mpsPlaying) then
-          item.ImageIndex:= 1
-          else
-          item.ImageIndex:= 0;
+          if (status = mpsPlaying) and (item.ImageIndex <> 1) then
+          begin
+            item.ImageIndex:= 1;
+            item.Caption:= _('Pause');
+          end
+          else if (status <> mpsPlaying) and (item.ImageIndex <> 0) then
+          begin
+            item.ImageIndex:= 0;
+            item.Caption:= _('Play');
+          end;
         end;
         // stop/close
         2: begin
@@ -1206,7 +1268,7 @@ begin
         21: begin
           if status = mpsError then
           begin
-            TSpTBXLabelItem(fControlItems.Items[i]).Caption:= 'Error';
+            TSpTBXLabelItem(fControlItems.Items[i]).Caption:= _('Error');
             TSpTBXLabelItem(fControlItems.Items[i]).Hint:= fMediaPlayer.GetStatusText;
           end;
         end;
@@ -1294,6 +1356,83 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Can Close (returns false if close has been aborted)
+-------------------------------------------------------------------------------}
+function TCEQuickView.CanClose: Boolean;
+begin
+  if assigned(fMediaPlayer) then
+  Result:= fMediaPlayer.CanClose
+  else
+  Result:= true;
+end;
+
+{-------------------------------------------------------------------------------
+  GetCurrentTitle
+-------------------------------------------------------------------------------}
+function TCEQuickView.GetCurrentTitle: WideString;
+begin
+  if assigned(fMediaPlayer) then
+  Result:= fMediaPlayer.GetTitle
+  else
+  Result:= '';
+end;
+
+{-------------------------------------------------------------------------------
+  Handle EditorClose
+-------------------------------------------------------------------------------}
+procedure TCEQuickView.HandleEditorClose(Sender: TObject);
+begin
+  PostMessage(Self.Handle, WM_QuickViewCtrl, 2, 0);
+end;
+
+{-------------------------------------------------------------------------------
+  Handle List FocusChanged
+-------------------------------------------------------------------------------}
+procedure TCEQuickView.HandleListFocusChanged(Sender: TBaseVirtualTree; Node:
+    PVirtualNode; Column: TColumnIndex);
+begin
+  if assigned(Node) then
+  begin
+    if (Sender = Filelist) and GlobalQuickViewSettings.OpenOnFilelistSelect then
+    Filelist.ActiveItem:= Node
+    else if (Sender = Playlist) and GlobalQuickViewSettings.OpenOnPlaylistSelect then
+    Playlist.ActiveItem:= Node;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  OpenTextFile
+-------------------------------------------------------------------------------}
+// TODO: temporary solution
+procedure TCEQuickView.OpenTextFile(AFilePath: WideString);
+begin
+  // create media player
+  CreateEmbededMediaPlayer;
+
+  if fMediaPlayer.CanClose then
+  begin
+    // create media engine
+    fMediaPlayer.Engine:= TCVTextEngine.Create;
+    // open file
+    fMediaPlayer.OpenFile(AFilePath);
+    CurrentFilePath:= AFilePath;
+    // clear preview (no need to keep it in memory since it's hidden)
+    Preview.Clear;
+
+    UpdateControlStates(Self);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  SetFocus To MediaPlayer
+-------------------------------------------------------------------------------}
+procedure TCEQuickView.SetFocusToMediaPlayer;
+begin
+  if assigned(fMediaPlayer) then
+  fMediaPlayer.SetFocus;
+end;
+
+{-------------------------------------------------------------------------------
   Write Global Settings
 -------------------------------------------------------------------------------}
 procedure TCEQuickView.WriteGlobalSettings;
@@ -1364,6 +1503,32 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  WMQuickViewCtrl
+-------------------------------------------------------------------------------}
+procedure TCEQuickView.WMQuickViewCtrl(var Message: TMessage);
+begin
+  case Message.WParam of
+    // Close
+    2: begin
+      if CanClose then
+      begin
+        Close;
+        if fShowPreview then
+        SetActiveFilePath(fActiveFilePath);
+        if assigned(fOnEditorClose) then
+        fOnEditorClose(Self);
+      end;
+    end;
+    // PlayNextFile
+    100: begin
+      PlayNextFile;
+    end;
+  end;
+
+  inherited;
+end;
+
 {##############################################################################}
 // TCEQuickViewForm
 
@@ -1378,6 +1543,8 @@ begin
   QuickView.Align:= alClient;
   QuickView.OnCurrentFileChange:= HandleCurrentFileChange;
   QuickView.fIsDetached:= true;
+  Self.PopupMode:= pmAuto;
+  Self.PopupParent:= Application.MainForm;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1395,7 +1562,10 @@ end;
 procedure TCEQuickViewForm.DoClose(var Action: TCloseAction);
 begin
   inherited;
-  Action:= caFree;
+  if QuickView.CanClose then
+  Action:= caFree
+  else
+  Action:= caNone;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1420,13 +1590,18 @@ begin
   inherited;
   // TODO: make the extension settings dynamic for plugin support.
   fImageExtensions:= 'bmp,ico,wmf,emf,jfif,jpg,jpe,jpeg,rle,dib,win,vst,vda,tga,icb,tiff,tif,fax,eps,pcx,pcc,scr,rpf,rla,sgi,rgba,rgb,bw,psd,pdd,ppm,pgm,pbm,cel,pic,pcd,cut,psp,png,gif';
-  fTextExtensions:= 'txt,ini,bat,html,htm,pas,css,xml,log,for,php,py,csv';
+  fTextExtensions:= 'txt,cpp,h,hpp,pas,pp,dpr,dpk,inc,sql,bas,java,cs,css,htm,html,asm,dfm,xfm,ini,iss,rc,for,cbl,cob,js,php,php3,phtml,inc,vbs,xml,xsd,xsl,xslt,dtd,bat,cmd,pl,pm,cgi,py,tcl,rb,rbw,sh';
   fMediaExtensions:= 'avi,wmv,mp4,mpg,mpeg,ogg,ogm,mkv,dvr-ms,mp3,vob,wav,flv';
   fWMPExtensions:= fMediaExtensions;
   fDirectShowExtensions:= fMediaExtensions;
+  
   fMediaPlayer:= mptWMP;
   fLoopMode:= lmNoLooping;
   fSlideshowInterval:= 5000;
+  fFilePreviewBackgroundColor:= clWindow;
+  fFilePreviewTextColor:= clWindowText;
+  fOpenOnFilelistSelect:= false;
+  fOpenOnPlaylistSelect:= false;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1452,18 +1627,32 @@ begin
 
   if (AExtension[1] = '.') then
   Delete(AExtension, 1, 1);
+  AExtension:= AnsiLowerCase(AExtension);
 
   list:= TCCStringList.Create;
   try
     list.Delimiter:= ',';
+    // sumatra (cbr,cbz,chm,djvu,pdf,xps)
+    if (AExtension = 'cbr') or (AExtension = 'cbz') or (AExtension = 'chm') or
+       (AExtension = 'djvu') or (AExtension = 'pdf') or (AExtension = 'xps') then
+    begin
+      Result:= TCVSumatraEngine.Create;
+      Exit;
+    end;
     // images
     list.DelimitedText:= fImageExtensions;
     if list.IndexOf(AExtension) > -1 then
-    Result:= TCVImageEngine.Create;
+    begin
+      Result:= TCVImageEngine.Create;
+      Exit;
+    end;
     // text
     list.DelimitedText:= fTextExtensions;
     if list.IndexOf(AExtension) > -1 then
-    Result:= TCVMemoEngine.Create;
+    begin
+      Result:= TCVTextEngine.Create;
+      Exit;
+    end;
     // media
     if fMediaPlayer <> mptAuto then
     begin
@@ -1512,7 +1701,8 @@ begin
 
   if (AExtension[1] = '.') then
   Delete(AExtension, 1, 1);
-
+  AExtension:= AnsiLowerCase(AExtension);
+  
   list:= TCCStringList.Create;
   try
     list.Delimiter:= ',';
@@ -1531,7 +1721,15 @@ begin
       else
       list.DelimitedText:= fImageExtensions +','+ fMediaExtensions;
     end;
-    
+
+    // sumatra (cbr,cbz,chm,djvu,pdf,xps)
+    list.Add('cbr');
+    list.Add('cbz');
+    list.Add('chm');
+    list.Add('djvu');
+    list.Add('pdf');
+    list.Add('xps');    
+
     Result:= list.IndexOf(AExtension) > -1;
   finally
     list.Free;

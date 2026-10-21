@@ -38,6 +38,7 @@ type
     fObjectToSave: TObject;
     fRecursive: Boolean;
     fSaveDefaults: Boolean;
+    fShowInEditor: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -48,6 +49,7 @@ type
     property ObjectToSave: TObject read fObjectToSave write fObjectToSave;
     property Recursive: Boolean read fRecursive write fRecursive;
     property SaveDefaults: Boolean read fSaveDefaults write fSaveDefaults;
+    property ShowInEditor: Boolean read fShowInEditor write fShowInEditor;
   end;
 
   TCEAppSettings = class(TPersistent)
@@ -68,7 +70,8 @@ type
     function Add: TCEAppSettingItem;
     function AddItem(AName: String; AObject: TObject; ARecursive: Boolean = false;
         ASaveDefaults: Boolean = false; AExcludeProperties: String = '';
-        AIncludeProperties: String = ''): TCEAppSettingItem;
+        AIncludeProperties: String = ''; ShowInEditor: Boolean = true):
+        TCEAppSettingItem;
     procedure Clear;
     procedure Delete(Index: Integer);
     function FindItem(AName: String): TCEAppSettingItem;
@@ -148,7 +151,8 @@ end;
 -------------------------------------------------------------------------------}
 function TCEAppSettings.AddItem(AName: String; AObject: TObject; ARecursive:
     Boolean = false; ASaveDefaults: Boolean = false; AExcludeProperties: String
-    = ''; AIncludeProperties: String = ''): TCEAppSettingItem;
+    = ''; AIncludeProperties: String = ''; ShowInEditor: Boolean = true):
+    TCEAppSettingItem;
 begin
   Result:= TCEAppSettingItem.Create;
   Result.NodeName:= AName;
@@ -159,6 +163,7 @@ begin
   Result.ExcludeProperties.CommaText:= AExcludeProperties;
   if AIncludeProperties <> '' then
   Result.IncludeProperties.CommaText:= AIncludeProperties;
+  Result.ShowInEditor:= ShowInEditor;
   fItems.Add(Result);
 end;
 

@@ -46,6 +46,8 @@ uses
 Type
   TJvDockVSNETTreeTBX = class(TJvDockVSNETTree)
   protected
+    procedure BeginDrag(Control: TControl; Immediate: Boolean; Threshold: Integer =
+        -1); override;
     procedure CustomLoadZone(Stream: TStream; var Zone: TJvDockZone); override;
     procedure CustomSaveZone(Stream: TStream; Zone: TJvDockZone); override;
     procedure TBMThemeChange(var Message: TMessage); message WM_SPSKINCHANGE;
@@ -155,6 +157,8 @@ Type
     procedure SetPageControl(APageControl: TJvDockPageControl); override;
   end;
 
+var
+  CE_LockPanels: Boolean = true;
 
 implementation
 
@@ -371,6 +375,13 @@ destructor TJvDockVSNETTreeTBX.Destroy;
 begin
   SkinManager.RemoveSkinNotification(Self);
   inherited;
+end;
+
+procedure TJvDockVSNETTreeTBX.BeginDrag(Control: TControl; Immediate: Boolean;
+    Threshold: Integer);
+begin
+  if not CE_LockPanels then
+  inherited BeginDrag(Control, Immediate, Threshold);
 end;
 
 procedure TJvDockVSNETTreeTBX.CustomLoadZone(Stream: TStream; var Zone:
@@ -807,6 +818,9 @@ procedure TJvDockVSNETTabPanelTBX.MouseMove(Shift: TShiftState; X, Y: Integer);
 Var
   Index : integer;
 begin
+  if CE_LockPanels then
+  Exit;
+  
   inherited;
   Index := GetPageIndexFromMousePos(X, Y);
   if Page.HotTrack and (Index <> FSelectHotIndex) then
@@ -1240,12 +1254,12 @@ var
 //        end;
 //      end
 //      else
-      begin
+//      begin
         // TODO: fix this
 //        CurrentTheme.PaintImage(Canvas, Rect(DrawRect.Left, DrawRect.Top,
 //          DrawRect.Left + Block.ImageList.Width, DrawRect.Top + Block.ImageList.Height),
 //          ii, Block.ImageList, I);
-      end;
+//      end;
 
       //if TCrackJvDockVSBlock(Block).ActiveDockControl = Block.VSPane[I].DockForm then
       //begin

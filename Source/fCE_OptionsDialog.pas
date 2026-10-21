@@ -82,6 +82,7 @@ type
   protected
     function CreatePageNode(PagePath: String): PVirtualNode;
     procedure CreatePages;
+    procedure CreateParams(var Params: TCreateParams); override;
     function FindPageNode(PagePath: String): PVirtualNode;
     procedure SelectActivePageFromTree;
   public
@@ -173,6 +174,7 @@ begin
   end;
   
   CEGlobalTranslator.TranslateComponent(Self);
+  
 end;
 
 {*------------------------------------------------------------------------------
@@ -591,6 +593,15 @@ begin
     page:= TCEOptionsCustomPage(Pagelist.Items[i]);
     page.ApplySettings;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  CreateParams
+-------------------------------------------------------------------------------}
+procedure TCEOptionsDialog.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.WndParent:= Application.MainFormHandle;
 end;
 
 {-------------------------------------------------------------------------------

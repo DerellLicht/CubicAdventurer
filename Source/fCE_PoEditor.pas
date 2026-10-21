@@ -168,6 +168,7 @@ type
 
   TCEPoEditorForm = class(TForm)
   protected
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure HandleKeyPress(Sender: TObject; var Key: Char);
   public
@@ -864,6 +865,9 @@ end;
 
 {##############################################################################}
 
+{-------------------------------------------------------------------------------
+  CreateNew
+-------------------------------------------------------------------------------}
 constructor TCEPoEditorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited;
@@ -875,18 +879,32 @@ begin
   Self.Position:= poMainFormCenter;
   Self.Width:= 420;
   Self.Height:= 500;
-  Self.FormStyle:= fsStayOnTop;
   PoEditor:= TCEPoEditor.Create(self);
   PoEditor.Parent:= Self;
   PoEditor.Align:= alClient;
   PoEditor.TabControl.ActiveTabIndex:= 0;
 end;
 
+{-------------------------------------------------------------------------------
+  CreateParams
+-------------------------------------------------------------------------------}
+procedure TCEPoEditorForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.WndParent:= Application.MainFormHandle;
+end;
+
+{-------------------------------------------------------------------------------
+  On FormClose
+-------------------------------------------------------------------------------}
 procedure TCEPoEditorForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action:= caFree;
 end;
 
+{-------------------------------------------------------------------------------
+  On FormCloseQuery
+-------------------------------------------------------------------------------}
 procedure TCEPoEditorForm.FormCloseQuery(Sender: TObject; var CanClose:
     Boolean);
 var

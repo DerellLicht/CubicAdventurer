@@ -41,6 +41,7 @@ type
     { Private declarations }
   protected
     function GetSettingsClass: TCECustomTabPageSettingsClass; override;
+    procedure HandleCurrentFileChange(Sender: TObject); virtual;
     procedure HandleDetach(Sender: TObject); virtual;
   public
     QuickView: TCEQuickView;
@@ -52,18 +53,24 @@ type
     procedure SelectPage; override;
     function TabClosing: Boolean; override;
     procedure UpdateCaption; override;
-    property ActiveFile: WideString read fActiveFile write fActiveFile;
+    property ActiveFile: WideString read fActiveFile;
   end;
 
 type
   TCEQuickViewPageSettings = class(TCECustomTabPageSettings)
   private
   protected
+    fQuickViewPage: TCEQuickViewPage;
+    function GetPath: WideString;
     function GetRememberPanelLayout: Boolean; override;
     function GetRememberInnerToolbarLayout: Boolean; override;
     function GetRememberOuterToolbarLayout: Boolean; override;
+    procedure SetPath(const Value: WideString);
   public
+    property QuickViewPage: TCEQuickViewPage read fQuickViewPage write
+        fQuickViewPage;
   published
+    property Path: WideString read GetPath write SetPath;
   end;
 
 implementation
@@ -79,13 +86,20 @@ uses
 constructor TCEQuickViewPage.Create(AOwner: TComponent);
 begin
   inherited;
+  TCEQuickViewPageSettings(Settings).QuickViewPage:= Self;
+  
   QuickView:= TCEQuickView.Create(nil);
   QuickView.Parent:= Self;
   QuickView.Align:= alClient;
   QuickView.Active:= true;
   QuickView.ShowPreview:= false;
   QuickView.OnDetach:= HandleDetach;
+  QuickView.OnCurrentFileChange:= HandleCurrentFileChange;
+  QuickView.OnEditorClose:= HandleDetach;
+  CEGlobalTranslator.TranslateComponent(QuickView);
   Layout:= 'QuickView';
+
+  TabPageClassList
 end;
 
 {-------------------------------------------------------------------------------
@@ -103,6 +117,15 @@ end;
 function TCEQuickViewPage.GetSettingsClass: TCECustomTabPageSettingsClass;
 begin
   Result:= TCEQuickViewPageSettings;
+end;
+
+{-------------------------------------------------------------------------------
+  HandleCurrentFileChange
+-------------------------------------------------------------------------------}
+procedure TCEQuickViewPage.HandleCurrentFileChange(Sender: TObject);
+begin
+  fActiveFile:= QuickView.CurrentFilePath;
+  UpdateCaption;
 end;
 
 {-------------------------------------------------------------------------------
@@ -138,14 +161,14 @@ procedure TCEQuickViewPage.OpenFile(AFilePath: WideString);
 begin
   if FileExists(AFilePath) then
   begin
-    ActiveFile:= AFilePath;
+    fActiveFile:= AFilePath;
     UpdateCaption;
     Application.ProcessMessages;
     QuickView.ActiveFilePath:= AFilePath;
   end
   else
   begin
-    ActiveFile:= '';
+    fActiveFile:= '';
     UpdateCaption;
   end;
 end;
@@ -165,6 +188,7 @@ procedure TCEQuickViewPage.SelectPage;
 begin
   GlobalPathCtrl.ActivePage:= Self;
   GlobalPathCtrl.GlobalPathCaption:= ActiveFile;
+  QuickView.SetFocusToMediaPlayer;
 end;
 
 {*------------------------------------------------------------------------------
@@ -172,8 +196,9 @@ end;
 -------------------------------------------------------------------------------}
 function TCEQuickViewPage.TabClosing: Boolean;
 begin
-  Result:= true;
-  if GlobalPathCtrl.ActivePage = Self then
+  Result:= QuickView.CanClose;
+  
+  if Result and (GlobalPathCtrl.ActivePage = Self) then
   GlobalPathCtrl.ActivePage:= nil;
 end;
 
@@ -181,15 +206,26 @@ end;
   Update Tab item Caption
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewPage.UpdateCaption;
+var
+  ws: WideString;
 begin
   if ActiveFile = '' then
   begin
+    ws:= QuickView.GetCurrentTitle;
+    if ws <> '' then
+    TabCaption:= ws
+    else
     TabCaption:= _('QuickView');
+
     TabItem.Images:= CE_Images.SmallIcons;
     TabItem.ImageIndex:= 20;
   end
   else
   begin
+    ws:= QuickView.GetCurrentTitle;
+    if ws <> '' then
+    TabCaption:= ws
+    else
     TabCaption:= ExtractFileName(ActiveFile);
     TabItem.Images:= SmallSysImages;
     TabItem.ImageIndex:= GetIconIndex(ActiveFile);
@@ -224,5 +260,24 @@ function TCEQuickViewPageSettings.GetRememberOuterToolbarLayout: Boolean;
 begin
   Result:= GlobalQuickViewSettings.RememberOuterToolbarLayout;
 end;
+
+{-------------------------------------------------------------------------------
+  Get/Set Path
+-------------------------------------------------------------------------------}
+function TCEQuickViewPageSettings.GetPath: WideString;
+begin
+  Result:= QuickViewPage.QuickView.ActiveFilePath;
+end;
+procedure TCEQuickViewPageSettings.SetPath(const Value: WideString);
+begin
+  QuickViewPage.OpenFile(Value);
+end;
+
+{##############################################################################}
+
+initialization
+  TabPageClassList.RegisterClass('QuickView', TCEQuickViewPage, TCEQuickViewPageSettings);
+
+finalization
 
 end.

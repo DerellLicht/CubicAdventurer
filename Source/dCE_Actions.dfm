@@ -8,6 +8,13 @@ object CEActions: TCEActions
     Images = CE_Images.SmallIcons
     Left = 28
     Top = 12
+    object act_workspace_forward: TAction
+      Tag = 933
+      Category = 'Workspace'
+      Caption = 'Forward'
+      ImageIndex = 6
+      OnExecute = ActionExecute
+    end
     object act_tabs_closetab: TAction
       Tag = 661
       Category = 'Tabs'
@@ -206,6 +213,14 @@ object CEActions: TCEActions
         'Ctrl+Ins')
       OnExecute = ActionExecute
     end
+    object act_view_workspace: TAction
+      Tag = 307
+      Category = 'View'
+      Caption = 'Workspace'
+      ImageIndex = 72
+      ShortCut = 16438
+      OnExecute = ActionExecute
+    end
     object act_edit_cut: TAction
       Tag = 202
       Category = 'Edit'
@@ -262,36 +277,6 @@ object CEActions: TCEActions
       Caption = 'Rename'
       ImageIndex = 38
       ShortCut = 113
-      OnExecute = ActionExecute
-    end
-    object act_quick_none: TAction
-      Tag = 701
-      Category = 'Quickview'
-      Caption = 'None'
-      OnExecute = ActionExecute
-    end
-    object act_quick_auto: TAction
-      Tag = 702
-      Category = 'Quickview'
-      Caption = 'Auto'
-      OnExecute = ActionExecute
-    end
-    object act_quick_text: TAction
-      Tag = 703
-      Category = 'Quickview'
-      Caption = 'Text'
-      OnExecute = ActionExecute
-    end
-    object act_quick_image: TAction
-      Tag = 704
-      Category = 'Quickview'
-      Caption = 'Image'
-      OnExecute = ActionExecute
-    end
-    object act_quick_hex: TAction
-      Tag = 705
-      Category = 'Quickview'
-      Caption = 'Hex'
       OnExecute = ActionExecute
     end
     object act_help_home: TAction
@@ -704,6 +689,14 @@ object CEActions: TCEActions
       Tag = 390
       Category = 'View'
       Caption = 'Lock Toolbars'
+      ImageIndex = 76
+      OnExecute = ActionExecute
+    end
+    object act_view_lock_panels: TAction
+      Tag = 391
+      Category = 'View'
+      Caption = 'Lock Panels'
+      ImageIndex = 74
       OnExecute = ActionExecute
     end
     object act_navi_refresh_current: TAction
@@ -784,6 +777,52 @@ object CEActions: TCEActions
       Category = 'Stack'
       Caption = 'Allow Move'
       ImageIndex = 70
+      OnExecute = ActionExecute
+    end
+    object act_gen_makevisible: TAction
+      Tag = 104
+      Category = 'General'
+      Caption = 'Make Visible'
+      OnExecute = ActionExecute
+    end
+    object act_workspace_folder_up: TAction
+      Tag = 931
+      Category = 'Workspace'
+      Caption = 'Folder Up'
+      ImageIndex = 7
+      OnExecute = ActionExecute
+    end
+    object act_workspace_back: TAction
+      Tag = 932
+      Category = 'Workspace'
+      Caption = 'Back'
+      ImageIndex = 5
+      OnExecute = ActionExecute
+    end
+    object act_workspace_open: TAction
+      Tag = 934
+      Category = 'Workspace'
+      Caption = 'Browse To'
+      ImageIndex = 28
+      ShortCut = 16453
+      OnExecute = ActionExecute
+    end
+    object act_tabs_copyhere: TAction
+      Tag = 671
+      Category = 'Tabs'
+      Caption = 'Copy Selected Here'
+      Hint = 'Copy Selected Here'
+      ImageIndex = 1
+      Visible = False
+      OnExecute = ActionExecute
+    end
+    object act_tabs_movehere: TAction
+      Tag = 672
+      Category = 'Tabs'
+      Caption = 'Move Selected Here'
+      Hint = 'Move Selected Here'
+      ImageIndex = 2
+      Visible = False
       OnExecute = ActionExecute
     end
   end

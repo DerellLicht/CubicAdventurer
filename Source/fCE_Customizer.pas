@@ -117,6 +117,7 @@ type
     procedure SetselectedToolbar(const Value: TObject);
 
   protected
+    procedure CreateParams(var Params: TCreateParams); override;
     property selectedToolbar: TObject read fselectedToolbar write
         SetselectedToolbar;
   public
@@ -740,6 +741,15 @@ begin
     else
     TTBCustomDockableWindowHack(selectedToolbar).DragHandleStyle:= dhNone;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  CreateParams
+-------------------------------------------------------------------------------}
+procedure TCEToolbarCustomizer.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.WndParent:= Application.MainFormHandle;
 end;
 
 {-------------------------------------------------------------------------------

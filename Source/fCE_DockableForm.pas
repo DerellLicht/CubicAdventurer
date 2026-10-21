@@ -93,6 +93,8 @@ begin
   Self.OnHide:= FormHide;
   Self.OnShow:= FormShow;
   MainForm.Panels.Add(Self);
+  
+  Self.OnContextPopup:= CEActions.HandleGlobalContextPopup;
 end;
 
 {-------------------------------------------------------------------------------

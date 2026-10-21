@@ -76,6 +76,9 @@ type
   TCESpTabItemViewer = class(TSpTBXTabItemViewer)
   private
     function IsTabCloseButtonVisible: Boolean;
+  protected
+    // Custom Painting methods
+    procedure DoDrawAdjustFont(AFont: TFont; State: TSpTBXSkinStatesType); override;
   end;
 
   // Tab Item
@@ -85,14 +88,18 @@ type
     procedure SetPageVisibility(const Value: Boolean);
   protected
     fPage: TCECustomTabPage;
+    fUseToolbarFont: Boolean;
     procedure DoTabClosing(var Allow, CloseAndFree: Boolean); override;
     function GetItemViewerClass(AView: TTBView): TTBItemViewerClass; override;
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CloseTab: Boolean;
     function GetTabSet: TCESpTabSet;
     property Page: TCECustomTabPage read fPage;
     property PageVisibility: Boolean read GetPageVisibility write SetPageVisibility;
+  published
+    property UseToolbarFont: Boolean read fUseToolbarFont write fUseToolbarFont;
   end;
   
   // Tab Toolbar
@@ -161,6 +168,9 @@ type
     procedure SetAutoFitMaxSize(const Value: Integer);
     procedure SetCloseButton(const Value: TSpTBXTabCloseButton);
     procedure SetMaxTabSize(const Value: Integer);
+  protected
+    fFontSize: Integer;
+    procedure SetFontSize(const Value: Integer);
   public
     TabSet: TCESpTabSet;
     constructor Create; virtual;
@@ -182,6 +192,7 @@ type
         fClosedTabHistory default true;
     property DblClickCloseTab: Boolean read fDblClickCloseTab write
         fDblClickCloseTab;
+    property FontSize: Integer read fFontSize write SetFontSize;
     property MaxTabSize: Integer read GetMaxTabSize write SetMaxTabSize;
     property OpenNextToCurrent: Boolean read fOpenNextToCurrent write
         fOpenNextToCurrent;
@@ -190,7 +201,13 @@ type
     property UndoCount: Integer read fUndoCount write fUndoCount;
   end;
 
-  // Tab Set
+{-------------------------------------------------------------------------------
+  TCESpTabSet
+-------------------------------------------------------------------------------}
+  TCETabSetOleDropEvent = procedure(ASender: TCESpTabSet; ADropTab: TCESpTabItem;
+    const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint; var dwEffect: Longint;
+    var hr: HResult) of object;
+
   TCESpTabSet = class(TSpTBXTabSet, IDropTarget)
   private
     fActivePopupTab: TCESpTabItem;
@@ -213,6 +230,7 @@ type
     fActiveTab: TCESpTabItem;
     fActiveTabHistory: TObjectList;
     fClosedTabHistory: TObjectList;
+    fOnOleDrop: TCETabSetOleDropEvent;
     function AddToClosedTabHistory(ATab: TCESpTabItem): TCEClosedTabHistoryItem;
         virtual;
     // Tabs
@@ -262,6 +280,7 @@ type
     function GetPrevTab(From: TSpTBXTabItem): TCESpTabItem;
     function GetTabAt(X, Y: Integer): TCESpTabItem;
     function PopulateUndoList(ASubMenu: TTBCustomItem): Integer;
+    procedure MakeSureTabIsSelected;
     procedure SelectNextTab(GoForward: Boolean = true);
     procedure SelectPrevSelectedTab;
     procedure SelectTab(ATab: TSpTBXTabItem);
@@ -281,15 +300,27 @@ type
     property EnableClosedTabHistory: Boolean read fEnableClosedTabHistory write
         fEnableClosedTabHistory;
     property Settings: TCETabSettings read fSettings write fSettings;
+    property OnOleDrop: TCETabSetOleDropEvent read fOnOleDrop write fOnOleDrop;
   end;
 
 
 implementation
 
 uses
-  Main, dCE_Actions, fCE_FileView, CE_LanguageEngine, dCE_Images, Math;
+  Main, dCE_Actions, fCE_FileView, CE_LanguageEngine, dCE_Images, Math,
+  CE_VistaFuncs;
 
 {##############################################################################}
+
+{-------------------------------------------------------------------------------
+  Create an instance of TCESpTabItem
+-------------------------------------------------------------------------------}
+constructor TCESpTabItem.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fPage:= nil;
+  
+end;
 
 {-------------------------------------------------------------------------------
   Destroy
@@ -367,13 +398,14 @@ end;
 -------------------------------------------------------------------------------}
 function TCESpTabItem.CloseTab: Boolean;
 var
-  b: Boolean;
+  closeAndFree: Boolean;
   tabSet: TCESpTabSet;
   item: TCEClosedTabHistoryItem;
 begin
   if Visible then
   begin
     Result:= True;
+    closeAndFree:= True;
     item:= nil;
     
     // Add Closed Tab History Item
@@ -383,7 +415,7 @@ begin
       item:= tabset.AddToClosedTabHistory(Self);
     end;
 
-    DoTabClosing(Result, b);
+    DoTabClosing(Result, closeAndFree);
     if Result then
     begin
       // Select previously selected tab
@@ -397,6 +429,9 @@ begin
 
       Visible:= False;
       DoTabClose;
+      tabSet.MakeSureTabIsSelected;
+      if closeAndFree then
+      Free;
     end
     else // Closed Tab History Item (tab could not close)
     begin
@@ -491,6 +526,7 @@ begin
   Exit;
 
   Result:= TCESpTabItem.Create(nil);
+  Result.UseToolbarFont:= true;
   page:= TabPageClass.Create(nil);
   TCECustomTabPageAccess(page).fTabItem:= Result;
   Result.fPage:= page;
@@ -629,6 +665,7 @@ begin
     Result:= true;
   finally
     Self.Toolbar.EndUpdate;
+    MakeSureTabIsSelected;
   end;
 end;
 
@@ -650,11 +687,12 @@ begin
   begin
     Result:= ATab.CloseTab;
 
-    if Result or Force then
+    if not Result and Force then
     ATab.Free;
   end
   else
   Result:= false;
+  MakeSureTabIsSelected;
 end;
 
 {-------------------------------------------------------------------------------
@@ -699,6 +737,7 @@ begin
   end
   else
   Result:= false;
+  MakeSureTabIsSelected;
 end;
 
 {-------------------------------------------------------------------------------
@@ -743,6 +782,7 @@ begin
   end
   else
   Result:= false;
+  MakeSureTabIsSelected;
 end;
 
 {-------------------------------------------------------------------------------
@@ -818,6 +858,7 @@ begin
     fActiveTabHistory.Insert(0, fActiveTab);
 
     fActiveTab:= tab;
+    fActivePopupTab:= tab;
   end;
 
   // Hide everything else
@@ -924,7 +965,7 @@ begin
   end
   else
   begin
-    dwEffect:= DROPEFFECT_NONE;
+    dwEffect:= DROPEFFECT_MOVE;
     fDropTimer.Enabled:= false;
   end;
 end;
@@ -937,12 +978,19 @@ function TCESpTabSet.Drop(const dataObj: IDataObject; grfKeyState: Longint; pt:
 begin
   Result:= S_OK;
   fDropTimer.Enabled:= false;
-  if Settings.AllowDropToTab then
+  if assigned(fDropTab) then
   begin
-    // Send Drop to drop tab
-    if assigned(fDropTab) and assigned(fDropTab.Page) then
-    Result:= TCECustomTabPageAccess(fDropTab.Page).Drop(dataObj, grfKeyState, pt, dwEffect);
+    if Settings.AllowDropToTab then
+    begin
+      // Send Drop to drop tab
+      if assigned(fDropTab) and assigned(fDropTab.Page) then
+      Result:= TCECustomTabPageAccess(fDropTab.Page).Drop(dataObj, grfKeyState, pt, dwEffect);
+    end;
   end;
+
+  if assigned(fOnOleDrop) then
+  fOnOleDrop(Self, fDropTab, dataObj, grfKeyState, pt, dwEffect, Result);
+
   fDropTab:= nil;
 end;
 
@@ -1128,9 +1176,15 @@ procedure TCESpTabSet.HandleMouseDown(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer);
 begin
   if Shift = [ssMiddle] then
-  fClosingTab:= GetTabAt(X, Y)
+  begin
+    fClosingTab:= GetTabAt(X, Y);
+    fActivePopupTab:= nil;
+  end
   else
-  fClosingTab:= nil;
+  begin
+    fActivePopupTab:= GetTabAt(X, Y);
+    fClosingTab:= nil;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1150,8 +1204,7 @@ begin
       tab:= GetTabAt(X, Y);
       if tab = fClosingTab then
       begin
-        if tab.CloseTab then
-        tab.Free;
+        tab.CloseTab;
       end;
     end;
     fClosingTab:= nil;
@@ -1327,7 +1380,7 @@ var
   i: Integer;
 begin
   i:= Items.IndexOf(ATab);
-  if i <> -1 then
+  if i > -1 then
   ActiveTabIndex:= i;
 end;
 
@@ -1337,6 +1390,15 @@ end;
 function TCESpTabSet.GetCEAutoFit: Boolean;
 begin
   Result:= TCESpTabToolbar(Toolbar).CEAutoFit;
+end;
+
+{-------------------------------------------------------------------------------
+  MakeSureTabIsSelected
+-------------------------------------------------------------------------------}
+procedure TCESpTabSet.MakeSureTabIsSelected;
+begin
+  if ActiveTabIndex < 0 then
+  SelectTab(GetFirstTab);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1353,7 +1415,8 @@ end;
 procedure TCESpTabSet.TabDeleting(Item: TSpTBXTabItem; FreeTabSheet: Boolean =
     True);
 begin
-  // Do Nothing
+  if fActivePopupTab = Item then
+  fActivePopupTab:= nil;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1481,8 +1544,7 @@ begin
       TabIV := TCESpTabItemViewer(IV);
       if (TabIV.TabCloseButtonState = sknsHotTrack) and TabIV.IsTabCloseButtonVisible then
       begin
-        if TCESpTabItem(TabIV.Item).CloseTab then
-        TabIV.Item.Free;
+        TCESpTabItem(TabIV.Item).CloseTab;
       end
       else
       begin
@@ -1702,32 +1764,35 @@ begin
   if TabDragReorder and Assigned(Source) and (Source is TSpTBXTabItemDragObject) then
   begin
     D:= TSpTBXTabItemDragObject(Source);
-    OrigItem:= D.SouceItem;
-    OrigPos:= OrigItem.Parent.IndexOf(OrigItem);
-
-    // Move the dragging item in the toolbar
-    if OrigItem.Parent = Items then
+    if assigned(D.SouceItem) and assigned(D.SouceItem.Parent) then
     begin
-      Accept:= true;
-      SpGetDropPosItemViewer(Items, View, Point(X, Y), OrigPos, DestIV, DestPos);
+      OrigItem:= D.SouceItem;
+      OrigPos:= OrigItem.Parent.IndexOf(OrigItem);
 
-      if (OrigPos <> DestPos) and (DestPos > -1) and (DestPos < Items.Count) and (OrigItem <> DestIV.Item) and
-        (DestPos > Items.IndexOf(LeftArrow)) and (DestPos < Items.IndexOf(RightArrow)) then
+      // Move the dragging item in the toolbar
+      if OrigItem.Parent = Items then
       begin
-        if TSpTBXCustomTabSetAccess(FOwnerTabControl).CanActiveTabReorder(OrigPos, DestPos) then
+        Accept:= true;
+        SpGetDropPosItemViewer(Items, View, Point(X, Y), OrigPos, DestIV, DestPos);
+
+        if (OrigPos <> DestPos) and (DestPos > -1) and (DestPos < Items.Count) and (OrigItem <> DestIV.Item) and
+          (DestPos > Items.IndexOf(LeftArrow)) and (DestPos < Items.IndexOf(RightArrow)) then
         begin
-          BeginUpdate;
-          BeginItemMove;
-          try
-            // The item is the active tab, we need to update the ActiveTabIndex
-            // Just set the internal value because the page didn't change
-            FActiveTabIndex := DestPos;
-            Items.Move(OrigPos, DestPos);
-            TSpTBXCustomTabSetAccess(FOwnerTabControl).DoActiveTabReorder(DestPos);
-          finally
-            EndItemMove;
-            EndUpdate;
-            //InvalidateNC;
+          if TSpTBXCustomTabSetAccess(FOwnerTabControl).CanActiveTabReorder(OrigPos, DestPos) then
+          begin
+            BeginUpdate;
+            BeginItemMove;
+            try
+              // The item is the active tab, we need to update the ActiveTabIndex
+              // Just set the internal value because the page didn't change
+              FActiveTabIndex := DestPos;
+              Items.Move(OrigPos, DestPos);
+              TSpTBXCustomTabSetAccess(FOwnerTabControl).DoActiveTabReorder(DestPos);
+            finally
+              EndItemMove;
+              EndUpdate;
+              //InvalidateNC;
+            end;
           end;
         end;
       end;
@@ -2322,6 +2387,27 @@ begin
   OnMouseUp(Self, mbLeft, [ssLeft, ssDouble], Message.XPos, Message.YPos);
 end;
 
+{-------------------------------------------------------------------------------
+  DoDrawAdjustFont
+-------------------------------------------------------------------------------}
+procedure TCESpTabItemViewer.DoDrawAdjustFont(AFont: TFont; State:
+    TSpTBXSkinStatesType);
+begin
+  // Use toolbar font
+  if TCESpTabItem(Self.Item).UseToolbarFont then
+  begin
+    if assigned(Self.Item.Parent) and
+       assigned(Self.Item.Parent.ParentComponent) and
+       (Self.Item.Parent.ParentComponent is TSpTBXToolbar) then
+    begin
+      AFont.Assign(TSpTBXToolbar(Self.Item.Parent.ParentComponent).Font);
+      AFont.Color:= GetTextColor(State);
+    end;
+  end
+  else
+  inherited;
+end;
+
 {##############################################################################}
 
 {-------------------------------------------------------------------------------
@@ -2362,6 +2448,7 @@ begin
   fDblClickCloseTab:= false;
   fSwitchTabOnDragHover:= true;
   fAllowDropToTab:= true;
+  fFontSize:= -1;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2448,6 +2535,24 @@ end;
 procedure TCETabSettings.SetCloseButton(const Value: TSpTBXTabCloseButton);
 begin
   TabSet.TabCloseButton:= Value;
+end;
+
+{-------------------------------------------------------------------------------
+  SetFontSize
+-------------------------------------------------------------------------------}
+procedure TCETabSettings.SetFontSize(const Value: Integer);
+begin
+  if fFontSize <> Value then
+  begin
+    fFontSize:= Value;
+    if assigned(TabSet) then
+    begin
+      if Value > 0 then
+      TabSet.Font.Size:= Value
+      else
+      SetDesktopIconFonts(TabSet.Font);
+    end;
+  end;
 end;
 
 {##############################################################################}
