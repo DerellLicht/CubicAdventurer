@@ -33,6 +33,8 @@ type
     fInsertCaret: TSynEditCaretType;
     fMaxUndo: Integer;
     fOptions: TSynEditorOptions;
+    fScrollOptions: TSynEditorScrollOptions;
+    fShowSpecialChars: Boolean;
     fOverwriteCaret: TSynEditCaretType;
     fRightEdge: Integer;
     fRightEdgeColor: TColor;
@@ -74,6 +76,10 @@ type
     property InsertCaret: TSynEditCaretType read fInsertCaret write fInsertCaret;
     property MaxUndo: Integer read fMaxUndo write fMaxUndo;
     property Options: TSynEditorOptions read fOptions write SetOptions;
+    // Modern SynEdit split the old eoXXX flags: scroll flags live in ScrollOptions
+    // and 'show special chars' is now VisibleSpecialChars on the editor.
+    property ScrollOptions: TSynEditorScrollOptions read fScrollOptions write fScrollOptions;
+    property ShowSpecialChars: Boolean read fShowSpecialChars write fShowSpecialChars;
     property OverwriteCaret: TSynEditCaretType read fOverwriteCaret write
         fOverwriteCaret;
     property RightEdge: Integer read fRightEdge write fRightEdge;
@@ -302,12 +308,12 @@ begin
   check_enhance_home_key.Checked:= eoEnhanceHomeKey in AFrom.Options;
   check_enhance_end_key.Checked:= eoEnhanceEndKey in AFrom.Options;
   check_group_undo.Checked:= eoGroupUndo in AFrom.Options;
-  check_half_page_scroll.Checked:= eoHalfPageScroll in AFrom.Options;
+  check_half_page_scroll.Checked:= eoHalfPageScroll in AFrom.ScrollOptions;
   check_right_mouse_moves_cursor.Checked:= eoRightMouseMovesCursor in AFrom.Options;
-  check_scroll_past_eol.Checked:= eoScrollPastEol in AFrom.Options;
-  check_scroll_past_eof.Checked:= eoScrollPastEof in AFrom.Options;
-  check_show_scroll_hint.Checked:= eoShowScrollHint in AFrom.Options;
-  check_show_special_chars.Checked:= eoShowSpecialChars in AFrom.Options;
+  check_scroll_past_eol.Checked:= eoScrollPastEol in AFrom.ScrollOptions;
+  check_scroll_past_eof.Checked:= eoScrollPastEof in AFrom.ScrollOptions;
+  check_show_scroll_hint.Checked:= eoShowScrollHint in AFrom.ScrollOptions;
+  check_show_special_chars.Checked:= AFrom.ShowSpecialChars;
   check_smart_tabs.Checked:= eoSmartTabs in AFrom.Options;
   check_smart_tab_delete.Checked:= eoSmartTabDelete in AFrom.Options;
   check_tab_indent.Checked:= eoTabIndent in AFrom.Options;
@@ -331,6 +337,7 @@ end;
 procedure TCETextEditorOptionsForm.AssignValuesTo(ATo: TCETextEditorSettings);
 var
   tmpOptions: TSynEditorOptions;
+  tmpScrollOptions: TSynEditorScrollOptions;
   tmpExportOptions: TCETextEditorExportOptions;
 
   procedure SetOptionFlag(AOption: TSynEditorOption; AValue: Boolean);
@@ -339,6 +346,15 @@ var
     Include(tmpOptions, aOption)
     else
     Exclude(tmpOptions, aOption);
+  end;
+
+  procedure SetScrollFlag(AOption: TSynEditorScrollOption; AValue: Boolean);
+  begin
+    if AValue then begin
+      Include(tmpScrollOptions, AOption);
+    end else begin
+      Exclude(tmpScrollOptions, AOption);
+    end;
   end;
 
   procedure SetExportFlag(AOption: TCETextEditorExportOption; AValue: Boolean);
@@ -386,22 +402,24 @@ begin
   ATo.Gutter.Color:= color_gutter.Selected;
   // options
   tmpOptions:= ATo.Options;
+  tmpScrollOptions:= ATo.ScrollOptions;
   SetOptionFlag(eoAutoIndent, check_auto_indent.Checked);
   SetOptionFlag(eoEnhanceHomeKey, check_enhance_home_key.Checked);
   SetOptionFlag(eoEnhanceEndKey, check_enhance_end_key.Checked);
   SetOptionFlag(eoGroupUndo, check_group_undo.Checked);
-  SetOptionFlag(eoHalfPageScroll, check_half_page_scroll.Checked);
+  SetScrollFlag(eoHalfPageScroll, check_half_page_scroll.Checked);
   SetOptionFlag(eoRightMouseMovesCursor, check_right_mouse_moves_cursor.Checked);
-  SetOptionFlag(eoScrollPastEol, check_scroll_past_eol.Checked);
-  SetOptionFlag(eoScrollPastEof, check_scroll_past_eof.Checked);
-  SetOptionFlag(eoShowScrollHint, check_show_scroll_hint.Checked);
-  SetOptionFlag(eoShowSpecialChars, check_show_special_chars.Checked);
+  SetScrollFlag(eoScrollPastEol, check_scroll_past_eol.Checked);
+  SetScrollFlag(eoScrollPastEof, check_scroll_past_eof.Checked);
+  SetScrollFlag(eoShowScrollHint, check_show_scroll_hint.Checked);
+  ATo.ShowSpecialChars:= check_show_special_chars.Checked;
   SetOptionFlag(eoSmartTabs, check_smart_tabs.Checked);
   SetOptionFlag(eoSmartTabDelete, check_smart_tab_delete.Checked);
   SetOptionFlag(eoTabIndent, check_tab_indent.Checked);
   SetOptionFlag(eoTabsToSpaces, check_tabs_to_spaces.Checked);
   SetOptionFlag(eoTrimTrailingSpaces, check_trim_trailing_spaces.Checked);
   ATo.Options:= tmpOptions;
+  ATo.ScrollOptions:= tmpScrollOptions;
   // export
   tmpExportOptions:= ATo.ExportOptions;
   SetExportFlag(eoInlineCSSOnCopy, check_inline_css_on_copy.Checked);
@@ -531,27 +549,16 @@ begin
   fOverwriteCaret:= ctBlock;
   fMaxUndo:= 1024;
   fOptions:= [
-    eoAltSetsColumnMode,       //Holding down the Alt Key will put the selection mode into columnar format
     eoAutoIndent,              //Will indent the caret on new lines with the same amount of leading white space as the preceding line
-    //eoAutoSizeMaxScrollWidth,  //Automatically resizes the MaxScrollWidth property when inserting text
-    //eoDisableScrollArrows,     //Disables the scroll bar arrow buttons when you can't scroll in that direction any more
     eoDragDropEditing,         //Allows you to select a block of text and drag it within the document to another location
     //eoDropFiles,               //Allows the editor accept OLE file drops
     eoEnhanceHomeKey,          //enhances home key positioning, similar to visual studio
     //eoEnhanceEndKey,           //enhances End key positioning, similar to JDeveloper
     //eoGroupUndo,               //When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
-    //eoHalfPageScroll,          //When scrolling with page-up and page-down commands, only scroll a half page at a time
-    eoHideShowScrollbars,      //if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
     eoKeepCaretX,              //When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
     //eoNoCaret,                 //Makes it so the caret is never visible
     //eoNoSelection,             //Disables selecting text
     //eoRightMouseMovesCursor,   //When clicking with the right mouse for a popup menu, move the cursor to that location
-    //eoScrollByOneLess,         //Forces scrolling to be one less
-    //eoScrollHintFollows,       //The scroll hint follows the mouse when scrolling vertically
-    //eoScrollPastEof,           //Allows the cursor to go past the end of file marker
-    eoScrollPastEol,           //Allows the cursor to go past the last character into the white space at the end of a line
-    eoShowScrollHint,          //Shows a hint of the visible line numbers when scrolling vertically
-    //eoShowSpecialChars,        //Shows the special Characters
     eoSmartTabDelete,          //similar to Smart Tabs, but when you delete characters
     //eoSmartTabs,               //When tabbing, the cursor will go to the next non-white space character of the previous line
     //eoSpecialLineDefaultFg,    //disables the foreground text color override when using the OnSpecialLineColor event
@@ -559,6 +566,8 @@ begin
     //eoTabsToSpaces,            //Converts a tab character to a specified number of space characters
     eoTrimTrailingSpaces       //Spaces at the end of lines will be trimmed and not saved
   ];
+  fScrollOptions:= [eoHideShowScrollbars, eoScrollPastEol, eoShowScrollHint];
+  fShowSpecialChars:= false;
   fRightEdge:= 80;
   fRightEdgeColor:= clSilver;
   fTabWidth:= 2;
@@ -603,6 +612,8 @@ begin
     Self.Gutter.Assign(TCustomSynEdit(Source).Gutter);
     Self.BackgroundColor := TCustomSynEdit(Source).Color;
     Self.Options := TCustomSynEdit(Source).Options;
+    Self.ScrollOptions := TCustomSynEdit(Source).ScrollOptions;
+    Self.ShowSpecialChars := TCustomSynEdit(Source).VisibleSpecialChars <> [];
     Self.ExtraLineSpacing := TCustomSynEdit(Source).ExtraLineSpacing;
     Self.InsertCaret := TCustomSynEdit(Source).InsertCaret;
     Self.OverwriteCaret := TCustomSynEdit(Source).OverwriteCaret;
@@ -634,6 +645,12 @@ begin
     TCustomSynEdit(Dest).Gutter.Assign(Self.Gutter);
     TCustomSynEdit(Dest).Color:= Self.BackgroundColor;
     TCustomSynEdit(Dest).Options:= Self.Options;
+    TCustomSynEdit(Dest).ScrollOptions:= Self.ScrollOptions;
+    if Self.ShowSpecialChars then begin
+      TCustomSynEdit(Dest).VisibleSpecialChars:= [scWhitespace, scControlChars, scEOL];
+    end else begin
+      TCustomSynEdit(Dest).VisibleSpecialChars:= [];
+    end;
     TCustomSynEdit(Dest).ExtraLineSpacing:= Self.ExtraLineSpacing;
     TCustomSynEdit(Dest).InsertCaret:= Self.InsertCaret;
     TCustomSynEdit(Dest).OverwriteCaret:= Self.OverwriteCaret;

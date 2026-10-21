@@ -536,7 +536,7 @@ begin
     402: ShowTextEditorOptions(GlobalTextEditorSettings);
     // Special Characters
     403: begin
-      Settings.SetOptionFlag(eoShowSpecialChars, not Settings.GetOptionFlag(eoShowSpecialChars));
+      Settings.ShowSpecialChars:= not Settings.ShowSpecialChars;
       Settings.UpdateEditors;
     end;
     // Enable Playback
@@ -624,7 +624,7 @@ begin
       // Word Wrap
       401: TAction(Sender).Checked:= SynMemo.WordWrap;
       // Show Special Characters
-      403: TAction(Sender).Checked:= Settings.GetOptionFlag(eoShowSpecialChars);
+      403: TAction(Sender).Checked:= Settings.ShowSpecialChars;
       // Enable Playback
       404: TAction(Sender).Checked:= Settings.EnablePlayback;
       // Show Bookmarks
@@ -1017,7 +1017,7 @@ procedure TCETextEditor.ExportToHTML(AToClipboard: Boolean; ASelectedOnly:
     Boolean; AFilePath: WideString = ''; ATitle: WideString = '');
 var
   exporter: TCESynExporterHTML;
-  lines: TUnicodeStrings;
+  lines: TStrings;
   spaces: String;
   i: Integer;
 begin
@@ -1051,7 +1051,7 @@ begin
     //  tabs to spaces export
     if eoConvertTabsToSpaces in Settings.ExportOptions then
     begin
-      lines:= TUnicodeStringList.Create;
+      lines:= TStringList.Create;
       try
         // make space string
         spaces:= StringOfChar(#32, SynMemo.TabWidth);
@@ -1419,30 +1419,30 @@ begin
   if (ActiveHighlighter = SynMultiHighlighter) and (Settings.ColorizeMultiHighlighterBackground) then
   begin
     // CSS
-    SynMultiHighlighter.Schemes.Items[0].MarkerAttri.Background:= $00E3E6F1; 
+    SynMultiHighlighter.Schemes[0].MarkerAttri.Background:= $00E3E6F1; 
     SynCssSyn1.SpaceAttri.Background:= $00E3E6F1;
     // JavaScript
-    SynMultiHighlighter.Schemes.Items[1].MarkerAttri.Background:= $00E7F4E7; 
+    SynMultiHighlighter.Schemes[1].MarkerAttri.Background:= $00E7F4E7; 
     SynJScriptSyn1.SpaceAttri.Background:= $00E7F4E7;
     // PHP
-    SynMultiHighlighter.Schemes.Items[2].MarkerAttri.Background:= $00F3E6E6; 
+    SynMultiHighlighter.Schemes[2].MarkerAttri.Background:= $00F3E6E6; 
     SynPHPSyn1.SpaceAttri.Background:= $00F3E6E6;
-    SynMultiJScriptSyn.Schemes.Items[0].MarkerAttri.Background:= $00F3E6E6;
-    SynMultiCSSSyn.Schemes.Items[0].MarkerAttri.Background:= $00F3E6E6;
+    SynMultiJScriptSyn.Schemes[0].MarkerAttri.Background:= $00F3E6E6;
+    SynMultiCSSSyn.Schemes[0].MarkerAttri.Background:= $00F3E6E6;
   end
   else
   begin
     // CSS
-    SynMultiHighlighter.Schemes.Items[0].MarkerAttri.Background:= $00ABB8DC;
+    SynMultiHighlighter.Schemes[0].MarkerAttri.Background:= $00ABB8DC;
     SynCssSyn1.SpaceAttri.Background:= clNone;
     // JavaScript
-    SynMultiHighlighter.Schemes.Items[1].MarkerAttri.Background:= $0096CE93; 
+    SynMultiHighlighter.Schemes[1].MarkerAttri.Background:= $0096CE93; 
     SynJScriptSyn1.SpaceAttri.Background:= clNone;
     // PHP
-    SynMultiHighlighter.Schemes.Items[2].MarkerAttri.Background:= $00E0BBBA;
+    SynMultiHighlighter.Schemes[2].MarkerAttri.Background:= $00E0BBBA;
     SynPHPSyn1.SpaceAttri.Background:= clNone;
-    SynMultiJScriptSyn.Schemes.Items[0].MarkerAttri.Background:= $00E0BBBA;
-    SynMultiCSSSyn.Schemes.Items[0].MarkerAttri.Background:= $00E0BBBA;
+    SynMultiJScriptSyn.Schemes[0].MarkerAttri.Background:= $00E0BBBA;
+    SynMultiCSSSyn.Schemes[0].MarkerAttri.Background:= $00E0BBBA;
   end;
 end;
 
@@ -1477,11 +1477,14 @@ begin
   end;
 
   // format
-  case SynMemo.Lines.SaveFormat of
-    sfUTF16LSB: label_format.Caption:= 'UTF-16 Little-endian';
-    sfUTF16MSB: label_format.Caption:= 'UTF-16 Big-endian';
-    sfUTF8: label_format.Caption:= 'UTF-8';
-    sfAnsi: label_format.Caption:= 'ANSI';
+  if SynMemo.Lines.Encoding = TEncoding.Unicode then begin
+    label_format.Caption:= 'UTF-16 Little-endian';
+  end else if SynMemo.Lines.Encoding = TEncoding.BigEndianUnicode then begin
+    label_format.Caption:= 'UTF-16 Big-endian';
+  end else if SynMemo.Lines.Encoding = TEncoding.UTF8 then begin
+    label_format.Caption:= 'UTF-8';
+  end else begin
+    label_format.Caption:= 'ANSI';
   end;
 end;
 
