@@ -50,8 +50,8 @@ type
 implementation
 
 const
-  RULE_SEP = ';';
-  FIELD_SEP = '|';
+  RULE_SEP = '|';
+  FIELD_SEP = ',';
 
 {*------------------------------------------------------------------------------
   Create an instance of TCEExtColorRules
@@ -215,38 +215,34 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Rules <-> one string, for settings.xml:
-    exts|flags|color;exts|flags|color;...
-  flags is any of b, i, u. color is the TColor as a decimal integer.
+  Rules <-> one string, for settings.xml. This is the format the original
+  CubicExplorer writes to <FileView><ExtensionColors>:
+    ext;ext;ext,color,bold,italic,underline|ext;ext,color,b,i,u|...
+  color is the TColor as a decimal integer, bold/italic/underline are 0 or 1.
+  (Internally the extensions are comma separated; ';' is only the file format.)
 -------------------------------------------------------------------------------}
 function TCEExtColorRules.Serialize: string;
 var
   i: Integer;
   r: TCEExtColorRule;
-  flags: string;
 begin
   Result:= '';
   for i:= 0 to fRules.Count - 1 do begin
     r:= fRules[i];
-    flags:= '';
-    if r.Bold then begin
-      flags:= flags + 'b';
-    end;
-    if r.Italic then begin
-      flags:= flags + 'i';
-    end;
-    if r.Underline then begin
-      flags:= flags + 'u';
-    end;
     if i > 0 then begin
       Result:= Result + RULE_SEP;
     end;
-    Result:= Result + r.Extensions + FIELD_SEP + flags + FIELD_SEP + IntToStr(Integer(r.Color));
+    Result:= Result + StringReplace(r.Extensions, ',', ';', [rfReplaceAll]) +
+             FIELD_SEP + IntToStr(Integer(r.Color)) +
+             FIELD_SEP + IntToStr(Ord(r.Bold)) +
+             FIELD_SEP + IntToStr(Ord(r.Italic)) +
+             FIELD_SEP + IntToStr(Ord(r.Underline));
   end;
 end;
 
 {*------------------------------------------------------------------------------
-  Parse the string produced by Serialize. Malformed entries are skipped.
+  Parse the string produced by Serialize (or by the original CubicExplorer).
+  Malformed entries are skipped; missing trailing flags count as 0.
 -------------------------------------------------------------------------------}
 procedure TCEExtColorRules.Deserialize(const S: string);
 var
@@ -258,12 +254,12 @@ begin
   entries:= S.Split([RULE_SEP]);
   for i:= 0 to High(entries) do begin
     fields:= entries[i].Split([FIELD_SEP]);
-    if Length(fields) >= 3 then begin
+    if Length(fields) >= 2 then begin
       r.Extensions:= NormalizeExtensions(fields[0]);
-      r.Bold:= Pos('b', fields[1]) > 0;
-      r.Italic:= Pos('i', fields[1]) > 0;
-      r.Underline:= Pos('u', fields[1]) > 0;
-      r.Color:= TColor(StrToIntDef(fields[2], Integer(clDefault)));
+      r.Color:= TColor(StrToIntDef(fields[1], Integer(clDefault)));
+      r.Bold:= (Length(fields) > 2) and (StrToIntDef(fields[2], 0) <> 0);
+      r.Italic:= (Length(fields) > 3) and (StrToIntDef(fields[3], 0) <> 0);
+      r.Underline:= (Length(fields) > 4) and (StrToIntDef(fields[4], 0) <> 0);
       fRules.Add(r);
     end;
   end;

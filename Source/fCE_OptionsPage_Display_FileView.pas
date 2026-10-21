@@ -81,8 +81,7 @@ type
     procedure HandleRuleDelete(Sender: TObject);
     procedure HandleRuleSelect(Sender: TObject);
   private
-    fFontName: string;
-    fFontSize: Integer;
+    fFont: TFont;
     fLoading: Boolean;
     fRules: TCEExtColorRules;
     procedure LoadRuleControls;
@@ -116,6 +115,7 @@ begin
   PagePath:= 'Display/Fileview';
   ImageIndex:= 5;
   fRules:= TCEExtColorRules.Create;
+  fFont:= TFont.Create;
   combo_sizeformat.Items.Add(_('Default'));
   combo_sizeformat.Items.Add(_('Explorer'));
   combo_sizeformat.Items.Add(_('Actual'));
@@ -125,6 +125,7 @@ end;
 
 destructor TCE_OptionsPage_Display_FileView.Destroy;
 begin
+  fFont.Free;
   fRules.Free;
   inherited;
 end;
@@ -145,16 +146,15 @@ begin
     GlobalFileViewSettings.SingleClickBrowse:= check_singleclick.Checked;
     GlobalFileViewSettings.BrowseZipFolders:= check_browsezip.Checked;
     // Display tab
-    GlobalFileViewSettings.FontName:= fFontName;
-    GlobalFileViewSettings.FontSize:= fFontSize;
-    GlobalFileViewSettings.FontColor:= combo_fontcolor.Selected;
+    fFont.Color:= combo_fontcolor.Selected;
+    GlobalFileViewSettings.Font:= fFont;
     GlobalFileViewSettings.BackgroundColor:= combo_bgcolor.Selected;
     GlobalFileViewSettings.ShowGridLines:= check_gridlines.Checked;
     GlobalFileViewSettings.FullRowSelect:= check_fullrowselect.Checked;
     GlobalFileViewSettings.FileSizeFormat:= TVirtualFileSizeFormat(combo_sizeformat.ItemIndex);
     // Colors tab
-    GlobalFileViewSettings.ExtColorsEnabled:= check_extcolors.Checked;
-    GlobalFileViewSettings.ExtColorRules:= fRules.Serialize;
+    GlobalFileViewSettings.ExtensionColorsEnabled:= check_extcolors.Checked;
+    GlobalFileViewSettings.ExtensionColors:= fRules.Serialize;
   finally
     GlobalFileViewSettings.EndUpdate(true);
   end;
@@ -178,16 +178,15 @@ begin
     check_singleclick.Checked:= GlobalFileViewSettings.SingleClickBrowse;
     check_browsezip.Checked:= GlobalFileViewSettings.BrowseZipFolders;
     // Display tab
-    fFontName:= GlobalFileViewSettings.FontName;
-    fFontSize:= GlobalFileViewSettings.FontSize;
-    combo_fontcolor.Selected:= GlobalFileViewSettings.FontColor;
+    fFont.Assign(GlobalFileViewSettings.Font);
+    combo_fontcolor.Selected:= fFont.Color;
     combo_bgcolor.Selected:= GlobalFileViewSettings.BackgroundColor;
     check_gridlines.Checked:= GlobalFileViewSettings.ShowGridLines;
     check_fullrowselect.Checked:= GlobalFileViewSettings.FullRowSelect;
     combo_sizeformat.ItemIndex:= Ord(GlobalFileViewSettings.FileSizeFormat);
     UpdatePreview;
     // Colors tab: work on a copy of the rules, written back on Apply
-    check_extcolors.Checked:= GlobalFileViewSettings.ExtColorsEnabled;
+    check_extcolors.Checked:= GlobalFileViewSettings.ExtensionColorsEnabled;
     fRules.Deserialize(GlobalFileViewSettings.ExtColors.Serialize);
     list_rules.Items.BeginUpdate;
     try
@@ -229,11 +228,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCE_OptionsPage_Display_FileView.HandleFontButton(Sender: TObject);
 begin
-  font_dialog.Font.Name:= panel_preview.Font.Name;
-  font_dialog.Font.Size:= panel_preview.Font.Size;
+  font_dialog.Font.Assign(fFont);
   if font_dialog.Execute then begin
-    fFontName:= font_dialog.Font.Name;
-    fFontSize:= font_dialog.Font.Size;
+    fFont.Assign(font_dialog.Font);
+    fFont.Color:= combo_fontcolor.Selected;  // color has its own box on this page
     UpdatePreview;
     SetModified;
   end;
@@ -345,23 +343,11 @@ end;
   Preview panel: chosen font name/size/color on the chosen background
 -------------------------------------------------------------------------------}
 procedure TCE_OptionsPage_Display_FileView.UpdatePreview;
-var
-  fontName: string;
-  size: Integer;
 begin
-  fontName:= fFontName;
-  if fontName = '' then begin
-    fontName:= Screen.IconFont.Name;
-  end;
-  size:= fFontSize;
-  if size <= 0 then begin
-    size:= Screen.IconFont.Size;
-  end;
-  panel_preview.Font.Name:= fontName;
-  panel_preview.Font.Size:= size;
+  panel_preview.Font.Assign(fFont);
   panel_preview.Font.Color:= combo_fontcolor.Selected;
   panel_preview.Color:= combo_bgcolor.Selected;
-  panel_preview.Caption:= Format('%s %dpt', [fontName, size]);
+  panel_preview.Caption:= Format('%s %dpt', [fFont.Name, fFont.Size]);
 end;
 
 procedure TCE_OptionsPage_Display_FileView.UpdateRuleEnabled;
