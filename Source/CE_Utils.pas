@@ -572,53 +572,39 @@ procedure ReplaceSystemVariablePath(var Path: WideString);
     Result:= StringReplace(Path, Variable, VarPath, [rfReplaceAll, rfIgnoreCase])
   end;
 
+  // CubicAdventurer: the Windows 9x (ANSI) branch is removed. If the user token
+  // cannot be opened, the path is returned unchanged (the old code returned an
+  // empty string in that case).
   function CEExpandEnviromentStringForUser(APath: WideString): WideString;
   var
-    EnviromentStringA, ResultA: AnsiString;
     Token: THandle;
   begin
+    Result:= APath;
     if Assigned(ExpandEnvironmentStringsForUserW_MP) then
     begin
       if OpenProcessToken(GetCurrentProcess, TOKEN_IMPERSONATE or TOKEN_QUERY, Token) then
       begin
         SetLength(Result, 1024);
         ExpandEnvironmentStringsForUserW_MP(Token, PWideChar(APath), PWideChar(@Result[1]), 1024);
-        SetLength(Result, lstrlenW(PWideChar( Result)));
-        CloseHandle(Token)
-      end
-    end
-    else
-    begin
-      if Assigned(ExpandEnvironmentStringsForUserA_MP) then
-      begin
-        if OpenProcessToken(GetCurrentProcess, TOKEN_IMPERSONATE or TOKEN_QUERY, Token) then
-        begin
-          EnviromentStringA:= APath;
-          SetLength(ResultA, 1024);
-          ExpandEnvironmentStringsForUserA_MP(Token, PAnsiChar(EnviromentStringA), PAnsiChar( @ResultA[1]), 1024);
-          SetLength(ResultA, lstrlenA(PAnsiChar( ResultA)));
-          Result:= ResultA;
-          CloseHandle(Token)
-        end
-      end
-    end
+        SetLength(Result, lstrlenW(PWideChar(Result)));
+        CloseHandle(Token);
+      end;
+    end;
   end;
 
+  // CubicAdventurer: the standard ExpandEnvironmentStringsW replaces the
+  // Mustangpeak ExpandEnvironmentStringsW_MP wrapper.
   function CEExpandEnviromentString(APath: WideString): WideString;
   var
-    Length: Integer;
+    Len: Integer;
   begin
-    if Assigned(ExpandEnvironmentStringsW_MP) then
+    Result:= APath;
+    Len:= ExpandEnvironmentStringsW(PWideChar(APath), nil, 0);
+    if Len > 0 then
     begin
-      Length:= ExpandEnvironmentStringsW_MP(PWideChar( APath), nil, 0);
-      if Length > 0 then
-      begin
-        SetLength(Result, Length - 1); // Includes the null
-        ExpandEnvironmentStringsW_MP( PWideChar( APath), PWideChar(@Result[1]), Length);
-      end
-    end
-    else
-    Result:= WideExpandEnviromentString(APath);
+      SetLength(Result, Len - 1); // Len includes the terminating null
+      ExpandEnvironmentStringsW(PWideChar(APath), PWideChar(Result), Len);
+    end;
   end;
 
 
@@ -1488,20 +1474,15 @@ begin
 
   // get info size
   Handle:= 0;
-  if IsUnicode then
-  Size:= GetFileVersionInfoSizeW(PWideChar(FileName), Handle)
-  else
-  Size:= GetFileVersionInfoSizeA(PChar(String(FileName)), Handle);
+  // CubicAdventurer: Unicode API only (the ANSI branch no longer compiles: PChar is PWideChar)
+  Size:= GetFileVersionInfoSizeW(PWideChar(FileName), Handle);
 
   if Size = 0 then
   raise ECEFileVersionInfoError.CreateRes(@RsFileUtilsNoVersionInfo);
 
   // get info
   SetLength(FBuffer, Size);
-  if IsUnicode then
-  Win32Check(GetFileVersionInfoW(PWideChar(FileName), Handle, Size, PAnsiChar(FBuffer)))
-  else
-  Win32Check(GetFileVersionInfoA(PChar(String(FileName)), Handle, Size, PAnsiChar(FBuffer)));
+  Win32Check(GetFileVersionInfoW(PWideChar(FileName), Handle, Size, PAnsiChar(FBuffer)));
 
   // extract data
   ExtractData;
