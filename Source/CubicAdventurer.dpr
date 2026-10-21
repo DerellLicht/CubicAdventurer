@@ -125,10 +125,8 @@ uses
   CE_ToolbarEditorItems in 'CE_ToolbarEditorItems.pas',
   // EasyListview in 'Components\Mustangpeak\EasyListview\EasyListview.pas',
   EasyListview,
-  // revival: the installed library's VirtualExplorerEasyListview raises an ERangeError in
-  // TExtensionColorCode.SetExtensionMask (WideValidateDelimitedExtList), so use the
-  // vendored 1582 copy, which has a local replacement.
-  VirtualExplorerEasyListview in 'Components\Mustangpeak\VSTools\VirtualExplorerEasyListview.pas',
+  // VirtualExplorerEasyListview in 'Components\Mustangpeak\VSTools\VirtualExplorerEasyListview.pas',
+  VirtualExplorerEasyListview,
   fCE_OptionsPage_Display_Stack in 'fCE_OptionsPage_Display_Stack.pas' {CE_OptionsPage_Display_Stack: TFrame},
   AppCommand in 'AppCommand.pas',
   fCE_ItemSelectSaveDlg in 'fCE_ItemSelectSaveDlg.pas' {CEItemSelectSaveDlg},
