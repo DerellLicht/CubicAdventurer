@@ -1,0 +1,64 @@
+package CE_Design;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'CubicAdventurer design-time components (TCEToolbar, TCEToolbarAction, ...)'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+// CubicAdventurer design-time package. Replaces the old Source\CEToolbar.dpk
+// and Components\CEAction\CE_Actions.dpk, which required obsolete BDS 2006
+// package names (tb2k_d10, tb2kdsgn_d10, SpTBXLib_d10, TntUnicodeVcl).
+//
+// It exists only so the IDE can load the forms (dCE_Actions.dfm, Main.dfm, ...)
+// without "Class TCEToolbar not found". CubicAdventurer.exe does not use it:
+// the exe compiles these units from source.
+//
+// Build/install it from the IDE (Community Edition has no command-line
+// compiler): open this file, Project > Build, then Install. Do not install it
+// before Toolbar2000 and SpTBXLib are installed.
+//
+// TPngImageList comes from the installed PngComponents package, not from here
+// (listing its unit here would clash with that package).
+
+requires
+  rtl,
+  vcl,
+  vclx,
+  designide,
+  tb2k_d12,
+  tb2kdsgn_d12,
+  SpTBXLib;
+
+contains
+  CE_Toolbar in 'CE_Toolbar.pas',
+  CE_SpTBXItems in 'CE_SpTBXItems.pas',
+  CE_ToolbarEditorItems in 'CE_ToolbarEditorItems.pas',
+  CE_ToolbarReg in 'CE_ToolbarReg.pas',
+  CE_TBActions in '..\Components\CEAction\CE_TBActions.pas',
+  CE_ActionsReg in 'CE_ActionsReg.pas';
+
+end.
