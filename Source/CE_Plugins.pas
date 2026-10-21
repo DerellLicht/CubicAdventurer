@@ -319,6 +319,51 @@ type
 
 implementation
 
+{-------------------------------------------------------------------------------
+  WideEncodeLineBreaks / WideDecodeLineBreaks
+
+  revival: these came from the removed TNT Unicode Controls. They let a value
+  that contains line breaks be stored on one "name=value" line:
+  backslash -> \\, CR -> \r, LF -> \n. Decode reverses it.
+-------------------------------------------------------------------------------}
+function WideEncodeLineBreaks(const AValue: WideString): WideString;
+var
+  i: Integer;
+begin
+  Result:= '';
+  for i:= 1 to Length(AValue) do begin
+    case AValue[i] of
+      '\': Result:= Result + '\\';
+      #13: Result:= Result + '\r';
+      #10: Result:= Result + '\n';
+    else
+      Result:= Result + AValue[i];
+    end;
+  end;
+end;
+
+function WideDecodeLineBreaks(const AValue: WideString): WideString;
+var
+  i: Integer;
+begin
+  Result:= '';
+  i:= 1;
+  while i <= Length(AValue) do begin
+    if (AValue[i] = '\') and (i < Length(AValue)) then begin
+      Inc(i);
+      case AValue[i] of
+        'r': Result:= Result + #13;
+        'n': Result:= Result + #10;
+      else
+        Result:= Result + AValue[i];
+      end;
+    end else begin
+      Result:= Result + AValue[i];
+    end;
+    Inc(i);
+  end;
+end;
+
 const
   BoolTrueStr: WideString = 'True';
   BoolFalseStr: WideString = 'False';
@@ -1681,7 +1726,7 @@ begin
     item:= fItems.Items[AIndex];
 
     // compare name
-    i:= ccStrings.AnsiCompareText(item.AName, AName);
+    i:= SysUtils.AnsiCompareText(item.AName, AName);
 
     if i < 0 then
     loI:= AIndex+1
