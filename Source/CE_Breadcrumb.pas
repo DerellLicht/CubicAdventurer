@@ -151,11 +151,9 @@ begin
 
   // draw text
   InflateRect(ARect, -3, 0);
-  Buffer.Font.Color:= SkinManager.CurrentSkin.GetTextColor(skncToolbarItem, state);
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-  Buffer.Textout(ARect,DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS, Caption)
-  else
-  Buffer.TextoutW(ARect,DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS, Caption);
+  Buffer.Font.Color:= SkinManager.CurrentSkin.GetTextColor(nil, skncToolbarItem, state);
+  // revival: TBitmap32.Textout is Unicode now, no separate TextoutW needed
+  Buffer.Textout(ARect,DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS, Caption);
 end;
 
 {*------------------------------------------------------------------------------
