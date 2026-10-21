@@ -316,7 +316,7 @@ function SpReadExifThumbnail(FileName: WideString; Exif: TTntStringList): TJpegI
   {$IFDEF COMPILER_7_UP}
   function SpReadExifThumbnail(FileName: WideString; Exif: TStringList): TJpegImage;
   {$ELSE}
-  function SpReadExifThumbnail(FileName: WideString; Exif: TStringListEx): TJpegImage;
+  function SpReadExifThumbnail(FileName: WideString; Exif: TStringList): TJpegImage;
   {$ENDIF}
 {$ENDIF}
 
@@ -862,11 +862,11 @@ var
   {$IFDEF TNTSUPPORT}
   Exif: TTntStringList;
   {$ELSE}
-    // Delphi 5-6 doesn't have ValueFromIndex, use TStringListEx instead of TStringList
+    // Delphi 5-6 doesn't have ValueFromIndex, use TStringList instead of TStringList
     {$IFDEF COMPILER_7_UP}
     Exif: TStringList;
     {$ELSE}
-    Exif: TStringListEx;
+    Exif: TStringList;
     {$ENDIF}
   {$ENDIF}
   HasExifThumb: Boolean;
@@ -886,11 +886,11 @@ begin
       {$IFDEF TNTSUPPORT}
       Exif := TTntStringList.Create;
       {$ELSE}
-        // Delphi 5-6 doesn't have ValueFromIndex, use TStringListEx instead of TStringList
+        // Delphi 5-6 doesn't have ValueFromIndex, use TStringList instead of TStringList
         {$IFDEF COMPILER_7_UP}
         Exif := TStringList.Create;
         {$ELSE}
-        Exif := TStringListEx.Create;
+        Exif := TStringList.Create;
         {$ENDIF}
       {$ENDIF}
       try
@@ -1007,7 +1007,7 @@ begin
       if NS.Folder then
       begin
         // The standard size for the folder image is 96x96
-        if Win32PlatformIsVista then
+        if CheckWin32Version(6) then
         begin
           NS.ExtractImage.Width:= ThumbW;
           NS.ExtractImage.Height:= ThumbH;
@@ -1075,11 +1075,11 @@ end;
 {$IFDEF TNTSUPPORT}
 function SpReadExif(F: TVirtualFileStream; Exif: TTntStringList; var Ofs: LongWord): Boolean;
 {$ELSE}
-  // Delphi 5-6 doesn't have ValueFromIndex, use TStringListEx instead of TStringList
+  // Delphi 5-6 doesn't have ValueFromIndex, use TStringList instead of TStringList
   {$IFDEF COMPILER_7_UP}
   function SpReadExif(F: TVirtualFileStream; Exif: TStringList; var Ofs: LongWord): Boolean;
   {$ELSE}
-  function SpReadExif(F: TVirtualFileStream; Exif: TStringListEx; var Ofs: LongWord): Boolean;
+  function SpReadExif(F: TVirtualFileStream; Exif: TStringList; var Ofs: LongWord): Boolean;
   {$ENDIF}
 {$ENDIF}
 var
@@ -1262,11 +1262,11 @@ end;
 {$IFDEF TNTSUPPORT}
 function SpReadExifThumbnail(FileName: WideString; Exif: TTntStringList): TJpegImage;
 {$ELSE}
-  // Delphi 5-6 doesn't have ValueFromIndex, use TStringListEx instead of TStringList
+  // Delphi 5-6 doesn't have ValueFromIndex, use TStringList instead of TStringList
   {$IFDEF COMPILER_7_UP}
   function SpReadExifThumbnail(FileName: WideString; Exif: TStringList): TJpegImage;
   {$ELSE}
-  function SpReadExifThumbnail(FileName: WideString; Exif: TStringListEx): TJpegImage;
+  function SpReadExifThumbnail(FileName: WideString; Exif: TStringList): TJpegImage;
   {$ENDIF}
 {$ENDIF}
 
@@ -1635,7 +1635,7 @@ begin
       // If it's a folder stretch the bitmap to fit the thumbnail
       // If Stretch is true it will be stretched anyway
       if not Stretch then
-        Stretch := WideDirectoryExists(FileName);
+        Stretch := DirectoryExists(FileName);
 
       DestR := SpRectAspectRatio(B.Width, B.Height, CellSize.X, CellSize.Y, Alignment, Stretch);
       OffsetRect(DestR, ARect.Left, ARect.Top);
@@ -1879,7 +1879,7 @@ begin
         T := TThumbInfo.Create;
         try
           T.LoadFromStream(FileStream);
-          if FileExistsW(T.Filename) then
+          if FileExists(T.Filename) then
             Add(T)
           else begin
             // The file is not valid, don't add it
@@ -2188,7 +2188,7 @@ begin
   Result := False;
   L.Clear;
   S := StorageRepositoryFolder + 'AlbumList.txt';
-  if FileExistsW(S) then begin
+  if FileExists(S) then begin
     L.LoadFromFile(S);
     Result := True;
   end;
@@ -2209,7 +2209,7 @@ var
 begin
   Result := '';
   if Dir <> '' then begin
-    Dir := WideIncludeTrailingBackslash(Dir);
+    Dir := IncludeTrailingPathDelimiter(Dir);
     case FStorageType of
       tasPerFolder:
         if FStorageFilename <> '' then
@@ -2247,13 +2247,13 @@ var
 begin
   Result := '';
   if Dir <> '' then begin
-    Dir := WideIncludeTrailingBackslash(Dir);
+    Dir := IncludeTrailingPathDelimiter(Dir);
     case FStorageType of
       tasPerFolder:
         if FStorageFilename <> '' then
           Result := Dir + FStorageFilename;
       tasRepository:
-        if (FStorageRepositoryFolder <> '') and (WideDirectoryExists(FStorageRepositoryFolder) or WideCreateDir(FStorageRepositoryFolder)) then begin
+        if (FStorageRepositoryFolder <> '') and (DirectoryExists(FStorageRepositoryFolder) or ForceDirectories(FStorageRepositoryFolder)) then begin
           {$IFDEF TNTSUPPORT}
           L := TTntStringList.Create;
           {$ELSE}
@@ -2273,7 +2273,7 @@ begin
                 F := WideExtractFileName(WideStripTrailingBackslash(Dir));  // NameForParsingInFolder
               Result := F + '.album';
               I := 0;
-              while FileExistsW(FStorageRepositoryFolder + Result) do begin
+              while FileExists(FStorageRepositoryFolder + Result) do begin
                 inc(I);
                 Result := F + '.' + IntToStr(I) + '.album';
               end;
@@ -2305,7 +2305,7 @@ procedure TCustomThumbsManager.SetStorageRepositoryFolder(const Value: WideStrin
 begin
   FStorageRepositoryFolder:= Value;
   if FStorageRepositoryFolder <> '' then
-    FStorageRepositoryFolder := WideIncludeTrailingBackslash(FStorageRepositoryFolder);
+    FStorageRepositoryFolder := IncludeTrailingPathDelimiter(FStorageRepositoryFolder);
 end;
 
 end.
