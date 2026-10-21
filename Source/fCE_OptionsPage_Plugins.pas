@@ -11,7 +11,7 @@ uses
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SpTBXTabs, TB2Item, SpTBXItem, ComCtrls, VirtualTrees,
-  SpTBXControls, ExtCtrls, StdCtrls, ImagingComponents;
+  SpTBXControls, ExtCtrls, StdCtrls;
 
 type
   PPlugData = ^APlugData;
