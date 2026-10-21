@@ -572,7 +572,7 @@ begin
     
     SetLength(s, 255);
     AMGetErrorText(hr, PChar(s), 255);
-    AnsiTrunkFromNull(s);
+    SetLength(s, StrLen(PChar(s))); // cut at the terminating #0 (s is a Unicode string)
     fErrorMsg:= s;
     ChangeStatus(mpsError);
     
