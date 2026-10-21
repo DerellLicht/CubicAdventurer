@@ -166,7 +166,8 @@ type
     fBackgroundColor: TColor;
     fExtColors: TCEExtColorRules;
     fExtColorsEnabled: Boolean;
-    fFont: TFont;
+    fFontColor: TColor;
+    fFontName: string;
     fFullRowSelect: Boolean;
     fHiddenFiles: Boolean;
     fSelectPreviousFolder: Boolean;
@@ -179,6 +180,7 @@ type
     fFileSizeFormat: TVirtualFileSizeFormat;
     fFilmstrip: TCEFilmstripSettings;
     fFolderUpOnDblClick: Boolean;
+    fFontSize: Integer;
     fFullRowDblClick: Boolean;
     fGroupBy: TCEGroupBySettings;
     fInfoBarSize: Integer;
@@ -211,11 +213,13 @@ type
     procedure SetBackgroundColor(const Value: TColor);
     procedure SetExtColorRules(const Value: string);
     procedure SetExtColorsEnabled(const Value: Boolean);
-    procedure SetFont(const Value: TFont);
+    procedure SetFontColor(const Value: TColor);
+    procedure SetFontName(const Value: string);
     function GetExtColorRules: string;
     procedure SetCheckBoxSelection(const Value: Boolean);
     procedure SetFileSizeFormat(const Value: TVirtualFileSizeFormat);
     procedure SetFolderUpOnDblClick(const Value: Boolean);
+    procedure SetFontSize(const Value: Integer);
     procedure SetFullRowDblClick(const Value: Boolean);
     procedure SetSelectPasted(const Value: Boolean);
     procedure SetShowInfoTips(const Value: Boolean);
@@ -252,10 +256,10 @@ type
     property ExtColors: TCEExtColorRules read fExtColors;
   published
     property BackgroundColor: TColor read fBackgroundColor write SetBackgroundColor;
-    // Same names as the original CubicExplorer's settings.xml (<FileView>):
-    property ExtensionColors: string read GetExtColorRules write SetExtColorRules;
-    property ExtensionColorsEnabled: Boolean read fExtColorsEnabled write SetExtColorsEnabled;
-    property Font: TFont read fFont write SetFont;
+    property ExtColorRules: string read GetExtColorRules write SetExtColorRules;
+    property ExtColorsEnabled: Boolean read fExtColorsEnabled write SetExtColorsEnabled;
+    property FontColor: TColor read fFontColor write SetFontColor;
+    property FontName: string read fFontName write SetFontName;
     property ArrowBrowse: Boolean read fArrowBrowse write SetArrowBrowse;
     property SelectPreviousFolder: Boolean read fSelectPreviousFolder write
         SetSelectPreviousFolder;
@@ -274,6 +278,7 @@ type
     property Filmstrip: TCEFilmstripSettings read fFilmstrip write fFilmstrip;
     property FolderUpOnDblClick: Boolean read fFolderUpOnDblClick write
         SetFolderUpOnDblClick;
+    property FontSize: Integer read fFontSize write SetFontSize;
     property FullRowDblClick: Boolean read fFullRowDblClick write
         SetFullRowDblClick;
     property FullRowSelect: Boolean read fFullRowSelect write SetFullRowSelect;
@@ -1098,8 +1103,8 @@ begin
   fExtColors.LoadDefaults;
   fExtColorsEnabled:= true;
   fBackgroundColor:= clWindow;
-  fFont:= TFont.Create;
-  SetDesktopIconFonts(fFont);
+  fFontColor:= clWindowText;
+  fFontName:= '';
   Filmstrip.ThumbPos:= alBottom;
   Filmstrip.ThumbStyle:= elsFilmstrip;
   Filmstrip.ThumbSize:= 120;
@@ -1110,6 +1115,7 @@ begin
   fSingleClickBrowse:= false;
   fFileSizeFormat:= vfsfDefault;
   fArrowBrowse:= true;
+  fFontSize:= -1;
   fFolderUpOnDblClick:= true;
   fFullRowDblClick:= false;
   fSelectPasted:= true;
@@ -1127,7 +1133,6 @@ begin
   fCellSizes.Free;
   fFilmstrip.Free;
   fExtColors.Free;
-  fFont.Free;
   inherited;
 end;
 
@@ -1206,8 +1211,16 @@ begin
     // Misc
     FileViewPage.FileView.FileSizeFormat:= fFileSizeFormat;
     FileViewPage.FileView.ArrowBrowse:= fArrowBrowse;
-    // Font and colors (Options > Fileview > Display)
-    FileViewPage.FileView.Font.Assign(fFont);
+    // Font and colors (Options > Fileview > Display). Start from the desktop
+    // icon font, then apply whatever the user has chosen.
+    SetDesktopIconFonts(FileViewPage.FileView.Font);
+    if fFontName <> '' then begin
+      FileViewPage.FileView.Font.Name:= fFontName;
+    end;
+    if FontSize > 0 then begin
+      FileViewPage.FileView.Font.Size:= FontSize;
+    end;
+    FileViewPage.FileView.Font.Color:= fFontColor;
     FileViewPage.FileView.Color:= fBackgroundColor;
     // Extension colors (Options > Fileview > Colors): the view reads the shared list
     if fExtColorsEnabled then begin
@@ -1643,10 +1656,24 @@ begin
   SendChanges;
 end;
 
-procedure TCEFileViewSettings.SetFont(const Value: TFont);
+procedure TCEFileViewSettings.SetFontColor(const Value: TColor);
 begin
-  fFont.Assign(Value);
+  fFontColor:= Value;
   SendChanges;
+end;
+
+procedure TCEFileViewSettings.SetFontName(const Value: string);
+begin
+  fFontName:= Value;
+  SendChanges;
+end;
+
+{-------------------------------------------------------------------------------
+  Set FontSize
+-------------------------------------------------------------------------------}
+procedure TCEFileViewSettings.SetFontSize(const Value: Integer);
+begin
+  fFontSize:= Value;
 end;
 
 {-------------------------------------------------------------------------------
