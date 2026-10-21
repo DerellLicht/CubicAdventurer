@@ -118,6 +118,7 @@ type
     function CanDragCustomize(Button: TMouseButton; Shift: TShiftState; X, Y:
         Integer): Boolean; override;
     procedure DoAutofit; virtual;
+    procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DoItemNotification(Ancestor: TTBCustomItem; Relayed: Boolean; Action:
         TTBItemChangedAction; Index: Integer; Item: TTBCustomItem); override;
     procedure DragOver(Source: TObject; X: Integer; Y: Integer; State: TDragState;
@@ -309,6 +310,23 @@ implementation
 uses
   Main, dCE_Actions, fCE_FileView, CE_LanguageEngine, dCE_Images, Math,
   CE_VistaFuncs;
+
+
+{$DEFINE CE_TAB_DRAG_DEBUG}  // TEMPORARY: logs tab drag reorder steps to the debugger event log
+
+{$IFDEF CE_TAB_DRAG_DEBUG}
+var
+  gTabDragLastLog: string;
+
+procedure TabDragLog(const AMsg: string; AOnlyIfChanged: Boolean = False);
+begin
+  if AOnlyIfChanged and (AMsg = gTabDragLastLog) then begin
+    Exit;
+  end;
+  gTabDragLastLog:= AMsg;
+  OutputDebugString(PChar('TabDrag: ' + AMsg));
+end;
+{$ENDIF}
 
 {##############################################################################}
 
@@ -1538,6 +1556,14 @@ begin
   if not (csDesigning in ComponentState) and (Button = mbLeft) then
   begin
     IV := SpGetItemViewerFromPoint(Items, View, Point(X, Y));
+    {$IFDEF CE_TAB_DRAG_DEBUG}
+    if Assigned(IV) then begin
+      TabDragLog(Format('CanDragCustomize: viewer=%s checked=%d TabDragReorder=%d IsCustomizing=%d',
+        [IV.ClassName, Ord(Assigned(IV.Item) and IV.Item.Checked), Ord(TabDragReorder), Ord(IsCustomizing)]));
+    end else begin
+      TabDragLog('CanDragCustomize: no viewer at point');
+    end;
+    {$ENDIF}
     if Assigned(IV) and (IV is TCESpTabItemViewer) and Assigned(IV.Item) and IV.Item.Enabled and IV.Item.Visible then
     begin
       // Close the tab if the close button is pressed
@@ -1561,12 +1587,34 @@ begin
           Result:= True; // Bypass the inherited mouse down
           FBeginDragIV := IV;
           BeginDrag(False, 2);
+          {$IFDEF CE_TAB_DRAG_DEBUG}
+          TabDragLog('CanDragCustomize: BeginDrag called');
+          {$ENDIF}
         end;
       end;
     end
     else
       Result := inherited CanDragCustomize(Button, Shift, X, Y);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  DoStartDrag (TEMPORARY diagnostics, then the inherited SpTBX code)
+-------------------------------------------------------------------------------}
+procedure TCESpTabToolbar.DoStartDrag(var DragObject: TDragObject);
+begin
+  {$IFDEF CE_TAB_DRAG_DEBUG}
+  TabDragLog(Format('DoStartDrag: TabDragReorder=%d FBeginDragIV=%d',
+    [Ord(TabDragReorder), Ord(Assigned(FBeginDragIV))]));
+  {$ENDIF}
+  inherited DoStartDrag(DragObject);
+  {$IFDEF CE_TAB_DRAG_DEBUG}
+  if Assigned(DragObject) then begin
+    TabDragLog('DoStartDrag: DragObject=' + DragObject.ClassName);
+  end else begin
+    TabDragLog('DoStartDrag: DragObject=nil');
+  end;
+  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -1760,6 +1808,12 @@ begin
     end;
   end;  
 
+  {$IFDEF CE_TAB_DRAG_DEBUG}
+  if Assigned(Source) then begin
+    TabDragLog(Format('DragOver: Source=%s TabDragReorder=%d', [Source.ClassName, Ord(TabDragReorder)]), True);
+  end;
+  {$ENDIF}
+
   // Handle Tab dragging
   if TabDragReorder and Assigned(Source) and (Source is TSpTBXTabItemDragObject) then
   begin
@@ -1774,6 +1828,10 @@ begin
       begin
         Accept:= true;
         SpGetDropPosItemViewer(Items, View, Point(X, Y), OrigPos, DestIV, DestPos);
+        {$IFDEF CE_TAB_DRAG_DEBUG}
+        TabDragLog(Format('DragOver: OrigPos=%d DestPos=%d Count=%d LeftArrow=%d RightArrow=%d',
+          [OrigPos, DestPos, Items.Count, Items.IndexOf(LeftArrow), Items.IndexOf(RightArrow)]), True);
+        {$ENDIF}
 
         if (OrigPos <> DestPos) and (DestPos > -1) and (DestPos < Items.Count) and (OrigItem <> DestIV.Item) and
           (DestPos > Items.IndexOf(LeftArrow)) and (DestPos < Items.IndexOf(RightArrow)) then
