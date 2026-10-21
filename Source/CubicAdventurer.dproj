@@ -72,7 +72,7 @@
         <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=1.0.0.0;InternalName=;LegalCopyright=Marko Savolainen 2006-2012; Derell Licht 2026;LegalTrademarks=;OriginalFilename=;ProductName=CubicAdventurer;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -109,7 +109,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Components\Mustangpeak\CommonLibrary\MPShellUtilities.pas"/>
         <DCCReference Include="Main.pas">
             <Form>MainForm</Form>
         </DCCReference>
@@ -285,10 +284,7 @@
         </DCCReference>
         <DCCReference Include="CE_Stacks.pas"/>
         <DCCReference Include="CE_StackTree.pas"/>
-        <DCCReference Include="Components\Tb2K\TB2Item.pas"/>
         <DCCReference Include="CE_ToolbarEditorItems.pas"/>
-        <DCCReference Include="Components\Mustangpeak\EasyListview\EasyListview.pas"/>
-        <DCCReference Include="Components\Mustangpeak\VSTools\VirtualExplorerEasyListview.pas"/>
         <DCCReference Include="fCE_OptionsPage_Display_Stack.pas">
             <Form>CE_OptionsPage_Display_Stack</Form>
             <DesignClass>TFrame</DesignClass>
@@ -297,7 +293,6 @@
         <DCCReference Include="fCE_ItemSelectSaveDlg.pas">
             <Form>CEItemSelectSaveDlg</Form>
         </DCCReference>
-        <DCCReference Include="Components\Mustangpeak\VSTools\VirtualExplorerTree.pas"/>
         <DCCReference Include="CE_XmlUtils.pas"/>
         <DCCReference Include="Components\CubicCore\CC_Threads.pas"/>
         <DCCReference Include="CE_ArchiveTree.pas"/>
