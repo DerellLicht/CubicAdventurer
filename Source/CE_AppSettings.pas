@@ -338,7 +338,10 @@ begin
             // set property value
             case propInfo.PropType^.Kind of
               // String
-              tkString, tkLString: begin
+              // (CubicAdventurer: tkUString added; since Delphi 2009 every plain
+              //  'string' property has this type kind. Without it all string
+              //  properties, e.g. the theme, were silently skipped.)
+              tkString, tkLString, tkUString: begin
                 SetStrProp(AObject, propInfo, node.TextContent);
               end;
               // WideString
@@ -474,7 +477,8 @@ begin
             begin
               case propInfo.PropType^.Kind of
                 // String
-                tkString, tkLString: begin
+                // (CubicAdventurer: tkUString added, see LoadObjectProperties)
+                tkString, tkLString, tkUString: begin
                   propValue:= GetStrProp(AObject, propInfo);
                   addNode:= (saveDefault or (propValue <> ''));
                 end;
