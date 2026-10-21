@@ -336,10 +336,16 @@ var
         TreeZone.VSPaneWidth := ReadInteger('VSPaneWidth');
         
         TreeZone.Visible := ReadBoolean('Visible');
+        // CubicAdventurer: range checking off for these assignments. JvDock stores
+        // BorderStyle in a narrower type than TFormBorderStyle (layout.xml files from
+        // the original CubicExplorer contain 5 = bsSizeToolWin), so with range checking
+        // on (Debug builds) the assignment raised ERangeError at startup.
+        {$IFOPT R+}{$R-}{$DEFINE CE_DOCKINFO_R_WAS_ON}{$ENDIF}
         TreeZone.BorderStyle:= TFormBorderStyle(ReadEnumOrd('BorderStyle', Ord(High(TFormBorderStyle))));
         TreeZone.FormStyle := TFormStyle(ReadEnumOrd('FormStyle', Ord(High(TFormStyle))));
         TreeZone.WindowState := TWindowState(ReadEnumOrd('WindowState', Ord(High(TWindowState))));
         TreeZone.DockFormStyle := TJvDockFormStyle(ReadEnumOrd('DockFormStyle', Ord(High(TJvDockFormStyle))));
+        {$IFDEF CE_DOCKINFO_R_WAS_ON}{$R+}{$UNDEF CE_DOCKINFO_R_WAS_ON}{$ENDIF}
         TreeZone.CanDocked := ReadBoolean('CanDocked');
         TreeZone.EachOtherDocked := ReadBoolean('EachOtherDocked');
 
