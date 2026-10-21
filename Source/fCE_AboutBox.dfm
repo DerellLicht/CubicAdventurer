@@ -3,7 +3,7 @@ object CEAboutBox: TCEAboutBox
   Top = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'About CubicExplorer'
+  Caption = 'About CubicAdventurer'
   ClientHeight = 352
   ClientWidth = 450
   Color = clBtnFace
@@ -979,9 +979,10 @@ object CEAboutBox: TCEAboutBox
     Gutter.Visible = False
     Highlighter = SynURISyn1
     Lines.Strings = (
-      'Copyright 2006-2012 Marko Savolainen.'#13#10#13#10 +
-      'Homepage - http://www.cubicreality.com'#13#10 +
-      'Support - http://www.cubicreality.com/forum'#13#10#13#10 +
+      'Copyright 2006-2012 Marko Savolainen.'#13#10 +
+      'Copyright 2026 Derell Licht.'#13#10#13#10 +
+      'Homepage - https://github.com/DerellLicht/CubicAdventurer'#13 +
+      #10#13#10 +
       '======================================================'#13#10 +
       '   CubicExplorer uses the following 3rd party Delphi components' +
       #13#10'======================================================' +
