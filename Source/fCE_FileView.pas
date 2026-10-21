@@ -27,7 +27,7 @@ uses
   // CE Units
   fCE_TabPage, CE_FileView, CE_GlobalCtrl, CE_Utils,
   dCE_Images, CE_ContextMenu, CE_LanguageEngine, CE_AppSettings,
-  CE_InfoBar, CE_FileUtils, fCE_QuickView, CE_ExtColors,
+  CE_InfoBar, CE_FileUtils, fCE_QuickView,
   // EasyListview
   EasyListview, 
   // VSTools
@@ -163,11 +163,6 @@ type
   TCEFileViewSettings = class(TPersistent)
   private
     fArrowBrowse: Boolean;
-    fBackgroundColor: TColor;
-    fExtColors: TCEExtColorRules;
-    fExtColorsEnabled: Boolean;
-    fFontColor: TColor;
-    fFontName: string;
     fFullRowSelect: Boolean;
     fHiddenFiles: Boolean;
     fSelectPreviousFolder: Boolean;
@@ -210,12 +205,6 @@ type
     procedure SetAutoSelectFirstItem(const Value: Boolean);
     procedure SetAutosizeListViewStyle(const Value: Boolean);
     procedure SetBrowseZipFolders(const Value: Boolean);
-    procedure SetBackgroundColor(const Value: TColor);
-    procedure SetExtColorRules(const Value: string);
-    procedure SetExtColorsEnabled(const Value: Boolean);
-    procedure SetFontColor(const Value: TColor);
-    procedure SetFontName(const Value: string);
-    function GetExtColorRules: string;
     procedure SetCheckBoxSelection(const Value: Boolean);
     procedure SetFileSizeFormat(const Value: TVirtualFileSizeFormat);
     procedure SetFolderUpOnDblClick(const Value: Boolean);
@@ -253,13 +242,7 @@ type
     procedure BeginUpdate;
     procedure ClearFilters;
     procedure EndUpdate(ASendChanges: Boolean = false);
-    property ExtColors: TCEExtColorRules read fExtColors;
   published
-    property BackgroundColor: TColor read fBackgroundColor write SetBackgroundColor;
-    property ExtColorRules: string read GetExtColorRules write SetExtColorRules;
-    property ExtColorsEnabled: Boolean read fExtColorsEnabled write SetExtColorsEnabled;
-    property FontColor: TColor read fFontColor write SetFontColor;
-    property FontName: string read fFontName write SetFontName;
     property ArrowBrowse: Boolean read fArrowBrowse write SetArrowBrowse;
     property SelectPreviousFolder: Boolean read fSelectPreviousFolder write
         SetSelectPreviousFolder;
@@ -1099,12 +1082,6 @@ begin
   fGroupBy:= TCEGroupBySettings.Create;
   fCellSizes:= TCECellSizeSettings.Create;
   fFilmstrip:= TCEFilmstripSettings.Create;
-  fExtColors:= TCEExtColorRules.Create;
-  fExtColors.LoadDefaults;
-  fExtColorsEnabled:= true;
-  fBackgroundColor:= clWindow;
-  fFontColor:= clWindowText;
-  fFontName:= '';
   Filmstrip.ThumbPos:= alBottom;
   Filmstrip.ThumbStyle:= elsFilmstrip;
   Filmstrip.ThumbSize:= 120;
@@ -1132,7 +1109,6 @@ begin
   fGroupBy.Free;
   fCellSizes.Free;
   fFilmstrip.Free;
-  fExtColors.Free;
   inherited;
 end;
 
@@ -1211,25 +1187,10 @@ begin
     // Misc
     FileViewPage.FileView.FileSizeFormat:= fFileSizeFormat;
     FileViewPage.FileView.ArrowBrowse:= fArrowBrowse;
-    // Font and colors (Options > Fileview > Display). Start from the desktop
-    // icon font, then apply whatever the user has chosen.
+    if FontSize > 0 then
+    FileViewPage.FileView.Font.Size:= FontSize
+    else
     SetDesktopIconFonts(FileViewPage.FileView.Font);
-    if fFontName <> '' then begin
-      FileViewPage.FileView.Font.Name:= fFontName;
-    end;
-    if FontSize > 0 then begin
-      FileViewPage.FileView.Font.Size:= FontSize;
-    end;
-    FileViewPage.FileView.Font.Color:= fFontColor;
-    FileViewPage.FileView.Color:= fBackgroundColor;
-    // Extension colors (Options > Fileview > Colors): the view reads the shared list
-    if fExtColorsEnabled then begin
-      FileViewPage.FileView.ExtColors:= fExtColors;
-    end
-    else begin
-      FileViewPage.FileView.ExtColors:= nil;
-    end;
-    FileViewPage.FileView.Invalidate;
 
     // Cell Sizes
     if (CellSizes.LargeIcons_Width < 1) or (CellSizes.LargeIcons_Height < 1) then
@@ -1624,47 +1585,6 @@ end;
 procedure TCEFileViewSettings.SetFolderUpOnDblClick(const Value: Boolean);
 begin
   fFolderUpOnDblClick:= Value;
-  SendChanges;
-end;
-
-{-------------------------------------------------------------------------------
-  Set BackgroundColor
--------------------------------------------------------------------------------}
-procedure TCEFileViewSettings.SetBackgroundColor(const Value: TColor);
-begin
-  fBackgroundColor:= Value;
-  SendChanges;
-end;
-
-{-------------------------------------------------------------------------------
-  Extension color rules as one string (for settings.xml) and the enabled flag
--------------------------------------------------------------------------------}
-function TCEFileViewSettings.GetExtColorRules: string;
-begin
-  Result:= fExtColors.Serialize;
-end;
-
-procedure TCEFileViewSettings.SetExtColorRules(const Value: string);
-begin
-  fExtColors.Deserialize(Value);
-  SendChanges;
-end;
-
-procedure TCEFileViewSettings.SetExtColorsEnabled(const Value: Boolean);
-begin
-  fExtColorsEnabled:= Value;
-  SendChanges;
-end;
-
-procedure TCEFileViewSettings.SetFontColor(const Value: TColor);
-begin
-  fFontColor:= Value;
-  SendChanges;
-end;
-
-procedure TCEFileViewSettings.SetFontName(const Value: string);
-begin
-  fFontName:= Value;
   SendChanges;
 end;
 
