@@ -978,7 +978,7 @@ object CEAboutBox: TCEAboutBox
     Gutter.Font.Style = []
     Gutter.Visible = False
     Highlighter = SynURISyn1
-    Lines.Strings = 
+    Lines.Strings = (
       'Copyright 2006-2012 Marko Savolainen.'#13#10#13#10'Homepage - http://www.c' +
       'ubicreality.com'#13#10'Support - http://www.cubicreality.com/forum'#13#10#13#10 +
       '================================================================' +
@@ -1001,7 +1001,7 @@ object CEAboutBox: TCEAboutBox
       'syListview. Without VirtualShellTools,'#13#10'  CubicExplorer would no' +
       't exist.'#13#10#13#10'====================================================' +
       '=============='#13#10#13#10'Thank you for using CubicExplorer.'#13#10#13#10'Regards,' +
-      #13#10'Marko Savolainen.'
+      #13#10'Marko Savolainen.')
     Options = [eoAutoIndent, eoDragDropEditing, eoEnhanceEndKey, eoNoCaret, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces]
     ScrollOptions = [eoHideShowScrollbars, eoShowScrollHint]
     ReadOnly = True
