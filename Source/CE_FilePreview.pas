@@ -43,11 +43,13 @@ type
     fStartTick: Cardinal;
   public
     BackgroundColor: TColor;
+    Font: TFont;
     FilePath: WideString;
     Thumbnail: TBitmap;
     ThumbSize: TPoint;
     Info: WideString;
     IconIndex: Integer;
+    IsTextThumbnail: Boolean;
     TaskType: TCEFilePreviewTaskType;
     destructor Destroy; override;
   end;
@@ -70,7 +72,9 @@ type
     fShowIcon: Boolean;
     fShowInformation: Boolean;
     fShowThumbnail: Boolean;
+    fStretchThumbnail: Boolean;
     fTaskTag: Integer;
+    fTextThumbFont: TFont;
     fThumbBuffer: TBitmap;
     procedure AssignTo(Dest: TPersistent); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -116,7 +120,7 @@ implementation
 uses
   MPShellUtilities, MPShellTypes, ActiveX, MPCommonUtilities, SpTBXSkins,
   ccClasses, VirtualThumbnails, Math, SpTBXControls, MPCommonObjects,
-  CV_ImageView;
+  CV_ImageView, CE_LanguageEngine;
 
 {##############################################################################}
 // TCEFilePreview
@@ -135,10 +139,15 @@ begin
   fInfoAlign:= iaBottom;
   fFileIconIndex:= -1;
   fLastAbort:= 0;
+  fStretchThumbnail:= true;
   // create instances
   fResizeTimer:= TTimer.Create(Self);
   fResizeTimer.Interval:= 250;
   fResizeTimer.OnTimer:= HandleResizeTimer;
+
+  fTextThumbFont:= TFont.Create;
+  fTextThumbFont.Name:= 'Courier New';
+  fTextThumbFont.Size:= 8;
 end;
 
 {-------------------------------------------------------------------------------
@@ -153,6 +162,7 @@ begin
   FreeAndNil(fInfoBuffer);
   if assigned(fThumbBuffer) then
   FreeAndNil(fThumbBuffer);
+  fTextThumbFont.Free;
   inherited;
 end;
 
@@ -231,6 +241,7 @@ begin
   if (ATag = fTaskTag) and (AObject is TCEFilePreviewTask) then
   begin
     task:= TCEFilePreviewTask(AObject);
+
     try
       CoInitialize(nil);
       ns:= TNamespace.CreateFromFileName(task.FilePath);
@@ -241,6 +252,14 @@ begin
           task.Thumbnail:= LoadThumbnail(task.FilePath,
                                          task.ThumbSize.X,task.ThumbSize.Y,
                                          task.BackgroundColor,true);
+
+          if not assigned(task.Thumbnail) then
+          begin
+            task.IsTextThumbnail:= true;
+            task.Thumbnail:= CreateTextThumbnail(task.FilePath, task.ThumbSize.X, task.ThumbSize.Y,
+                                                 clWindow, clWindowText, task.Font,
+                                                 1024, _('Empty file'));
+          end;
         end
         // info
         else if task.TaskType = fpttInfo then
@@ -257,6 +276,7 @@ begin
         CoUninitialize;
       end;
     except
+      CoUninitialize;
     end;
   end;
 end;
@@ -297,6 +317,7 @@ begin
       FreeAndNil(fThumbBuffer);
       // assign new thumbnail
       fThumbBuffer:= task.Thumbnail;
+      fStretchThumbnail:= not task.IsTextThumbnail;
       task.Thumbnail:= nil; // set to nil, otherwise the thumbnail will be freed on task destroy
     end
     else if (task.TaskType = fpttIconIndex) then
@@ -337,8 +358,11 @@ begin
     task.FilePath:= fFilePath;
     task.ThumbSize:= Point(ClientWidth, ClientHeight);
     task.BackgroundColor:= Color;
+    task.Font:= TFont.Create;
+    task.Font.Assign(fTextThumbFont);
     task.TaskType:= fpttThumbnail;
     task.fStartTick:= Max(GetTickCount, fLastAbort);
+    task.IsTextThumbnail:= false;
     GlobalTaskPool.AddTask(nil, task, true, true, fTaskTag, HandleExecuteTask, HandleTaskDone);
   end;
 end;
@@ -465,11 +489,14 @@ begin
     fInfoBuffer.Canvas.Font.Assign(Self.Canvas.Font);
     for i:= 0 to list.Count - 1 do
     begin
+      // draw file name
       if i = 0 then
       begin
+        fInfoBuffer.Canvas.Font.Color:= Self.Font.Color;
         fInfoBuffer.Canvas.Font.Style:= [fsBold];
         Windows.DrawTextW(fInfoBuffer.Canvas.Handle, PWideChar(list.Strings[i]), -1, posArray[i], DT_END_ELLIPSIS or DT_SINGLELINE);
       end
+      // draw info
       else
       begin
         fInfoBuffer.Canvas.Font.Style:= [];
@@ -618,25 +645,35 @@ begin
       h:= r.Bottom - r.Top;
       if (w > 0) and (h > 0) then
       begin
-        ar:= fThumbBuffer.Width / fThumbBuffer.Height;
-        if ar > (w / h) then
+        if fStretchThumbnail then
         begin
-          size:= w / ar;
-          r.Top:= r.Top + Round((h - size) / 2);
-          r.Bottom:= Round(r.Top + size);
+          ar:= fThumbBuffer.Width / fThumbBuffer.Height;
+          if ar > (w / h) then
+          begin
+            size:= w / ar;
+            r.Top:= r.Top + Round((h - size) / 2);
+            r.Bottom:= Round(r.Top + size);
+          end
+          else
+          begin
+            size:= h * ar;
+            r.Left:= r.Left + Round((w - size) / 2);
+            r.Right:= Round(r.Left + size);
+          end;
+          // stretchblt to buf
+          SetStretchBltMode(buf.Canvas.Handle, STRETCH_HALFTONE);
+          SetBrushOrgEx(buf.Canvas.Handle, 0, 0, nil);
+          StretchBlt(buf.Canvas.Handle, r.Left, r.Top, r.Right-r.Left, r.Bottom-r.Top,
+                     fThumbBuffer.Canvas.Handle, 0,0,fThumbBuffer.Width, fThumbBuffer.Height,
+                     SRCCopy);
         end
+        // bitblt to buf
         else
         begin
-          size:= h * ar;
-          r.Left:= r.Left + Round((w - size) / 2);
-          r.Right:= Round(r.Left + size);
+          BitBlt(buf.Canvas.Handle, r.Left, r.Top, w, h,
+                 fThumbBuffer.Canvas.Handle, 0, 0,
+                 SRCCOPY);
         end;
-        // blt to buf
-        SetStretchBltMode(buf.Canvas.Handle, STRETCH_HALFTONE);
-        SetBrushOrgEx(buf.Canvas.Handle, 0, 0, nil);
-        StretchBlt(buf.Canvas.Handle, r.Left, r.Top, r.Right-r.Left, r.Bottom-r.Top,
-                   fThumbBuffer.Canvas.Handle, 0,0,fThumbBuffer.Width, fThumbBuffer.Height,
-                   SRCCopy);
       end;
     end
     // draw icon
@@ -748,6 +785,8 @@ destructor TCEFilePreviewTask.Destroy;
 begin
   if assigned(Thumbnail) then
   FreeAndNil(Thumbnail);
+  if assigned(Font) then
+  FreeAndNil(Font);
   inherited Destroy;
 end;
 

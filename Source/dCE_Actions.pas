@@ -26,7 +26,7 @@ interface
 uses
   // CE Units
   CE_GlobalCtrl,  dCE_Images, CE_TBActions, CE_Utils, CE_LanguageEngine,
-  CE_SpTabBar, CE_AppSettings,
+  CE_SpTabBar, CE_AppSettings, CEJvDockVSNetStyleTBX,
   // PngControls
   PngImageList,
   // EasyListview & VSTools
@@ -125,11 +125,6 @@ type
     act_edit_invertsel: TAction;
     act_edit_properties: TAction;
     act_edit_rename: TAction;
-    act_quick_none: TAction;
-    act_quick_auto: TAction;
-    act_quick_text: TAction;
-    act_quick_image: TAction;
-    act_quick_hex: TAction;
     act_help_home: TAction;
     act_help_forum: TAction;
     act_help_about: TAction;
@@ -235,6 +230,15 @@ type
     act_stack_remove: TAction;
     act_stack_clear: TAction;
     act_stack_allowmove: TAction;
+    act_gen_makevisible: TAction;
+    act_view_workspace: TAction;
+    act_workspace_folder_up: TAction;
+    act_workspace_back: TAction;
+    act_workspace_forward: TAction;
+    act_workspace_open: TAction;
+    act_tabs_movehere: TAction;
+    act_tabs_copyhere: TAction;
+    act_view_lock_panels: TAction;
     procedure ActionExecute(Sender: TObject);
     procedure ApplicationEventsActivate(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
@@ -256,6 +260,8 @@ type
         MenuItemID: Integer;  var Handled: Boolean);
     procedure DoGlobalContextMenuShow(Namespace: TNamespace; Menu: hMenu; var
         Allow: Boolean);
+    procedure HandleGlobalContextPopup(Sender: TObject; MousePos: TPoint; var
+        Handled: Boolean);
     procedure UpdateAll;
     property PageActionList: TActionList read fPageActionList write
         fPageActionList;
@@ -288,8 +294,8 @@ procedure UpdateBookmarksCategory(ActionID: Integer; TargetAction: TAction);
 
 procedure MouseAction(var Msg: tagMSG; var Handled: Boolean);
 
-procedure OpenFileInTab(FilePath: WideString; SelectTab: Boolean = true;
-    ActivateApp: Boolean = false);
+function OpenFileInTab(FilePath: WideString; SelectTab: Boolean = true;
+    ActivateApp: Boolean = false): TCESpTabItem;
 
 function OpenFolderInTab(Sender: TObject; PIDL: PItemIDList; SelectTab: Boolean
     = true; ActivateApp: Boolean = false; ForceNewTab: Boolean = false;
@@ -343,6 +349,10 @@ procedure DoGlobalContextMenuCmd(Sender: TObject; Namespace: TNamespace; Verb:
 
 function HandleExeCommands: Boolean;
 
+function OpenPIDLInTab(Sender: TObject; APIDL: PItemIDList; SelectTab: Boolean
+    = true; ActivateApp: Boolean = false; ForceNewTab: Boolean = false):
+    TCESpTabItem;
+
 var
   CEActions: TCEActions;
   fDisableSingleInstanceTemporarily: Integer = 0;
@@ -353,12 +363,13 @@ implementation
 
 uses
   Main, fCE_FolderPanel, fCE_QuickViewPanel, fCE_BookmarkPanel,
-  fCE_TextEditor, fCE_FileView, CE_FileView, 
+  fCE_FileView, CE_FileView, 
   CE_Bookmarks, CE_BookmarkTree, fCE_AboutBox,
   CE_ToolbarButtons, fCE_Customizer, fCE_TabPage, fCE_FiltersPanel,
   fCE_PoEditor, fCE_OptionsDialog, CE_Sessions, fCE_StackPanel,
   CE_BaseFileView, fCE_QuickViewTab, fCE_SearchPage, fCE_CreateSymlink,
-  fCE_VersionMgrForm, fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView;
+  fCE_VersionMgrForm, fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView,
+  fCE_WorkspacePanel;
 
 {##############################################################################}
 
@@ -371,12 +382,12 @@ begin
   // Hotkey Settings
   HotkeySettings:= TCEHotkeySettings.Create;
   HotkeySettings.Actions:= ActionList;
-  GlobalAppSettings.AddItem('Hotkeys', HotkeySettings);
+  GlobalAppSettings.AddItem('Hotkeys', HotkeySettings, false, false, '', '', false);
   // Global Hotkey Settings
   GlobalHotkeys:= TCEGlobalHotkeys.Create;
   GlobalHotkeys.Actions:= ActionList;
   GlobalHotkeys.MsgHandle:= MainForm.Handle;
-  GlobalAppSettings.AddItem('GlobalHotkeys', GlobalHotkeys);
+  GlobalAppSettings.AddItem('GlobalHotkeys', GlobalHotkeys, false, false, '', '', false);
 end;
 
 {*------------------------------------------------------------------------------
@@ -405,7 +416,7 @@ begin
   act_sessions_menu.ItemClass:= TCESessionsButton;
   act_tabs_undo.ItemClass:= TCEClosedTabsListButton;
   act_filters_menu.ItemClass:= TCEFiltersMenuButton;
-  act_filters_pattern.ItemClass:= TCEFilterPatternItem;
+  act_filters_pattern.ItemClass:= TCEFilterPatternItem2;
   act_edit_undo_delete.ItemClass:= TCEUndoDeleteButton;
   act_tools_systempower.ItemClass:= TCESystemPowerButton;
   act_tabs_menu.ItemClass:= TCETabsButton;
@@ -510,6 +521,7 @@ begin
       fDisableSingleInstanceTemporarily:= GetTickCount;
       WideShellExecute(0, 'open', ParamStr(0), '', '', SW_SHOWNORMAL);
     end;
+    104: MainForm.MakeVisible;
   end;
 end;
 
@@ -533,7 +545,9 @@ var
   s: String;
 begin
   fileview:= nil;
-  if GlobalPathCtrl.ActivePage is TCEFileViewPage then
+  if CEWorkspacePanel.FileView.Focused then
+  fileview:= CEWorkspacePanel.FileView
+  else if GlobalPathCtrl.ActivePage is TCEFileViewPage then
   fileview:= TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView;
 
   if CEFolderPanel.FolderTree.Focused then
@@ -611,9 +625,11 @@ var
 begin
   TargetAction.Enabled:= false;
   fileview:= nil;
-  if GlobalPathCtrl.ActivePage is TCEFileViewPage then
+  if CEWorkspacePanel.FileView.Focused then
+  fileview:= CEWorkspacePanel.FileView
+  else if GlobalPathCtrl.ActivePage is TCEFileViewPage then
   fileview:= TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView;
-
+  // FolderTree focused
   if CEFolderPanel.FolderTree.Focused then
   begin
     case ActionID of
@@ -632,6 +648,7 @@ begin
            end;
     end;
   end
+  // FileView focused
   else if assigned(fileview) then
   begin
     if fileview.Focused then
@@ -699,6 +716,8 @@ begin
     304: if GetFormVisible(CEFiltersPanel) then HideDockForm(CEFiltersPanel) else ShowDockForm(CEFiltersPanel);
     305: if GetFormVisible(CEStackPanel) then HideDockForm(CEStackPanel) else ShowDockForm(CEStackPanel);
 //    306: if GetFormVisible(CEArchiverPanel) then HideDockForm(CEArchiverPanel) else ShowDockForm(CEArchiverPanel);
+    307: if GetFormVisible(CEWorkspacePanel) then HideDockForm(CEWorkspacePanel) else ShowDockForm(CEWorkspacePanel);
+
     330: MainForm.ShowHint:= not MainForm.ShowHint;
     332: begin
       GlobalFileViewSettings.HiddenFiles:= not GlobalFileViewSettings.HiddenFiles;
@@ -719,6 +738,7 @@ begin
     370: MainForm.Fullscreen:= not MainForm.Fullscreen;
     371: MainForm.OpenSkin;
     390: MainForm.LockToolbars:= not MainForm.LockToolbars;
+    391: CE_LockPanels:= not CE_LockPanels;
   end;
 end;
 
@@ -736,6 +756,7 @@ begin
     304: TargetAction.Checked:= CEFiltersPanel.IsVisible;
     305: TargetAction.Checked:= CEStackPanel.IsVisible;
 //    306: TargetAction.Checked:= CEArchiverPanel.IsVisible;
+    307: TargetAction.Checked:= CEWorkspacePanel.IsVisible;
     330: TargetAction.Checked:= MainForm.ShowHint;
     332: TargetAction.Checked:= GlobalFileViewSettings.HiddenFiles;
     333: TargetAction.Checked:= GlobalFileViewSettings.ShowHeaderAlways;
@@ -761,6 +782,7 @@ begin
     370: TargetAction.Checked:= MainForm.Fullscreen;
     372..374: TargetAction.Enabled:= GlobalPathCtrl.ActivePage is TCEFileViewPage;
     390: TargetAction.Checked:= MainForm.LockToolbars;
+    391: TargetAction.Checked:= CE_LockPanels;
   end;
 end;
 
@@ -888,6 +910,14 @@ begin
     923: CEStackPanel.StackTree.DeleteSelectedNodes;
     924: CEStackPanel.ClearList;
     925: CEStackPanel.StackTree.SafeOperationsOnly:= not CEStackPanel.StackTree.SafeOperationsOnly;
+    // Workspace
+    931: CEWorkspacePanel.FileView.GoFolderUp;
+    932: CEWorkspacePanel.FileView.GoBackInHistory;
+    933: CEWorkspacePanel.FileView.GoForwardInHistory;
+    934: begin
+      if GlobalPathCtrl.ActivePage is TCEFileViewPage then
+      CEWorkspacePanel.FileView.BrowseToByPIDL(TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.RootFolderNamespace.AbsolutePIDL);
+    end;
   end;
 end;
 
@@ -905,6 +935,9 @@ begin
     923: TargetAction.Enabled:= CEStackPanel.StackTree.SelectedCount > 0;
     924: TargetAction.Enabled:= CEStackPanel.StackTree.RootNode.ChildCount > 0;
     925: TargetAction.Checked:= not CEStackPanel.StackTree.SafeOperationsOnly;
+    // Workspace
+    932: TargetAction.Enabled:= CEWorkspacePanel.FileView.History.HasBackItems;
+    933: TargetAction.Enabled:= CEWorkspacePanel.FileView.History.HasNextItems;
   end;
 end;
 
@@ -919,7 +952,6 @@ var
   ws,ext: WideString;
   ns: TNamespace;
   item: TEasyItem;
-  editor: TCETextEditorPage;
   quickview: TCEQuickViewPage;
 begin
   case ActionID of
@@ -943,8 +975,13 @@ begin
          end;
     606: begin
            if GlobalPathCtrl.ActivePage is TCEFileViewPage then
-           TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.Rebuild;
+           begin
+             if GlobalFileViewSettings.Thumbnails.UseStorage then
+             TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.ClearThumbnailCache; // refresh thumbnails
+             TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.Rebuild(true);
+           end;
            CEFolderPanel.FolderTree.Refresh;
+           CEWorkspacePanel.FileView.Rebuild(true);
            MainForm.DriveToolbar.Populate;
            MainForm.StatusBar.UpdateLabels(true);
          end;
@@ -984,13 +1021,10 @@ begin
              end;
            end;
 
-           editor:= TCETextEditorPage(MainForm.TabSet.AddTab(TCETextEditorPage, MainForm.TabSet.Settings.NewTabSelect).Page);
-           if (ws <> '') then
-           begin
-            ext:= AnsiUpperCase(ExtractFileExt(ws));
-            if (ext <> '.EXE') and (ext <> '.DLL') then
-            editor.OpenDocument(ws);
-           end;
+           quickview:= TCEQuickViewPage(MainForm.TabSet.AddTab(TCEQuickViewPage, MainForm.TabSet.Settings.NewTabSelect).Page);
+           quickview.QuickView.OpenTextFile(ws);
+           if quickview.Visible then
+           quickview.QuickView.SetFocusToMediaPlayer;
          end;
     // Open Search
     651: begin
@@ -1094,6 +1128,7 @@ end;
 procedure ExecuteTabsCategory(ActionID: Integer);
 var
   pidl: PItemIDList;
+  SrcFileView, DestFileView: TCustomVirtualExplorerEasyListview;
 begin
   if not assigned(MainForm.TabSet.ActivePopupTab) then
   begin
@@ -1101,8 +1136,11 @@ begin
   end;
 
   case ActionID of
+    // Close Tab
     661: MainForm.TabSet.CloseTab(MainForm.TabSet.ActivePopupTab);
+    // Close Other Tabs
     662: MainForm.TabSet.CloseAllTabs(MainForm.TabSet.ActivePopupTab);
+    // Add Tab
     663: begin
            GlobalFileViewSettings.AssignFromActivePage;
            if MainForm.TabSet.Settings.NewTabType = 1 then // Clone active tab
@@ -1127,6 +1165,7 @@ begin
              OpenFolderInTab(nil, nil, MainForm.TabSet.Settings.NewTabSelect, false, true);
            end;
          end;
+    // Duplicate Tab
     664: begin
            if assigned(MainForm.TabSet.ActivePopupTab) then
            begin
@@ -1135,11 +1174,37 @@ begin
                              TCEFileViewPage(MainForm.TabSet.ActivePopupTab.Page).FileView.RootFolderNamespace.AbsolutePIDL, MainForm.TabSet.Settings.NewTabSelect, false, true);
            end;
          end;
+    // Close Tabs on Left
     665: MainForm.TabSet.CloseTabsOnLeft(MainForm.TabSet.ActivePopupTab);
+    // Close Tabs on Right
     666: MainForm.TabSet.CloseTabsOnRight(MainForm.TabSet.ActivePopupTab);
+    // Undo Tab Close
     667: MainForm.TabSet.UndoTabClose;
+    // Switch to Next Tab
     668: MainForm.TabSet.SelectNextTab(true);
+    // Swith to Previous Tab
     669: MainForm.TabSet.SelectNextTab(false);
+    // Copy/Move Selected Here
+    671, 672: begin
+       if assigned(MainForm.TabSet.ActivePopupTab) and
+          ((MainForm.TabSet.ActiveTab.Page is TCEFileViewPage) or (MainForm.TabSet.ActiveTab.Page is TCESearchPage)) and
+          (MainForm.TabSet.ActivePopupTab.Page is TCEFileViewPage) then
+       begin
+         if (MainForm.TabSet.ActiveTab.Page is TCESearchPage) then
+         SrcFileView:= TCESearchPage(MainForm.TabSet.ActiveTab.Page).ResultView
+         else
+         SrcFileView:= TCEFileViewPage(MainForm.TabSet.ActiveTab.Page).FileView;
+         
+         DestFileView:= TCEFileViewPage(MainForm.TabSet.ActivePopupTab.Page).FileView;
+
+         if ActionID = 672 then
+         SrcFileView.CutToClipboard
+         else
+         SrcFileView.CopyToClipboard;
+
+         DestFileView.PasteFromClipboard;
+       end;
+    end;
   end;
 
   MainForm.TabSet.ActivePopupTab:= nil; // popup has closed so set this to nil
@@ -1149,10 +1214,38 @@ end;
   Tabs Category  Update
 -------------------------------------------------------------------------------}
 procedure UpdateTabsCategory(ActionID: Integer; TargetAction: TAction);
+var
+  b: Boolean;
 begin
   case ActionID of
     661..662,664: TargetAction.Enabled:= assigned(MainForm.TabSet.ActivePopupTab) or (MainForm.TabSet.GetActiveTab <> nil);
     667: TargetAction.Enabled:= MainForm.TabSet.CanUndoTabClose;
+    671, 672: begin
+      if assigned(MainForm.TabSet.ActivePopupTab) and assigned(MainForm.TabSet.ActiveTab) and (MainForm.TabSet.ActivePopupTab <> MainForm.TabSet.ActiveTab) then
+      begin
+        // TODO: hunting bug here, remove this!:
+        b:= MainForm.TabSet.ActiveTab.Page is TCEFileViewPage;
+        b:= b or (MainForm.TabSet.ActiveTab.Page is TCESearchPage);
+        b:= b and (MainForm.TabSet.ActivePopupTab.Page is TCEFileViewPage);
+        TargetAction.Visible:= b;
+
+//        TargetAction.Visible:= ((MainForm.TabSet.ActiveTab.Page is TCEFileViewPage) or (MainForm.TabSet.ActiveTab.Page is TCESearchPage)) and
+//                               (MainForm.TabSet.ActivePopupTab.Page is TCEFileViewPage);
+
+        if TargetAction.Visible then
+        begin
+          if (MainForm.TabSet.ActiveTab.Page is TCEFileViewPage) then
+          TargetAction.Enabled:= TCEFileViewPage(MainForm.TabSet.ActiveTab.Page).FileView.Selection.Count > 0
+          else
+          TargetAction.Enabled:= TCESearchPage(MainForm.TabSet.ActiveTab.Page).ResultView.Selection.Count > 0
+        end;
+      end
+      else
+      begin
+        TargetAction.Visible:= false;
+      end;
+      MainForm.sep_tabs_copymove.Visible:= TargetAction.Visible;
+    end;
     670: TargetAction.Enabled:= MainForm.TabSet.TabCount > 1;
   end;
 end;
@@ -1260,25 +1353,31 @@ end;
 {*------------------------------------------------------------------------------
   Open file in a new tab
 -------------------------------------------------------------------------------}
-procedure OpenFileInTab(FilePath: WideString; SelectTab: Boolean = true;
-    ActivateApp: Boolean = false);
+function OpenFileInTab(FilePath: WideString; SelectTab: Boolean = true;
+    ActivateApp: Boolean = false): TCESpTabItem;
 var
-  editor: TCETextEditorPage;
   quickview: TCEQuickViewPage;
 begin
+  Result:= nil;
   if FileExists(FilePath) then
   begin
     GlobalFileViewSettings.AssignFromActivePage;
 
-    if GlobalQuickViewSettings.IsSupported(ExtractFileExt(FilePath), true) then
+    if GlobalQuickViewSettings.IsSupported(ExtractFileExt(FilePath), false) then
     begin
-      quickview:= TCEQuickViewPage(MainForm.TabSet.AddTab(TCEQuickViewPage, SelectTab).Page);
+      Result:= MainForm.TabSet.AddTab(TCEQuickViewPage, SelectTab);
+      quickview:= TCEQuickViewPage(Result.Page);
       quickview.OpenFile(FilePath);
+      if quickview.Visible then
+      quickview.QuickView.SetFocusToMediaPlayer;
     end
     else
     begin
-      editor:= TCETextEditorPage(MainForm.TabSet.AddTab(TCETextEditorPage, SelectTab).Page);
-      editor.OpenDocument(FilePath);
+      Result:= MainForm.TabSet.AddTab(TCEQuickViewPage, SelectTab);
+      quickview:= TCEQuickViewPage(Result.Page);
+      quickview.QuickView.OpenTextFile(FilePath);
+      if quickview.Visible then
+      quickview.QuickView.SetFocusToMediaPlayer;
     end;
 
     if ActivateApp then
@@ -1362,16 +1461,20 @@ begin
       if assigned(Result) then
       begin
         page:= TCEFileViewPage(Result.Page);
-        page.FileView.fChangeHistory:= false;
+        page.FileView.BeginHistoryUpdate;
+
         page.FileView.Selection.ClearAll;
+
         page.FileView.RootFolderCustomPIDL:= browsePIDL;
-        page.UpdateCaption;
+
         if page.FileView.Selection.First <> nil then
         page.FileView.Selection.First.MakeVisible(emvMiddle);
+
         page.FileView.ClearHistory;
         page.FileView.History.Add(TNamespace.Create(PIDLMgr.CopyPIDL(browsePIDL),nil),true);
-        page.FileView.fChangeHistory:= true;
+        page.FileView.EndHistoryUpdate;
         page.Active:= true;
+
         if SelectTab or (MainForm.TabSet.Toolbar.GetTabsCount(true) = 1) then
         MainForm.TabSet.SelectTab(Result);
         if ActivateApp then
@@ -1451,7 +1554,7 @@ begin
     list.Delimiter:= ',';
     list.StrictDelimiter:= true;
     list.DelimitedText:= Str;
-    
+
     i:= 0;
     TabOpened:= false;
     IsShortcut:= false;
@@ -1529,7 +1632,7 @@ begin
             path:= DecodeRelativePath(path);
             if FileExists(path) then
             begin
-              OpenFileInTab(path, true, true);
+              OpenFileInTab(path, true, false);
               Result:= true;
               TabOpened:= true;
             end;
@@ -1546,7 +1649,7 @@ begin
               try
                 if NS.Link then
                 begin
-                  OpenFolderInTab(nil, NS.ShellLink.TargetIDList, true, true);
+                  OpenFolderInTab(nil, NS.ShellLink.TargetIDList, true, false);
                   Result:= true;
                   TabOpened:= true;
                 end;
@@ -1560,20 +1663,21 @@ begin
           if not TabOpened then
           begin
             ReplaceSystemVariablePath(path);
-            
+
             if path[1] = ':' then
             begin
+
               // Open Control Panel in explorer.exe. CE won't work properly with Vista+ control panels.
               if IsWindowsVista and (Pos('::{26EE0668-A00A-44D7-9371-BEB064C98683}', path) = 1) then
               begin
+                path:= 'shell:' + path;
                 path2:= WideExpandEnviromentString('%windir%\explorer.exe');
-
                 ShellExecuteW(0, 'open', PWideChar(path2), PWideChar(path), '', SW_SHOWNORMAL);
                 Result:= false;
               end
               else
               begin
-                OpenFolderInTab(nil, path, true, true);
+                OpenFolderInTab(nil, path, true, false);
                 Result:= true;
                 TabOpened:= true;
               end;
@@ -1584,7 +1688,7 @@ begin
               path:= DecodeRelativePath(path);
               if DirExistsVET(path, false) then
               begin
-                OpenFolderInTab(nil, path, true, true);
+                OpenFolderInTab(nil, path, true, false);
                 Result:= true;
                 TabOpened:= true;
               end
@@ -1742,25 +1846,21 @@ end;
 procedure DoGlobalContextMenuShow(Sender: TObject; Namespace: TNamespace; Menu:
     hMenu; var Allow: Boolean);
 
-var
-  infoA: TMenuItemInfoA;
-  infoW: TMenuItemInfoW;
-  ws: WideString;
-begin
-  // Add "Open in new tab" item
-  if Namespace.Folder then
+  procedure DoInsertMenuItem(const ACaption: WideString; AID: Cardinal; APos: Cardinal = 0);
+  var
+    infoA: TMenuItemInfoA;
+    infoW: TMenuItemInfoW;
   begin
-    ws:= _('Open in new tab');
     if IsUnicode then
     begin
       FillChar(infoW, SizeOf(infoW), #0);
       infoW.cbSize:= SizeOf(infoW);
       infoW.fMask:= MIIM_TYPE or MIIM_ID or MIIM_STATE;
       infoW.fType:= MFT_STRING;
-      infoW.dwTypeData:= PWideChar(ws);
-      infoW.cch:= Length(ws) + 1;
-      infoW.wID:= 664;
-      InsertMenuItemW(Menu, 0, true, infoW);
+      infoW.dwTypeData:= PWideChar(ACaption);
+      infoW.cch:= Length(ACaption) + 1;
+      infoW.wID:= AID;
+      InsertMenuItemW(Menu, APos, true, infoW);
     end
     else
     begin
@@ -1768,10 +1868,32 @@ begin
       infoA.cbSize:= SizeOf(infoA);
       infoA.fMask:= MIIM_TYPE or MIIM_ID or MIIM_STATE;
       infoA.fType:= MFT_STRING;
-      infoA.dwTypeData:= PChar(String(ws));
-      infoA.cch:= Length(ws) + 1;
-      infoA.wID:= 664;
-      InsertMenuItemA(Menu, 0, true, infoA);
+      infoA.dwTypeData:= PChar(String(ACaption));
+      infoA.cch:= Length(ACaption) + 1;
+      infoA.wID:= AID;
+      InsertMenuItemA(Menu, APos, true, infoA);
+    end;
+  end;
+
+var
+  infoA: TMenuItemInfoA;
+  ws: WideString;
+  pos: Integer;
+begin
+  pos:= 0;
+  if Namespace.FileSystem then
+  begin
+    // Add "Open in new tab" item
+    ws:= _('Open in new tab');
+    DoInsertMenuItem(ws, 664, pos);
+    pos:= pos + 1;
+
+    if Namespace.Folder then
+    begin
+      // Add "Open in Workspace" item
+      ws:= _('Open in Workspace');
+      DoInsertMenuItem(ws, 934, pos);
+      pos:= pos + 1;
     end;
 
     // Add Separator
@@ -1779,7 +1901,7 @@ begin
     infoA.cbSize:= SizeOf(infoA);
     infoA.fMask:= MIIM_TYPE or MIIM_ID;
     infoA.fType:= MFT_SEPARATOR;
-    InsertMenuItemA(Menu, 1, true, infoA);
+    InsertMenuItemA(Menu, pos, true, infoA);
   end;
 end;
 
@@ -1808,6 +1930,12 @@ begin
           begin
             OpenFolderInTab(Sender, ns.AbsolutePIDL,
               MainForm.TabSet.Settings.OpenTabSelect);
+          end
+          else if ns.FileSystem then
+          begin
+            //if ns.Link then
+            //ns.ShellLink.
+            OpenFileInTab(ns.NameForParsing, MainForm.TabSet.Settings.OpenTabSelect);
           end;
         end;
         item:= TCECustomFileView(Sender).Selection.Next(item);
@@ -1815,6 +1943,11 @@ begin
     end
     else
     OpenFolderInTab(Sender, Namespace.AbsolutePIDL, MainForm.TabSet.Settings.OpenTabSelect);
+  end
+  // Handle "Open in Workspace" item
+  else if MenuItemID = 934 then
+  begin
+    CEWorkspacePanel.FileView.BrowseToByPIDL(Namespace.AbsolutePIDL);
   end;
 end;
 
@@ -1852,12 +1985,38 @@ begin
              (Pos('::{21EC2020-3AEA-1069-A2DD-08002B30309D}', ws) = 1) then
           begin
             path:= WideExpandEnviromentString('%windir%\explorer.exe');
+            ws:= 'shell:' + ws;
             ShellExecuteW(0, 'open', PWideChar(path), PWideChar(ws), '', SW_SHOWNORMAL);
             Result:= true;
           end;
         end;
       end;
     end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  OpenPIDLInTab
+-------------------------------------------------------------------------------}
+function OpenPIDLInTab(Sender: TObject; APIDL: PItemIDList; SelectTab: Boolean
+    = true; ActivateApp: Boolean = false; ForceNewTab: Boolean = false):
+    TCESpTabItem;
+var
+  ns: TNamespace;
+begin
+  Result:= nil;
+  if not assigned(APIDL) then
+  Exit;
+
+  ns:= TNamespace.Create(APIDL, nil);
+  try
+    ns.FreePIDLOnDestroy:= false;
+    if ns.FileSystem and not ns.Folder then
+    Result:= OpenFileInTab(ns.NameForParsing, SelectTab, ActivateApp)
+    else
+    Result:= OpenFolderInTab(Sender, APIDL, SelectTab, ActivateApp, ForceNewTab);
+  finally
+    ns.Free;
   end;
 end;
 
@@ -1868,7 +2027,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEActions.ApplicationEventsActivate(Sender: TObject);
 begin
-  UpdateAll;
+  //UpdateAll;  // why is this called here?
 end;
 
 {*------------------------------------------------------------------------------
@@ -2052,6 +2211,20 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Handle Global ContextPopup
+-------------------------------------------------------------------------------}
+procedure TCEActions.HandleGlobalContextPopup(Sender: TObject; MousePos:
+    TPoint; var Handled: Boolean);
+begin
+  if Sender = MainForm then
+  begin
+    MousePos:= MainForm.ClientToScreen(MousePos);
+    MainForm.PanelsPopupMenu.Popup(MousePos.X, MousePos.Y);
+  end;
+  Handled:= true;
+end;
+
+{-------------------------------------------------------------------------------
   Update All actions
 -------------------------------------------------------------------------------}
 procedure TCEActions.UpdateAll;
@@ -2059,10 +2232,19 @@ var
   act: TAction;
   i: Integer;
 begin
-  for i:= 0 to ActionList.ActionCount - 1 do
-  begin
-    act:= TAction(ActionList.Actions[i]);
-    UpdateCEAction(act.Tag, act);
+  UpdateTimer.Enabled:= false;
+
+  if MainForm.CEIsClosing then
+  Exit;
+  
+  try
+    for i:= 0 to ActionList.ActionCount - 1 do
+    begin
+      act:= TAction(ActionList.Actions[i]);
+      UpdateCEAction(act.Tag, act);
+    end;
+  finally
+    UpdateTimer.Enabled:= true;
   end;
 end;
 

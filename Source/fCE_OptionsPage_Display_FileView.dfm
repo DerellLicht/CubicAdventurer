@@ -1,82 +1,331 @@
 inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
-  object TntLabel1: TLabel
-    Left = 16
-    Top = 185
-    Width = 76
-    Height = 13
-    Caption = 'File size format:'
-  end
-  object check_fullrowselect: TCheckBox
-    Left = 16
-    Top = 16
-    Width = 401
-    Height = 17
-    Caption = 'Highlight row completely'
+  object TntPageControl1: TTntPageControl
+    Left = 3
+    Top = 3
+    Width = 435
+    Height = 330
+    ActivePage = sheet_options
     TabOrder = 0
-    OnClick = HandleChange
+    object sheet_options: TTntTabSheet
+      Caption = 'Options'
+      object check_selectprev: TCheckBox
+        Left = 16
+        Top = 11
+        Width = 401
+        Height = 17
+        Caption = 'Select previous folder'
+        TabOrder = 0
+        OnClick = HandleChange
+      end
+      object check_autoselect: TCheckBox
+        Left = 16
+        Top = 30
+        Width = 401
+        Height = 17
+        Caption = 'Select first item automatically'
+        TabOrder = 1
+        OnClick = HandleChange
+      end
+      object check_autosize_liststyle: TCheckBox
+        Left = 16
+        Top = 49
+        Width = 401
+        Height = 17
+        Caption = 'Auto size cells in list view style.'
+        TabOrder = 2
+        OnClick = HandleChange
+      end
+      object check_sortfoldersfirst: TCheckBox
+        Left = 16
+        Top = 68
+        Width = 401
+        Height = 17
+        Caption = 'Always sort folders first.'
+        TabOrder = 3
+        OnClick = HandleChange
+      end
+      object check_infotips: TCheckBox
+        Left = 16
+        Top = 87
+        Width = 401
+        Height = 17
+        Caption = 'Show InfoTips'
+        TabOrder = 4
+        OnClick = HandleChange
+      end
+      object check_singleclick: TCheckBox
+        Left = 16
+        Top = 106
+        Width = 401
+        Height = 17
+        Caption = 'Single click browsing'
+        TabOrder = 5
+        OnClick = HandleChange
+      end
+      object check_perfolder: TCheckBox
+        Left = 16
+        Top = 125
+        Width = 401
+        Height = 17
+        Caption = 'Use per folder settings'
+        TabOrder = 6
+        OnClick = HandleChange
+      end
+      object check_browse_zip: TCheckBox
+        Left = 16
+        Top = 144
+        Width = 401
+        Height = 17
+        Caption = 'Browse Zip Files'
+        TabOrder = 7
+        OnClick = HandleChange
+      end
+      object check_remember_thumbs: TCheckBox
+        Left = 16
+        Top = 163
+        Width = 401
+        Height = 17
+        Caption = 'Remember thumbnails'
+        TabOrder = 8
+        OnClick = HandleChange
+      end
+    end
+    object sheet_display: TTntTabSheet
+      Caption = 'Display'
+      object TntLabel1: TLabel
+        Left = 192
+        Top = 74
+        Width = 76
+        Height = 13
+        Caption = 'File size format:'
+      end
+      object TntLabel3: TLabel
+        Left = 16
+        Top = 212
+        Width = 82
+        Height = 13
+        Caption = 'Background color'
+      end
+      object combo_sizeformat: TComboBox
+        Left = 192
+        Top = 93
+        Width = 145
+        Height = 21
+        Style = csDropDownList
+        ItemHeight = 13
+        TabOrder = 0
+        OnChange = HandleChange
+      end
+      object color_background: TColorBox
+        Left = 16
+        Top = 231
+        Width = 145
+        Height = 22
+        DefaultColorColor = clWindow
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 1
+        OnSelect = color_backgroundSelect
+      end
+      object TntGroupBox1: TGroupBox
+        Left = 16
+        Top = 14
+        Width = 159
+        Height = 178
+        Caption = 'Font'
+        TabOrder = 2
+        DesignSize = (
+          159
+          178)
+        object TntLabel14: TLabel
+          Left = 16
+          Top = 118
+          Width = 29
+          Height = 13
+          Caption = 'Color:'
+        end
+        object but_font: TButton
+          Left = 16
+          Top = 87
+          Width = 127
+          Height = 25
+          Anchors = [akLeft, akTop, akRight]
+          Caption = 'Font'
+          TabOrder = 0
+          WordWrap = True
+          OnClick = but_fontClick
+        end
+        object color_font: TColorBox
+          Left = 24
+          Top = 137
+          Width = 119
+          Height = 22
+          DefaultColorColor = clWindowText
+          NoneColorColor = clNone
+          Selected = clDefault
+          Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+          Anchors = [akLeft, akTop, akRight]
+          ItemHeight = 16
+          TabOrder = 1
+          OnSelect = color_fontSelect
+        end
+        object panel_font: TPanel
+          Left = 8
+          Top = 24
+          Width = 143
+          Height = 49
+          Anchors = [akLeft, akTop, akRight]
+          BevelOuter = bvNone
+          Color = clWindow
+          ParentBackground = False
+          TabOrder = 2
+        end
+      end
+      object check_gridlines: TCheckBox
+        Left = 192
+        Top = 22
+        Width = 232
+        Height = 17
+        Caption = 'Show gridlines'
+        TabOrder = 3
+        OnClick = HandleChange
+      end
+      object check_fullrowselect: TCheckBox
+        Left = 192
+        Top = 45
+        Width = 232
+        Height = 17
+        Caption = 'Highlight row completely'
+        TabOrder = 4
+        OnClick = HandleChange
+      end
+    end
+    object sheet_colors: TTntTabSheet
+      Caption = 'Colors'
+      object TntLabel2: TLabel
+        Left = 16
+        Top = 278
+        Width = 408
+        Height = 17
+        AutoSize = False
+        Caption = 'Use comma separated list of extensions. For example: txt,doc,rtf'
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        WordWrap = True
+      end
+      object but_add: TButton
+        Left = 16
+        Top = 247
+        Width = 81
+        Height = 25
+        Caption = 'Add'
+        TabOrder = 0
+        OnClick = but_addClick
+      end
+      object but_delete: TButton
+        Left = 136
+        Top = 247
+        Width = 81
+        Height = 25
+        Caption = 'Delete'
+        TabOrder = 1
+        OnClick = but_deleteClick
+      end
+      object color_extension: TColorBox
+        Left = 231
+        Top = 113
+        Width = 154
+        Height = 22
+        DefaultColorColor = clWindowText
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 2
+        OnSelect = HandleExtColorChange
+      end
+      object list_exts: TVirtualStringTree
+        Left = 16
+        Top = 40
+        Width = 201
+        Height = 201
+        Header.AutoSizeIndex = 0
+        Header.DefaultHeight = 17
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'Tahoma'
+        Header.Font.Style = []
+        Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoShowSortGlyphs]
+        LineStyle = lsSolid
+        TabOrder = 3
+        TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick]
+        TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toThemeAware, toUseBlendedImages]
+        TreeOptions.SelectionOptions = [toFullRowSelect]
+        OnEditCancelled = list_extsEditCancelled
+        OnEdited = list_extsEdited
+        OnFocusChanged = list_extsFocusChanged
+        OnFreeNode = list_extsFreeNode
+        OnGetText = list_extsGetText
+        OnNewText = list_extsNewText
+        Columns = <
+          item
+            Position = 0
+            Width = 197
+          end>
+      end
+      object check_ext_bold: TCheckBox
+        Left = 231
+        Top = 52
+        Width = 193
+        Height = 17
+        Caption = 'Bold'
+        TabOrder = 4
+        OnClick = HandleExtColorChange
+      end
+      object check_ext_italic: TCheckBox
+        Left = 231
+        Top = 71
+        Width = 193
+        Height = 17
+        Caption = 'Italic'
+        TabOrder = 5
+        OnClick = HandleExtColorChange
+      end
+      object check_ext_underline: TCheckBox
+        Left = 231
+        Top = 90
+        Width = 193
+        Height = 17
+        Caption = 'Underline'
+        TabOrder = 6
+        OnClick = HandleExtColorChange
+      end
+      object check_extension_colors: TCheckBox
+        Left = 16
+        Top = 17
+        Width = 408
+        Height = 17
+        Caption = 'Use extension colors'
+        TabOrder = 7
+        OnClick = HandleChange
+      end
+    end
   end
-  object check_selectprev: TCheckBox
-    Left = 16
-    Top = 39
-    Width = 401
-    Height = 17
-    Caption = 'Select previous folder'
-    TabOrder = 1
-    OnClick = HandleChange
-  end
-  object check_autoselect: TCheckBox
-    Left = 16
-    Top = 62
-    Width = 401
-    Height = 17
-    Caption = 'Select first item automatically'
-    TabOrder = 2
-    OnClick = HandleChange
-  end
-  object check_autosize_liststyle: TCheckBox
-    Left = 16
-    Top = 85
-    Width = 401
-    Height = 17
-    Caption = 'Auto size cells in list view style.'
-    TabOrder = 3
-    OnClick = HandleChange
-  end
-  object check_sortfoldersfirst: TCheckBox
-    Left = 16
-    Top = 108
-    Width = 401
-    Height = 17
-    Caption = 'Always sort folders first.'
-    TabOrder = 4
-    OnClick = HandleChange
-  end
-  object check_infotips: TCheckBox
-    Left = 16
-    Top = 131
-    Width = 401
-    Height = 17
-    Caption = 'Show InfoTips'
-    TabOrder = 5
-    OnClick = HandleChange
-  end
-  object check_singleclick: TCheckBox
-    Left = 16
-    Top = 154
-    Width = 401
-    Height = 17
-    Caption = 'Single click browsing'
-    TabOrder = 6
-    OnClick = HandleChange
-  end
-  object combo_sizeformat: TComboBox
-    Left = 16
-    Top = 200
-    Width = 145
-    Height = 21
-    Style = csDropDownList
-    ItemHeight = 13
-    TabOrder = 7
-    OnChange = HandleChange
+  object FontDlg: TFontDialog
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Options = [fdEffects, fdApplyButton]
+    OnApply = FontDlgApply
+    Left = 376
+    Top = 18
   end
 end

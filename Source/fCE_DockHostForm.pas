@@ -34,7 +34,7 @@ uses
   SpTBXItem,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls;
+  Dialogs, ExtCtrls, TB2Item, Menus;
 
 type
   TControlAccess = class(TControl);
@@ -105,7 +105,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEDockHostForm.FormDestroy(Sender: TObject);
 begin
-  DockServer.Free;
+  //DockServer.Free;
 end;
 
 end.

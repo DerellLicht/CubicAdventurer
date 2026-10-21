@@ -108,7 +108,7 @@ procedure TCEBackContextMenu.AddMenuItems(Menu:  hMenu);
     infoW: TMenuItemInfoW;
     chItem: TMenuItem;
     ws: WideString;
-    cmItem: TCEContextMenuItem;
+    cmItem: TCEContextMenuItem; 
   begin
     for i:= 0 to Item.Count-1 do
     begin
@@ -130,6 +130,7 @@ procedure TCEBackContextMenu.AddMenuItems(Menu:  hMenu);
           FillChar(infoW, SizeOf(infoW), #0);
           infoW.cbSize:= SizeOf(infoW);
           infoW.fMask:= MIIM_TYPE or MIIM_ID or MIIM_STATE;
+
           if chItem.Caption = '-' then
           begin
             infoW.fType:= MFT_SEPARATOR

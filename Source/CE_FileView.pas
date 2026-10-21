@@ -32,7 +32,7 @@ uses
   MPCommonObjects, MPCommonUtilities, MPShellUtilities,
   EasyListview, VirtualExplorerEasyListview, VirtualResources,
   VirtualExplorerTree,  VirtualShellHistory,
-  VirtualShellNewMenu, VirtualShellNotifier,
+  VirtualShellNewMenu, VirtualShellNotifier, VirtualThumbnails,
   // SpTBX, TB2K
   SpTBXItem, TB2Item,
   // System Units
@@ -40,6 +40,7 @@ uses
   Graphics, Menus, ShellAPI, ShlObj, Math, ActiveX;
 
 type
+  TCustomThumbsManagerAccess = class(TCustomThumbsManager);
 
   TCEColSetting = record
     Index: Integer;
@@ -73,7 +74,6 @@ type
     fArrowBrowse: Boolean;
     fFolderUpOnDblClick: Boolean;
     fFullRowDblClick: Boolean;
-    fOldHistoryIndex: Integer;
     fPasteFocusSet: Boolean;
     fRightMouseButton_RockerClicks: Integer;
     fSelectPasted: Boolean;
@@ -85,9 +85,15 @@ type
     procedure SetUseKernelNotification(const Value: Boolean);
   protected
     fDoubleClicking: Boolean;
+    fFullRowContextMenu: Boolean;
+    fHistoryUpdateCount: Integer;
     fLastPaste: Integer;
+    fPerFolderSettings: Boolean;
+    fPrevFolderPIDL: PItemIDList;
     fSingleClickBrowsing: Boolean;
+    fTopNodePIDL: PItemIDList;
     procedure DoAfterShellNotify(ShellEvent: TVirtualShellEvent); override;
+    procedure DoContextMenu(MousePt: TPoint; var Handled: Boolean); override;
     procedure DoCustomColumnAdd; override;
     procedure DoEnumFinished; override;
     procedure DoEnumFolder(const Namespace: TNamespace; var AllowAsChild: Boolean);
@@ -101,6 +107,7 @@ type
         Allow: Boolean); override;
     procedure DoRootRebuild; override;
     procedure DoShellNotify(ShellEvent: TVirtualShellEvent); override;
+    procedure DoViewChange; override;
     procedure HandleDblClick(Button: TCommonMouseButton; Msg: TWMMouse); override;
     procedure HandleMouseDown(Button: TCommonMouseButton; Msg: TWMMouse); override;
     procedure HandleMouseUp(Button: TCommonMouseButton; Msg: TWMMouse); override;
@@ -111,28 +118,33 @@ type
     procedure OnCreateNewFile(Sender: TMenu; const NewMenuItem:
         TVirtualShellNewItem; var Path, FileName: WideString; var Allow: Boolean);
     procedure SetNotifyFolder(Namespace: TNamespace);
+    procedure SetPerFolderSettings(const Value: Boolean);
     procedure SetView(Value: TEasyListStyle); override;
     procedure UpdateBackgroundText;
     procedure WMKillFocus(var Message: TWMKillFocus); message WM_KillFocus;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     property ColumnIndex: Integer read fColumnIndex write fColumnIndex;
   public
-    fChangeHistory: Boolean;
     History: TVirtualShellHistory;
     ShellNewMenu: TVirtualShellNewMenu;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function AddCustomItem(Group: TEasyGroup; NS: TNamespace; LockoutSort:
         Boolean): TExplorerItem; override;
+    procedure BeginHistoryUpdate;
     procedure CalculateFolderSizes;
     procedure ClearHistory;
     procedure CreateEmptyFile;
     procedure CreateNewFolder;
+    function DragInitiated: Boolean;
+    procedure EndHistoryUpdate;
     procedure GoBackInHistory;
     procedure GoFolderUp;
     procedure GoForwardInHistory;
     procedure PasteFromClipboard; override;
     procedure PasteShortcutFromClipboard;
+    procedure Rebuild(RestoreTopNode: Boolean = False); override;
+    procedure ClearThumbnailCache; virtual;
     procedure SelectedFilesDelete(ShiftKeyState: TExecuteVerbShift = evsCurrent);
         override;
     procedure SetFocus; override;
@@ -145,6 +157,8 @@ type
     property LeftMouseButton_IsDown: Boolean read fLeftMouseButton_IsDown;
     property LeftMouseButton_RockerClicks: Integer read
         fLeftMouseButton_RockerClicks;
+    property PerFolderSettings: Boolean read fPerFolderSettings write
+        SetPerFolderSettings;
     property RightMouseButton_IsDown: Boolean read fRightMouseButton_IsDown;
     property RightMouseButton_RockerClicks: Integer read
         fRightMouseButton_RockerClicks;
@@ -152,6 +166,8 @@ type
     property AutoSelectFirstItem: Boolean read fAutoSelectFirstItem write
         fAutoSelectFirstItem;
     property ArrowBrowse: Boolean read fArrowBrowse write fArrowBrowse;
+    property FullRowContextMenu: Boolean read fFullRowContextMenu write
+        fFullRowContextMenu;
     property FullRowDblClick: Boolean read fFullRowDblClick write fFullRowDblClick;
     property SelectPasted: Boolean read fSelectPasted write fSelectPasted;
     property SelectPreviousFolder: Boolean read fSelectPreviousFolder write
@@ -219,11 +235,9 @@ type
   private
     fThumbPos: TAlign;
     fThumbSize: Integer;
-    fThumbStyle: TEasyListStyle;
   published
     property ThumbPos: TAlign read fThumbPos write fThumbPos;
     property ThumbSize: Integer read fThumbSize write fThumbSize;
-    property ThumbStyle: TEasyListStyle read fThumbStyle write fThumbStyle;
   end;
 
   TCECellSizeSettings = class(TPersistent)
@@ -344,17 +358,17 @@ end;
 -------------------------------------------------------------------------------}
 constructor TCEFileView.Create(AOwner: TComponent);
 begin
+  BeginHistoryUpdate;
   inherited;
   fCellWidth:= 0;
-  fChangeHistory:= false;
   fTranslateHeader:= false;
   History:= TVirtualShellHistory.Create(self);
   History.Add(TNamespace.Create(nil,nil),true); // Add Desktop to history
+  EndHistoryUpdate;
   //History.ItemIndex:= -1;
   History.OnChange:= HistoryChange;
-  fChangeHistory:= true;
-  fOldHistoryIndex:= -1;
-
+  fPrevFolderPIDL:= nil;
+  
   ShellNewMenu:= TVirtualShellNewMenu.Create(self);
   ShellNewMenu.NewFolderItem:= true;
   ShellNewMenu.NewShortcutItem:= true;
@@ -379,12 +393,14 @@ begin
   fArrowBrowse:= true;
   fFolderUpOnDblClick:= true;
   fFullRowDblClick:= false;
+  fFullRowContextMenu:= false;
 
   Self.BackGround.CaptionShowOnlyWhenEmpty:= false;
   // Paste selection/sort
   fLastPaste:= 0;
   fSelectPasted:= true;
   fSortAfterPaste:= true;
+  fPerFolderSettings:= false;
 end;
 
 {-------------------------------------------------------------------------------
@@ -392,12 +408,15 @@ end;
 -------------------------------------------------------------------------------}
 destructor TCEFileView.Destroy;
 begin
-  fChangeHistory:= false;
+  if PerFolderSettings and Active then
+  StoreFolderToPropertyBag(true, true);
+
+  BeginHistoryUpdate;
   if fUseKernelNotification then
   ChangeNotifier.UnRegisterKernelChangeNotify(Self);
-  //ClearHistory;
-  //History.Free;
-  //ShellNewMenu.Free;
+
+  PIDLMgr.FreeAndNilPIDL(fPrevFolderPIDL);
+  PIDLMgr.FreeAndNilPIDL(fTopNodePIDL);
   inherited;
 end;
 
@@ -406,6 +425,8 @@ end;
 -------------------------------------------------------------------------------}
 function TCEFileView.AddCustomItem(Group: TEasyGroup; NS: TNamespace;
     LockoutSort: Boolean): TExplorerItem;
+var
+  state: TEasyStorageObjectStates;
 begin
   Result:= inherited AddCustomItem(Group, NS, True);
   if SelectPasted and (fLastPaste > 0) then
@@ -418,6 +439,14 @@ begin
     end;
   end;
   UpdateBackgroundText;
+end;
+
+{-------------------------------------------------------------------------------
+  Begin History Update
+-------------------------------------------------------------------------------}
+procedure TCEFileView.BeginHistoryUpdate;
+begin
+  fHistoryUpdateCount:= fHistoryUpdateCount + 1;
 end;
 
 {-------------------------------------------------------------------------------
@@ -440,11 +469,11 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEFileView.ClearHistory;
 begin
-  fChangeHistory:= false;
+  BeginHistoryUpdate;
   try
     History.Clear;
   finally
-    fChangeHistory:= true;
+    EndHistoryUpdate;
   end;
 end;
 
@@ -654,6 +683,46 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Do ContextMenu
+-------------------------------------------------------------------------------}
+procedure TCEFileView.DoContextMenu(MousePt: TPoint; var Handled: Boolean);
+var
+  Item: TEasyItem;
+  Group: TEasyGroup;
+  HitInfoItem: TEasyHitInfoItem;
+  Menu: TPopupMenu;
+begin
+  if FullRowContextMenu and Selection.FullRowSelect then
+  begin
+    Group:= Groups.GroupByPoint(Scrollbars.MapWindowToView(ScreenToClient(MousePt)));
+    if Assigned(Group) then
+    begin
+      Item:= Group.ItemByPoint(Scrollbars.MapWindowToView(ScreenToClient(MousePt)));
+      if Assigned(Item) then
+      begin
+        Menu:= nil;
+        HitInfoItem.Item:= Item;
+        HitInfoItem.Column:= nil;
+        HitInfoItem.Group:= Group;
+        HitInfoItem.HitInfo:= [ehtOnLabel, ehtOnIcon];
+        DoItemContextMenu(HitInfoItem, MousePt, Menu, Handled);
+      end;
+    end;
+  end;
+
+  if not Handled then
+  begin
+    if Assigned(BackGndMenu) then
+    begin
+      BackGndMenu.ShowContextMenu(Self, RootFolderNamespace, @MousePt);
+      Handled:= true;
+    end
+    else
+      inherited;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Do CustomColumnAdd
 -------------------------------------------------------------------------------}
 procedure TCEFileView.DoCustomColumnAdd;
@@ -679,6 +748,8 @@ procedure TCEFileView.DoEnumFinished;
 var
   item: TExplorerItem;
 begin
+  inherited;
+
   if (View = elsList) and AutosizeListViewStyle then
   begin
     if fCellWidth > 0 then
@@ -706,36 +777,46 @@ begin
     Self.BackGround.CaptionShow:= false;
   end;
 
-  // Select previous folder
-  if SelectPreviousFolder then
+  // Restore top node
+  if assigned(fTopNodePIDL) then
   begin
-    if (fOldHistoryIndex > -1) and (fOldHistoryIndex < History.Count) then
+    item:= FindItemByPIDL(fTopNodePIDL);
+    if assigned(item) then
     begin
+      item.MakeVisible(emvTop);
+    end;
+    PIDLMgr.FreeAndNilPIDL(fTopNodePIDL);
+  end;
+
+  // Select previous folder
+  if assigned(fPrevFolderPIDL) then
+  begin
+    try
       Selection.ClearAll;
-      item:= FindItemByPIDL(History.Items[fOldHistoryIndex].AbsolutePIDL);
+      item:= FindItemByPIDL(fPrevFolderPIDL);
       if assigned(item) then
       begin
         item.MakeVisible(emvTop);
         item.Focused:= true;
         item.Selected:= true;
       end;
-      fOldHistoryIndex:= -1;
+    finally
+      PIDLMgr.FreeAndNilPIDL(fPrevFolderPIDL);
     end;
   end;
 
   // Select first item
-  if AutoSelectFirstItem and (Selection.Count = 0) then
+  if AutoSelectFirstItem and (eloThreadedEnumeration in Options) and (Selection.Count = 0) then
   begin
     item:= TExplorerItem(Self.Groups.FirstItemInRect(Self.ClientInViewportCoords));
     if assigned(item) then
     begin
+      if not assigned(OldTopNode) then
       item.MakeVisible(emvTop);
       item.Focused:= true;
       item.Selected:= true;
     end;
   end;
-  
-  inherited;
 end;
 
 {-------------------------------------------------------------------------------
@@ -858,18 +939,37 @@ end;
   Do Root Change
 -------------------------------------------------------------------------------}
 procedure TCEFileView.DoRootChange;
+var
+  item: TExplorerItem;
 begin
   inherited;
+
   // TODO: Redesign history feature
-  if fChangeHistory then
+  if fHistoryUpdateCount = 0 then
   begin
-    fChangeHistory:= false;
+    BeginHistoryUpdate;
     if History.ItemIndex > -1 then
     begin
       if RootFolderNamespace.ComparePIDL(History.Items[History.ItemIndex].AbsolutePIDL, true) <> 0 then
       History.Add(RootFolderNamespace, false, true);
     end;    
-    fChangeHistory:= true;
+    EndHistoryUpdate;
+  end;
+
+  // per folder settings
+  if PerFolderSettings and Active then
+  LoadFolderFromPropertyBag(true);
+
+  // Select first item
+  if AutoSelectFirstItem and not (eloThreadedEnumeration in Options) and (Selection.Count = 0) then
+  begin
+    item:= TExplorerItem(Self.Groups.FirstItemInRect(Self.ClientInViewportCoords));
+    if assigned(item) then
+    begin
+      item.MakeVisible(emvTop);
+      item.Focused:= true;
+      item.Selected:= true;
+    end;
   end;
 end;
 
@@ -880,6 +980,10 @@ procedure TCEFileView.DoRootChanging(const NewRoot: TRootFolder; Namespace:
     TNamespace; var Allow: Boolean);
 begin
   inherited;
+  // per folder settings
+  if PerFolderSettings and Active then
+  StoreFolderToPropertyBag(true, true);
+  
   fLastPaste:= 0;
   fPasteFocusSet:= false;
   SetNotifyFolder(Namespace);
@@ -892,6 +996,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEFileView.DoRootRebuild;
 begin
+  fLastPaste:= 0;
   inherited;
 end;
 
@@ -905,6 +1010,32 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Do ViewChange
+-------------------------------------------------------------------------------}
+procedure TCEFileView.DoViewChange;
+begin
+  inherited;
+  if PerFolderSettings and Active then
+  StoreFolderToPropertyBag(true, true);  
+end;
+
+function TCEFileView.DragInitiated: Boolean;
+begin
+  Result := [ebcsDragSelecting, ebcsDragging, ebcsDragSelectPending, ebcsDragPending] * States <> []
+end;
+
+{-------------------------------------------------------------------------------
+  End History Update
+-------------------------------------------------------------------------------}
+procedure TCEFileView.EndHistoryUpdate;
+begin
+  if fHistoryUpdateCount > 0 then
+  fHistoryUpdateCount:= fHistoryUpdateCount - 1
+  else
+  fHistoryUpdateCount:= 0;
+end;
+
+{-------------------------------------------------------------------------------
   Go Back In History
 -------------------------------------------------------------------------------}
 procedure TCEFileView.GoBackInHistory;
@@ -915,7 +1046,13 @@ begin
   if Self.EditManager.Editing then
   Self.EditManager.EndEdit;
 
-  fOldHistoryIndex:= History.ItemIndex;
+  if SelectPreviousFolder then
+  begin
+    PIDLMgr.FreeAndNilPIDL(fPrevFolderPIDL);
+    if History.Count > 0 then
+    fPrevFolderPIDL:= PIDLMgr.CopyPIDL(History.Items[History.ItemIndex].AbsolutePIDL);
+  end;
+
   History.Back;
 end;
 
@@ -930,7 +1067,12 @@ begin
   if Self.EditManager.Editing then
   Self.EditManager.EndEdit;
 
-  fOldHistoryIndex:= History.ItemIndex;
+  if SelectPreviousFolder then
+  begin
+    PIDLMgr.FreeAndNilPIDL(fPrevFolderPIDL);
+    fPrevFolderPIDL:= PIDLMgr.CopyPIDL(Self.RootFolderNamespace.AbsolutePIDL);
+  end;
+
   BrowseToPrevLevel;
 end;
 
@@ -944,6 +1086,13 @@ begin
   
   if Self.EditManager.Editing then
   Self.EditManager.EndEdit;
+
+  if SelectPreviousFolder then
+  begin
+    PIDLMgr.FreeAndNilPIDL(fPrevFolderPIDL);
+    if History.ItemIndex+2 < History.Count then
+    fPrevFolderPIDL:= PIDLMgr.CopyPIDL(History.Items[History.ItemIndex+2].AbsolutePIDL);
+  end;
   
   History.Next;
 end;
@@ -988,7 +1137,6 @@ var
   itemHitInfo: TEasyItemHitTestInfoSet;
   ns: TNamespace;
   PIDL: PItemIDList;
-  KeyState: TCommonKeyStates;
 begin
   fSingleClickBrowsing:= false;
   doDefault:= true;
@@ -1001,11 +1149,11 @@ begin
   begin
     fRightMouseButton_IsDown:= false;
   end;
-  KeyState := KeyToKeyStates(Msg.Keys);
+
   // SingleClickBrowse and SingleClickExecute
   if (SingleClickBrowse or SingleClickExecute)
       and (Button = cmbLeft)
-      and not ((cksControl in KeyState) or (cksShift in KeyState))
+      and not ((GetkeyState(VK_MENU) < 0) or (GetkeyState(VK_CONTROL) < 0) or (GetkeyState(VK_SHIFT) < 0) )
       and not fRightMouseButton_IsDown
       and not fDoubleClicking
       and not Self.DragInitiated then
@@ -1076,14 +1224,17 @@ end;
 procedure TCEFileView.HistoryChange(Sender: TBaseVirtualShellPersistent;
     ItemIndex: Integer; ChangeType: TVSHChangeType);
 begin
-  if fChangeHistory then
+  if fHistoryUpdateCount = 0 then
   begin
     if (ChangeType = hctSelected) and (ItemIndex > -1) then
     begin
-      fChangeHistory:= false;
-      if assigned(History.Items[ItemIndex]) then
-      BrowseToByPIDL(History.Items[ItemIndex].AbsolutePIDL, false);
-      fChangeHistory:= true;
+      BeginHistoryUpdate;
+      try
+        if assigned(History.Items[ItemIndex]) then
+        BrowseToByPIDL(History.Items[ItemIndex].AbsolutePIDL, false);
+      finally
+        EndHistoryUpdate;
+      end;
     end;
   end;
 end;
@@ -1121,6 +1272,50 @@ begin
   end
 end;
 
+{-------------------------------------------------------------------------------
+  Rebuild
+-------------------------------------------------------------------------------}
+procedure TCEFileView.Rebuild(RestoreTopNode: Boolean = False);
+var
+  ns: TNamespace;
+  item: TExplorerItem;
+begin
+  if not assigned(fPrevFolderPIDL) and assigned(Self.Selection.FocusedItem) then
+  begin
+    if Self.ValidateNamespace(Self.Selection.FocusedItem, ns) then
+    begin
+      fPrevFolderPIDL:= PIDLMgr.CopyPIDL(ns.AbsolutePIDL);
+    end;
+  end;
+
+  if RestoreTopNode then
+  begin
+    item:= Groups.FirstItemInRect(Scrollbars.MapWindowRectToViewRect( Rect( 0, 0, ClientWidth, ClientHeight))) as TExplorerItem;
+    if Assigned(item) then
+    begin
+      PIDLMgr.FreePIDL(fTopNodePIDL);
+      fTopNodePIDL:= PIDLMgr.CopyPIDL(item.Namespace.AbsolutePIDL);
+    end;
+  end;
+
+  inherited Rebuild(false);
+end;
+
+{-------------------------------------------------------------------------------
+  ClearThumbnailCache
+-------------------------------------------------------------------------------}
+procedure TCEFileView.ClearThumbnailCache;
+var
+  ws: WideString;
+begin
+  ws:= TCustomThumbsManagerAccess(Self.ThumbsManager).GetAlbumFileToLoad(Self.RootFolderNamespace.NameForParsing);
+  if FileExists(ws) then
+  DeleteFile(ws);
+end;
+
+{-------------------------------------------------------------------------------
+  SelectedFilesDelete
+-------------------------------------------------------------------------------}
 procedure TCEFileView.SelectedFilesDelete(ShiftKeyState: TExecuteVerbShift =
     evsCurrent);
 var
@@ -1203,6 +1398,19 @@ begin
       else
       ChangeNotifier.NotifyWatchFolder(Self, '');
     end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Set PerFolderSettings
+-------------------------------------------------------------------------------}
+procedure TCEFileView.SetPerFolderSettings(const Value: Boolean);
+begin
+  if fPerFolderSettings <> Value then
+  begin
+    fPerFolderSettings:= Value;
+    if fPerFolderSettings then
+    LoadFolderFromPropertyBag(true);
   end;
 end;
 

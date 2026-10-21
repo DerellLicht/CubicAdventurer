@@ -85,14 +85,39 @@ type
               WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   end;
 
-var
-  GlobalPathCtrl: TCEPathCtrl;
-  GlobalFocusCtrl: TCEMouseCtrl;
+function GlobalPathCtrl: TCEPathCtrl;
+
+function GlobalFocusCtrl: TCEMouseCtrl;
 
 implementation
 
 uses
-  Main, dCE_Actions, fCE_FileView, fCE_TextEditor, CE_FileUtils;
+  Main, dCE_Actions, fCE_FileView, CE_FileUtils;
+
+var
+  fGlobalPathCtrl: TCEPathCtrl;
+  fGlobalFocusCtrl: TCEMouseCtrl;
+
+{-------------------------------------------------------------------------------
+  GlobalPathCtrl
+-------------------------------------------------------------------------------}
+function GlobalPathCtrl: TCEPathCtrl;
+begin
+  if not assigned(fGlobalPathCtrl) then
+  fGlobalPathCtrl:= TCEPathCtrl.Create;
+  Result:= fGlobalPathCtrl;
+end;
+
+{-------------------------------------------------------------------------------
+  GlobalFocusCtrl
+-------------------------------------------------------------------------------}
+function GlobalFocusCtrl: TCEMouseCtrl;
+begin
+  if not assigned(fGlobalFocusCtrl) then
+  fGlobalFocusCtrl:= TCEMouseCtrl.Create;
+  Result:= fGlobalFocusCtrl;
+end;
+
 
 {##############################################################################}
 
@@ -135,13 +160,23 @@ begin
   for i:= 0 to fGlobalPathCtrls.Count - 1 do
   begin
     if Supports(fGlobalPathCtrls.Items[i], ICEPathChangeHandler, PathHandler) then
-    PathHandler.GlobalPathChanged(Sender, NewPath);
+    begin
+      try
+        PathHandler.GlobalPathChanged(Sender, NewPath);
+      except
+      end;
+    end;
   end; 
   // Active Component
   if Assigned(fActivePage) and (Sender <> fActivePage) then
   begin
     if Supports(fActivePage, ICEPathChangeHandler, PathHandler) then
-    PathHandler.GlobalPathChanged(Sender, NewPath);
+    begin
+      try
+        PathHandler.GlobalPathChanged(Sender, NewPath);
+      except
+      end;
+    end;
   end;
 
   fCurrentPath:= NewPath;
@@ -174,14 +209,24 @@ begin
     if fGlobalPathCtrls.Items[i] <> Sender then
     begin
       if Supports(fGlobalPathCtrls.Items[i], ICEPathChangeHandler, PathHandler) then
-      PathHandler.GlobalPIDLChanged(Sender, APIDL);
+      begin
+        try
+          PathHandler.GlobalPIDLChanged(Sender, APIDL);
+        except
+        end;
+      end;
     end;
   end;
   // Active Component
   if Assigned(fActivePage) and (Sender <> fActivePage) then
   begin
    if Supports(fActivePage, ICEPathChangeHandler, PathHandler) then
-    PathHandler.GlobalPIDLChanged(Sender, APIDL);
+   begin
+     try
+       PathHandler.GlobalPIDLChanged(Sender, APIDL);
+     except
+     end;
+   end;
   end;
 
   fCurrentPath:= PIDLToCEPath(APIDL);
@@ -333,7 +378,8 @@ begin
   // Select Next/Previous tab
   else if (Shift = [ssCtrl]) and (WheelDelta <> 0) then
   begin
-    if not (GlobalPathCtrl.ActivePage is TCETextEditorPage) or not fTextEditorBugFix then
+    // TODO: TextEditor Rewrite
+    if true then //not (GlobalPathCtrl.ActivePage is TCETextEditorPage) or not fTextEditorBugFix then
     begin
       if WheelDelta > 0 then
       MainForm.TabSet.SelectNextTab(true)
@@ -346,8 +392,9 @@ begin
   end
   else if (Shift = [ssLeft]) and (WheelDelta <> 0) then
   begin
-    if GlobalPathCtrl.ActivePage is TCETextEditorPage then
-    fTextEditorBugFix:= true;
+    // TODO: TextEditor Rewrite
+    //if GlobalPathCtrl.ActivePage is TCETextEditorPage then
+    //fTextEditorBugFix:= true;
   end;
 
   Handled:= false;
@@ -395,11 +442,11 @@ end;
 {##############################################################################}
 
 initialization
-  GlobalPathCtrl:= TCEPathCtrl.Create;
-  GlobalFocusCtrl:= TCEMouseCtrl.Create;
 
 finalization
-  FreeAndNil(GlobalPathCtrl);
-  FreeAndNil(GlobalFocusCtrl);
+  if assigned(fGlobalPathCtrl) then
+  FreeAndNil(fGlobalPathCtrl);
+  if assigned(fGlobalFocusCtrl) then
+  FreeAndNil(fGlobalFocusCtrl);
 
 end.

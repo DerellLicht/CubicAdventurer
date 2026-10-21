@@ -92,6 +92,7 @@ type
     procedure SetSelectedItem(const Value: PVirtualNode);
     { Private declarations }
   protected
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     Updater: TCEVersionUpdater;
     procedure CheckOfflineStates;
@@ -272,6 +273,15 @@ begin
     node:= ItemList.GetNext(node);
   end;
   ItemList.Repaint;
+end;
+
+{-------------------------------------------------------------------------------
+  CreateParams
+-------------------------------------------------------------------------------}
+procedure TCEVersionMgrForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.WndParent:= Application.MainFormHandle;
 end;
 
 {-------------------------------------------------------------------------------
@@ -599,5 +609,16 @@ begin
   if (Key = #27) then
   but_close.Click;
 end;
+
+{##############################################################################}
+
+initialization
+
+finalization
+  if assigned(CEVersionMgrForm) then
+  begin
+    CEVersionMgrForm.Free;
+    CEVersionMgrForm:= nil;
+  end;
 
 end.

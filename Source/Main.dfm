@@ -212,9 +212,11 @@ object MainForm: TMainForm
         end
         object toolbarsMenuItem: TSpTBXSubmenuItem
           Caption = 'Toolbars'
+          ImageIndex = 75
         end
-        object SpTBXSubmenuItem9: TSpTBXSubmenuItem
+        object sub_panels: TSpTBXSubmenuItem
           Caption = 'Panels'
+          ImageIndex = 73
           object SpTBXItem26: TSpTBXItem
             Action = CEActions.act_view_folders
           end
@@ -232,6 +234,14 @@ object MainForm: TMainForm
           end
           object SpTBXItem80: TSpTBXItem
             Action = CEActions.act_view_archiver
+          end
+          object SpTBXItem99: TSpTBXItem
+            Action = CEActions.act_view_workspace
+          end
+          object SpTBXSeparatorItem17: TSpTBXSeparatorItem
+          end
+          object item_lock_panels: TSpTBXItem
+            Action = CEActions.act_view_lock_panels
           end
         end
         object SpTBXItem87: TSpTBXItem
@@ -535,12 +545,13 @@ object MainForm: TMainForm
     end
   end
   object ToolbarPopupMenu: TSpTBXPopupMenu
+    Images = CE_Images.SmallIcons
     Left = 16
     Top = 64
     object SpTBXItem52: TSpTBXItem
       Action = CEActions.act_tools_showcustomizer
     end
-    object SpTBXSeparatorItem17: TSpTBXSeparatorItem
+    object SpTBXSeparatorItem32: TSpTBXSeparatorItem
     end
   end
   object StartUpTimer: TTimer
@@ -555,6 +566,14 @@ object MainForm: TMainForm
     OnPopup = TabPopupMenuPopup
     Left = 96
     Top = 64
+    object SpTBXItem100: TSpTBXItem
+      Action = CEActions.act_tabs_copyhere
+    end
+    object SpTBXItem93: TSpTBXItem
+      Action = CEActions.act_tabs_movehere
+    end
+    object sep_tabs_copymove: TSpTBXSeparatorItem
+    end
     object SpTBXItem14: TSpTBXItem
       Action = CEActions.act_tabs_addtab
     end
@@ -597,16 +616,15 @@ object MainForm: TMainForm
     Hint = 'CubicExplorer'
     PopupMenu = TrayPopupMenu
     Visibility = [tvVisibleTaskBar, tvVisibleTaskList]
+    OnClick = TrayIconClick
     OnMouseUp = TrayIconMouseUp
     Left = 196
     Top = 64
   end
   object TrayPopupMenu: TSpTBXPopupMenu
+    OnPopup = TrayPopupMenuPopup
     Left = 196
     Top = 96
-    object SpTBXItem93: TSpTBXItem
-      Action = CEActions.act_gen_showhide
-    end
     object SpTBXSeparatorItem25: TSpTBXSeparatorItem
     end
     object SpTBXItem92: TSpTBXItem
@@ -618,6 +636,12 @@ object MainForm: TMainForm
     Interval = 2000
     OnTimer = AutoUpdateTimerTimer
     Left = 48
+    Top = 96
+  end
+  object PanelsPopupMenu: TSpTBXPopupMenu
+    Images = CE_Images.SmallIcons
+    LinkSubitems = sub_panels
+    Left = 16
     Top = 96
   end
 end

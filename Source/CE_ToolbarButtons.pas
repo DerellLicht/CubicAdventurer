@@ -206,6 +206,22 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+  TCEFilterPatternItem2 = class(TCEToolbarEditItem)
+  protected
+    procedure DoChange(const AText: WideString); override;
+    procedure DoClearButtonClick(Shift: TShiftState); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+  TCEWorkspaceOpenButton = class(TCEToolbarSubmenuItem)
+  protected
+    procedure DoPopup(Sender: TTBCustomItem; FromLink: Boolean); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
 var
   GlobalButtonSettings: TCEButtonSettings;
 
@@ -214,7 +230,8 @@ implementation
 uses
   CE_FileView, fCE_FileView, CE_BaseFileView, dCE_Actions, dCE_Images, Main,
   CE_Sessions, fCE_FiltersPanel, CE_Utils, MPShellTypes, CE_CommonObjects,
-  CE_AppSettings, CE_SystemUtils, CE_SpTabBar, SpTBXTabs, fCE_StackPanel;
+  CE_AppSettings, CE_SystemUtils, CE_SpTabBar, SpTBXTabs, fCE_StackPanel,
+  fCE_WorkspacePanel;
 
 {##############################################################################}
 
@@ -369,8 +386,6 @@ begin
     end;
   end;
 end;
-
-{##############################################################################}
 
 {*------------------------------------------------------------------------------
   Do Forward Button Popup
@@ -1356,6 +1371,68 @@ procedure TCEStackSaveButton.DoPopup(Sender: TTBCustomItem; FromLink:
     Boolean);
 begin
   CEStackPanel.PopulateStackSaveMenuItem(Sender, true);
+end;
+
+{##############################################################################}
+
+{-------------------------------------------------------------------------------
+  Create an instance of PatternNotifyList
+-------------------------------------------------------------------------------}
+constructor TCEFilterPatternItem2.Create(AOwner: TComponent);
+begin
+  inherited;
+  CEFiltersPanel.PatternNotifyList.Add(Self);
+  Self.AutoShowClearButton:= true;
+end;
+
+{-------------------------------------------------------------------------------
+  Destroy PatternNotifyList
+-------------------------------------------------------------------------------}
+destructor TCEFilterPatternItem2.Destroy;
+begin
+  if assigned(CEFiltersPanel) then
+  CEFiltersPanel.PatternNotifyList.Remove(Self);
+  inherited;
+end;
+
+{-------------------------------------------------------------------------------
+  Do Change
+-------------------------------------------------------------------------------}
+procedure TCEFilterPatternItem2.DoChange(const AText: WideString);
+begin
+  inherited;
+  CEFiltersPanel.PatternText:= AText;
+end;
+
+{-------------------------------------------------------------------------------
+  Do ClearButtonClick
+-------------------------------------------------------------------------------}
+procedure TCEFilterPatternItem2.DoClearButtonClick(Shift: TShiftState);
+begin
+  inherited;
+  CEFiltersPanel.PatternText:= '';
+end;
+
+{##############################################################################}
+// TCEWorkspaceOpenButton
+
+{*------------------------------------------------------------------------------
+  Create an instance of TCEWorkspaceOpenButton
+-------------------------------------------------------------------------------}
+constructor TCEWorkspaceOpenButton.Create(AOwner: TComponent);
+begin
+  inherited;
+  Self.DropdownCombo:= true;
+  Self.Options:= [tboDropdownArrow];
+end;
+
+{*------------------------------------------------------------------------------
+  Do Button Popup
+-------------------------------------------------------------------------------}
+procedure TCEWorkspaceOpenButton.DoPopup(Sender: TTBCustomItem; FromLink:
+    Boolean);
+begin
+  CEWorkspacePanel.PopulateOpenMenuItem(Sender);
 end;
 
 {##############################################################################}
