@@ -85,6 +85,9 @@ type
     procedure SetCenterOnExpand(const Value: Boolean);
     procedure SetFontSize(const Value: Integer);
     procedure SetLineHeight(const Value: Integer);
+  protected
+    function GetTrackChangesInMappedDrives: Boolean;
+    procedure SetTrackChangesInMappedDrives(const Value: Boolean);
   public
     FolderPanel: TCEFolderPanel;
   published
@@ -97,6 +100,8 @@ type
     property FontSize: Integer read fFontSize write SetFontSize;
     property LineHeight: Integer read fLineHeight write SetLineHeight;
     property OpenInNewTab: Boolean read fOpenInNewTab write fOpenInNewTab;
+    property TrackChangesInMappedDrives: Boolean read GetTrackChangesInMappedDrives
+        write SetTrackChangesInMappedDrives;
   end;
 
 var
@@ -190,6 +195,7 @@ procedure TCEFolderPanel.GlobalPathChanged(Sender: TObject; NewPath:
 begin
   if FolderTree.AutoCollapse then
   FolderTree.FullCollapse;
+
   FolderTree.BrowseTo(NewPath, true, true, false, false);
 
   if Settings.CenterOnBrowse then
@@ -204,6 +210,7 @@ procedure TCEFolderPanel.GlobalPIDLChanged(Sender: TObject; NewPIDL:
 begin
   if FolderTree.AutoCollapse then
   FolderTree.FullCollapse;
+
   FolderTree.BrowseToByPIDL(NewPIDL, true, true, false, false);
 
   if Settings.CenterOnBrowse then
@@ -335,6 +342,7 @@ function TCEFolderPanelSettings.GetCenterOnExpand: Boolean;
 begin
   Result:= FolderPanel.FolderTree.CenterOnExpand;
 end;
+
 procedure TCEFolderPanelSettings.SetCenterOnExpand(const Value: Boolean);
 begin
   FolderPanel.FolderTree.CenterOnExpand:= Value;
@@ -382,6 +390,27 @@ begin
       FolderPanel.FolderTree.EndUpdate;
     end;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  Get/Set TrackChangesInMappedDrives
+-------------------------------------------------------------------------------}
+function TCEFolderPanelSettings.GetTrackChangesInMappedDrives: Boolean;
+begin
+  Result:= toTrackChangesInMappedDrives in FolderPanel.FolderTree.TreeOptions.VETMiscOptions;
+end;
+procedure TCEFolderPanelSettings.SetTrackChangesInMappedDrives(const Value:
+    Boolean);
+var
+  opt: TVETMiscOptions;
+begin
+  opt:= FolderPanel.FolderTree.TreeOptions.VETMiscOptions;
+  if Value then
+  Include(opt, toTrackChangesInMappedDrives)
+  else
+  Exclude(opt, toTrackChangesInMappedDrives);
+
+  FolderPanel.FolderTree.TreeOptions.VETMiscOptions:= opt;
 end;
 
 end.

@@ -55,7 +55,6 @@ uses
   Documents in 'Documents.pas',
   dCE_Images in 'dCE_Images.pas' {CE_Images: TDataModule},
   CEJvDockVSNetStyleTBX in 'CEJvDockVSNetStyleTBX.pas',
-  fCE_TextEditor in 'fCE_TextEditor.pas' {CETextEditorPage: TFrame},
   fCE_AboutBox in 'fCE_AboutBox.pas' {CEAboutBox},
   CE_DriveBar in 'CE_DriveBar.pas',
   CE_BookmarkBar in 'CE_BookmarkBar.pas',
@@ -129,7 +128,6 @@ uses
   CE_XmlUtils in 'CE_XmlUtils.pas',
   fCE_UpdateDlg in 'fCE_UpdateDlg.pas' {CEUpdateDlg},
   fCE_VersionMgrForm in 'fCE_VersionMgrForm.pas' {CEVersionMgrForm: TTntForm},
-  CC_Threads in 'Components\CubicCore\CC_Threads.pas',
   CE_ArchiveTree in 'CE_ArchiveTree.pas',
   JclCompressionWide in 'Components\jcl\JclCompressionWide.pas',
   fCE_ArchivePanel in 'fCE_ArchivePanel.pas' {CEArchiverPanel},
@@ -142,12 +140,21 @@ uses
   CV_ImageView in 'CV_ImageView.pas',
   CV_MediaPlayer in 'CV_MediaPlayer.pas',
   CV_MediaPlayerEngines in 'CV_MediaPlayerEngines.pas',
-  CV_Playlist in 'CV_Playlist.pas';
+  CV_Playlist in 'CV_Playlist.pas',
+  CE_SynExporters in 'CE_SynExporters.pas',
+  fCE_TextEditor in 'fCE_TextEditor.pas' {CETextEditor: TFrame},
+  fCE_TextEditorOptions in 'fCE_TextEditorOptions.pas' {CETextEditorOptionsForm: TTntForm},
+  fCE_WorkspacePanel in 'fCE_WorkspacePanel.pas' {CEWorkspacePanel},
+  VirtualThumbnails in 'Components\Mustangpeak\VSTools\VirtualThumbnails.pas',
+  fCV_SumatraPDF in 'fCV_SumatraPDF.pas' {SumatraPDF: TFrame},
+  CE_Plugins in 'CE_Plugins.pas',
+  CE_PluginsIntf in 'CE_PluginsIntf.pas',
+  fCE_PluginLog in 'fCE_PluginLog.pas' {CEPluginLog},
+  fCE_OptionsPage_Plugins in 'fCE_OptionsPage_Plugins.pas' {CEOptionsPage_Plugins: TFrame},
+  fCE_PluginSettingsForm in 'fCE_PluginSettingsForm.pas' {CEPluginSettingsForm};
 
 {$R *.res}
 {$R 'CE_Resources.res'}
-
-{.$define FullDebugMode}
 
 var
   h: HWND;
@@ -155,6 +162,10 @@ var
   i: Integer;
   copyDataStruct : TCopyDataStruct;
 begin
+
+{##############################################################################}
+// Handle command line parameters
+
   // Handle elevated commands
   if HandleElevatedCommands then
   Exit;
@@ -170,39 +181,48 @@ begin
   begin
     if SendMessage(h, WM_USER + 1,0,0) = 0 then
     begin
+			// make comma separated list of params
       for i:= 1 to WideParamCount do
       begin
         ws:= ws + WideParamStr(i);
         if i < WideParamCount then
         ws:= ws + ',';
       end;
+      // send params to CE
       if ws <> '' then
       begin
         copyDataStruct.dwData:= 0;
-        copyDataStruct.cbData := (1 + Length(ws))*SizeOf(WideChar);
-        copyDataStruct.lpData := PWideChar(ws);
+        copyDataStruct.cbData:= (Length(ws) + 1) * SizeOf(WideChar);
+        copyDataStruct.lpData:= PWideChar(ws);
         SendMessage(h, WM_COPYDATA, 0, Integer(@copyDataStruct));
-      end
-      else
-      begin
-        PostMessage(h, WM_MakeVisible, 0, 0);
       end;
+      // make CE visible
+      SetForegroundWindow(h);
+      PostMessage(h, WM_MakeVisible, 0, 0);
+			// terminate
       Exit;
     end;
   end;
   //****************************************************
   //////////////////////////////////////////////////////
   
+{##############################################################################}
+// Initilize and create MainForm
+
   // Enable memory leak reporting if run on Debugger
   ReportMemoryLeaksOnShutdown:= DebugHook <> 0;
 
   Application.Initialize;
   Application.Title := 'CubicExplorer';
   Application.ShowMainForm:= false;
+
   // Create Main Form
   Application.CreateForm(TMainForm, MainForm);
   MainForm.InitializeUI;
   MainForm.BeginUIUpdate;
+
+{##############################################################################}
+// Create panels in this section
 
   // Create Folder Panel
   CEFolderPanel:= TCEFolderPanel.Create(MainForm);
@@ -227,6 +247,13 @@ begin
   // Create Archiver Panel
 //  CEArchiverPanel:= TCEArchiverPanel.Create(MainForm);
 //  CEArchiverPanel.Name:= 'ArchiverPanel';
+
+  // Create Workspace Panel
+  CEWorkspacePanel:= TCEWorkspacePanel.Create(MainForm);
+  CEWorkspacePanel.Name:= 'WorkspacePanel';
+
+{##############################################################################}
+// Run
 
   // Run Start up code.
   MainForm.StartUp;

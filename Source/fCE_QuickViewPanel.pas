@@ -38,7 +38,7 @@ uses
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ShlObj, ImgList, StdCtrls, CE_Toolbar, TB2Item, ComCtrls,
-  SpTBXControls, CE_SpTBXItems, TB2Toolbar, ExtCtrls;
+  SpTBXControls, CE_SpTBXItems, TB2Toolbar, ExtCtrls, Menus;
 
 const
   WM_ActivateQuickView = WM_USER + 1;
@@ -63,8 +63,6 @@ type
 
 var
   CEQuickViewPanel: TCEQuickViewPanel;
-
-
 
 implementation
 
@@ -112,8 +110,8 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEQuickViewPanel.DoFormHide;
 begin
-  inherited;
- QuickView.Active:= false;
+  inherited;    
+  //QuickView.Active:= false;
 end;
 
 {*------------------------------------------------------------------------------

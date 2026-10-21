@@ -132,6 +132,9 @@ var
 
 implementation
 
+uses
+  dCE_Actions;
+
 {$R *.dfm}
 
 {-------------------------------------------------------------------------------
@@ -152,13 +155,13 @@ end;
 constructor TCECustomTabPage.Create(AOwner: TComponent);
 begin
   inherited;
-  if GlobalPathCtrl.ActivePage = Self then
-  GlobalPathCtrl.ActivePage:= nil;  
   SetVistaFont(Font);
   fSettings:= GetSettingsClass.Create;
   fImageIndex:= -1;
   fActive:= false;
   Layout:= 'CustomPage';
+
+  Self.OnContextPopup:= CEActions.HandleGlobalContextPopup;
 end;
 
 {*------------------------------------------------------------------------------

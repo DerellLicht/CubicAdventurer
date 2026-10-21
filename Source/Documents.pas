@@ -33,6 +33,7 @@ Unit Documents;
 // 101 = Show/Hide Application
 // 102 = Restart Application
 // 103 = New instance
+// 104 = Make Visible
 
 
 // **** Edit (200) ****
@@ -62,6 +63,7 @@ Unit Documents;
 // 304 = Filters, toggle visibility.
 // 305 = Drop Stack, toggle visibility.
 // 306 = Archiver, toggle visibility.
+// 307 = Workspace, toggle visibility.
 // 330 = Show Hints
 // 331 = Smooth Scroll
 // 332 = Show Hidden files
@@ -85,6 +87,7 @@ Unit Documents;
 // 375 = Filters menu
 // 380 = DualView
 // 390 = Lock Toolbars
+// 391 = Lock Panels
 
 // **** Tools (400) ****
 // 401 = Customize UI
@@ -129,6 +132,8 @@ Unit Documents;
 // 668 = Switch to Next Tab
 // 669 = Switch to Previous Tab
 // 670 = Tabs list
+// 671 = Copy Selected Here
+// 672 = Move Selected Here
 
 // **** QuickView (700) ****
 
@@ -157,6 +162,12 @@ Unit Documents;
 // 923 = Remove from stack
 // 924 = Clear list
 // 925 = Allow Move
+
+// **** Workspace (930) ****
+// 931 = Folder Up
+// 932 = Back
+// 933 = Forward
+// 934 = Open
 
 // **** Focus (950) ****
 // 951 = Set focus to address bar

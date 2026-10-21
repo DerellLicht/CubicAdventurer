@@ -84,6 +84,7 @@ type
   protected
     function CreatePageNode(PagePath: String): PVirtualNode;
     procedure CreatePages;
+    procedure CreateParams(var Params: TCreateParams); override;
     function FindPageNode(PagePath: String): PVirtualNode;
     procedure SelectActivePageFromTree;
   public
@@ -107,7 +108,7 @@ var
 implementation
 
 uses
-  fCE_OptionsPage_Advanced, MPCommonUtilities;
+  fCE_OptionsPage_Advanced, MPCommonUtilities, VistaAltFixUnit2;
 
 {$R *.dfm}
 
@@ -173,8 +174,10 @@ begin
     PageTree.FocusedNode:= node;
     PageTree.Selected[node]:= true;
   end;
-  
+
   CEGlobalTranslator.TranslateComponent(Self);
+  
+  TVistaAltFix2.Create(Self);
 end;
 
 {*------------------------------------------------------------------------------
@@ -593,6 +596,15 @@ begin
     page:= TCEOptionsCustomPage(Pagelist.Items[i]);
     page.ApplySettings;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  CreateParams
+-------------------------------------------------------------------------------}
+procedure TCEOptionsDialog.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.WndParent:= Application.MainFormHandle;
 end;
 
 {-------------------------------------------------------------------------------
