@@ -242,7 +242,7 @@ object CETextEditor: TCETextEditor
     object label_format: TSpTBXLabelItem
     end
   end
-  object SynMemo: TSynMemo
+  object SynMemo: TSynEdit
     Left = 9
     Top = 25
     Width = 666

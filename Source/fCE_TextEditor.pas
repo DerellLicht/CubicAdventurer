@@ -6,7 +6,7 @@ uses
   // CE
   CE_ToolbarEditorItems, CE_Toolbar, CE_SynExporters, fCE_TextEditorOptions,
   // SynEdit
-  SynEditRegexSearch, SynEditMiscClasses, SynEditSearch, SynEdit, SynMemo,
+  SynEditRegexSearch, SynEditMiscClasses, SynEditSearch, SynEdit,
   SynEditTypes, SynUnicode,
   // SynEdit Highlighters
   SynEditHighlighter, SynHighlighterPas,
@@ -34,7 +34,7 @@ type
     TopDock: TSpTBXDock;
     toolbar_main: TCEToolbar;
     StatusBar: TSpTBXStatusBar;
-    SynMemo: TSynMemo;
+    SynMemo: TSynEdit;
     LeftDock: TSpTBXDock;
     RightDock: TSpTBXDock;
     SpTBXSubmenuItem1: TSpTBXSubmenuItem;
