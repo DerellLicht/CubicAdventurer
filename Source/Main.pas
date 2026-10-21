@@ -454,11 +454,9 @@ begin
   //  flash on screen before the curtain is drawn.
   panel_curtain.BringToFront;
   
-  ShowWindow(Application.Handle, SW_HIDE);
-  SetWindowLong(Application.Handle, GWL_EXSTYLE,
-    GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW
-    or WS_EX_TOOLWINDOW);
-  ShowWindow(Application.Handle, SW_SHOW);
+  // (Removed: the hack that hid Application.Handle and made it a toolwindow.
+  //  CubicExplorer.dpr now sets Application.MainFormOnTaskbar := true, so the
+  //  main form is the only window with a taskbar button.)
 
   ChangeNotifier.RegisterShellChangeNotify(Self);
   fLanguageList:= TStringList.Create;

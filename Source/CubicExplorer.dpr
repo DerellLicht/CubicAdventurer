@@ -200,6 +200,11 @@ begin
   ReportMemoryLeaksOnShutdown:= DebugHook <> 0;
 
   Application.Initialize;
+  // The main form owns the taskbar button (the modern, supported model).
+  // Must be set before the main form is created. The old 2006-era hack of
+  // turning Application.Handle into a toolwindow no longer works reliably and
+  // produced a second taskbar entry (two thumbnails in the hover preview).
+  Application.MainFormOnTaskbar:= true;
   Application.Title := 'CubicExplorer';
   Application.ShowMainForm:= false;
   // Create Main Form
