@@ -8586,9 +8586,53 @@ begin
   StreamHelper.WriteWideString(S, ExtensionMask);
  end;
 
+{-------------------------------------------------------------------------------
+  CleanExtensionList
+
+  revival: replaces WideValidateDelimitedExtList(Value, [vdwcPeriod], vdeComma)
+  from the Mustangpeak common library, whose current version raises an
+  ERangeError (TStringBuilder) when it is fed the extension lists that
+  CubicExplorer stores (for example '.txt;pdf;doc'). Input entries may be
+  separated by ';', ',' or blanks. Each entry gets a leading period, wildcard
+  characters are dropped, empty entries are skipped. Output is comma separated,
+  for example '.txt,.pdf,.doc'.
+-------------------------------------------------------------------------------}
+function CleanExtensionList(const AValue: WideString): WideString;
+var
+  i: Integer;
+  entry: WideString;
+
+  procedure FlushEntry;
+  begin
+    if (entry <> '') and (entry <> '.') then begin
+      if entry[1] <> '.' then begin
+        entry:= '.' + entry;
+      end;
+      if Result <> '' then begin
+        Result:= Result + ',';
+      end;
+      Result:= Result + entry;
+    end;
+    entry:= '';
+  end;
+
+begin
+  Result:= '';
+  entry:= '';
+  for i:= 1 to Length(AValue) do begin
+    case AValue[i] of
+      ';', ',', ' ', #9, #13, #10: FlushEntry;
+      '*', '?': ; // wildcards are not valid in an extension
+    else
+      entry:= entry + AValue[i];
+    end;
+  end;
+  FlushEntry;
+end;
+
 procedure TExtensionColorCode.SetExtensionMask(const Value: WideString);
 begin
-  Extensions.CommaText := WideValidateDelimitedExtList(Value, [vdwcPeriod], vdeComma)
+  Extensions.CommaText := CleanExtensionList(Value)
 end;
 
 { TExplorerColumn }
