@@ -201,7 +201,7 @@ function GlobalTextEditorSettings: TCETextEditorSettings;
 implementation
 
 uses
-  SynEdit, fCE_TextEditor, CE_LanguageEngine;
+  fCE_TextEditor, CE_LanguageEngine;
 
 var
   fGlobalTextEditorSettings: TCETextEditorSettings;
