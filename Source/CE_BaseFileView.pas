@@ -25,7 +25,7 @@ interface
 
 uses
   // CE Units
-  CE_VistaFuncs, CE_Utils,
+  CE_VistaFuncs, CE_Utils, CE_ExtColors,
   // Jvcl
   JvBalloonHint,
   // Easy Listview
@@ -66,6 +66,7 @@ type
     fCheckBoxSelection: Boolean;
     fCheckChanging: Boolean;
     fExtColumnIndex: Integer;
+    fExtColors: TCEExtColorRules;
     FContextMenuItem: TEasyItem;
     fContextMenuShowing: Boolean;
     TmpScrollStep,TmpScrollSize, TmpScrollCountSize: Integer;
@@ -175,6 +176,8 @@ type
     property ShowExtension: Boolean read fShowExtension write fShowExtension;
     property SmoothScroll: Boolean read fSmoothScroll write fSmoothScroll;
     property UsePNGAlpha: Boolean read fUsePNGAlpha write fUsePNGAlpha;
+    // Not owned: shared rule list from the file view settings (nil = no extension colors).
+    property ExtColors: TCEExtColorRules read fExtColors write fExtColors;
   end;
 
   TCEViewColumn = class(TEasyViewColumn)
@@ -760,9 +763,35 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.DoItemPaintText(Item: TEasyItem; Position: Integer;
     ACanvas: TCanvas);
+var
+  rule: TCEExtColorRule;
+  NS: TNamespace;
+  style: TFontStyles;
 begin
-  if assigned(Item) and assigned(TExplorerItem(Item).Namespace) then
-  inherited;
+  if assigned(Item) and assigned(TExplorerItem(Item).Namespace) then begin
+    // Extension colors (Options > Fileview > Colors). Selected items keep the
+    // selection colors so they stay readable; folders have no extension rule.
+    if assigned(fExtColors) and (fExtColors.Count > 0) and not Item.Selected then begin
+      NS:= TExplorerItem(Item).Namespace;
+      if NS.FileSystem and not NS.Folder and fExtColors.Find(NS.Extension, rule) then begin
+        if rule.Color <> clDefault then begin
+          ACanvas.Font.Color:= rule.Color;
+        end;
+        style:= ACanvas.Font.Style;
+        if rule.Bold then begin
+          Include(style, fsBold);
+        end;
+        if rule.Italic then begin
+          Include(style, fsItalic);
+        end;
+        if rule.Underline then begin
+          Include(style, fsUnderline);
+        end;
+        ACanvas.Font.Style:= style;
+      end;
+    end;
+    inherited;
+  end;
 end;
 
 {*------------------------------------------------------------------------------
