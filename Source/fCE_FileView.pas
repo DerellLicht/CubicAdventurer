@@ -1627,6 +1627,11 @@ begin
         fileView.CellSizes.FilmStrip.SetSize(CellSizes.Filmstrip_Width, CellSizes.Filmstrip_Height);
       end;
 
+      // the List cell size was just reset to the default, restore the autosized one
+      if CellSizes.List_Width < 1 then begin
+        fileView.UpdateAutosizeListWidth;
+      end;
+
       // Column settings
       if not PerFolderSettings and AssignColumnSettings then
       AssignColumnSettingsTo(FileView);

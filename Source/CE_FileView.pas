@@ -133,6 +133,7 @@ type
         Boolean): TExplorerItem; override;
     procedure BeginHistoryUpdate;
     procedure CalculateFolderSizes;
+    procedure UpdateAutosizeListWidth;
     procedure ClearHistory;
     procedure CreateEmptyFile;
     procedure CreateNewFolder;
@@ -1365,6 +1366,35 @@ begin
         fCellWidth:= 0;
       end;
     end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  UpdateAutosizeListWidth
+
+  Recalculates the width of the List view cells from the widest caption, like
+  DoEnumFinished does after enumerating a folder. Needed after the settings are
+  re-applied: that resets the list cell size to the default, which truncates the
+  file names until the folder is read again (F5).
+-------------------------------------------------------------------------------}
+procedure TCEFileView.UpdateAutosizeListWidth;
+var
+  i, w: Integer;
+begin
+  if (View <> elsList) or not AutosizeListViewStyle then begin
+    Exit;
+  end;
+
+  w:= 0;
+  for i:= 0 to Self.ItemCount - 1 do
+  begin
+    w:= Max(w, Canvas.TextWidth(Self.Items.Items[i].Caption));
+  end;
+  if w > 0 then begin
+    if CheckBoxSelection then begin
+      w:= w + Self.PaintInfoItem.CheckSize;
+    end;
+    Self.CellSizes.List.Width:= w + 32;
   end;
 end;
 
