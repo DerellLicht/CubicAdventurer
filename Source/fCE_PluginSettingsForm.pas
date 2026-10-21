@@ -6,7 +6,7 @@ uses
   // CC
   ccStrings,
   // CE
-  CE_PluginsIntf, CE_LanguageEngine, CE_Plugins,
+  CE_PluginsIntf, CE_LanguageEngine, CE_Plugins, CE_WideCompat,
   // VSTools
   MPCommonUtilities,
   // System Units
