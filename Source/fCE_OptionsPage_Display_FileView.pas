@@ -30,6 +30,8 @@ uses
   fCE_OptionsDialog, fCE_OptionsCustomPage, CE_LanguageEngine,
   // Virtual Trees
   VirtualTrees,
+  // SpTBX
+  SpTBXControls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls;
@@ -70,7 +72,7 @@ type
     combo_sizeformat: TComboBox;
     color_background: TColorBox;
     TntLabel3: TLabel;
-    TntGroupBox1: TGroupBox;
+    TntGroupBox1: TSpTBXGroupBox;
     TntLabel14: TLabel;
     but_font: TButton;
     color_font: TColorBox;

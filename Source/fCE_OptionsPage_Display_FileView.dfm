@@ -128,7 +128,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
         TabOrder = 1
         OnSelect = color_backgroundSelect
       end
-      object TntGroupBox1: TGroupBox
+      object TntGroupBox1: TSpTBXGroupBox
         Left = 16
         Top = 14
         Width = 159
@@ -171,6 +171,7 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
           OnSelect = color_fontSelect
         end
         object panel_font: TPanel
+          StyleElements = [seBorder]
           Left = 8
           Top = 24
           Width = 143

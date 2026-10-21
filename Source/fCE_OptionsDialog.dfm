@@ -3,7 +3,7 @@ object CEOptionsDialog: TCEOptionsDialog
   Top = 47
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  Caption = 'CubicExplorer Options'
+  Caption = 'CubicAdventurer Options'
   ClientHeight = 407
   ClientWidth = 590
   Color = clBtnFace

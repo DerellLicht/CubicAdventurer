@@ -2311,7 +2311,7 @@ msgstr ""
 
 #. CEOptionsDialog..Caption
 #: fCE_OptionsDialog.dfm:6
-msgid "CubicExplorer Options"
+msgid "CubicAdventurer Options"
 msgstr ""
 
 #. CEOptionsPage_Advanced..SpTBXLabel1..Caption
