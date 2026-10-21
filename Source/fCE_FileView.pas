@@ -1323,6 +1323,10 @@ procedure TCEFileViewSettings.AssignSettingsTo(ATo: TComponent;
     i: Integer;
     list: TCCStringList;
     value, ws: WideString;
+    ext: string;
+    j: Integer;
+    extList: TStringList;
+    code: TExtensionColorCode;
     color: TColor;
     isBold, isItalic, isUnderline, isEnabled: Boolean;
   begin
@@ -1341,12 +1345,40 @@ procedure TCEFileViewSettings.AssignSettingsTo(ATo: TComponent;
           if color = clDefault then
           color:= fFont.Color;
           
-          AFileView.ExtensionColorCodeList.Add('.' + value, // extension
+          // revival: ExtensionColorCodeList.Add(mask, ...) runs the mask through
+          // WideValidateDelimitedExtList of the installed Mustangpeak library, which
+          // raises an ERangeError for one character extensions ('c', 'h') because it
+          // indexes a 0 based TStringBuilder as if it were 1 based. So Add() gets a
+          // harmless placeholder mask and the real extensions are put in directly.
+          code:= AFileView.ExtensionColorCodeList.Add('ccdummy' + IntToStr(i), // placeholder extension
             color, // color
             StrToBoolDef(WideGetNextItem(ws, ','), false),  // bold
             StrToBoolDef(WideGetNextItem(ws, ','), false),  // italic
             StrToBoolDef(WideGetNextItem(ws, ','), false),  // underline
             true);                                          // enabled
+          if assigned(code) then
+          begin
+            code.Extensions.Clear;
+            extList:= TStringList.Create;
+            try
+              // legacy format: 'txt;pdf;doc', also accept ',', ':' and '|'
+              extList.Delimiter:= ';';
+              extList.StrictDelimiter:= true;
+              extList.DelimitedText:= StringReplace(StringReplace(StringReplace(value,
+                  ',', ';', [rfReplaceAll]), ':', ';', [rfReplaceAll]), '|', ';', [rfReplaceAll]);
+              for j:= 0 to extList.Count - 1 do
+              begin
+                ext:= LowerCase(Trim(extList[j]));
+                // strip any '*' and '.' prefix, the lookup wants '.ext'
+                while (ext <> '') and ((ext[1] = '*') or (ext[1] = '.')) do
+                Delete(ext, 1, 1);
+                if ext <> '' then
+                code.Extensions.Add('.' + ext);
+              end;
+            finally
+              extList.Free;
+            end;
+          end;
         end;
       end;
     finally
