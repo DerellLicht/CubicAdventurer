@@ -1,10 +1,10 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{1108A652-7B46-4A7B-9F49-D7827E418F1A}</ProjectGuid>
-        <MainSource>CubicExplorer.dpr</MainSource>
+        <MainSource>CubicAdventurer.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <ProjectName Condition="'$(ProjectName)'==''">CubicExplorer</ProjectName>
+        <ProjectName Condition="'$(ProjectName)'==''">CubicAdventurer</ProjectName>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -61,7 +61,7 @@
         <DCC_DcpOutput>..\dcu</DCC_DcpOutput>
         <DCC_UnitSearchPath>Components\CubicCore;..\Components\CEAction;Components\fcl-xml;Components\DirectX;Components\CRS-AppSettings;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;dbrtl;vcldb;tb2k_d10;tbx_d10;OverbyteIcsDel100Package;Png10;VirtualTreesD10;S404_r100;S404br100;MPHexEditor_D7;mbTBXLibD9D;SortGridD10;madBasic_;madDisAsm_;madExcept_;PerlRegExD2006;KHexEditor_R7;SynEdit_R2006;SynWeb_R2006;ATBinHexD2006;Jcl;bdertl;JvUIBD10R;mbTBXJvLibD10D;delphi10;vclactnband;vclie;VclSmp;xmlrtl;inet;inetdbbde;inetdbxpress;TUOScript100;GR32_BDS2006;GR32_DSGN_BDS2006;JclVcl;JvCoreD10R;JvSystemD10R;JvStdCtrlsD10R;JvAppFrmD10R;JvBandsD10R;JvDBD10R;JvDlgsD10R;JvBDED10R;JvCustomD10R;JvDotNetCtrlsD10R;JvEDID10R;JvCryptD10R;JvGlobusD10R;JvHMID10R;JvInterpreterD10R;JvJansD10R;JvManagedThreadsD10R;JvCtrlsD10R;JvCmpD10R;JvMMD10R;JvNetD10R;JvPageCompsD10R;JvPluginD10R;JvPrintPreviewD10R;JvRuntimeDesignD10R;JvTimeFrameworkD10R;JvValidatorsD10R;JvWizardD10R;JvXPCtrlsD10R;OverbyteIcsSslDel100Package;$(DCC_UsePackage)</DCC_UsePackage>
-        <SanitizedProjectName>CubicExplorer</SanitizedProjectName>
+        <SanitizedProjectName>CubicAdventurer</SanitizedProjectName>
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_AutoGenVersion>false</VerInfo_AutoGenVersion>
@@ -69,7 +69,7 @@
         <VerInfo_MinorVer>0</VerInfo_MinorVer>
         <VerInfo_Build>0</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=1.0.0.0;InternalName=;LegalCopyright=Marko Savolainen 2006-2012; Derell Licht 2026;LegalTrademarks=;OriginalFilename=;ProductName=CubicExplorer;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=1.0.0.0;InternalName=;LegalCopyright=Marko Savolainen 2006-2012; Derell Licht 2026;LegalTrademarks=;OriginalFilename=;ProductName=CubicAdventurer;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -338,7 +338,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">CubicExplorer.dpr</Source>
+                    <Source Name="MainSource">CubicAdventurer.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>

@@ -52,7 +52,7 @@ var
     hCursor: 0;
     hbrBackground: 0;
     lpszMenuName: nil;
-    lpszClassName: 'CubicExplorer_MsgInput');
+    lpszClassName: 'CubicAdventurer_MsgInput');
 
 type
   TCEInput = class(TDataModule)
@@ -109,7 +109,7 @@ begin
     Windows.RegisterClass(CEMsgInputWindowClass);
   end;
   Result := CreateWindowEx(WS_EX_TOOLWINDOW, CEMsgInputWindowClass.lpszClassName,
-    'CE_MsgInput', WS_POPUP {+ 0}, 0, 0, 0, 0, 0, 0, HInstance, nil);
+    'CA_MsgInput', WS_POPUP {+ 0}, 0, 0, 0, 0, 0, 0, HInstance, nil);
   if Assigned(Method) then
     SetWindowLong(Result, GWL_WNDPROC, Longint(MakeObjectInstance(Method)));
 end;

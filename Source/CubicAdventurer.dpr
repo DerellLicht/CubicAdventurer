@@ -19,7 +19,7 @@
 //                                                                                            
 //******************************************************************************
 
-program CubicExplorer;
+program CubicAdventurer;
 
 {%File 'Muokkaukset.txt'}
 
@@ -168,7 +168,7 @@ begin
 
   //////////////////////////////////////////////////////
   //***** Check if only Single instance is allowed *****
-  h:= FindWindow('CubicExplorer_MsgInput','CE_MsgInput');
+  h:= FindWindow('CubicAdventurer_MsgInput','CA_MsgInput');
   if h <> 0 then
   begin
     if SendMessage(h, WM_USER + 1,0,0) = 0 then

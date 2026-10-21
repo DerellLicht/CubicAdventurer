@@ -455,7 +455,7 @@ begin
   panel_curtain.BringToFront;
   
   // (Removed: the hack that hid Application.Handle and made it a toolwindow.
-  //  CubicExplorer.dpr now sets Application.MainFormOnTaskbar := true, so the
+  //  CubicAdventurer.dpr now sets Application.MainFormOnTaskbar := true, so the
   //  main form is the only window with a taskbar button.)
 
   ChangeNotifier.RegisterShellChangeNotify(Self);

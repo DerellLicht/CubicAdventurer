@@ -5,7 +5,7 @@ Status: **untested**. Everything here is based on what we know about the install
 ## What we know
 - Delphi 13 CE, IDE version 37.0, 32-bit target (Win32) only.
 - `dcc32.exe` and `dcc64.exe` ARE present in `C:\Program Files (x86)\Embarcadero\Studio\37.0\bin` (checked). The Community Edition might not license command-line use of the compiler, but the files are there; try it.
-- Project: `Source\CubicExplorer.dproj`. Default config is `Debug`, platform `Win32`.
+- Project: `Source\CubicAdventurer.dproj`. Default config is `Debug`, platform `Win32`.
 - The exe lands in the repo root (`DCC_ExeOutput` = `..`), DCUs in `..\dcu`.
 - `7z.dll` sits next to the exe (repo root).
 - Library paths for the third-party packages (VirtualTreeView, SpTBX, JVCL, Mustangpeak, Graphics32, SynEdit, PngComponents, Toolbar2000, JCL) are stored per-user by the IDE, and MSBuild reads the same settings, so they should carry over. The JVCL `resources` folder must be in the Library path (for JvConsts.res).
@@ -18,7 +18,7 @@ Status: **untested**. Everything here is based on what we know about the install
 ```
 call "C:\Program Files (x86)\Embarcadero\Studio\37.0\bin\rsvars.bat"
 cd /d D:\SourceCode\Git\CubicAdventurer\Source
-msbuild CubicExplorer.dproj /t:Build /p:Config=Debug /p:Platform=Win32 /v:minimal
+msbuild CubicAdventurer.dproj /t:Build /p:Config=Debug /p:Platform=Win32 /v:minimal
 ```
 Close the IDE first so no files are locked and no stale editor buffers get involved.
 
