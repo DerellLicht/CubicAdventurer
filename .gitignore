@@ -17,6 +17,7 @@ Win64/
 *.map
 *.exe
 call.stack.*.txt
+xml_history/
 
 # CubicAdventurer runtime settings written next to the exe (repo root)
 /settings.xml
