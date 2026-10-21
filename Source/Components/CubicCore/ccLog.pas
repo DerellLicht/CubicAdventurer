@@ -28,7 +28,7 @@ uses
   // CubicCore
   ccContainers, ccThreads,
   // Fundamentals
-  cTimers,
+  ccTimers,
   // System Units
   {$IFDEF MSWINDOWS}Windows,{$ENDIF}
   SysUtils, Classes;

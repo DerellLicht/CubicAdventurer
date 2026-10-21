@@ -12,7 +12,7 @@ uses
   // CubicExplorer
   CE_PluginsIntf,
   // Fundamentals
-  cTimers,
+  ccTimers,
   // System Units
   Windows, Classes, SysUtils;
 
