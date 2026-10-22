@@ -22,7 +22,7 @@
 unit CV_MediaPlayerEngines;
 
 {==============================================================================}
-{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
+{$M+} // these classes have published sections without a TPersistent ancestor: RTTI is intentional
 interface
 
 uses
