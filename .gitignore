@@ -24,3 +24,5 @@ unicode.font.list.md
 /settings.xml
 /layout.xml
 /sessions.xml
+installer/output/
+temp_notes.md
