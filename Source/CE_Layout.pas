@@ -110,7 +110,6 @@ type
       String = '');
   procedure CE_DoFloatForm(DockForm: TControl);
   procedure CE_DoFloatAllForm;
-  procedure CE_ShowDockForm(AForm: TWinControl);
 
 procedure BeginToolbarCustomize;
 
@@ -854,7 +853,7 @@ end;
   DockHostForm.CenterPanel (a plain TPanel, not a dock site). If the saved
   layout never moves a host to its real dock panel, it stays parked there,
   invisible, with a Parent but no HostDockSite. JVCL cannot show such a form
-  (see CE_ShowDockForm), so turn it into a normal floating window instead.
+  (see CE_CheckDockChain), so turn it into a normal floating window instead.
   Returns nothing; the form ends up with Parent = nil.
 -------------------------------------------------------------------------------}
 procedure FloatStrayForm(AForm: TControl);
@@ -1072,7 +1071,8 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Show a dock form, without letting JVCL hang.
+  Check a dock form's host chain, so JVCL cannot hang while showing it.
+  Installed as CEDockShowGuard; called from TJvDockVSNetStyleTBX.DoShowDockForm.
 
   TJvDockBasicStyle.DoShowDockForm climbs from the form through its hosts
   until it reaches a JVCL dock panel (done) or a free-floating window
@@ -1082,7 +1082,7 @@ end;
   This walks the same chain first. If it would dead-end, the control that was
   docked into the wrong place is floated, so the chain becomes valid.
 -------------------------------------------------------------------------------}
-procedure CE_ShowDockForm(AForm: TWinControl);
+procedure CE_CheckDockChain(AForm: TWinControl);
 var
   c, prev: TWinControl;
   n: Integer;
@@ -1122,8 +1122,6 @@ begin
     prev:= c;
     c:= c.HostDockSite.Parent;
   end;
-
-  ShowDockForm(AForm);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1751,8 +1749,10 @@ initialization
   CELayoutItems:= TCELayoutItems.Create(false);
   CEToolbarDocks:= TCEToolbarDocks.Create;
   CEDockStyle:= TJvDockVSNetStyleTBX.Create(nil);
+  CEDockShowGuard:= CE_CheckDockChain;
 
 finalization
+  CEDockShowGuard:= nil;
   FreeAndNil(CEToolbarDocks);
   FreeAndNil(CELayoutItems);
   FreeAndNil(CEDockStyle);

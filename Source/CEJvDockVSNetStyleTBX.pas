@@ -149,6 +149,10 @@ Type
     // procedure EndPopup(AChannel: TJvDockVSChannel); override;
   public
     constructor Create(AOwner: TComponent); override;
+    // Every route that shows a panel (View menu, title-bar popup, tabs...) ends
+    // up here, so this is the one place to run CEDockShowGuard before JVCL's
+    // endless-loop-prone DoShowDockForm.
+    procedure DoShowDockForm(DockWindow: TWinControl); override;
   end;
 
   TCEJvDockVSNETTabSheet = class(TJvDockVSNETTabSheet)
@@ -159,6 +163,9 @@ Type
 
 var
   CE_LockPanels: Boolean = true;
+  // Set by CE_Layout. Called with the form about to be shown; may repair a
+  // broken dock chain so that DoShowDockForm cannot hang. Nil = no check.
+  CEDockShowGuard: procedure(AForm: TWinControl) = nil;
 
 implementation
 
@@ -690,6 +697,18 @@ begin
 end;
 
 { TJvDockVSNetStyleTBX }
+
+{*------------------------------------------------------------------------------
+  Run the dock-chain check (if installed), then let JVCL show the form.
+-------------------------------------------------------------------------------}
+procedure TJvDockVSNetStyleTBX.DoShowDockForm(DockWindow: TWinControl);
+begin
+  if Assigned(CEDockShowGuard) then
+  begin
+    CEDockShowGuard(DockWindow);
+  end;
+  inherited DoShowDockForm(DockWindow);
+end;
 
 constructor TJvDockVSNetStyleTBX.Create(AOwner: TComponent);
 begin

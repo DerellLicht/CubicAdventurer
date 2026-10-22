@@ -371,7 +371,7 @@ uses
   fCE_PoEditor, fCE_OptionsDialog, CE_Sessions, fCE_StackPanel,
   CE_BaseFileView, fCE_QuickViewTab, fCE_SearchPage, fCE_CreateSymlink,
   fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView, CE_WideCompat,
-  fCE_WorkspacePanel, CE_Layout;
+  fCE_WorkspacePanel;
 
 {##############################################################################}
 
@@ -712,14 +712,13 @@ procedure ExecuteViewCategory(ActionID: Integer);
 begin
   case ActionID of
     300: MainForm.StatusBar.Visible:= not MainForm.StatusBar.Visible;
-    // CE_ShowDockForm guards against a JVCL endless loop (see CE_Layout.pas)
-    301: if GetFormVisible(CEFolderPanel) then HideDockForm(CEFolderPanel) else CE_ShowDockForm(CEFolderPanel);
-    302: if GetFormVisible(CEBookmarkPanel) then HideDockForm(CEBookmarkPanel) else CE_ShowDockForm(CEBookmarkPanel);
-    303: if GetFormVisible(CEQuickviewPanel) then HideDockForm(CEQuickviewPanel) else CE_ShowDockForm(CEQuickviewPanel);
-    304: if GetFormVisible(CEFiltersPanel) then HideDockForm(CEFiltersPanel) else CE_ShowDockForm(CEFiltersPanel);
-    305: if GetFormVisible(CEStackPanel) then HideDockForm(CEStackPanel) else CE_ShowDockForm(CEStackPanel);
+    301: if GetFormVisible(CEFolderPanel) then HideDockForm(CEFolderPanel) else ShowDockForm(CEFolderPanel);
+    302: if GetFormVisible(CEBookmarkPanel) then HideDockForm(CEBookmarkPanel) else ShowDockForm(CEBookmarkPanel);
+    303: if GetFormVisible(CEQuickviewPanel) then HideDockForm(CEQuickviewPanel) else ShowDockForm(CEQuickviewPanel);
+    304: if GetFormVisible(CEFiltersPanel) then HideDockForm(CEFiltersPanel) else ShowDockForm(CEFiltersPanel);
+    305: if GetFormVisible(CEStackPanel) then HideDockForm(CEStackPanel) else ShowDockForm(CEStackPanel);
 //    306: if GetFormVisible(CEArchiverPanel) then HideDockForm(CEArchiverPanel) else ShowDockForm(CEArchiverPanel);
-    307: if GetFormVisible(CEWorkspacePanel) then HideDockForm(CEWorkspacePanel) else CE_ShowDockForm(CEWorkspacePanel);
+    307: if GetFormVisible(CEWorkspacePanel) then HideDockForm(CEWorkspacePanel) else ShowDockForm(CEWorkspacePanel);
 
     330: MainForm.ShowHint:= not MainForm.ShowHint;
     332: begin
