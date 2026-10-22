@@ -445,16 +445,16 @@ object CEAboutBox: TCEAboutBox
       'https://github.com/UweRaabe/PngComponents'#13#10 +
       #13#10 +
       '- Toolbar2000'#13#10 +
-      'http://www.jrsoftware.org'#13#10 +
+      'https://jrsoftware.org/tb2k.php'#13#10 +
       #13#10 +
       '- SpTBXLib'#13#10 +
-      'http://club.telepolis.com/silverpointdev/sptbxlib/index.htm'#13#10 +
+      'https://www.silverpointdevelopment.com/sptbxlib/'#13#10 +
       #13#10 +
       '- Graphics32'#13#10 +
       'http://www.graphics32.org'#13#10 +
       #13#10 +
       '- JVCL'#13#10 +
-      'http://jvcl.sourceforge.net'#13#10 +
+      'https://github.com/project-jedi/jvcl'#13#10 +
       #13#10 +
       '- 7-zip library (7z.dll). Licensed under the GNU LGPL.'#13#10 +
       'http://www.7-zip.org'#13#10 +
