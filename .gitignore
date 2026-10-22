@@ -18,6 +18,7 @@ Win64/
 *.exe
 call.stack.*.txt
 xml_history/
+unicode.font.list.md
 
 # CubicAdventurer runtime settings written next to the exe (repo root)
 /settings.xml
