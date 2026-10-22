@@ -876,6 +876,11 @@ begin
   // relative to its (parking) parent, so place it near the main window instead.
   pt:= MainForm.ClientToScreen(Point(60, 100));
   r:= Bounds(pt.X, pt.Y, w, h);
+  if AForm is TForm then
+  begin
+    // a form created in code defaults to poDefaultPosOnly, which ignores Left/Top
+    TForm(AForm).Position:= poDesigned;
+  end;
   AForm.ManualFloat(r);
   // ManualFloat does nothing for a form that has no HostDockSite
   if AForm.Parent <> nil then

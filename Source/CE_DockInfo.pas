@@ -190,6 +190,9 @@ begin
       if Assigned(TJvDockInfoZone(ATreeZone.ChildZone).DockControl) then
       begin
         Form := TJvDockConjoinHostForm.Create(Application);
+        // a form created in code defaults to poDefaultPosOnly, which lets Windows
+        // choose the window position and ignores Left/Top when the form floats
+        Form.Position := poDesigned;
         ADockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
         Result := ADockClient.CreateConjoinPanelClass(Form).Parent;
       end;
@@ -197,6 +200,8 @@ begin
       if Assigned(TJvDockInfoZone(ATreeZone.ChildZone).DockControl) then
       begin
         Form := TJvDockTabHostForm.Create(Application);
+        // see the note above: keep the position we set ourselves
+        Form.Position := poDesigned;
         Form.ManualDock(MainForm.DockHostForm.CenterPanel);
         ADockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
         Result := ADockClient.CreateTabDockClass(Form).Parent;
@@ -613,7 +618,15 @@ begin
   begin
     Exit;
   end;
+  if AForm is TForm then
+  begin
+    TForm(AForm).Position := poDesigned;
+  end;
   AForm.ManualFloat(ASaved);
+  OutputDebugString(PChar(Format('CE_DockInfo: floated %s to saved rect [%d,%d,%d,%d]; now [%d,%d,%d,%d] parent=%s visible=%s',
+    [AForm.Name, ASaved.Left, ASaved.Top, ASaved.Right, ASaved.Bottom,
+     AForm.Left, AForm.Top, AForm.Left + AForm.Width, AForm.Top + AForm.Height,
+     CtrlName(AForm.Parent), BoolToStr(AForm.Visible, true)])));
 end;
 
 function GetChildControlCount(ATreeZone: TJvDockInfoZone): Integer;
@@ -708,6 +721,11 @@ begin
 
       // Floating zone whose form is parked in CenterPanel: put it at the saved
       // screen position (see FloatParkedFormToSavedRect).
+      if (ParentName = '') and (Host is TCustomForm) then
+      begin
+        OutputDebugString(PChar(Format('CE_DockInfo: floating zone %s saved [%d,%d,%d,%d] parent=%s',
+          [DockFormName, DockRect.Left, DockRect.Top, DockRect.Right, DockRect.Bottom, CtrlName(Host.Parent)])));
+      end;
       if (ParentName = '') and (Host is TCustomForm) and
          (Host.Parent = MainForm.DockHostForm.CenterPanel) then
       begin
