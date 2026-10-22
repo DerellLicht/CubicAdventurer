@@ -56,7 +56,7 @@ type
         TPoint; Mode: TDropMode; var Effect: Integer): Boolean; override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
         override;
     procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
     procedure GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var Text: UnicodeString);
@@ -421,7 +421,7 @@ end;
   Get Image Index
 -------------------------------------------------------------------------------}
 function TCEBookmarkTree.DoGetImageIndex(Node: PVirtualNode; Kind:
-    TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex): TCustomImageList;
+    TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
 var
   data: PCEBookData;
 begin

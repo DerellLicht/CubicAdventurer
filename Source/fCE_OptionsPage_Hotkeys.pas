@@ -60,7 +60,7 @@ type
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure HotkeyListGetImageIndexEx(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-      var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex;
+      var Ghosted: Boolean; var ImageIndex: TImageIndex;
       var ImageList: TCustomImageList);
     procedure HotkeyListPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
@@ -261,7 +261,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TTCEOptionsPage_Hotkeys.HotkeyListGetImageIndexEx(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
-  Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex;
+  Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: TImageIndex;
   var ImageList: TCustomImageList);
 var
   data: PCEActTreeData;

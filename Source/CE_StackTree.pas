@@ -98,7 +98,7 @@ type
     procedure DoExpanded(Node: PVirtualNode); override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
         override;
     function DoGetNodeHint(Node: PVirtualNode; Column: TColumnIndex; var
         LineBreakStyle: TVTTooltipLineBreakStyle): UnicodeString; override;
@@ -771,7 +771,7 @@ end;
   Do GetImageIndex
 -------------------------------------------------------------------------------}
 function TCEStackTree.DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
-    Column: TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex):
+    Column: TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex):
     TCustomImageList;
 var
   data: PCEStackItemData;
