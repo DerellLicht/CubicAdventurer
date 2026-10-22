@@ -20,6 +20,7 @@
 //******************************************************************************
 
 unit CE_Utils;
+{$WARN SYMBOL_PLATFORM OFF} // Windows-only application
 
 interface
 

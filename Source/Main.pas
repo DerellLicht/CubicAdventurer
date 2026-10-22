@@ -20,6 +20,7 @@
 //******************************************************************************
 
 unit Main;
+{$WARN SYMBOL_PLATFORM OFF} // Windows-only application
 
 interface
 

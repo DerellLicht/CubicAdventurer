@@ -906,6 +906,7 @@ end;
 function TCCTaskPoolThread.SendSyncMessage(AMsg, AParam1, AParam2: Integer):
     Integer;
 begin
+  Result:= 0;
   if not IsAborted then
   begin
     fSyncMsg.AMsg:= AMsg;

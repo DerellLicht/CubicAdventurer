@@ -20,6 +20,7 @@
 //******************************************************************************
 
 unit fCE_PoEditor;
+{$WARN SYMBOL_PLATFORM OFF} // Windows-only application
 
 interface
 

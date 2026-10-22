@@ -20,6 +20,7 @@
 //******************************************************************************
 
 unit dCE_Actions;
+{$WARN SYMBOL_PLATFORM OFF} // Windows-only application
 
 interface
 

@@ -550,7 +550,7 @@ begin
   end
   else
   begin
-    fPath:= UTF8Decode(XmlNode.Properties.Value('path'));
+    fPath:= XmlNode.Properties.Value('path'); // already Unicode (UTF8Decode would mangle non-ASCII)
     fRelative:= XmlNode.Properties.BoolValue('relative', false);
     if fRelative then
     PIDL:= PathToPIDL(DecodeRelativePath(fPath))

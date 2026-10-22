@@ -221,7 +221,7 @@ begin
   if Column = 0 then
   begin
     if data.IsCategory then
-    CellText:= UTF8Decode(data.Name)
+    CellText:= data.Name
     else
     CellText:= data.Name;
   end

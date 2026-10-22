@@ -182,7 +182,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCECustomBookComp.LoadFromXmlNode(XmlNode: TJvSimpleXmlElem);
 begin
-  fTitle:= UTF8Decode(XmlNode.Properties.Value('name'));
+  fTitle:= XmlNode.Properties.Value('name'); // already Unicode (UTF8Decode would mangle non-ASCII)
   fExpanded:= XmlNode.Properties.BoolValue('isopen', false);
 end;
 

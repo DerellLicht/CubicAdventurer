@@ -20,6 +20,7 @@
 //******************************************************************************
 
 unit CE_FileView;
+{$WARN SYMBOL_PLATFORM OFF} // Windows-only application
 
 interface
 

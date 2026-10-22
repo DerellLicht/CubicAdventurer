@@ -263,7 +263,7 @@ begin
   node:= ActionTree.GetFirst;
   node:= ActionTree.InsertNode(node, amInsertBefore);
   data:= ActionTree.GetNodeData(Node);
-  data.Name:= UTF8Encode(_('Separators'));
+  data.Name:= _('Separators');
   data.IconIndex:= -1;
   data.IsCategory:= true;
   data.IsSeparator:= false;
@@ -403,7 +403,7 @@ begin
   Exit;
   data:= ActionTree.GetNodeData(Node);
   if data.IsCategory then
-  CellText:= UTF8Decode(data.Name)
+  CellText:= data.Name
   else
   CellText:= data.Name;
 end;

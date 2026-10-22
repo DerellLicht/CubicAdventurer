@@ -20,6 +20,7 @@
 //******************************************************************************
 
 program CubicAdventurer;
+{$WARN SYMBOL_PLATFORM OFF} // Windows-only application
 
 {%File 'Muokkaukset.txt'}
 
