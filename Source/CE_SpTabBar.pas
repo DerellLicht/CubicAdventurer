@@ -1554,9 +1554,11 @@ begin
           Result := True; // Bypass the inherited mouse down
           IV.Item.Click;
           if Assigned(OnMouseDown) then OnMouseDown(Self, Button, Shift, X, Y);
-        end
-        // Drag reorder
-        else if TabDragReorder and not IsCustomizing and IV.Item.Checked then
+        end;
+        // Drag reorder. Not an 'else' of the click above (as in SpTBXLib): the press
+        // that activates a tab can also start dragging it, so an inactive tab can be
+        // dragged without clicking it first.
+        if TabDragReorder and not IsCustomizing and IV.Item.Checked then
         begin
           Result:= True; // Bypass the inherited mouse down
           FBeginDragIV := IV;
