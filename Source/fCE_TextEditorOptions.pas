@@ -201,6 +201,7 @@ function GlobalTextEditorSettings: TCETextEditorSettings;
 implementation
 
 uses
+  System.Types,
   fCE_TextEditor, CE_LanguageEngine;
 
 var

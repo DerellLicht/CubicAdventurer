@@ -81,6 +81,7 @@ var
 implementation
 
 uses
+  System.UITypes,
   CE_LanguageEngine;
 
 {$R *.dfm}

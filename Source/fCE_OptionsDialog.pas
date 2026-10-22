@@ -106,6 +106,7 @@ var
 implementation
 
 uses
+  System.Types,
   fCE_OptionsPage_Advanced, MPCommonUtilities, CE_WideCompat;
 
 {$R *.dfm}

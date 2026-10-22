@@ -142,6 +142,7 @@ var
 implementation
 
 uses
+  System.Types,
   fCE_DockHostForm, fCE_Customizer, Main, fCE_DockableForm, CE_SpTabBar,
   CE_StatusBar, dCE_Actions, CE_TBActions, dCE_Images, CE_ToolbarEditorItems,
   SpTBXEditors;

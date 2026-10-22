@@ -111,6 +111,7 @@ var
 implementation
 
 uses
+  System.Contnrs,
   dCE_Actions, Main, CE_Utils;
 
 {$R *.dfm}

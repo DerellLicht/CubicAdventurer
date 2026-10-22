@@ -454,10 +454,7 @@ function TSumatraPDF.InternalOpen(const AFilePath: WideString; APluginMode:
 var
   StartInfo  : TStartupInfoW;
   dir, params, cmd, exe: WideString;
-  exitCode: Cardinal;
   t: Integer;
-  reg: TRegistry;
-  h: HWND;
   style: Integer;
 begin
   Result:= false;

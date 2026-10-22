@@ -107,6 +107,7 @@ var
 implementation
 
 uses
+  System.Contnrs, System.Types,
   CE_GlobalCtrl, MPCommonUtilities,
   CE_VistaFuncs, CE_Utils, fCE_FileView, Main, dCE_Actions, CE_Layout,
   CE_ToolbarButtons, CE_SpTabBar, CE_LanguageEngine, fCE_BookmarkPanel,
@@ -482,7 +483,6 @@ end;
 procedure TCEWorkspacePanel.DoStartUp;
 var
   item: TSpTBXCustomItem;
-  sep: TCEToolbarSeparatorItem;
 begin
   // Create default toolbar items
   // - back

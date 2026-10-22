@@ -1661,7 +1661,6 @@ procedure TMainForm.HandleTabSetOleDrop(ASender: TCESpTabSet; ADropTab:
 var
   hd: TCommonShellIDList;
   i: Integer;
-  ns: TNamespace;
 begin
   // open new tab(s)
   if not assigned(ADropTab) and assigned(dataObj) then

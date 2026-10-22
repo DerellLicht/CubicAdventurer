@@ -241,6 +241,7 @@ var
 implementation
 
 uses
+  System.Types,
   Math, ccFileUtils, ccClasses, CE_LanguageEngine,
   MPShellUtilities;
 
@@ -973,9 +974,7 @@ end;
 procedure TCEQuickView.PopulateSeekToolbar(AToolbar: TCEToolbar);
 var
   track: TCETrackBar;
-  spacer: TCECustomToolbarSpacerItem;
   time: TSpTBXLabelItem;
-  item: TSpTBXItem;
 begin
   if assigned(AToolbar) then
   AToolbar.Items.Clear

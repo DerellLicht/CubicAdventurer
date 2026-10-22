@@ -163,6 +163,7 @@ var
 implementation
 
 Uses                                        // TODO: Fix this
+  System.Types,
   JvDockVIDStyle;//, fCE_DockableForm;
 
 

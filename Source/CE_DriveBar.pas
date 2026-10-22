@@ -306,7 +306,7 @@ begin
             NS:= TNamespace.Create(PIDLMgr.AppendPIDL(PIDL, SubPIDL), nil);
 
             IsDrive := WideIsDrive(NS.NameForParsing);
-            IsFloppy :=  IsDrive and (Char(NS.NameForParsing[1]) in ['A', 'B']);
+            IsFloppy :=  IsDrive and CharInSet(NS.NameForParsing[1], ['A', 'B']);
             //IsReadOnly := (not IsFloppy) and NS.ReadOnly;
             if IsDrive and not IsFloppy then
             begin

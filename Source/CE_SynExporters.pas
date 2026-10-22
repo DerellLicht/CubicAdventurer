@@ -77,8 +77,6 @@ end;
 -------------------------------------------------------------------------------}
 function TCESynExporterHTML.AttriToCSS(Attri: TSynHighlighterAttributes;
     UniqueAttriName: string): string;
-var
-  StyleName: string;
 begin
   // name
   Result:= '.' + MakeValidName(UniqueAttriName) + ' {';

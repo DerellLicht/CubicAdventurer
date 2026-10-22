@@ -461,7 +461,6 @@ end;
 procedure TCEPluginHost.AddPluginItem(const AFactory: ICEPluginFactory; const
     AInfo: ICEPluginInfo; ALibrary: TCEPluginFactoryLibrary = nil);
 var
-  s: String;
   data: PPluginData;
   settings: TCEPluginSettings;
 begin
@@ -1103,7 +1102,6 @@ function TCEPluginHost.ReadSettingsFromDisk(const APluginID: TGUID; Force:
     Boolean; Append: Boolean): Boolean;
 var
   item: PCCListItem;
-  data: PPluginData;
 begin
   Result:= false;
   if IsAlive then
@@ -1154,7 +1152,6 @@ function TCEPluginHost.WriteSettingsToDisk(const APluginID: TGUID; Force:
 
 var
   item: PCCListItem;
-  data: PPluginData;
 begin
   Result:= false;
   if IsAlive then
@@ -1329,7 +1326,6 @@ procedure TCEPluginHost.SendNotify(const ASender: IInterface; const APluginID:
 var
   i: Integer;
   setChanged: Boolean;
-  settings: ICEPluginSettings;
   plugin: ICEPlugin;
 begin
   {$IFDEF LOG}Log('Host.SendNotify: to ' + GUIDToString(APluginID) + ', notify=' + IntToStr(ANotify) +
@@ -2002,7 +1998,7 @@ function TCEPluginSettings.LoadFromFile(const AFilePath: WideString; Append:
     Boolean): Boolean;
 var
   list: TCCStrings;
-  i, index: Integer;
+  i: Integer;
   ws: WideString;
 begin
   Result:= false;
@@ -2319,7 +2315,6 @@ function TCEPluginSettings.SupportsFormat(const AName: WideString; AFormat:
     TCESettingFormat): Boolean;
 var
   item: PSettingItem;
-  b: Boolean;
   i: Integer;
 begin
   // exit if we are dead

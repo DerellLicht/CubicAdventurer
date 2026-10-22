@@ -72,6 +72,7 @@ type
 implementation
 
 uses
+  System.Contnrs,
   Main, dCE_Actions;
 
 {$R *.dfm}

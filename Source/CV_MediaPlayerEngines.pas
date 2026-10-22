@@ -551,7 +551,6 @@ function TCVDSEngine.OpenFile(AFilePath: WideString): Boolean;
 var
   hr: Integer;
   s: String;
-  c: Integer;
 begin
   
   Result:= false;
@@ -1225,8 +1224,6 @@ end;
   Internal Create ImageView
 -------------------------------------------------------------------------------}
 procedure TCVImageEngine.InternalCreateImageView;
-var
-  kernel: TKernelResampler;
 begin
   if not assigned(fImageView) then
   begin

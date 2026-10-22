@@ -79,6 +79,9 @@ type
 
 implementation
 
+uses
+  System.Classes;
+
 {##############################################################################}
 // TCCPlugin
 

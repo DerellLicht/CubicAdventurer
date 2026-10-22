@@ -47,7 +47,7 @@ type
         TPoint; Mode: TDropMode; var Effect: Integer): Boolean; override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex): TCustomImageList;
         override;
     function DoGetNodeHint(Node: PVirtualNode; Column: TColumnIndex; var
         LineBreakStyle: TVTTooltipLineBreakStyle): UnicodeString; override;
@@ -130,7 +130,7 @@ type
     fThreadedIcons: Boolean;
     procedure AssignTo(Dest: TPersistent); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex): TCustomImageList;
         override;
     procedure HandleTaskDone(Sender: TObject; AObject: TObject; AData: Pointer;
         ATag: Integer); virtual;
@@ -469,7 +469,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCVPlaylist.DoGetImageIndex(Node: PVirtualNode; Kind:
     TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index:
-    TImageIndex): TCustomImageList;
+    System.UITypes.TImageIndex): TCustomImageList;
 var
   data: PCVPlaylistData;
   ns: TNamespace;
@@ -890,8 +890,6 @@ end;
 procedure TCVFilelist.AssignTo(Dest: TPersistent);
 var
   list: TCVFilelist;
-  data, dataDest: PCVPlaylistData;
-  node, nodeDest: PVirtualNode;
 begin
   inherited;
   if Dest is TCVFilelist then
@@ -914,7 +912,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCVFilelist.DoGetImageIndex(Node: PVirtualNode; Kind:
     TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var Index:
-    TImageIndex): TCustomImageList;
+    System.UITypes.TImageIndex): TCustomImageList;
 var
   data: PCVPlaylistData;
   task: TCVFilelistTask;

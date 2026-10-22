@@ -155,6 +155,7 @@ type
 implementation
 
 uses
+  System.Types,
   dCE_Images, CE_LanguageEngine, CE_WideCompat;
 
 {##############################################################################}

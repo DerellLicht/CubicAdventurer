@@ -91,7 +91,7 @@ type
         Integer; var Accept: Boolean);
     procedure ActionTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node:
         PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted:
-        Boolean; var ImageIndex: TImageIndex; var ImageList: TCustomImageList);
+        Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList: TCustomImageList);
     procedure ActionTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
         Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure ActionTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas:
@@ -135,6 +135,7 @@ var
 implementation
 
 uses
+  System.Contnrs,
   Main, CE_Layout, CE_DriveBar;
 
 {$R *.dfm}
@@ -373,7 +374,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEToolbarCustomizer.ActionTreeGetImageIndexEx(Sender:
     TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column:
-    TColumnIndex; var Ghosted: Boolean; var ImageIndex: TImageIndex; var ImageList:
+    TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList:
     TCustomImageList);
 var
   data: PCEActTreeData;

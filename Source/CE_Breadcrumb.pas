@@ -114,6 +114,7 @@ var
 implementation
 
 uses
+  System.Contnrs,
   dCE_Actions, CE_AppSettings;
 
 {*------------------------------------------------------------------------------

@@ -390,6 +390,9 @@ var
 
 implementation
 
+uses
+  System.Types;
+
 {$R *.dfm}
 
 uses
@@ -1328,7 +1331,6 @@ procedure TCEFileViewSettings.AssignSettingsTo(ATo: TComponent;
     extList: TStringList;
     code: TExtensionColorCode;
     color: TColor;
-    isBold, isItalic, isUnderline, isEnabled: Boolean;
   begin
     AFileView.ExtensionColorCodeList.Clear;
     list:= TCCStringList.Create;

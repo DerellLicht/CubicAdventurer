@@ -117,6 +117,7 @@ var
 implementation
 
 uses
+  VirtualTrees.BaseTree,
   fCE_FileView, VirtualExplorerEasyListview;
 
 {$R *.dfm}

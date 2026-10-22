@@ -100,6 +100,9 @@ procedure GetPOLanguageList(LocaleDir: WideString; DomainName: WideString;
 
 implementation
 
+uses
+  System.Types;
+
 const
   cMOSignature = $950412DE;
 

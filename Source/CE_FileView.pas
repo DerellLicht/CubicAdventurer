@@ -426,8 +426,6 @@ end;
 -------------------------------------------------------------------------------}
 function TCEFileView.AddCustomItem(Group: TEasyGroup; NS: TNamespace;
     LockoutSort: Boolean): TExplorerItem;
-var
-  state: TEasyStorageObjectStates;
 begin
   Result:= inherited AddCustomItem(Group, NS, True);
   if SelectPasted and (fLastPaste > 0) then

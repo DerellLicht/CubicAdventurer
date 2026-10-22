@@ -104,7 +104,6 @@ procedure TCEBackContextMenu.AddMenuItems(Menu:  hMenu);
       Boolean);
   var
     i,pos: Integer;
-    infoA: TMenuItemInfoA;
     infoW: TMenuItemInfoW;
     chItem: TMenuItem;
     ws: WideString;
@@ -384,7 +383,6 @@ function TCEBackContextMenu.ShowMenu(Pos: TPoint; RootFolder: TNamespace;
 
   procedure RemoveDuplicateSeparators(AMenu: hMenu);
   var
-    infoA: TMenuItemInfoA;
     infoW: TMenuItemInfoW;
     b: Boolean;
     i, i2: Integer;
@@ -447,7 +445,6 @@ var
   firstID, lastID: Integer;
   item: TCEContextMenuItem;
   info: TMenuItemInfo;
-  VerbA: String;
   VerbW: WideString;
   VerbP: Pointer;
   InvokeInfo: TCMInvokeCommandInfoEx;

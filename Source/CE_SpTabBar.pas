@@ -307,6 +307,7 @@ type
 implementation
 
 uses
+  System.Types,
   Main, dCE_Actions, fCE_FileView, CE_LanguageEngine, dCE_Images, Math,
   CE_VistaFuncs;
 

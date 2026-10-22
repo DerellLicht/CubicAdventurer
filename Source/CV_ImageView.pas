@@ -202,6 +202,7 @@ type
 implementation
 
 uses
+  System.Types,
   Math, GR32_LowLevel, MPShellUtilities, ActiveX,
   MPShellTypes, MPCommonUtilities;
 
@@ -330,8 +331,6 @@ var
   w,h: Integer;
   ns: TNamespace;
   ms: TMemoryStream;
-  bit: TBitmap;
-  ar: Extended;
 begin
   Result:= nil;
   Ext:= AnsiLowerCase(ExtractFileExt(AFilePath));
@@ -1228,9 +1227,7 @@ procedure TCVImageView.HandleTaskExecute(Sender: TCCTaskPoolThread; AObject: TOb
 var
   Ext: WideString;
   NewGraphic: TGraphic;
-  NewGraphicClass: TGraphicClass;
   task: TCVImageViewTask;
-  pic: TPicture;
 begin
   if AObject is TCVImageViewTask then
   begin

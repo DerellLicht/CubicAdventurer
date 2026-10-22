@@ -149,6 +149,7 @@ type
 implementation
 
 uses
+  System.UITypes,
   CE_VistaFuncs, GR32, GR32_Resamplers;
 
 {-------------------------------------------------------------------------------

@@ -118,6 +118,7 @@ type
 implementation
 
 uses
+  System.Types,
   MPShellUtilities, MPShellTypes, ActiveX, MPCommonUtilities, SpTBXSkins,
   ccClasses, VirtualThumbnails, Math, SpTBXControls, MPCommonObjects,
   CV_ImageView, CE_LanguageEngine;
@@ -235,8 +236,6 @@ procedure TCEFilePreview.HandleExecuteTask(Sender: TCCTaskPoolThread; AObject:
 var
   ns: TNamespace;
   task: TCEFilePreviewTask;
-  w,h: Integer;
-  s: TStream;
 begin
   if (ATag = fTaskTag) and (AObject is TCEFilePreviewTask) then
   begin
@@ -549,8 +548,6 @@ end;
   Get ThumbnailArea
 -------------------------------------------------------------------------------}
 function TCEFilePreview.GetThumbnailArea: TRect;
-var
-  r: TRect;
 begin
   if assigned(fInfoBuffer) then
   begin
@@ -585,10 +582,6 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEFilePreview.OpenFile(AFilePath: WideString);
 var
-  task: TCEFilePreviewTask;
-  info: TThumbInfo;
-  ns: TNamespace;
-  B: TBitmap;
   t: Cardinal;
 begin
   // abort previous tasks
@@ -627,7 +620,7 @@ var
   buf: TBitmap;
   ar, size: Real;
   r: TRect;
-  i, w, h: Integer;
+  w, h: Integer;
 begin
   buf:= TBitmap.Create;
   try

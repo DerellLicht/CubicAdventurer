@@ -78,7 +78,7 @@ type
         override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column:
-        TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex): TCustomImageList;
+        TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex): TCustomImageList;
         override;
     procedure DoGetText(var pEventArgs: TVSTGetCellTextEventArgs); override;
     procedure GetTextLegacy(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var Text: UnicodeString);
@@ -524,7 +524,7 @@ end;
   Do GetImageIndex
 -------------------------------------------------------------------------------}
 function TCEArchiveTree.DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
-    Column: TColumnIndex; var Ghosted: Boolean; var Index: TImageIndex):
+    Column: TColumnIndex; var Ghosted: Boolean; var Index: System.UITypes.TImageIndex):
     TCustomImageList;
 var
   data: PItemData;

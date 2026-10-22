@@ -359,6 +359,9 @@ var
 
 implementation
 
+uses
+  System.Actions;
+
 {$R *.dfm}
 
 uses
@@ -951,7 +954,7 @@ end;
 procedure ExecuteNavigationCategory(ActionID: Integer);
 var
   page: TCECustomTabPage;
-  ws,ext: WideString;
+  ws: WideString;
   ns: TNamespace;
   item: TEasyItem;
   quickview: TCEQuickViewPage;

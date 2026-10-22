@@ -700,6 +700,7 @@ type
 implementation
 
 uses
+  System.Types,
   xmlutils;
 
 type

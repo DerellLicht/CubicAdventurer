@@ -341,7 +341,6 @@ end;
 -------------------------------------------------------------------------------}
 constructor TCETextEditor.Create(AOwner: TComponent);
 var
-  IV, IV2: TTBItemViewer;
   i: Integer;
   Highlighter: TSynCustomHighlighter;                                            
 begin
@@ -934,11 +933,10 @@ end;
 procedure TCETextEditor.ChangeAutoHighlighter;
 var
   ExtLen: integer;
-  i, j, i2, i3: integer;
+  i, j, i3: integer;
   Highlighter: TSynCustomHighlighter;
   Filter: string;
   Extension: String;
-  item: TSpTBXItem;
 begin
   if ActiveFilePath = '' then
   Exit;
@@ -1019,7 +1017,6 @@ var
   exporter: TCESynExporterHTML;
   lines: TStrings;
   spaces: String;
-  i: Integer;
 begin
   Assert(Assigned(fSettings), 'TCETextEditor: Settings needs to be assigned');
   
@@ -1241,9 +1238,6 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCETextEditor.SynMemoStatusChange(Sender: TObject; Changes:
     TSynStatusChanges);
-var
-  i: Integer;
-  len: Int64;
 begin
   // Selection changed
   if (scSelection in Changes) or (scCaretX in Changes) or (scCaretY in Changes) or (scAll in Changes) then
@@ -1271,7 +1265,6 @@ function TCETextEditor.CanClose: Boolean;
 var
   s,s2: WideString;
   r: Integer;
-  i: Integer;
 begin
   Result:= false;
   if SynMemo.Modified then

@@ -927,7 +927,6 @@ procedure TCVMediaPlayer.Paint;
 var
   r: TRect;
   ws: WideString;
-  s: String;
 begin
   // Paint background
   if assigned(Engine) then

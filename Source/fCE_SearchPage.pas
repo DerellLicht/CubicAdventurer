@@ -282,6 +282,7 @@ var
 implementation
 
 uses
+  System.Types,
   Main, dCE_Actions;
 
 {$R *.dfm}
@@ -290,8 +291,6 @@ uses
   Create an instance of TCESearchPage
 -------------------------------------------------------------------------------}
 constructor TCESearchPage.Create(AOwner: TComponent);
-var
-  i: Integer;
 begin
   inherited;
   TCEFileSearchPageSettings(Settings).FileSearchPage:= Self;
@@ -675,7 +674,6 @@ procedure TCESearchPage.ResultViewItemSelectionsChanged(
 var
   NS: TNamespace;
   Item: TEasyItem;
-  lastItem, tmpItem: TEasyItem;
 begin
   if not Self.Active then
   Exit;

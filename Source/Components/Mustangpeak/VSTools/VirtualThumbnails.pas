@@ -339,6 +339,7 @@ procedure SpConvertJPGStreamToBitmap(MS: TMemoryStream; OutBitmap: TBitmap);
 implementation
 
 uses
+  System.Types,
   {$IFDEF USEGRAPHICEX} GraphicEx, {$ELSE}
     {$IFDEF USEIMAGEEN} ImageEnIo, ImageEnProc, hyieutils, {$ELSE}
       {$IFDEF USEIMAGEMAGICK} MagickImage, ImageMagickAPI, {$ENDIF}

@@ -116,6 +116,7 @@ var
 implementation
 
 uses
+  System.Contnrs, System.Types,
   CE_LanguageEngine, CE_LanguageUtils, fCE_ItemSelectSaveDlg, CE_Utils,
   CE_ToolbarButtons, CE_Layout, Main;
 
