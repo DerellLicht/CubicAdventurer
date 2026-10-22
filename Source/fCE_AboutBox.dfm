@@ -442,7 +442,7 @@ object CEAboutBox: TCEAboutBox
       'https://github.com/TurboPack/SynEdit'#13#10 +
       #13#10 +
       '- PngComponents'#13#10 +
-      'http://www.thany.org/article/32/PngComponents'#13#10 +
+      'https://github.com/UweRaabe/PngComponents'#13#10 +
       #13#10 +
       '- Toolbar2000'#13#10 +
       'http://www.jrsoftware.org'#13#10 +
