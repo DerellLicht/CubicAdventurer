@@ -1712,6 +1712,7 @@ var
 begin
   Result:= false;
   AIndex:= 0;
+  i:= 0; // keeps the final 'i < 0' test defined when the list is empty
 
   loI:= 0;
   hiI:= fItems.Count-1;
@@ -1923,6 +1924,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCEPluginSettings.GetLastChanged: Cardinal;
 begin
+  Result:= 0;
   if IsAlive then
   try
     Lock;
@@ -2317,6 +2319,7 @@ var
   item: PSettingItem;
   i: Integer;
 begin
+  Result:= false;
   // exit if we are dead
   if not IsAlive then Exit;
 
@@ -2544,7 +2547,6 @@ end;
 -------------------------------------------------------------------------------}
 function TCEPluginFactoryLibrary.InitializePlugin(AHost: TCCPluginHost): Boolean;
 begin
-  Result:= false;
   try
   @_CreatePluginFactory:= GetProcAddress(Self.LibraryHandle, 'CreatePluginFactory');
   except

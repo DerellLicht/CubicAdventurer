@@ -115,7 +115,7 @@ var
 implementation
 
 uses
-  System.Contnrs,
+  System.Contnrs, System.Types,
   Main, CE_TBActions, MPCommonUtilities, CE_WideCompat;
 
 {$R *.dfm}

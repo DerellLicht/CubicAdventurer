@@ -228,7 +228,7 @@ var
 implementation
 
 uses
-  System.Contnrs,
+  System.Contnrs, System.Types,
   CE_FileView, fCE_FileView, CE_BaseFileView, dCE_Actions, dCE_Images, Main,
   CE_Sessions, fCE_FiltersPanel, CE_Utils, MPShellTypes, CE_CommonObjects,
   CE_AppSettings, CE_SystemUtils, CE_SpTabBar, SpTBXTabs, fCE_StackPanel,

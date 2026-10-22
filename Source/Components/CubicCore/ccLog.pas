@@ -335,6 +335,9 @@ function TCCLog.Log(const AMsg: WideString; AMsgType: Integer; ASender:
 var
   data: PLogItem;
 begin
+  Result:= 0;
+  // data stays nil when logging is disabled (checked again before notify below)
+  data:= nil;
   if AMsgType = MTYPE_TICK then
   begin
     StartTimer(Result);
@@ -357,7 +360,7 @@ begin
     fItems.UnLock;
   end;
   // notify
-  if fEnabled then
+  if fEnabled and Assigned(data) then
   begin
     fNotify:= LNOTIFY_ADD;
     fNotifyItem.ATick:= data.ATick;

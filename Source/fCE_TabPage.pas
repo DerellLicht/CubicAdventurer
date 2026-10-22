@@ -71,7 +71,7 @@ type
         TPoint; var dwEffect: Longint): HResult; virtual; stdcall;
     function DragLeave: HResult; virtual; stdcall;
     function DragOver(grfKeyState: Longint; pt: TPoint; var dwEffect: Longint):
-        HResult; virtual; stdcall;
+        HResult; reintroduce; virtual; stdcall;
     function Drop(const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint; var
         dwEffect: Longint): HResult; virtual; stdcall;
     function GetPageActionList: TActionList; virtual;
