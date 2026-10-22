@@ -47,7 +47,7 @@ begin
     QueryPerformanceCounter(now);
     Result:= ((now - ATimer) * 1000) div fFrequency;
   end else begin
-    Result:= GetTickCount64 - ATimer;
+    Result:= Int64(GetTickCount64) - ATimer;
   end;
 end;
 

@@ -72,7 +72,7 @@ begin
     Exit;
   end;
 
-  if DirectoryExists(Path) then begin
+  if SysUtils.DirectoryExists(Path) then begin
     try
       TDirectory.Delete(Path, True);
     except
@@ -81,7 +81,7 @@ begin
       end;
     end;
   end;
-  Result := not DirectoryExists(Path);
+  Result := not SysUtils.DirectoryExists(Path);
 end;
 
 {-------------------------------------------------------------------------------

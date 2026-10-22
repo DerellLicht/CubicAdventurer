@@ -1127,7 +1127,7 @@ var
     MyTag, MyType, Count, W, L: Word;
     MyPos, MyCount, MyValue: LongWord;
     I, Cnt2: Integer;
-    S: AnsiString;
+    S: string; // EXIF text is ASCII; kept as string so IntToStr() concatenation needs no casts
   begin
     IFD_Exif_Offset := 0;
     if Offset = 0 then Exit;
@@ -1159,7 +1159,7 @@ var
                 F.Seek(MyPos + 8, soFromBeginning)
               else
                 F.Seek(ExifMarker_Offset + MyValue, soFromBeginning);
-              S := ReadString(MyCount);
+              S := string(ReadString(MyCount));
             end;
           3: // Short
             begin
@@ -1231,7 +1231,7 @@ begin
     end;
 
     readit(W);
-    S := ReadString(4);
+    S := string(ReadString(4));
     if S <> 'Exif' then Exit;
     readit(W);
     if W <> $0000 then Exit;

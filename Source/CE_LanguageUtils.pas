@@ -565,7 +565,8 @@ end;
 -------------------------------------------------------------------------------}
 function TCEPOFile.GetText(const MsgID: WideString): WideString;
 begin
-  Result:= UTF8Decode(GetText(UTF8Encode(MsgID)));
+  // strings are Unicode throughout now, so no UTF-8 round trip is needed
+  Result:= GetText(string(MsgID));
 end;
 
 {*------------------------------------------------------------------------------
@@ -589,7 +590,9 @@ begin
   try
     AEntry:= nil;
     AState:= esNone;
-    S.LoadFromStream(Stream);
+    // .po files are UTF-8 (normally without BOM); TEncoding.UTF8 is only the
+    // fallback, a BOM in the file still wins
+    S.LoadFromStream(Stream, TEncoding.UTF8);
     for i:= 0 to S.Count - 1 do
     begin
       if AEntry = nil then
@@ -664,6 +667,7 @@ procedure TCEPOFile.SaveToStream(Stream: TStream; SaveComments: Boolean = true);
 var
   i, j: integer;
   S, T: TStringlist;
+  utf8: TUTF8Encoding;
 begin
   if not assigned(Stream) then
   Exit;
@@ -755,7 +759,13 @@ begin
       // empty line between entries
       S.Add('');
     end;
-    S.SaveToStream(Stream);
+    // write UTF-8 without BOM (what gettext tools and the original CE files use)
+    utf8:= TUTF8Encoding.Create(false);
+    try
+      S.SaveToStream(Stream, utf8);
+    finally
+      utf8.Free;
+    end;
   finally
     S.Free;
     T.Free;

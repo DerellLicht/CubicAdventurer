@@ -105,7 +105,8 @@ type
 //   DOMString
 // -------------------------------------------------------
 
-  TSetOfChar = set of Char;
+  // byte-sized characters only; callers must test 'ord(ch) < 256' and cast with AnsiChar()
+  TSetOfChar = set of AnsiChar;
   DOMString = WideString;
   DOMPChar = PWideChar;
   PDOMString = ^DOMString;

@@ -23,6 +23,7 @@ unit ccContainers;
 {$INCLUDE Core.inc}
 
 {==============================================================================}
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses

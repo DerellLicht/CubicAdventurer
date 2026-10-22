@@ -22,6 +22,7 @@
 unit CV_MediaPlayerEngines;
 
 {==============================================================================}
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses
@@ -76,7 +77,7 @@ type
     procedure ResizeVideo; virtual;
     procedure UpdateTitle; virtual;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Close; override; stdcall;
     function GetDuration: Int64; virtual; stdcall;
@@ -143,7 +144,7 @@ type
     procedure WMPError(Sender: TObject); virtual;
     procedure WMPStatusChange(Sender: TObject); virtual;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Close; override; stdcall;
     function GetDuration: Int64; virtual; stdcall;

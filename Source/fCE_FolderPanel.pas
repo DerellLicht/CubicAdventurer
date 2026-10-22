@@ -363,7 +363,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEFolderPanelSettings.SetLineHeight(const Value: Integer);
 var
-  c: Cardinal;
+  c: Integer; // same type as VT's DefaultNodeHeight (avoids signed/unsigned W1023)
   node: PVirtualNode;
 begin
   fLineHeight:= Value;
@@ -374,7 +374,7 @@ begin
   FolderPanel.FolderTree.DefaultNodeHeight:= SmallShellIconSize + 1;
 
   // resize nodes
-  if c <> Integer(FolderPanel.FolderTree.DefaultNodeHeight) then
+  if c <> FolderPanel.FolderTree.DefaultNodeHeight then
   begin
     FolderPanel.FolderTree.BeginUpdate;
     try

@@ -21,6 +21,7 @@
 
 unit CE_Breadcrumb;
 
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses

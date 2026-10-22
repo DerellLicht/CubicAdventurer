@@ -356,7 +356,7 @@ function OpenPIDLInTab(Sender: TObject; APIDL: PItemIDList; SelectTab: Boolean
 
 var
   CEActions: TCEActions;
-  fDisableSingleInstanceTemporarily: Integer = 0;
+  fDisableSingleInstanceTemporarily: DWORD = 0; // GetTickCount value (unsigned)
 
 implementation
 

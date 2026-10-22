@@ -75,7 +75,8 @@ end;
 
 destructor TWideFileStream.Destroy;
 begin
-  if Handle >= 0 then
+  // THandle is unsigned, so 'Handle >= 0' was always true
+  if Handle <> INVALID_HANDLE_VALUE then
   FileClose(Handle);
 end;
 

@@ -294,7 +294,7 @@ var
 begin
   Result:= true;
   GetWindowThreadProcessId(Wnd, pPid);
-  if pPid = AProcessID then
+  if pPid = DWORD(AProcessID) then
   begin
     // get class name
     FillChar(classN, 255, #0);
@@ -454,7 +454,7 @@ function TSumatraPDF.InternalOpen(const AFilePath: WideString; APluginMode:
 var
   StartInfo  : TStartupInfoW;
   dir, params, cmd, exe: WideString;
-  t: Integer;
+  t: DWORD; // GetTickCount is unsigned
   style: Integer;
 begin
   Result:= false;
@@ -525,7 +525,7 @@ begin
       EnumWindows(@Enum_FindSumatraWnd, LongInt(Self));
 
       // time out if window is not found
-      if (fSumatraWindow = 0) and ((GetTickCount - t) > fTimeout) then
+      if (fSumatraWindow = 0) and ((GetTickCount - t) > DWORD(fTimeout)) then
       begin
         // terminate process
         Close;

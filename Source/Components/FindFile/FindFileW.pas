@@ -1562,7 +1562,7 @@ begin
   inherited Create(True);
   Owner := AOwner;
   Priority := Owner.ThreadPriority;
-  Resume;
+  Start; // Resume is deprecated; the thread was created suspended
 end;
 
 procedure TSearchThread.Execute;

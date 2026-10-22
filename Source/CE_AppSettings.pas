@@ -113,7 +113,10 @@ var
 implementation
 
 const
-  NoDefault = $80000000;
+  // Must be an Integer: as a plain $80000000 literal it is out of Integer range, so
+  // 'propInfo.Default <> NoDefault' was always True (W1022) and ordinal properties
+  // without a stored default were saved as if they had one.
+  NoDefault = Integer($80000000);
 
 {-------------------------------------------------------------------------------
   Create an instance of TCEAppSettings
@@ -464,10 +467,10 @@ begin
           propInfo:= propList^[index];
           // Check if property should be ignored
           if assigned(AExcludeProperties) then
-          addNode:= AExcludeProperties.IndexOf(propInfo.Name) = -1;
+          addNode:= AExcludeProperties.IndexOf(string(propInfo.Name)) = -1;
           // Check if property is allowed
           if assigned(AIncludeProperties) and (AIncludeProperties.Count > 0) then
-          addNode:= AIncludeProperties.IndexOf(propInfo.Name) > -1;
+          addNode:= AIncludeProperties.IndexOf(string(propInfo.Name)) > -1;
           // Get property value
           if addNode then
           begin
@@ -535,7 +538,7 @@ begin
             // Add XML node
             if addNode then
             begin
-              node:= XML.CreateElement(propInfo.Name);
+              node:= XML.CreateElement(string(propInfo.Name));
               if isWide then
               node.TextContent:= propValueW
               else

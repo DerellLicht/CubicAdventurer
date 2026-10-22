@@ -38,7 +38,7 @@ type
 
   TCETranslationItem = class
     Propname: String;
-    OldValue: WideString;
+    OldValue: string;
     Obj: TObject;
   end;
 
@@ -70,7 +70,7 @@ type
     procedure ClearIgnoredItems;
     function IsIgnored(AObject: TObject): Boolean; virtual;
     procedure RememberProperty(Obj: TObject; PropName: String; OldValue:
-        WideString; ItemCollection: TCETranslationItemCollection);
+        string; ItemCollection: TCETranslationItemCollection);
   public
     IgnoredProperties: TStringList;
     IncludeClasses: TClassList;
@@ -285,7 +285,7 @@ end;
   Remember property
 -------------------------------------------------------------------------------}
 procedure TCETranslator.RememberProperty(Obj: TObject; PropName: String;
-    OldValue: WideString; ItemCollection: TCETranslationItemCollection);
+    OldValue: string; ItemCollection: TCETranslationItemCollection);
 var
   item: TCETranslationItem;
 begin
@@ -314,7 +314,7 @@ begin
     begin
       item:= collection.Items[j];
       if assigned(item.Obj) then
-      SetWideStrProp(item.Obj, item.Propname, item.OldValue);
+      SetStrProp(item.Obj, item.Propname, item.OldValue);
     end;
   end;
   POFile.Clear;
@@ -345,7 +345,7 @@ begin
       item:= collection.Items[j];
       if assigned(item.Obj) then
       begin
-        SetWideStrProp(item.Obj, item.Propname, po.gettext(item.OldValue));
+        SetStrProp(item.Obj, item.Propname, po.GetText(item.OldValue));
         fTranslatedCount:= fTranslatedCount + 1;
       end;
     end;
@@ -402,8 +402,8 @@ var
   PropList: PPropList;
   PropInfo: PPropInfo;
   PropName: string;
-  old: WideString;
-  ws: WideString;
+  old: string;
+  ws: string;
   ppi:PPropInfo;
   obj:TObject;
   remember: Boolean;
@@ -431,9 +431,10 @@ begin
     for i:= 0 to Count - 1 do
     begin
       PropInfo:= PropList[i];
-      if (PropInfo^.PropType^.Kind in [tkString, tkLString, tkWString, tkClass]) then
+      // tkUString is the kind of every 'string' property in Unicode Delphi
+      if (PropInfo^.PropType^.Kind in [tkString, tkLString, tkWString, tkUString, tkClass]) then
       begin
-        PropName:= PropInfo^.Name;
+        PropName:= string(PropInfo^.Name);
 
         // Ignore the Name
         if (Length(PropName) = 4) and SameText(PropName, 'Name') then
@@ -455,10 +456,8 @@ begin
         // strings
         else 
         begin
-          if PropInfo^.PropType^.Kind <> tkWString then
-          old:= GetStrProp(AObject, PropName)
-          else
-          old:= GetWideStrProp(AObject, PropName);
+          // GetStrProp/SetStrProp handle every string kind (Unicode throughout)
+          old:= GetStrProp(AObject, PropName);
 
           fTranslatedCount:= fTranslatedCount + 1;
 
@@ -474,10 +473,7 @@ begin
               begin
                 if remember then
                 RememberProperty(AObject, Propname, old, ItemCollection);
-                if PropInfo^.PropType^.Kind <> tkWString then
-                SetStrProp(AObject, ppi, UTF8Encode(ws))
-                else
-                SetWideStrProp(AObject, ppi, ws);
+                SetStrProp(AObject, ppi, ws);
               end;
             end;
           end;

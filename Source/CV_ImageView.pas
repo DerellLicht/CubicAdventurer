@@ -152,7 +152,10 @@ type
         SetLoadOptimalSize;
     property UseThumbnailPreview: Boolean read fUseThumbnailPreview write
         fUseThumbnailPreview;
+    // Intentionally hides TImage32's own Zoom: this view keeps its zoom in percent (100 = 1:1).
+    {$WARN HIDING_MEMBER OFF}
     property Zoom: Extended read fZoom write SetZoom;
+    {$WARN HIDING_MEMBER ON}
   published
     property AdaptiveZoom: Boolean read fAdaptiveZoom write SetAdaptiveZoom;
     property Align;
@@ -558,6 +561,43 @@ begin
   end;
 end;
 
+{*------------------------------------------------------------------------------
+  Decode the first ACount bytes of ABuf into a Unicode string.
+
+  Tries strict UTF-8 first. A caller-imposed length limit can cut a multi-byte
+  character in half, so up to 3 trailing bytes are dropped and the decode is
+  retried before giving up. If the bytes are not valid UTF-8 they are decoded
+  with the ANSI code page. ACount must be > 0 and <= Length(ABuf).
+-------------------------------------------------------------------------------}
+function DecodeTextBuffer(const ABuf: TBytes; ACount: Integer): string;
+var
+  n, lowest, len: Integer;
+begin
+  Result:= '';
+  lowest:= ACount - 3;
+  if lowest < 1 then
+  begin
+    lowest:= 1;
+  end;
+  for n:= ACount downto lowest do
+  begin
+    len:= MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, PAnsiChar(@ABuf[0]), n, nil, 0);
+    if len > 0 then
+    begin
+      SetLength(Result, len);
+      MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, PAnsiChar(@ABuf[0]), n, PWideChar(Result), len);
+      Exit;
+    end;
+  end;
+  // not valid UTF-8, use the ANSI code page
+  len:= MultiByteToWideChar(CP_ACP, 0, PAnsiChar(@ABuf[0]), ACount, nil, 0);
+  if len > 0 then
+  begin
+    SetLength(Result, len);
+    MultiByteToWideChar(CP_ACP, 0, PAnsiChar(@ABuf[0]), ACount, PWideChar(Result), len);
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   CreateTextThumbnail
 -------------------------------------------------------------------------------}
@@ -570,7 +610,7 @@ const
   
 var
   s: TCCFileStream;
-  buf: String;
+  buf: TBytes;
   bufW: WideString;
   r: TRect;
   w: word;
@@ -629,14 +669,12 @@ begin
             if AMaxLength > 0 then
             begin
               SetLength(buf, AMaxLength );
-              // read
-              s.Read(buf[1], Length(buf));
-              // decode UTF-8
-              if buf <> '' then
+              // read raw bytes (buf is a byte array, so the count is exact)
+              AMaxLength:= s.Read(buf[0], AMaxLength);
+              // decode UTF-8, or ANSI if the bytes are not valid UTF-8
+              if AMaxLength > 0 then
               begin
-                bufW:= UTF8Decode(buf);
-                if bufW = '' then // in case of decoding error, use ansi only.
-                bufW:= buf;
+                bufW:= DecodeTextBuffer(buf, AMaxLength);
               end;
             end;
           end

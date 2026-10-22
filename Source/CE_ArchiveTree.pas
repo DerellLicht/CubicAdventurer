@@ -30,7 +30,7 @@ uses
   // JCL
   JclCompression,
   // System Units
-  Classes, SysUtils, Windows, Forms, ImgList, Messages, Graphics;
+  Classes, SysUtils, Windows, Forms, ImgList, Messages, Graphics, System.UITypes;
 
 type
   PItemData = ^AItemData;

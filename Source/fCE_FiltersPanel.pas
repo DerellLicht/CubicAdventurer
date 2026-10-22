@@ -606,7 +606,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEFiltersPanelSettings.SetLineHeight(const Value: Integer);
 var
-  i: Cardinal;
+  i: Integer; // same type as VT's DefaultNodeHeight (avoids signed/unsigned W1023)
   node: PVirtualNode;
 begin
   fLineHeight:= Value;
@@ -617,7 +617,7 @@ begin
   FilterPanel.Filters.DefaultNodeHeight:= SmallShellIconSize + 1;
 
   // resize nodes
-  if i <> Integer(FilterPanel.Filters.DefaultNodeHeight) then
+  if i <> FilterPanel.Filters.DefaultNodeHeight then
   begin
     FilterPanel.Filters.BeginUpdate;
     try

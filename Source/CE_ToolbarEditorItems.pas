@@ -21,6 +21,7 @@
 
 unit CE_ToolbarEditorItems;
 
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses
@@ -885,10 +886,8 @@ procedure TCEToolbarComboBoxItemViewer.InternalDrawFrame(ACanvas: TCanvas;
     ARect: TRect; ItemInfo: TSpTBXMenuItemInfo);
 var
   R: TRect;
-  T: TSpTBXSkinType;
 begin
   inherited;
-  T:= SkinManager.GetSkinType(View.Window);
 
   R:= GetDropDownButtonRect;
   fMouseOverDropButton:= GetMouseInDropDownButton;

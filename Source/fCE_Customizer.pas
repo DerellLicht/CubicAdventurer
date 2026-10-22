@@ -40,7 +40,7 @@ uses
   JvSimpleXml,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ImgList, ActiveX, StdCtrls, Math, CheckLst, Menus;
+  Dialogs, ImgList, ActiveX, StdCtrls, Math, CheckLst, Menus, System.UITypes;
 
 type
   TTBCustomDockableWindowHack = class(TTBCustomDockableWindow);

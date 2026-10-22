@@ -33,7 +33,7 @@ uses
   SpTBXItem, SpTBXControls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, ImgList, StdCtrls, ExtCtrls, ActnList, System.Actions;
+  Dialogs, Menus, ImgList, StdCtrls, ExtCtrls, ActnList, System.Actions, System.UITypes;
 
 type
   PCEActTreeData = ^ACEActTreeData;

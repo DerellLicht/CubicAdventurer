@@ -64,7 +64,7 @@ var
 begin
   SetLength(Result, 0);
   for i := 1 to Length(s) do
-    if not (s[i] in Allowed) then
+    if not CharInSet(s[i], Allowed) then
       Result := Result + '%' + IntToHex(ord(s[i]), 2)
     else
       Result := Result + s[i];
@@ -162,7 +162,7 @@ begin
       break;
     end
     else
-      if not (((i=1) and (s[i] in ALPHA)) or (s[i] in ALPHA + DIGIT + ['+', '-', '.'])) then
+      if not (((i=1) and CharInSet(s[i], ALPHA)) or CharInSet(s[i], ALPHA + DIGIT + ['+', '-', '.'])) then
         break;
 
   // Extract the bookmark
@@ -293,8 +293,9 @@ function ResolveRelativeURI(const BaseUri, RelUri: UTF8String;
 var
   Base, Rel: TUri;
 begin
-  Base := ParseUri(BaseUri);
-  Rel := ParseUri(RelUri);
+  // explicit conversions: UTF8String <-> string (this port keeps TUri fields as string)
+  Base := ParseUri(string(BaseUri));
+  Rel := ParseUri(string(RelUri));
 
   Result := (Base.Protocol <> '') or (Rel.Protocol <> '');
   if not Result then
@@ -308,7 +309,7 @@ begin
         if Params <> '' then
           Base.Params := Params;
         Base.Bookmark := Bookmark;
-        ResultUri := EncodeUri(Base);
+        ResultUri := UTF8String(EncodeUri(Base));
         Exit;
       end;
     end;
@@ -332,7 +333,7 @@ begin
       RemoveDotSegments(Path);      
     end;
   end; // with
-  ResultUri := EncodeUri(Rel);
+  ResultUri := UTF8String(EncodeUri(Rel));
 end;
 
 function ResolveRelativeURI(const BaseUri, RelUri: WideString;
@@ -342,7 +343,7 @@ var
 begin
   Result := ResolveRelativeURI(UTF8Encode(BaseUri), UTF8Encode(RelUri), rslt);
   if Result then
-    ResultURI := UTF8Decode(rslt);
+    ResultURI := UTF8ToWideString(rslt);
 end;
 
 function URIToFilename(const URI: string; out Filename: string): Boolean;
@@ -409,8 +410,8 @@ begin
     if UriReference[I] = ':' then
       Exit
     else
-      if not (((I=1) and (UriReference[I] in ALPHA)) or
-         (UriReference[i] in ALPHA + DIGIT + ['+', '-', '.'])) then
+      if not (((I=1) and CharInSet(UriReference[I], ALPHA)) or
+         CharInSet(UriReference[i], ALPHA + DIGIT + ['+', '-', '.'])) then
       Break;
   end;
   Result := False;

@@ -256,7 +256,8 @@ begin
     SetLength(buf,stream.Size);
     stream.Position:= 0;
     stream.Read(buf[1],stream.Size);
-    Result:= MimeEncodeStringNoCRLF(buf);
+    // Base64 output is pure ASCII, so the AnsiString -> string cast is lossless
+    Result:= string(MimeEncodeStringNoCRLF(buf));
   finally
     stream.Free;
   end;
@@ -272,7 +273,8 @@ var
 begin
   stream:= TMemoryStream.Create;
   try
-    buf:= MimeDecodeString(MimeStr);
+    // Base64 input is pure ASCII, so the string -> AnsiString cast is lossless
+    buf:= MimeDecodeString(AnsiString(MimeStr));
     stream.Write(buf[1],Length(buf));
     stream.Position:= 0;
     Result:= PIDLMgr.LoadFromStream(stream);

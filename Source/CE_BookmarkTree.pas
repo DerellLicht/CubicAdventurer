@@ -36,7 +36,7 @@ uses
   SpTBXItem,
   // System Units
   Classes, SysUtils, Windows, Messages, ImgList, Controls, Contnrs,
-  ActiveX, Graphics, Dialogs;
+  ActiveX, Graphics, Dialogs, System.UITypes;
 
 type
   TCEBookmarkTree = class(TVirtualStringTree)

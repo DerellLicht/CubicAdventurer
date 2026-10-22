@@ -23,6 +23,7 @@ unit ccThreadUtils;
 {$INCLUDE Core.inc}
 
 {==============================================================================}
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses
@@ -295,7 +296,7 @@ end;
 procedure TCCTaskPool.AbortTasksWithTag(ATag: Integer);
 var
   data: PCCTaskPoolData;
-  item, tmp: PCCListItem;
+  item: PCCListItem;
   list: TList;
   i: Integer;
   thread: TCCTaskPoolThread;
@@ -309,7 +310,6 @@ begin
       data:= fTaskQue.GetItemData(item);
       if data.ATag = ATag then
       data.fStartTick:= 0;
-      tmp:= item;
       item:= item.Next;
     end;
   finally
@@ -624,7 +624,6 @@ begin
         item:= Pool.fTaskQue.GetFirst;
         while assigned(item) do
         begin
-          data:= Pool.fTaskQue.GetItemData(item);
           // DoFreeTask
           fResultData:= Pool.fResultQue.GetItemData(item);
           Self.Synchronize(DoFreeTask);
@@ -747,7 +746,7 @@ begin
     end;
 
     // create new thread
-    if not Result and (list.Count < Pool.MaxThreadCount) then
+    if not Result and (Cardinal(list.Count) < Pool.MaxThreadCount) then
     begin
       thread:= TCCTaskPoolThread.Create(true);
       list.Add(thread);

@@ -22,6 +22,7 @@
 unit CE_Stacks;
 {$WARN SYMBOL_PLATFORM OFF} // Windows-only application
 
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses

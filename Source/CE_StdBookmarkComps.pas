@@ -21,6 +21,7 @@
 
 unit CE_StdBookmarkComps;
 
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses

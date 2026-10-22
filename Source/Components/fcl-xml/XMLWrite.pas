@@ -298,7 +298,7 @@ begin
   EndPos := 1;
   while EndPos <= Length(s) do
   begin
-    if (s[EndPos] < #255) and (Char(s[EndPos]) in SpecialChars) then
+    if (s[EndPos] < #255) and (AnsiChar(s[EndPos]) in SpecialChars) then
     begin
       wrtChars(@s[StartPos], EndPos - StartPos);
       SpecialCharCallback(s[EndPos]);

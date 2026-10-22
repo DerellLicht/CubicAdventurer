@@ -33,7 +33,7 @@ uses
   VirtualExplorerTree, VirtualResources, VirtualShellNotifier,
   // System Units
   SysUtils, Classes, Windows, Forms, Controls, ActiveX, ImgList, ShlObj,
-  Graphics, Menus, Messages;
+  Graphics, Menus, Messages, System.UITypes;
 
 type
   TCEStackDataObject = class(TVETDataObject);

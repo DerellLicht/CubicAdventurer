@@ -21,6 +21,7 @@
 
 unit CC_Threads;
 
+{$WARN PUBLISHED OFF} // published sections on non-TPersistent classes are intentional (RTTI)
 interface
 
 uses Classes, Windows;

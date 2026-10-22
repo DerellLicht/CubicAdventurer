@@ -10,7 +10,7 @@ uses
   // VirtualTrees
   VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // SysUtils
-  Windows, Messages, Controls, Classes, Graphics, ImgList, ActiveX, SysUtils;
+  Windows, Messages, Controls, Classes, Graphics, ImgList, ActiveX, SysUtils, System.UITypes;
 
 type
 
@@ -989,7 +989,7 @@ end;
 procedure TCVFilelist.HandleTaskExecute(Sender: TCCTaskPoolThread; AObject:
     TObject; AData: Pointer; ATag: Integer);
 var
-  lastStatus: Integer;
+  lastStatus: DWORD; // GetTickCount is unsigned
 
   // Do File Search
   procedure DoFileSearch(task: TCVFilelistTask; dirPath: WideString; includeSubFolders: Boolean);

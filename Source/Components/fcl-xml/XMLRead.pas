@@ -682,7 +682,7 @@ begin
       if TXMLReader(FReader).FXML11 then
         Result := #10;
   end;
-  if (Result < #256) and (char(Result) in TXMLReader(FReader).FForbiddenAscii) or
+  if (Result < #256) and (AnsiChar(Result) in TXMLReader(FReader).FForbiddenAscii) or
     (Result >= #$FFFE) then
     DecodingError('Invalid character');
 end;
@@ -1119,7 +1119,7 @@ end;
 procedure TXMLReader.SkipString(const ValidChars: TSetOfChar);
 begin
   FValue.Length := 0;
-  while (ord(FCurChar) < 256) and (char(FCurChar) in ValidChars) do
+  while (ord(FCurChar) < 256) and (AnsiChar(FCurChar) in ValidChars) do
   begin
     BufAppend(FValue, FCurChar);
     GetChar;
@@ -1651,7 +1651,7 @@ begin
     for I := 0 to FValue.Length-1 do
     begin
       wc := FValue.Buffer[I];
-      if (wc > #255) or not (Char(wc) in PubidChars) then
+      if (wc > #255) or not (AnsiChar(wc) in PubidChars) then
         FatalError('Illegal Public ID literal', True);
       if (wc = #10) or (wc = #13) then
         FValue.Buffer[I] := #32;

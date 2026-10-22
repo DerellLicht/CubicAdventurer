@@ -777,7 +777,7 @@ begin
       SetLength(AnsiS, (Stream.Size - Stream.Position) div SizeOf(AnsiChar));
       Stream.Read(AnsiS[1], Length(AnsiS) * SizeOf(AnsiChar));
       if foUTF8Encoding in WideFileOptions then
-      SetTextStr(UTF8Decode(AnsiS))
+      SetTextStr(UTF8ToString(AnsiS)) // AnsiS holds raw UTF-8 bytes
       else
       SetTextStr(WideString(AnsiS)); // explicit Unicode conversion
     end
@@ -829,10 +829,8 @@ begin
     Reader.ReadListBegin;
     while not Reader.EndOfList do
     begin
-      if Reader.NextValue in [vaLString, vaString] then
-      Add(Reader.ReadString)
-      else
-      Add(Reader.ReadWideString);
+      // ReadString handles every string kind (ANSI, Wide, UTF-8, Unicode)
+      Add(Reader.ReadString);
     end;
     Reader.ReadListEnd;
   finally
@@ -1073,7 +1071,7 @@ begin
   Writer.WriteListBegin;
   for i:= 0 to Count - 1 do
   begin
-    Writer.WriteWideString(GetP(i)^);
+    Writer.WriteString(GetP(i)^);
   end;
   Writer.WriteListEnd;
 end;
@@ -1548,7 +1546,8 @@ end;
 -------------------------------------------------------------------------------}
 destructor TCCFileStream.Destroy;
 begin
-  if Handle >= 0 then
+  // THandle is unsigned, so 'Handle >= 0' was always true; test for the real invalid value
+  if Handle <> INVALID_HANDLE_VALUE then
   FileClose(Handle);
 end;
 

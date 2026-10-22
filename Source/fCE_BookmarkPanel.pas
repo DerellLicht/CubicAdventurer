@@ -636,7 +636,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkPanelSettings.SetLineHeight(const Value: Integer);
 var
-  i: Cardinal;
+  i: Integer; // same type as VT's DefaultNodeHeight (avoids signed/unsigned W1023)
   node: PVirtualNode;
 begin
   fLineHeight:= Value;

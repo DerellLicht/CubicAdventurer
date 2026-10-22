@@ -561,7 +561,7 @@ procedure TCEOptionsDialog.PageTreeGetNodeWidth(Sender: TBaseVirtualTree;
 begin
   NodeWidth:= Sender.ClientWidth-4;
   if GetNodeLevel(Node) > 0 then
-  NodeWidth:= NodeWidth - Integer(GetNodeLevel(Node) * PageTree.Indent);
+  NodeWidth:= NodeWidth - (Integer(GetNodeLevel(Node)) * Integer(PageTree.Indent));
 end;
 
 {-------------------------------------------------------------------------------

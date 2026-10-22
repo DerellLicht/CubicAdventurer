@@ -285,6 +285,7 @@ var
   s: TStream;
   ws: WideString;
   i: Integer;
+  utf8: TUTF8Encoding;
 begin
   if ShowNewTranslationDlg(fLocaleDir, lang, path) then
   begin
@@ -309,7 +310,13 @@ begin
       s:= TFileStream.Create(ws, fmCreate);
       try
         s.Position:= 0;
-        list.SaveToStream(s);
+        // .po files are UTF-8 without BOM
+        utf8:= TUTF8Encoding.Create(false);
+        try
+          list.SaveToStream(s, utf8);
+        finally
+          utf8.Free;
+        end;
       finally
         s.Free;
       end;
@@ -478,7 +485,7 @@ begin
   POFile.LoadFromFile(AFilePath);
   // Header info
   HeaderInfo.Clear;
-  HeaderInfo.Text:= UTF8Decode(UnescapeString(POFile.Header.MsgStr));
+  HeaderInfo.Text:= UnescapeString(POFile.Header.MsgStr);
   TrimList(HeaderInfo);
   edit_translators_name.OnChange:= nil;
   edit_translators_email.OnChange:= nil;
@@ -564,7 +571,7 @@ begin
   try
     list.Assign(HeaderInfo);
     AddSpaceToList(list);
-    POFile.Header.MsgStr:= EscapeString(UTF8Encode(list.Text));
+    POFile.Header.MsgStr:= EscapeString(list.Text);
     POFile.SaveToFile(AFilePath, false);
     IsChanged:= false;
   finally
@@ -582,7 +589,7 @@ begin
   if PoList.FocusedNode <> nil then
   begin
     data:= PoList.GetNodeData(PoList.FocusedNode);
-    data.PoItem.MsgStr:= UTF8Encode(PoItemStrMsg.Lines.Text);
+    data.PoItem.MsgStr:= PoItemStrMsg.Lines.Text;
     PoList.RepaintNode(PoList.FocusedNode);
     IsChanged:= true;
   end;
@@ -643,8 +650,8 @@ begin
     else
     begin
       data:= PoList.GetNodeData(Node);
-      PoItemStrID.Lines.Text:= UTF8Decode(data.PoItem.MsgID);
-      PoItemStrMsg.Lines.Text:= UTF8Decode(data.PoItem.MsgStr);
+      PoItemStrID.Lines.Text:= data.PoItem.MsgID;
+      PoItemStrMsg.Lines.Text:= data.PoItem.MsgStr;
       PoItemStrMsg.SelStart:= Length(PoItemStrMsg.Lines.Text);
     end;
   finally
@@ -690,11 +697,11 @@ begin
   data:= PoList.GetNodeData(Node);
   if Column = 0 then
   begin
-    CellText:=  UTF8Decode(data.PoItem.MsgID);
+    CellText:= data.PoItem.MsgID;
   end
   else if Column = 1 then
   begin
-    CellText:=  UTF8Decode(data.PoItem.MsgStr);
+    CellText:= data.PoItem.MsgStr;
   end;
 end;
 
@@ -793,7 +800,7 @@ begin
   data:= PoList.GetNodeData(Node);
   if Column = 1 then
   begin
-    data.PoItem.MsgStr:= UTF8Encode(NewText);
+    data.PoItem.MsgStr:= NewText;
     IsChanged:= true;
   end;
   if assigned(Node.NextSibling) then

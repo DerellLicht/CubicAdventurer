@@ -105,10 +105,11 @@ procedure KillProcess(hWindowHandle: HWND);
 var
   hprocessID: INTEGER;
   processHandle: THandle;
-  DWResult: DWORD;
+  DWResult: DWORD_PTR;
 begin
+  // PDWORD_PTR overload; the 'var DWORD' one is flagged as an invalid API definition
   SendMessageTimeout(hWindowHandle, WM_CLOSE, 0, 0,
-    SMTO_ABORTIFHUNG or SMTO_NORMAL, 5000, DWResult);
+    SMTO_ABORTIFHUNG or SMTO_NORMAL, 5000, @DWResult);
 
   if isWindow(hWindowHandle) then
   begin
