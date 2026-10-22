@@ -110,6 +110,7 @@ type
       String = '');
   procedure CE_DoFloatForm(DockForm: TControl);
   procedure CE_DoFloatAllForm;
+  procedure CE_ShowDockForm(AForm: TWinControl);
 
 procedure BeginToolbarCustomize;
 
@@ -847,6 +848,45 @@ end;
 
 
 {*------------------------------------------------------------------------------
+  Float a dock form that got stranded inside the main window.
+
+  While a layout is being rebuilt, host forms are parked in
+  DockHostForm.CenterPanel (a plain TPanel, not a dock site). If the saved
+  layout never moves a host to its real dock panel, it stays parked there,
+  invisible, with a Parent but no HostDockSite. JVCL cannot show such a form
+  (see CE_ShowDockForm), so turn it into a normal floating window instead.
+  Returns nothing; the form ends up with Parent = nil.
+-------------------------------------------------------------------------------}
+procedure FloatStrayForm(AForm: TControl);
+var
+  pt: TPoint;
+  w, h: Integer;
+  r: TRect;
+begin
+  w:= AForm.Width;
+  if w < 250 then
+  begin
+    w:= 250;
+  end;
+  h:= AForm.Height;
+  if h < 200 then
+  begin
+    h:= 200;
+  end;
+  // ManualFloat expects screen coordinates; the form's own BoundsRect is
+  // relative to its (parking) parent, so place it near the main window instead.
+  pt:= MainForm.ClientToScreen(Point(60, 100));
+  r:= Bounds(pt.X, pt.Y, w, h);
+  AForm.ManualFloat(r);
+  // ManualFloat does nothing for a form that has no HostDockSite
+  if AForm.Parent <> nil then
+  begin
+    AForm.Parent:= nil;
+  end;
+  OutputDebugString(PChar('CE_Layout: floated stray dock form ' + AForm.Name));
+end;
+
+{*------------------------------------------------------------------------------
   Load Dockable Forms
 -------------------------------------------------------------------------------}
 procedure LoadDockedForms(AppStorage: TJvCustomAppStorage; AppStoragePath:
@@ -855,7 +895,6 @@ var
   DockInfoTree: TCEDockInfoTree;
   form: TCustomForm;
   i: Integer;
-  r: TRect;
 begin
   if not assigned(AppStorage) then
   Exit;
@@ -882,12 +921,12 @@ begin
     for I := 0 to Screen.CustomFormCount - 1 do
     begin
       form:= Screen.CustomForms[I];
-      if form is TCECustomDockableForm then
+      // Panels AND their tab/conjoin host forms can be left parked in CenterPanel
+      if (form is TCECustomDockableForm) or (form is TJvDockableForm) then
       begin
         if form.Parent = MainForm.DockHostForm.CenterPanel then
         begin
-          r:= form.BoundsRect;
-          form.ManualFloat(r);
+          FloatStrayForm(form);
         end;
       end;
 
@@ -1030,6 +1069,61 @@ begin
     TempList.Free;
   end;
   FreeAllDockableForm;
+end;
+
+{*------------------------------------------------------------------------------
+  Show a dock form, without letting JVCL hang.
+
+  TJvDockBasicStyle.DoShowDockForm climbs from the form through its hosts
+  until it reaches a JVCL dock panel (done) or a free-floating window
+  (Parent = nil). If the climb ends at a control that has a Parent but no
+  HostDockSite (e.g. our embedded DockHost form) none of its helpers can move
+  on and the repeat..until loop never ends: the program freezes.
+  This walks the same chain first. If it would dead-end, the control that was
+  docked into the wrong place is floated, so the chain becomes valid.
+-------------------------------------------------------------------------------}
+procedure CE_ShowDockForm(AForm: TWinControl);
+var
+  c, prev: TWinControl;
+  n: Integer;
+begin
+  if AForm = nil then
+  begin
+    Exit;
+  end;
+
+  prev:= nil;
+  c:= AForm;
+  n:= 0;
+  while (c <> nil) and (n < 32) do
+  begin
+    Inc(n);
+    // Reached a real dock panel: JVCL will finish normally
+    if c.HostDockSite is TJvDockPanel then
+    begin
+      Break;
+    end;
+    if c.HostDockSite = nil then
+    begin
+      // Floating (Parent = nil) is fine. Embedded without a host is a dead end.
+      if c.Parent <> nil then
+      begin
+        if prev <> nil then
+        begin
+          FloatStrayForm(prev);
+        end
+        else
+        begin
+          FloatStrayForm(c);
+        end;
+      end;
+      Break;
+    end;
+    prev:= c;
+    c:= c.HostDockSite.Parent;
+  end;
+
+  ShowDockForm(AForm);
 end;
 
 {-------------------------------------------------------------------------------
