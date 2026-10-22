@@ -359,12 +359,10 @@ var
 
 implementation
 
-uses
-  System.Actions;
-
 {$R *.dfm}
 
 uses
+  System.Actions,
   Main, fCE_FolderPanel, fCE_QuickViewPanel, fCE_BookmarkPanel,
   fCE_FileView, CE_FileView, 
   CE_Bookmarks, CE_BookmarkTree, fCE_AboutBox,

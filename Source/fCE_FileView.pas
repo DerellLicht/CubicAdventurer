@@ -390,12 +390,10 @@ var
 
 implementation
 
-uses
-  System.Types;
-
 {$R *.dfm}
 
 uses
+  System.Types,
   dCE_Actions, CE_VistaFuncs, fCE_FolderPanel, CE_CommonObjects, CE_SpTabBar,
   GR32_Math, Math, Main, ccClasses, ccStrings;
 
