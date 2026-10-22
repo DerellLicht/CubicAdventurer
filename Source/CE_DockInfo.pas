@@ -127,6 +127,38 @@ begin
     Result := FindDockPanel(ControlName);
 end;
 
+function GetChildControlCount(ATreeZone: TJvDockInfoZone): Integer; forward;
+
+{ Name of a control, or 'nil' - for the debug log only }
+function CtrlName(AControl: TControl): string;
+begin
+  if AControl = nil then
+  begin
+    Result:= 'nil';
+  end
+  else
+  begin
+    Result:= AControl.Name;
+  end;
+end;
+
+{ One-line description of where a dock form currently sits - for the debug log only }
+function DescribeDockState(const AFormName: string): string;
+var
+  f: TCustomForm;
+begin
+  f:= JvDockFindDockFormWithName(AFormName);
+  if f = nil then
+  begin
+    Result:= AFormName + ' not found';
+  end
+  else
+  begin
+    Result:= Format('%s parent=%s hostsite=%s visible=%s',
+      [AFormName, CtrlName(f.Parent), CtrlName(f.HostDockSite), BoolToStr(f.Visible, true)]);
+  end;
+end;
+
 //=== { TCEDockInfoTree } ====================================================
 
 constructor TCEDockInfoTree.Create(TreeZone: TJvDockTreeZoneClass);
@@ -424,6 +456,42 @@ end;
 
 
 procedure TCEDockInfoTree.ReadInfoFromAppStorage;
+
+  // A floating tab/conjoin host is a root zone of its own, so the normal scan
+  // (children first, then siblings in order) can reach the dock panels before it
+  // reaches the host. A panel's saved client list may name that host (it lists
+  // it, marked as not inside, when the host was floating), and a name that cannot
+  // be found when the list is loaded is dropped. Create such hosts up front so
+  // every name already resolves when the panels load their lists.
+  procedure CreateFloatingHosts;
+  var
+    Zone, Child: TJvDockBaseZone;
+    InfoZone: TJvDockInfoZone;
+  begin
+    Zone:= TopTreeZone.ChildZone;
+    while Zone <> nil do
+    begin
+      InfoZone:= TJvDockInfoZone(Zone);
+      if (InfoZone.DockFormStyle in [dsTab, dsConjoin]) and (InfoZone.DockFormName <> '') and
+         (FindDockHost(InfoZone.DockFormName) = nil) then
+      begin
+        // same lookup the scan does for a zone's children before it processes the zone
+        Child:= InfoZone.ChildZone;
+        while Child <> nil do
+        begin
+          TJvDockInfoZone(Child).DockControl:= FindDockForm(TJvDockInfoZone(Child).DockFormName);
+          Child:= Child.NextSibling;
+        end;
+        if GetChildControlCount(InfoZone) > 1 then
+        begin
+          CreateHostControl(InfoZone);
+          OutputDebugString(PChar('CE_DockInfo: pre-created floating host ' + InfoZone.DockFormName));
+        end;
+      end;
+      Zone:= Zone.NextSibling;
+    end;
+  end;
+
 begin
   //AppStorage.BeginUpdate;
   try
@@ -433,7 +501,9 @@ begin
     Application.ProcessMessages;
     try
       FCEDockInfoStyle := isReadInfo;
+      CreateFloatingHosts;
       MiddleScanTree(TopTreeZone);
+      OutputDebugString(PChar('CE_DockInfo: after load: ' + DescribeDockState('FolderPanel')));
     finally
       FCEDockInfoStyle := isNone;
     end;
@@ -573,7 +643,14 @@ begin
   begin
     if DockFormName = '' then
       Exit;
+    OutputDebugString(PChar(Format('CE_DockInfo: zone %s (parent=%s) | before: %s',
+      [DockFormName, ParentName, DescribeDockState('FolderPanel')])));
     Host := FindDockHost(DockFormName);
+    // a host created earlier (CreateFloatingHosts) must be reused, not created twice
+    if (Host = nil) and (Application.FindComponent(DockFormName) is TWinControl) then
+    begin
+      Host := TWinControl(Application.FindComponent(DockFormName));
+    end;
     if (Host = nil) and (GetChildControlCount(ATreeZone) > 1) then
       Host := CreateHostControl(ATreeZone);
     if (Host <> nil) and (DockClientData <> '') and (FDataStream <> nil) then
