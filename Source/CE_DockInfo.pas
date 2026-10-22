@@ -521,6 +521,31 @@ begin
   inherited ScanTreeZone(TreeZone);
 end;
 
+{*------------------------------------------------------------------------------
+  Float a host/panel that is parked in CenterPanel to its saved screen rect.
+
+  LoadDockedForms first parks every dock form in DockHostForm.CenterPanel.
+  For a floating zone (ParentName = '') JVCL then sets Control.BoundsRect to the
+  saved rectangle, but a parked form reads it relative to CenterPanel, so the
+  window is invisible until something floats it. ManualFloat takes screen
+  coordinates, which is what the saved rectangle is.
+  The rectangle is ignored when it is too small or no longer on any monitor
+  (for example after a monitor was unplugged); the form then stays parked and
+  LoadDockedForms floats it near the main window instead.
+-------------------------------------------------------------------------------}
+procedure FloatParkedFormToSavedRect(AForm: TCustomForm; const ASaved: TRect);
+begin
+  if (ASaved.Right - ASaved.Left < 100) or (ASaved.Bottom - ASaved.Top < 60) then
+  begin
+    Exit;
+  end;
+  if Screen.MonitorFromRect(ASaved, mdNull) = nil then
+  begin
+    Exit;
+  end;
+  AForm.ManualFloat(ASaved);
+end;
+
 function GetChildControlCount(ATreeZone: TJvDockInfoZone): Integer;
 var
   Zone: TJvDockBaseZone;
@@ -603,6 +628,14 @@ begin
       SetDockInfoFromNodeToControl(Host)
       else if Host <> Application.MainForm then
       SetDockInfoFromNodeToControl(Host);
+
+      // Floating zone whose form is parked in CenterPanel: put it at the saved
+      // screen position (see FloatParkedFormToSavedRect).
+      if (ParentName = '') and (Host is TCustomForm) and
+         (Host.Parent = MainForm.DockHostForm.CenterPanel) then
+      begin
+        FloatParkedFormToSavedRect(TCustomForm(Host), DockRect);
+      end;
       DockBaseControl := FindDockBaseControl(Host);
       if DockBaseControl <> nil then
       SetDockInfoFromNodeToDockControl(DockBaseControl);
