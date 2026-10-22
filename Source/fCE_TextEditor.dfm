@@ -815,242 +815,97 @@ object CETextEditor: TCETextEditor
   end
   object SynCppSyn1: TSynCppSyn
     DefaultFilter = 'C++ files (*.cpp,*.h,*.hpp)|*.cpp;*.h;*.hpp'
-    AsmAttri.Background = clBlack
-    AsmAttri.Foreground = clLime
-    CommentAttri.Foreground = clGreen
-    DirecAttri.Foreground = clMaroon
-    InvalidAttri.Foreground = clRed
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    FloatAttri.Foreground = clBlue
-    HexAttri.Foreground = clBlue
-    OctalAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
-    CharAttri.Foreground = clBlue
     Left = 40
     Top = 60
   end
   object SynPasSyn1: TSynPasSyn
-    AsmAttri.Background = clBlack
-    AsmAttri.Foreground = clLime
-    CommentAttri.Foreground = clGreen
-    DirectiveAttri.Foreground = clTeal
-    DirectiveAttri.Style = []
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    FloatAttri.Foreground = clBlue
-    HexAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
-    CharAttri.Foreground = clBlue
     Left = 72
     Top = 60
   end
   object SynSQLSyn1: TSynSQLSyn
     DefaultFilter = 'SQL files (*.sql)|*.sql'
-    CommentAttri.Foreground = clGreen
-    IdentifierAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     SQLDialect = sqlSybase
     Left = 104
     Top = 60
   end
   object SynVBSyn1: TSynVBSyn
-    CommentAttri.Foreground = clGreen
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 136
     Top = 60
   end
   object SynJavaSyn1: TSynJavaSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 168
     Top = 60
   end
   object SynCSSyn1: TSynCSSyn
-    AsmAttri.Background = clBlack
-    AsmAttri.Foreground = clLime
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 200
     Top = 60
   end
   object SynCssSyn1: TSynCssSyn
-    CommentAttri.Foreground = clGreen
-    CommentAttri.Style = [fsItalic]
-    ColorAttri.Foreground = clBlue
-    NumberAttri.Foreground = clBlue
-    KeyAttri.Foreground = clNavy
-    StringAttri.Foreground = clBlue
-    TextAttri.Foreground = clBlue
-    ValueAttri.Foreground = clBlue
     Left = 232
     Top = 60
   end
   object SynHTMLSyn1: TSynHTMLSyn
-    CommentAttri.Foreground = clGreen
-    CommentAttri.Style = [fsItalic]
-    KeyAttri.Foreground = clNavy
-    ValueAttri.Foreground = clBlue
     Left = 264
     Top = 60
   end
   object SynJScriptSyn1: TSynJScriptSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 40
     Top = 128
   end
   object SynPHPSyn1: TSynPHPSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
-    VariableAttri.Style = [fsBold]
     Left = 72
     Top = 128
   end
   object SynVBScriptSyn1: TSynVBScriptSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 104
     Top = 128
   end
   object SynXMLSyn1: TSynXMLSyn
-    ElementAttri.Foreground = clNavy
-    AttributeAttri.Foreground = clNone
-    AttributeAttri.Style = [fsBold]
-    NamespaceAttributeAttri.Foreground = clNone
-    AttributeValueAttri.Foreground = clBlue
-    AttributeValueAttri.Style = []
-    NamespaceAttributeValueAttri.Foreground = clNone
-    TextAttri.Foreground = clNone
-    TextAttri.Style = []
-    CDATAAttri.Foreground = clNone
-    CDATAAttri.Style = []
-    EntityRefAttri.Foreground = clNone
-    ProcessingInstructionAttri.Foreground = clNone
-    CommentAttri.Background = clNone
-    CommentAttri.Foreground = clGreen
-    CommentAttri.Style = [fsItalic]
-    DocTypeAttri.Foreground = clTeal
-    SymbolAttri.Foreground = clNone
     WantBracesParsed = False
     Left = 136
     Top = 128
   end
   object SynBatSyn1: TSynBatSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    VariableAttri.Foreground = clNone
-    VariableAttri.Style = [fsBold]
     Left = 168
     Top = 128
   end
   object SynPerlSyn1: TSynPerlSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 200
     Top = 128
   end
   object SynPythonSyn1: TSynPythonSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
     Left = 232
     Top = 128
   end
   object SynTclTkSyn1: TSynTclTkSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
-    OptionsAttri.Background = clNone
-    OptionsAttri.Foreground = clNone
-    PathAttri.Background = clNone
-    PathAttri.Foreground = clNone
-    VariableAttri.Background = clNone
-    VariableAttri.Foreground = clNone
-    VariableAttri.Style = [fsBold]
     Left = 264
     Top = 128
   end
   object SynRubySyn1: TSynRubySyn
-    CommentAttri.Foreground = clGreen
-    CommentAttri.Style = [fsItalic]
-    KeyAttri.Foreground = clNavy
-    KeyAttri.Style = [fsBold]
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
-    SymbolAttri.Foreground = clNone
     Left = 40
     Top = 160
   end
   object SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn
-    CommentAttri.Style = [fsItalic]
-    StringAttri.Foreground = clBlue
-    SymbolAttri.Foreground = clNone
-    VarAttri.Foreground = clNone
-    VarAttri.Style = [fsBold]
     Left = 72
     Top = 160
   end
   object SynAsmSyn1: TSynAsmSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 40
     Top = 92
   end
   object SynDfmSyn1: TSynDfmSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 72
     Top = 92
   end
   object SynIniSyn1: TSynIniSyn
-    TextAttri.Foreground = clNavy
-    SectionAttri.Foreground = clNavy
-    KeyAttri.Style = [fsBold]
-    NumberAttri.Foreground = clNavy
-    StringAttri.Foreground = clNavy
     Left = 104
     Top = 92
   end
   object SynInnoSyn1: TSynInnoSyn
-    ConstantAttri.Style = [fsBold]
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNone
-    KeyAttri.Style = []
-    NumberAttri.Foreground = clBlue
-    ParameterAttri.Foreground = clNone
-    ParameterAttri.Style = []
-    SectionAttri.Foreground = clNavy
     Left = 136
     Top = 92
   end
   object SynRCSyn1: TSynRCSyn
-    CommentAttri.Foreground = clGreen
-    CommentAttri.Style = [fsItalic]
-    DirecAttri.Foreground = clTeal
-    DirecAttri.Style = [fsBold]
-    IdentifierAttri.Foreground = clNavy
-    IdentifierAttri.Style = [fsBold]
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 168
     Top = 92
   end
@@ -1059,15 +914,10 @@ object CETextEditor: TCETextEditor
     Top = 92
   end
   object SynFortranSyn1: TSynFortranSyn
-    CommentAttri.Foreground = clGreen
-    KeyAttri.Foreground = clNavy
-    NumberAttri.Foreground = clBlue
-    StringAttri.Foreground = clBlue
     Left = 232
     Top = 92
   end
   object SynCobolSyn1: TSynCobolSyn
-    CommentAttri.Foreground = clGreen
     AreaAStartPos = 7
     AreaBStartPos = 11
     CodeEndPos = 71
