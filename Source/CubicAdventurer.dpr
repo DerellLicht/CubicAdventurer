@@ -114,6 +114,7 @@ uses
   FindFileW in 'Components\FindFile\FindFileW.pas',
   CE_ElevatedActions in 'CE_ElevatedActions.pas',
   CE_FileUtils in 'CE_FileUtils.pas',
+  CE_FontFallback in 'CE_FontFallback.pas',
   fCE_CreateSymlink in 'fCE_CreateSymlink.pas' {CreateSymlinkDlg},
   SpTBXChromeSkin in 'Components\SpSkins\SpTBXChromeSkin.pas',
   fCE_OptionsPage_Hotkeys in 'fCE_OptionsPage_Hotkeys.pas' {TCEOptionsPage_Hotkeys: TFrame},

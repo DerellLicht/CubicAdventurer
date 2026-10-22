@@ -194,7 +194,7 @@ type
 implementation
 
 uses
-  Main, CE_LanguageEngine, fCE_ColumnFormSpTBX, dCE_Actions;
+  Main, CE_LanguageEngine, fCE_ColumnFormSpTBX, dCE_Actions, CE_FontFallback;
 
 {*------------------------------------------------------------------------------
   Get's called on set focus
@@ -768,7 +768,11 @@ procedure TCECustomFileView.DoItemPaintText(Item: TEasyItem; Position: Integer;
     ACanvas: TCanvas);
 begin
   if assigned(Item) and assigned(TExplorerItem(Item).Namespace) then
-  inherited;
+  begin
+    inherited;
+    // use a fallback font when the current font lacks glyphs for the name
+    CE_ApplyFontFallback(ACanvas, Item.Caption);
+  end;
 end;
 
 {*------------------------------------------------------------------------------

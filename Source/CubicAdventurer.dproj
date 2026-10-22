@@ -267,6 +267,7 @@
         <DCCReference Include="Components\FindFile\FindFileW.pas"/>
         <DCCReference Include="CE_ElevatedActions.pas"/>
         <DCCReference Include="CE_FileUtils.pas"/>
+        <DCCReference Include="CE_FontFallback.pas"/>
         <DCCReference Include="fCE_CreateSymlink.pas">
             <Form>CreateSymlinkDlg</Form>
         </DCCReference>
