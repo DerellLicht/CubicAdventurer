@@ -94,8 +94,6 @@ type
     SpTBXSeparatorItem8: TSpTBXSeparatorItem;
     SpTBXSeparatorItem9: TSpTBXSeparatorItem;
     SpTBXItem1: TSpTBXItem;
-    SpTBXItem2: TSpTBXItem;
-    SpTBXItem5: TSpTBXItem;
     toolbarsMenuItem: TSpTBXSubmenuItem;
     SpTBXSeparatorItem4: TSpTBXSeparatorItem;
     sub_panels: TSpTBXSubmenuItem;
@@ -119,7 +117,6 @@ type
     SpTBXItem41: TSpTBXItem;
     SpTBXItem42: TSpTBXItem;
     SpTBXItem43: TSpTBXItem;
-    SpTBXSeparatorItem12: TSpTBXSeparatorItem;
     SpTBXSeparatorItem13: TSpTBXSeparatorItem;
     SpTBXSeparatorItem14: TSpTBXSeparatorItem;
     SpTBXItem48: TSpTBXItem;
@@ -188,7 +185,6 @@ type
     MainMenuPopupMenu: TSpTBXPopupMenu;
     SpTBXItem90: TSpTBXItem;
     ApplicationEvents: TApplicationEvents;
-    SpTBXItem91: TSpTBXItem;
     SpTBXItem94: TSpTBXItem;
     SpTBXItem95: TSpTBXItem;
     SpTBXSeparatorItem26: TSpTBXSeparatorItem;
@@ -212,12 +208,10 @@ type
     SpTBXItem45: TSpTBXItem;
     SpTBXSeparatorItem11: TSpTBXSeparatorItem;
     SpTBXItem46: TSpTBXItem;
-    SpTBXSeparatorItem29: TSpTBXSeparatorItem;
     SpTBXItem75: TSpTBXItem;
     SpTBXItem80: TSpTBXItem;
     SpTBXItem96: TSpTBXItem;
     AutoUpdateTimer: TTimer;
-    SpTBXItem97: TSpTBXItem;
     SpTBXSeparatorItem30: TSpTBXSeparatorItem;
     SpTBXItem98: TSpTBXItem;
     SpTBXSeparatorItem31: TSpTBXSeparatorItem;

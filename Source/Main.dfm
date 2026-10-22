@@ -419,17 +419,6 @@ object MainForm: TMainForm
       end
       object helpMenuItem: TSpTBXSubmenuItem
         Caption = 'Help'
-        object SpTBXItem5: TSpTBXItem
-          Action = CEActions.act_help_home
-        end
-        object SpTBXItem2: TSpTBXItem
-          Action = CEActions.act_help_forum
-        end
-        object SpTBXItem91: TSpTBXItem
-          Action = CEActions.act_help_donate
-        end
-        object SpTBXSeparatorItem12: TSpTBXSeparatorItem
-        end
         object SpTBXItem83: TSpTBXItem
           Action = CEActions.act_help_poedit_form
         end
@@ -437,11 +426,6 @@ object MainForm: TMainForm
         end
         object but_reset_layout: TSpTBXItem
           Action = CEActions.act_help_restore_layout
-        end
-        object SpTBXSeparatorItem29: TSpTBXSeparatorItem
-        end
-        object SpTBXItem97: TSpTBXItem
-          Action = CEActions.act_help_checkupdates
         end
         object SpTBXSeparatorItem20: TSpTBXSeparatorItem
         end

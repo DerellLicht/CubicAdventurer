@@ -126,8 +126,6 @@ type
     act_edit_invertsel: TAction;
     act_edit_properties: TAction;
     act_edit_rename: TAction;
-    act_help_home: TAction;
-    act_help_forum: TAction;
     act_help_about: TAction;
     act_view_quickview: TAction;
     act_edit_duplicate: TAction;
@@ -192,7 +190,6 @@ type
     act_tabs_closeonright: TAction;
     act_gen_menu: TCEToolbarAction;
     act_navi_quickview: TAction;
-    act_help_donate: TAction;
     act_sessions_addhistoryitem: TAction;
     act_sessions_clearhistory: TAction;
     act_bookmarks_menu: TCEToolbarAction;
@@ -214,7 +211,6 @@ type
     act_help_versionmgr: TAction;
     act_view_archiver: TAction;
     act_gen_new_instance: TAction;
-    act_help_checkupdates: TAction;
     act_edit_undo_delete: TCEToolbarAction;
     act_tools_emptytrash: TAction;
     act_tools_systempower: TCEToolbarAction;
@@ -843,8 +839,6 @@ var
   h: HWND;
 begin
   case ActionID of
-    501: ShellExecute(0,'open','http://www.cubicreality.com','','',SW_NORMAL);
-    502: ShellExecute(0,'open','http://www.cubicreality.com/forum','','',SW_NORMAL);
     503: ShowAboutBox;
     504: begin
       form:= TCEPoEditorForm.CreateNew(MainForm,0);
@@ -857,8 +851,7 @@ begin
       form.PoEditor.ActiveLanguage:= MainForm.ActiveLanguage;
       form.Show;
     end;
-    505: ShellExecute(0,'open','http://www.cubicreality.com/donate/','','',SW_NORMAL);
-    506, 507: ; // Version manager / update check removed (revival)
+    506: ; // Version manager removed (revival)
     508: begin
       if assigned(CEOptionsDialog) then
       h:= CEOptionsDialog.Handle
@@ -888,7 +881,7 @@ end;
 procedure UpdateHelpCategory(ActionID: Integer; TargetAction: TAction);
 begin
   case ActionID of
-    506, 507: begin
+    506: begin
       TargetAction.Enabled:= false;
       TargetAction.Visible:= false;
     end;

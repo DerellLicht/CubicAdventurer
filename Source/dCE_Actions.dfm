@@ -42,13 +42,6 @@ object CEActions: TCEActions
       ShortCut = 16437
       OnExecute = ActionExecute
     end
-    object act_help_donate: TAction
-      Tag = 505
-      Category = 'Help'
-      Caption = 'Donate'
-      ImageIndex = 47
-      OnExecute = ActionExecute
-    end
     object act_navi_forward: TCEToolbarAction
       Tag = 604
       Category = 'Navigation'
@@ -279,20 +272,6 @@ object CEActions: TCEActions
       ShortCut = 113
       OnExecute = ActionExecute
     end
-    object act_help_home: TAction
-      Tag = 501
-      Category = 'Help'
-      Caption = 'CubicExplorer Home Page'
-      ImageIndex = 47
-      OnExecute = ActionExecute
-    end
-    object act_help_forum: TAction
-      Tag = 502
-      Category = 'Help'
-      Caption = 'Support Forum'
-      ImageIndex = 47
-      OnExecute = ActionExecute
-    end
     object act_help_about: TAction
       Tag = 503
       Category = 'Help'
@@ -425,7 +404,7 @@ object CEActions: TCEActions
     object act_help_poedit_form: TAction
       Tag = 504
       Category = 'Help'
-      Caption = 'Translate CubicExplorer'
+      Caption = 'Translate CubicAdventurer'
       ImageIndex = 52
       OnExecute = ActionExecute
     end
@@ -660,13 +639,6 @@ object CEActions: TCEActions
       Category = 'General'
       Caption = 'New Window'
       ImageIndex = 61
-      OnExecute = ActionExecute
-    end
-    object act_help_checkupdates: TAction
-      Tag = 507
-      Category = 'Help'
-      Caption = 'Check For Updates'
-      ImageIndex = 45
       OnExecute = ActionExecute
     end
     object act_tools_emptytrash: TAction
