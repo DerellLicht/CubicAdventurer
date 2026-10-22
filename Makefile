@@ -1,9 +1,5 @@
 # Makefile for CubicAdventurer (GNU make, Windows).  Modeled on the dlGrep Makefile.
 #
-# Needs GNU make (check with: make --version).  The make.exe that ships with Delphi/RAD Studio
-# ("MAKE Version 5.43 ... Embarcadero") cannot read this file; if it comes first in PATH, run the
-# GNU make by its full path or put its folder ahead of the Delphi bin folder.
-#
 # The program itself is built in the Delphi IDE (Community Edition has no command-line
 # compiler): File > Close All, git pull, Shift-F9.  Everything after that is here, and only
 # needs CubicAdventurer.exe to exist and to carry the current version.
