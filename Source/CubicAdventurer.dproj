@@ -70,7 +70,7 @@
         <VerInfo_MinorVer>0</VerInfo_MinorVer>
         <VerInfo_Build>0</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=1.0.0.0;InternalName=;LegalCopyright=Marko Savolainen 2006-2012; Derell Licht 2026;LegalTrademarks=;OriginalFilename=;ProductName=CubicAdventurer;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Cubic Reality Software;FileDescription=File Manager;FileVersion=1.00;InternalName=;LegalCopyright=Marko Savolainen 2006-2012; Derell Licht 2026;LegalTrademarks=;OriginalFilename=;ProductName=CubicAdventurer;ProductVersion=1.00;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
