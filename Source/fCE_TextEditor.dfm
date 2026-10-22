@@ -937,8 +937,6 @@ object CETextEditor: TCETextEditor
         MarkerAttri.Background = 11253980
         MarkerAttri.Foreground = clBlack
         SchemeName = 'CSS'
-        StartExprW = '<[ \t]*style\b[^>]*>'
-        EndExprW = '</[ \t]*style[ \t]*>'
       end
       item
         CaseSensitive = False
@@ -948,8 +946,6 @@ object CETextEditor: TCETextEditor
         MarkerAttri.Background = 9883283
         MarkerAttri.Foreground = clBlack
         SchemeName = 'JavaScript'
-        StartExprW = '<[ \t]*script\b[^>]*>'
-        EndExprW = '</[ \t]*script[ \t]*>'
       end
       item
         StartExpr = '<\?[ \t]*php\b'
@@ -958,8 +954,6 @@ object CETextEditor: TCETextEditor
         MarkerAttri.Background = 14728122
         MarkerAttri.Foreground = clBlack
         SchemeName = 'PHP'
-        StartExprW = '<\?[ \t]*php\b'
-        EndExprW = '\?>'
       end>
     DefaultHighlighter = SynHTMLSyn1
     DefaultLanguageName = 'HTML'
@@ -1037,8 +1031,6 @@ object CETextEditor: TCETextEditor
         MarkerAttri.Background = 14728122
         MarkerAttri.Foreground = clBlack
         SchemeName = 'PHP'
-        StartExprW = '<\?[ \t]*php\b'
-        EndExprW = '\?>'
       end>
     DefaultHighlighter = SynJScriptSyn1
     DefaultLanguageName = 'JavaScript'
@@ -1055,8 +1047,6 @@ object CETextEditor: TCETextEditor
         MarkerAttri.Background = 14728122
         MarkerAttri.Foreground = clBlack
         SchemeName = 'PHP'
-        StartExprW = '<\?[ \t]*php\b'
-        EndExprW = '\?>'
       end>
     DefaultHighlighter = SynCssSyn1
     DefaultLanguageName = 'CSS'
