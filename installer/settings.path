@@ -1,0 +1,16 @@
+%APPDATA%\CubicAdventurer\
+
+; CubicAdventurer loads/saves settings from the folder named on the first line of this file.
+; - Only one path is allowed; lines starting with ; are comments.
+; - A relative path works.  If the folder does not exist it is created at start-up
+;   (its parent folder must exist).
+; - If this file is missing, or the folder cannot be found or created, settings are saved
+;   in the same folder as CubicAdventurer.exe.
+; - Put [READONLY] in front of the path to stop CubicAdventurer from saving.
+;
+; The installer puts this file next to the exe, so settings survive an uninstall and a
+; reinstall.  Delete this file to keep settings next to the exe instead (portable use).
+;
+; System variables supported in the path: %ALLUSERSPROFILE%, %APPDATA%, %HOMEDRIVE%,
+; %HOMEPATH%, %PROGRAMFILES%, %SYSTEMDRIVE%, %SYSTEMROOT%, %TEMP%, %TMP%, %USERPROFILE%,
+; %WINDIR%, %SYSDIR%, %PERSONAL% (My Documents), %CEDRIVE% (drive the program runs from).

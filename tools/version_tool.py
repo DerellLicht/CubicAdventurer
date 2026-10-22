@@ -58,7 +58,7 @@ def sync(version, path):
     with open(path, "wb") as fh:
         fh.write(new.encode("utf-8"))
     print("%s updated to %s" % (path, version))
-    print("Rebuild in the Delphi IDE (Shift-F9) so CubicAdventurer.exe carries it.")
+    print("REBUILD REQUIRED: build in the Delphi IDE (Shift-F9) so CubicAdventurer.exe carries it.")
 
 
 def dproj_versions(path):
@@ -114,7 +114,8 @@ def check_exe(version, path):
         sys.exit("ERROR: no FileVersion found in %s" % path)
     if got != version:
         sys.exit('ERROR: %s says FileVersion "%s" but CHANGELOG.md says %s.\n'
-                 "Run: make sync-version, then rebuild in the IDE (Shift-F9)." % (path, got, version))
+                 "REBUILD REQUIRED: run make sync-version (if the project is not at %s yet), then build in the\n"
+                 "Delphi IDE (Shift-F9)." % (path, got, version, version))
     print("%s carries %s" % (path, version))
 
 

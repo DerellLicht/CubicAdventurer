@@ -1,0 +1,75 @@
+; Inno Setup script for CubicAdventurer.  Modeled on the dlGrep installer.
+; Build it with "make installer" (which checks that CubicAdventurer.exe was built with the
+; version from CHANGELOG.md and passes that version in), or compile it by hand:
+;   D:\InnoSetup7\iscc.exe /DMyAppVersion=1.00 installer\CubicAdventurer.iss
+; The exe is built in the Delphi IDE (Shift-F9) and lands in the repo root.
+; Output: installer\output\CubicAdventurerV<version>.setup.exe
+
+#define MyAppName "CubicAdventurer"
+#define MyAppPublisher "Derell Licht"
+#define MyAppURL "https://github.com/DerellLicht/CubicAdventurer"
+#define MyAppExeName "CubicAdventurer.exe"
+#define DoubleAmp(Value) StringChange(Value, "&", "&&")
+; the folder that holds the repo (this script lives in <RepoRoot>\installer)
+#define RepoRoot AddBackslash(SourcePath) + ".."
+; The version is set only in CHANGELOG.md; the Makefile passes it in as /DMyAppVersion=x.yy.
+#ifndef MyAppVersion
+#error MyAppVersion is not defined: build with "make installer", or pass /DMyAppVersion=x.yy (the newest version in CHANGELOG.md)
+#endif
+
+[Setup]
+; NOTE: AppId uniquely identifies this program; never reuse it for another one.
+AppId={{6D3B8624-167A-4CCE-8A31-A0CFF8A41FAE}
+AppName={#MyAppName}
+AppVersion={#MyAppVersion}
+AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppURL}
+AppSupportURL={#MyAppURL}
+; Per-user install: {autopf} becomes %LocalAppData%\Programs, so there is no UAC prompt.
+; The folder page is shown, so another folder can be chosen.
+PrivilegesRequired=lowest
+DefaultDirName={autopf}\{#MyAppName}
+DisableDirPage=no
+DefaultGroupName={#MyAppName}
+UninstallDisplayIcon={app}\{#MyAppExeName}
+; CubicAdventurer is a 32-bit (Win32) program, so there is no ArchitecturesAllowed line:
+; it installs on 32-bit and 64-bit Windows alike.
+LicenseFile={#RepoRoot}\Documents\License.txt
+OutputDir=output
+OutputBaseFilename={#MyAppName}V{#MyAppVersion}.setup
+SolidCompression=yes
+WizardStyle=modern slate
+; close a running CubicAdventurer before replacing its files, and restart nothing
+CloseApplications=yes
+RestartApplications=no
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
+[Files]
+; The program, its helper library (7-zip, for archives), and the folders it reads at run time.
+Source: "{#RepoRoot}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#RepoRoot}\7z.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#RepoRoot}\Skins\*"; DestDir: "{app}\Skins"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#RepoRoot}\Locale\*"; DestDir: "{app}\Locale"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Default layout, bookmarks and sessions.  CubicAdventurer reads these from the program folder
+; until it has written its own copies into the settings folder, so never overwrite them.
+Source: "{#RepoRoot}\BuildCE\Snapshot_configs\layout.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist
+Source: "{#RepoRoot}\BuildCE\Snapshot_configs\bookmarks.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist
+Source: "{#RepoRoot}\BuildCE\Snapshot_configs\sessions.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist
+; Where settings live: %APPDATA%\CubicAdventurer (see the comments in the file).  Delete this
+; file from the install folder to keep settings next to the exe instead.
+Source: "{#RepoRoot}\installer\settings.path"; DestDir: "{app}"; Flags: onlyifdoesntexist
+Source: "{#RepoRoot}\Documents\License.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+
+[Icons]
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#DoubleAmp(MyAppName)}}"; Flags: nowait postinstall skipifsilent

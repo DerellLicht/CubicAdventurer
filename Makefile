@@ -13,7 +13,6 @@
 #   make release        first release of this version: tag, push, create the GitHub release
 #   make update         refresh the release notes and uploaded zip of an existing release
 #   make retag          move the tag to HEAD (solo repo only);  make re-release = retag + update
-#   make stop           stop a running CubicAdventurer
 #   make clean          remove installer output
 #   make help           list the targets
 
@@ -34,7 +33,7 @@ TAG       = $(TAG_PREFIX)$(VERSION)
 SETUP     = installer/output/$(APP)V$(VERSION).setup.exe
 SETUP_ZIP = installer/output/$(APP)V$(VERSION).setup.zip
 
-.PHONY: all version sync-version check check-exe installer install dist release update retag re-release check-clean sha256 stop clean help
+.PHONY: all version sync-version check check-exe installer install dist release update retag re-release check-clean sha256 clean help
 
 all: help
 
@@ -48,7 +47,6 @@ help:
 	@echo "make release        first release of $(TAG): tag, push, GitHub release"
 	@echo "make update         refresh the notes and zip of an existing release"
 	@echo "make retag          move $(TAG) to HEAD;  make re-release = retag + update"
-	@echo "make stop           stop a running $(APP)"
 	@echo "make clean          remove installer output"
 
 version:
@@ -66,16 +64,12 @@ check: check-exe
 check-exe:
 	@$(PYTHON) tools/version_tool.py check-exe $(VERSION) $(EXE)
 
-# the exe cannot be replaced while it is running; this stops it only if it is running
-stop:
-	@$(PYTHON) tools/stop_app.py $(APP)
-
 installer: check
 	"$(ISCC)" /Qp /DMyAppVersion=$(VERSION) installer/$(APP).iss
 
 # Only runs the setup program that "make installer" already built; it does not build anything.
-# Silent: no wizard and no questions (an open CubicAdventurer is closed first).
-install: stop
+# Silent: no wizard and no questions (Setup closes a running CubicAdventurer itself).
+install:
 	@test -f "$(SETUP)" || { echo "$(SETUP) not found -- run 'make installer' first."; exit 1; }
 	"$(SETUP)" /SILENT /SUPPRESSMSGBOXES /NORESTART
 
