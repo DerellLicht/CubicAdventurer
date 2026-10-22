@@ -208,7 +208,6 @@ type
     act_filters_pattern: TCEToolbarAction;
     act_filters_clear: TAction;
     act_view_checkbox_selection: TAction;
-    act_help_versionmgr: TAction;
     act_view_archiver: TAction;
     act_gen_new_instance: TAction;
     act_edit_undo_delete: TCEToolbarAction;
@@ -851,7 +850,6 @@ begin
       form.PoEditor.ActiveLanguage:= MainForm.ActiveLanguage;
       form.Show;
     end;
-    506: ; // Version manager removed (revival)
     508: begin
       if assigned(CEOptionsDialog) then
       h:= CEOptionsDialog.Handle
@@ -880,14 +878,8 @@ end;
 -------------------------------------------------------------------------------}
 procedure UpdateHelpCategory(ActionID: Integer; TargetAction: TAction);
 begin
-  case ActionID of
-    506: begin
-      TargetAction.Enabled:= false;
-      TargetAction.Visible:= false;
-    end;
-    else
-    TargetAction.Enabled:= true;
-  end;
+  // no Help action needs special handling now (Version Manager was removed)
+  TargetAction.Enabled:= true;
 end;
 
 {##############################################################################}

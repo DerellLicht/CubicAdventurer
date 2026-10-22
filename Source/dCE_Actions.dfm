@@ -620,13 +620,6 @@ object CEActions: TCEActions
       ImageIndex = 44
       OnExecute = ActionExecute
     end
-    object act_help_versionmgr: TAction
-      Tag = 506
-      Category = 'Help'
-      Caption = 'Version Manager'
-      ImageIndex = 46
-      OnExecute = ActionExecute
-    end
     object act_view_archiver: TAction
       Tag = 306
       Category = 'View'

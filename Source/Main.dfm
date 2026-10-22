@@ -408,9 +408,6 @@ object MainForm: TMainForm
         object SpTBXItem44: TSpTBXItem
           Action = CEActions.act_tools_showcustomizer
         end
-        object SpTBXItem75: TSpTBXItem
-          Action = CEActions.act_help_versionmgr
-        end
         object SpTBXSeparatorItem15: TSpTBXSeparatorItem
         end
         object SpTBXItem84: TSpTBXItem
@@ -419,11 +416,6 @@ object MainForm: TMainForm
       end
       object helpMenuItem: TSpTBXSubmenuItem
         Caption = 'Help'
-        object SpTBXItem83: TSpTBXItem
-          Action = CEActions.act_help_poedit_form
-        end
-        object SpTBXSeparatorItem31: TSpTBXSeparatorItem
-        end
         object but_reset_layout: TSpTBXItem
           Action = CEActions.act_help_restore_layout
         end

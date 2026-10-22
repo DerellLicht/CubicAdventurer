@@ -156,7 +156,6 @@ type
     SpTBXItem81: TSpTBXItem;
     LanguageMenuItem: TSpTBXSubmenuItem;
     SpTBXSeparatorItem20: TSpTBXSeparatorItem;
-    SpTBXItem83: TSpTBXItem;
     SkinGroupItem: TSpTBXSkinGroupItem;
     SpTBXSeparatorItem21: TSpTBXSeparatorItem;
     SpTBXItem82: TSpTBXItem;
@@ -208,13 +207,11 @@ type
     SpTBXItem45: TSpTBXItem;
     SpTBXSeparatorItem11: TSpTBXSeparatorItem;
     SpTBXItem46: TSpTBXItem;
-    SpTBXItem75: TSpTBXItem;
     SpTBXItem80: TSpTBXItem;
     SpTBXItem96: TSpTBXItem;
     AutoUpdateTimer: TTimer;
     SpTBXSeparatorItem30: TSpTBXSeparatorItem;
     SpTBXItem98: TSpTBXItem;
-    SpTBXSeparatorItem31: TSpTBXSeparatorItem;
     but_reset_layout: TSpTBXItem;
     panel_curtain: TPanel;
     SpTBXSeparatorItem32: TSpTBXSeparatorItem;
