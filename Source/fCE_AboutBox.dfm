@@ -418,40 +418,65 @@ object CEAboutBox: TCEAboutBox
     Highlighter = SynURISyn1
     Lines.Strings = (
       'Copyright 2006-2012 Marko Savolainen.'#13#10 +
-      'Copyright 2026 Derell Licht.'#13#10#13#10 +
-      'Homepage - https://github.com/DerellLicht/CubicAdventurer'#13 +
-      #10#13#10 +
+      'Copyright 2026 Derell Licht.'#13#10 +
+      #13#10 +
+      'CubicAdventurer is a revival of CubicExplorer, the file mana' +
+      'ger created by Marko Savolainen. Original CubicExplorer file' +
+      's remain under the Mozilla Public License 1.1; new work is r' +
+      'eleased under CC0.'#13#10 +
+      #13#10 +
+      'Homepage - https://github.com/DerellLicht/CubicAdventurer'#13#10 +
+      #13#10 +
       '======================================================'#13#10 +
-      '   CubicExplorer uses the following 3rd party Delphi components' +
-      #13#10'======================================================' +
-      #13#10#13#10'- VirtualShellTools and EasyListview'#13#10 +
-      'http://www.mustangpeak.net'#13#10#13#10 +
-      '- Virtual Treeview and GraphicEx'#13#10 +
-      'http://www.soft-gems.net'#13#10#13#10'- TNT Unicode Controls' +
-      #13#10'http://www.tntware.com/delphicontrols/unicode/'#13#10#13 +
-      #10'- PngComponents'#13#10 +
-      'http://www.thany.org/article/32/PngComponents'#13#10#13#10 +
-      '- Toolbar2000'#13#10'http://www.jrsoftware.org'#13#10#13#10 +
+      '   CubicAdventurer uses the following 3rd party Delphi compo' +
+      'nents'#13#10 +
+      '======================================================'#13#10 +
+      #13#10 +
+      '- VirtualShellTools and EasyListview'#13#10 +
+      'https://github.com/TurboPack'#13#10 +
+      #13#10 +
+      '- Virtual Treeview'#13#10 +
+      'https://github.com/JAM-Software/Virtual-TreeView'#13#10 +
+      #13#10 +
+      '- SynEdit'#13#10 +
+      'https://github.com/TurboPack/SynEdit'#13#10 +
+      #13#10 +
+      '- PngComponents'#13#10 +
+      'http://www.thany.org/article/32/PngComponents'#13#10 +
+      #13#10 +
+      '- Toolbar2000'#13#10 +
+      'http://www.jrsoftware.org'#13#10 +
+      #13#10 +
       '- SpTBXLib'#13#10 +
-      'http://club.telepolis.com/silverpointdev/sptbxlib/index.htm'#13 +
-      #10#13#10'- Graphics32'#13#10'http://www.graphics32.org'#13#10 +
-      #13#10'- ATBinHex'#13#10'http://atorg.net.ru/other/atbinhex.htm' +
-      #13#10#13#10'- JVCL'#13#10'http://jvcl.sourceforge.net'#13#10#13 +
-      #10'- Unicode SynEdit'#13#10'http://mh-nexus.de/unisynedit.htm' +
-      #13#10#13#10 +
-      '-7-zip library (7z.dll). Licensed under the GNU LGPL.'#13#10 +
-      'http://www.7-zip.org'#13#10#13#10#13#10 +
+      'http://club.telepolis.com/silverpointdev/sptbxlib/index.htm'#13#10 +
+      #13#10 +
+      '- Graphics32'#13#10 +
+      'http://www.graphics32.org'#13#10 +
+      #13#10 +
+      '- JVCL'#13#10 +
+      'http://jvcl.sourceforge.net'#13#10 +
+      #13#10 +
+      '- 7-zip library (7z.dll). Licensed under the GNU LGPL.'#13#10 +
+      'http://www.7-zip.org'#13#10 +
+      #13#10 +
+      #13#10 +
       '======================================================'#13#10 +
       #13#10 +
-      '  Many thanks to all developers of those great components.'#13 +
-      #10'  '#13#10 +
-      '  A special thanks goes to Jim Kueneman for his great work on' +
+      '  Many thanks to all developers of those great components.'#13#10 +
       #13#10 +
-      '  VirtualShellTools and EasyListview. Without VirtualShellTools,' +
-      #13#10'  CubicExplorer would not exist.'#13#10#13#10 +
+      '  A special thanks goes to Jim Kueneman for his great work o' +
+      'n VirtualShellTools and EasyListview. Without VirtualShellTo' +
+      'ols, CubicExplorer would not exist.'#13#10 +
+      #13#10 +
       '======================================================'#13#10 +
-      #13#10'Thank you for using CubicExplorer.'#13#10#13#10'Regards,' +
-      #13#10'Marko Savolainen.')
+      #13#10 +
+      'Thank you for using CubicAdventurer.'#13#10 +
+      #13#10 +
+      'And thank you, Marko Savolainen, for creating CubicExplorer ' +
+      'and sharing its source.'#13#10 +
+      #13#10 +
+      'Regards,'#13#10 +
+      'Derell Licht.')
     Options = [eoAutoIndent, eoDragDropEditing, eoEnhanceEndKey, eoNoCaret, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces]
     ScrollOptions = [eoHideShowScrollbars, eoShowScrollHint]
     ReadOnly = True
