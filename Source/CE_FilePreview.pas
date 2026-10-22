@@ -520,7 +520,6 @@ begin
           // draw name
           ws:= list.Names[i];
           Windows.DrawTextW(Self.Canvas.Handle, PWideChar(ws), -1, r, DT_CALCRECT);
-          w:= r.Right;
           fInfoBuffer.Canvas.Font.Color:= Self.Font.Color;
           Windows.DrawTextW(fInfoBuffer.Canvas.Handle, PWideChar(ws), -1, posArray[i], DT_END_ELLIPSIS);        
         end;

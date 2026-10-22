@@ -121,6 +121,20 @@ procedure DrawMenuItem(Buffer: TBitmap32; ARect: TRect; Checked: Boolean;
 
 implementation
 
+{*------------------------------------------------------------------------------
+  Native UxTheme handle of a themed element.
+  ThemeServices is deprecated in favor of StyleServices, but StyleServices has
+  no raw HTHEME accessor and this unit draws with DrawThemeBackground directly.
+  The deprecation warning is suppressed here only, so other uses still warn.
+-------------------------------------------------------------------------------}
+{$WARN SYMBOL_DEPRECATED OFF}
+function NativeTheme(Element: TThemedElement): HTHEME;
+begin
+  Result:= ThemeServices.Theme[Element];
+end;
+{$WARN SYMBOL_DEPRECATED ON}
+
+
 {##############################################################################}
 
 {*------------------------------------------------------------------------------
@@ -143,7 +157,7 @@ begin
           Buffer.Canvas.FillRect(ARect);
         end;
       sknWindows: begin
-        DrawThemeBackground(ThemeServices.Theme[teRebar], Buffer.Canvas.Handle, 0, 0, ARect, nil);
+        DrawThemeBackground(NativeTheme(teRebar), Buffer.Canvas.Handle, 0, 0, ARect, nil);
       end;
       sknSkin: begin
         CurrentSkin.PaintBackground(Buffer.Canvas, ARect, skncDock, sknsNormal, True, false);
@@ -196,7 +210,7 @@ begin
         sknsChecked:  Flags := TS_CHECKED;
         sknsCheckedAndHotTrack: Flags := TS_HOTCHECKED;
       end;
-      DrawThemeBackground(ThemeServices.Theme[teToolBar], Buffer.Canvas.Handle, TP_BUTTON, Flags, ARect, nil);
+      DrawThemeBackground(NativeTheme(teToolBar), Buffer.Canvas.Handle, TP_BUTTON, Flags, ARect, nil);
     end;
     sknSkin: begin
       CurrentSkin.PaintBackground(Buffer.Canvas, ARect, skncToolbarItem, state, True, True, False, []);
@@ -551,7 +565,7 @@ begin
       end;
     sknWindows: begin
       //if Position in [dpLeft, dpRight] then Inc(ARect.Bottom, 1);  // Fix WindowsXP bug
-      DrawThemeBackground(ThemeServices.Theme[teRebar], Bitmap.Canvas.Handle, 0, 0, Bitmap.BoundsRect, nil);
+      DrawThemeBackground(NativeTheme(teRebar), Bitmap.Canvas.Handle, 0, 0, Bitmap.BoundsRect, nil);
     end;
     sknSkin: begin
       CurrentSkin.PaintBackground(Bitmap.Canvas, Bitmap.BoundsRect, skncDock, sknsNormal, True, false);

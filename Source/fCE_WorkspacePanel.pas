@@ -657,20 +657,18 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEWorkspacePanel.PopulateOpenMenuItem(AItem: TTBCustomItem);
 var
-  i, idx: Integer;
+  i: Integer;
   item: TSpTBXItem;
   sep: TSpTBXSeparatorItem;
   tab: TCESpTabItem;
 begin
   AItem.Clear;
   // add tab items
-  idx:= 0;
   for i:= 0 to MainForm.TabSet.Items.Count - 1 do
   begin
     if MainForm.TabSet.Items.Items[i] is TCESpTabItem then                      
       
     begin
-      idx:= idx + 1;
       tab:= TCESpTabItem(MainForm.TabSet.Items.Items[i]);
       if tab.Page is TCEFileViewPage then
       begin

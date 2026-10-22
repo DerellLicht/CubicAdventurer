@@ -134,11 +134,9 @@ begin
         index:= index + 2;
         if index <= count then
         begin
-          paramI:= StrToIntDef(ParamStr(index), 0); // Handle to old app
+          // Handle to old app: consumed and ignored (updater was removed)
           index:= index + 1;
-        end
-        else
-        paramI:= 0;
+        end;
 
         // '/update' (self-update from zip) was removed together with the auto-updater (revival); arguments are consumed and ignored.
         doUpdate:= false;

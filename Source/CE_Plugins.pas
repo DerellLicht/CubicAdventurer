@@ -516,7 +516,7 @@ var
   data: PPluginData;
   i: Integer;
 begin
-  Result:= nil;
+  Result:= nil; // keep: avoids W1035 (result assigned only inside try), costs one H2077
 
   // TODO: optimize
   list:= TCCStringList.Create;
@@ -1325,13 +1325,10 @@ procedure TCEPluginHost.SendNotify(const ASender: IInterface; const APluginID:
     TGUID; ANotify: Integer; AParam1, AParam2: Integer);
 var
   i: Integer;
-  setChanged: Boolean;
   plugin: ICEPlugin;
 begin
   {$IFDEF LOG}Log('Host.SendNotify: to ' + GUIDToString(APluginID) + ', notify=' + IntToStr(ANotify) +
                   ' param1=' + IntToStr(AParam1) + ' param2=' + IntToStr(AParam2), 0, Self);{$ENDIF}
-
-  setChanged:= ANotify = PNOTIFY_SettingsChanged;
 
   // Send to all plugins
   if IsEqualGUID(APluginID, NULL_GUID) then

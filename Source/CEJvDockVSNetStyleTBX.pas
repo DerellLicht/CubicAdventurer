@@ -166,6 +166,20 @@ Uses                                        // TODO: Fix this
   System.Types,
   JvDockVIDStyle;//, fCE_DockableForm;
 
+{*------------------------------------------------------------------------------
+  Native UxTheme handle of a themed element.
+  ThemeServices is deprecated in favor of StyleServices, but StyleServices has
+  no raw HTHEME accessor and this unit draws with DrawThemeBackground directly.
+  The deprecation warning is suppressed here only, so other uses still warn.
+-------------------------------------------------------------------------------}
+{$WARN SYMBOL_DEPRECATED OFF}
+function NativeTheme(Element: TThemedElement): HTHEME;
+begin
+  Result:= ThemeServices.Theme[Element];
+end;
+{$WARN SYMBOL_DEPRECATED ON}
+
+
 
 {fduenas: begin}
 //Trucate a text and add ellipsis depending on the rendered Canvas's font
@@ -263,7 +277,7 @@ begin
           else
           if HotTracked then
           Flags:= TIS_HOT;
-          DrawThemeBackground(ThemeServices.Theme[teTab], Bmp.Canvas.Handle, TABP_TABITEM, Flags, SourceR, nil);
+          DrawThemeBackground(NativeTheme(teTab), Bmp.Canvas.Handle, TABP_TABITEM, Flags, SourceR, nil);
         end;
       sknSkin:
         begin
@@ -868,8 +882,8 @@ begin
       Canvas.LineTo(ARect.Right,ARect.Top+1);
     end;
     sknWindows: begin
-      DrawThemeBackground(ThemeServices.Theme[teRebar], Canvas.Handle, 0, 0, ARect, nil);
-      DrawThemeBackground(ThemeServices.Theme[teTab], Canvas.Handle, TABP_PANE, 0, ARect, nil);
+      DrawThemeBackground(NativeTheme(teRebar), Canvas.Handle, 0, 0, ARect, nil);
+      DrawThemeBackground(NativeTheme(teTab), Canvas.Handle, TABP_PANE, 0, ARect, nil);
     end;
     sknSkin: begin
       CurrentSkin.PaintBackground(Canvas, ARect, skncDock, sknsNormal, True, False);
@@ -1307,7 +1321,7 @@ begin
       Canvas.FillRect(ClientRect);
     end;
     sknWindows: begin
-      DrawThemeBackground(ThemeServices.Theme[teRebar], Canvas.Handle, 0, 0, ClientRect, nil);
+      DrawThemeBackground(NativeTheme(teRebar), Canvas.Handle, 0, 0, ClientRect, nil);
     end;
     sknSkin: begin
       CurrentSkin.PaintBackground(Canvas, ClientRect, skncDock, sknsNormal, True, False, IsVertical);
