@@ -263,6 +263,11 @@ type
     fBackgroundColor: TColor;
     fExtensionColors: WideString;
     fExtensionColorsEnabled: Boolean;
+    fCombinedBgColor: TColor;
+    fFolderTextColor: TColor;
+    fHiddenBgColor: TColor;
+    fReadOnlyBgColor: TColor;
+    fSystemBgColor: TColor;
     fFont: TFont;
     fFullRowContextMenu: Boolean;
     fHideShortcutExtension: Boolean;
@@ -279,6 +284,11 @@ type
     procedure SetBackgroundColor(const Value: TColor);
     procedure SetExtensionColors(const Value: WideString);
     procedure SetExtensionColorsEnabled(const Value: Boolean);
+    procedure SetCombinedBgColor(const Value: TColor);
+    procedure SetFolderTextColor(const Value: TColor);
+    procedure SetHiddenBgColor(const Value: TColor);
+    procedure SetReadOnlyBgColor(const Value: TColor);
+    procedure SetSystemBgColor(const Value: TColor);
     procedure SetFont(const Value: TFont);
     procedure SetFullRowContextMenu(const Value: Boolean);
     procedure SetHideShortcutExtension(const Value: Boolean);
@@ -325,6 +335,15 @@ type
         SetExtensionColors;
     property ExtensionColorsEnabled: Boolean read fExtensionColorsEnabled write
         SetExtensionColorsEnabled;
+    // Folder text color and attribute background colors (clDefault = off).
+    property CombinedBgColor: TColor read fCombinedBgColor write
+        SetCombinedBgColor;
+    property FolderTextColor: TColor read fFolderTextColor write
+        SetFolderTextColor;
+    property HiddenBgColor: TColor read fHiddenBgColor write SetHiddenBgColor;
+    property ReadOnlyBgColor: TColor read fReadOnlyBgColor write
+        SetReadOnlyBgColor;
+    property SystemBgColor: TColor read fSystemBgColor write SetSystemBgColor;
     property FileSizeFormat: TVirtualFileSizeFormat read fFileSizeFormat write
         SetFileSizeFormat default vfsfDefault;
     property Filmstrip: TCEFilmstripSettings read fFilmstrip write fFilmstrip;
@@ -395,7 +414,7 @@ implementation
 uses
   System.Types,
   dCE_Actions, CE_VistaFuncs, fCE_FolderPanel, CE_CommonObjects, CE_SpTabBar,
-  GR32_Math, Math, Main, ccClasses, ccStrings;
+  GR32_Math, Math, Main, ccClasses, ccStrings, CE_FileViewColors;
 
 {*------------------------------------------------------------------------------
   Get's called when TCEFileViewPage is created.
@@ -1279,6 +1298,12 @@ begin
   fThumbnails:= TCEThumbnailSettings.Create;
   fHideShortcutExtension:= true;
   fTrackChangesInMappedDrives:= true;
+  // all off by default; settings.xml files without these keys keep this
+  fFolderTextColor:= clDefault;
+  fSystemBgColor:= clDefault;
+  fReadOnlyBgColor:= clDefault;
+  fHiddenBgColor:= clDefault;
+  fCombinedBgColor:= clDefault;
 end;
 
 {*------------------------------------------------------------------------------
@@ -1478,6 +1503,12 @@ begin
       fileView.ExtensionColorCode:= fExtensionColorsEnabled;
       if fExtensionColorsEnabled then
       AssignExtensionColors(fileView, fExtensionColors);
+      // folder text color and attribute background colors (read while painting)
+      CEFileViewColors.FolderTextColor:= fFolderTextColor;
+      CEFileViewColors.SystemBgColor:= fSystemBgColor;
+      CEFileViewColors.ReadOnlyBgColor:= fReadOnlyBgColor;
+      CEFileViewColors.HiddenBgColor:= fHiddenBgColor;
+      CEFileViewColors.CombinedBgColor:= fCombinedBgColor;
       // thumbnails
       fileView.ThumbsManager.AutoLoad:= Thumbnails.fUseStorage;
       fileView.ThumbsManager.AutoSave:= Thumbnails.fUseStorage;
@@ -2034,6 +2065,51 @@ end;
 procedure TCEFileViewSettings.SetExtensionColorsEnabled(const Value: Boolean);
 begin
   fExtensionColorsEnabled:= Value;
+  SendChanges;
+end;
+
+{-------------------------------------------------------------------------------
+  Set CombinedBgColor
+-------------------------------------------------------------------------------}
+procedure TCEFileViewSettings.SetCombinedBgColor(const Value: TColor);
+begin
+  fCombinedBgColor:= Value;
+  SendChanges;
+end;
+
+{-------------------------------------------------------------------------------
+  Set FolderTextColor
+-------------------------------------------------------------------------------}
+procedure TCEFileViewSettings.SetFolderTextColor(const Value: TColor);
+begin
+  fFolderTextColor:= Value;
+  SendChanges;
+end;
+
+{-------------------------------------------------------------------------------
+  Set HiddenBgColor
+-------------------------------------------------------------------------------}
+procedure TCEFileViewSettings.SetHiddenBgColor(const Value: TColor);
+begin
+  fHiddenBgColor:= Value;
+  SendChanges;
+end;
+
+{-------------------------------------------------------------------------------
+  Set ReadOnlyBgColor
+-------------------------------------------------------------------------------}
+procedure TCEFileViewSettings.SetReadOnlyBgColor(const Value: TColor);
+begin
+  fReadOnlyBgColor:= Value;
+  SendChanges;
+end;
+
+{-------------------------------------------------------------------------------
+  Set SystemBgColor
+-------------------------------------------------------------------------------}
+procedure TCEFileViewSettings.SetSystemBgColor(const Value: TColor);
+begin
+  fSystemBgColor:= Value;
   SendChanges;
 end;
 

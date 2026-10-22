@@ -325,65 +325,83 @@ begin
       while assigned(node) do
       begin
         // check if property should be ignored
+        // (CubicAdventurer: the original 'continue' skipped the node.NextSibling
+        //  step at the bottom of the loop, which would loop forever.)
         if assigned(AExcludeProperties) and (AExcludeProperties.IndexOf(node.NodeName) > -1) then
-        continue;
+        begin
+          node:= node.NextSibling;
+          continue;
+        end;
         // check is property is in allowed list
         if assigned(AIncludeProperties) and (AIncludeProperties.Count > 0) and (AIncludeProperties.IndexOf(node.NodeName) = -1) then
-        continue;
+        begin
+          node:= node.NextSibling;
+          continue;
+        end;
 
         // find property
         propInfo:= GetPropInfo(AObject, node.NodeName);
-        if propInfo <> nil then
-        begin
-          if propInfo.PropType^ = TypeInfo(Boolean) then
+        // Unknown keys are ignored (GetPropInfo returns nil) and missing keys
+        // keep their defaults. A bad value in one setting must not stop the
+        // rest from loading, so errors while assigning are logged and skipped.
+        try
+          if propInfo <> nil then
           begin
-            valueI:= GetOrdProp(AObject, propInfo);
-            valueB:= StrToBoolDef(node.TextContent, Boolean(valueI));
-            SetOrdProp(AObject, propInfo, Integer(valueB));
-          end
-          else
-          begin
-            // set property value
-            case propInfo.PropType^.Kind of
-              // String
-              // (CubicAdventurer: tkUString added; since Delphi 2009 every plain
-              //  'string' property has this type kind. Without it all string
-              //  properties, e.g. the theme, were silently skipped.)
-              tkString, tkLString, tkUString: begin
-                SetStrProp(AObject, propInfo, node.TextContent);
-              end;
-              // WideString
-              tkWString: begin
-                SetWideStrProp(AObject, propInfo, node.TextContent);
-              end;
-              // Ordinal
-              tkInteger, tkChar, tkWChar, tkEnumeration, tkSet: begin
-                valueI:= GetOrdProp(AObject, propInfo);
-                SetOrdProp(AObject, propInfo, StrToIntDef(node.TextContent, valueI));
-              end;
-              // Variant
-              tkVariant: begin
-                SetVariantProp(AObject, propInfo, node.TextContent);
-              end;
-              // Int64
-              tkInt64: begin
-                valueI64:= GetInt64Prop(AObject, propInfo);
-                SetInt64Prop(AObject, propInfo, StrToInt64Def(node.TextContent, valueI64));
-              end;
-              // Float
-              tkFloat: begin
-                valueF:= GetFloatProp(AObject, propInfo);
-                SetFloatProp(AObject, propInfo, StrToFloatDef(node.TextContent, valueF));
-              end;
-              // Class
-              tkClass: begin
-                if ARecursive then
-                begin
-                  subObj:= GetObjectProp(AObject, propInfo);
-                  LoadObjectProperties(subObj, node, ARecursive, AExcludeProperties);
+            if propInfo.PropType^ = TypeInfo(Boolean) then
+            begin
+              valueI:= GetOrdProp(AObject, propInfo);
+              valueB:= StrToBoolDef(node.TextContent, Boolean(valueI));
+              SetOrdProp(AObject, propInfo, Integer(valueB));
+            end
+            else
+            begin
+              // set property value
+              case propInfo.PropType^.Kind of
+                // String
+                // (CubicAdventurer: tkUString added; since Delphi 2009 every plain
+                //  'string' property has this type kind. Without it all string
+                //  properties, e.g. the theme, were silently skipped.)
+                tkString, tkLString, tkUString: begin
+                  SetStrProp(AObject, propInfo, node.TextContent);
                 end;
-              end
+                // WideString
+                tkWString: begin
+                  SetWideStrProp(AObject, propInfo, node.TextContent);
+                end;
+                // Ordinal
+                tkInteger, tkChar, tkWChar, tkEnumeration, tkSet: begin
+                  valueI:= GetOrdProp(AObject, propInfo);
+                  SetOrdProp(AObject, propInfo, StrToIntDef(node.TextContent, valueI));
+                end;
+                // Variant
+                tkVariant: begin
+                  SetVariantProp(AObject, propInfo, node.TextContent);
+                end;
+                // Int64
+                tkInt64: begin
+                  valueI64:= GetInt64Prop(AObject, propInfo);
+                  SetInt64Prop(AObject, propInfo, StrToInt64Def(node.TextContent, valueI64));
+                end;
+                // Float
+                tkFloat: begin
+                  valueF:= GetFloatProp(AObject, propInfo);
+                  SetFloatProp(AObject, propInfo, StrToFloatDef(node.TextContent, valueF));
+                end;
+                // Class
+                tkClass: begin
+                  if ARecursive then
+                  begin
+                    subObj:= GetObjectProp(AObject, propInfo);
+                    LoadObjectProperties(subObj, node, ARecursive, AExcludeProperties);
+                  end;
+                end
+              end;
             end;
+          end;
+        except
+          on E: Exception do
+          begin
+            OutputDebugString(PChar('CE_AppSettings: ignored setting ' + string(node.NodeName) + ': ' + E.Message));
           end;
         end;
         node:= node.NextSibling;

@@ -108,6 +108,8 @@ type
         TEasyItem; Item2: TEasyItem): Integer; override;
     procedure DoItemContextMenu(HitInfo: TEasyHitInfoItem; WindowPoint: TPoint; var
         Menu: TPopupMenu; var Handled: Boolean); override;
+    procedure DoItemCustomView(Item: TEasyItem; ViewStyle: TEasyListStyle; var
+        View: TEasyViewItemClass); override;
     procedure DoItemCreateEditor(Item: TEasyItem; var Editor: IEasyCellEditor);
         override;
     procedure DoItemEditBegin(Item: TEasyItem; var Column: Integer; var Allow:
@@ -194,7 +196,8 @@ type
 implementation
 
 uses
-  Main, CE_LanguageEngine, fCE_ColumnFormSpTBX, dCE_Actions, CE_FontFallback;
+  Main, CE_LanguageEngine, fCE_ColumnFormSpTBX, dCE_Actions, CE_FontFallback,
+  CE_FileViewColors;
 
 {*------------------------------------------------------------------------------
   Get's called on set focus
@@ -766,13 +769,32 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.DoItemPaintText(Item: TEasyItem; Position: Integer;
     ACanvas: TCanvas);
+var
+  folderColor: TColor;
 begin
   if assigned(Item) and assigned(TExplorerItem(Item).Namespace) then
   begin
     inherited;
     // use a fallback font when the current font lacks glyphs for the name
     CE_ApplyFontFallback(ACanvas, Item.Caption);
+    // folder text color (set last, so it wins over an extension color).
+    // Selected items keep the selection text color for contrast.
+    if (not Item.Selected) and CE_GetFolderTextColor(Item, folderColor) then
+    begin
+      ACanvas.Font.Color:= folderColor;
+    end;
   end;
+end;
+
+{*------------------------------------------------------------------------------
+  Get's called when the item view class is chosen.
+  Swaps in the item views that paint the attribute background colors.
+-------------------------------------------------------------------------------}
+procedure TCECustomFileView.DoItemCustomView(Item: TEasyItem; ViewStyle:
+    TEasyListStyle; var View: TEasyViewItemClass);
+begin
+  inherited;
+  CE_ColorizeItemView(ViewStyle, View);
 end;
 
 {*------------------------------------------------------------------------------

@@ -81,6 +81,19 @@ type
     check_gridlines: TCheckBox;
     check_fullrowselect: TCheckBox;
     check_remember_thumbs: TCheckBox;
+    sheet_attrs: TTabSheet;
+    label_attr_hint: TLabel;
+    label_folder_color: TLabel;
+    color_folder: TColorBox;
+    label_system_bg: TLabel;
+    color_attr_system: TColorBox;
+    label_readonly_bg: TLabel;
+    color_attr_readonly: TColorBox;
+    label_hidden_bg: TLabel;
+    color_attr_hidden: TColorBox;
+    label_combined_bg: TLabel;
+    color_attr_combined: TColorBox;
+    label_attr_note: TLabel;
     procedure HandleChange(Sender: TObject);
     procedure list_extsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -208,6 +221,13 @@ begin
     // colors
     GlobalFileViewSettings.ExtensionColorsEnabled:= check_extension_colors.Checked;
     WriteExtensionColors;
+
+    // folder text color and attribute background colors
+    GlobalFileViewSettings.FolderTextColor:= color_folder.Selected;
+    GlobalFileViewSettings.SystemBgColor:= color_attr_system.Selected;
+    GlobalFileViewSettings.ReadOnlyBgColor:= color_attr_readonly.Selected;
+    GlobalFileViewSettings.HiddenBgColor:= color_attr_hidden.Selected;
+    GlobalFileViewSettings.CombinedBgColor:= color_attr_combined.Selected;
   finally
     GlobalFileViewSettings.EndUpdate(true);
   end;
@@ -471,6 +491,19 @@ begin
   // colors
   check_extension_colors.Checked:= GlobalFileViewSettings.ExtensionColorsEnabled;
   ReadExtensionColors;
+
+  // folder text color and attribute background colors
+  // (the .Handle lines work around the TColorBox bug mentioned above)
+  color_folder.Handle;
+  color_folder.Selected:= GlobalFileViewSettings.FolderTextColor;
+  color_attr_system.Handle;
+  color_attr_system.Selected:= GlobalFileViewSettings.SystemBgColor;
+  color_attr_readonly.Handle;
+  color_attr_readonly.Selected:= GlobalFileViewSettings.ReadOnlyBgColor;
+  color_attr_hidden.Handle;
+  color_attr_hidden.Selected:= GlobalFileViewSettings.HiddenBgColor;
+  color_attr_combined.Handle;
+  color_attr_combined.Selected:= GlobalFileViewSettings.CombinedBgColor;
 end;
 
 {##############################################################################}

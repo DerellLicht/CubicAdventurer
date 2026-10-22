@@ -317,6 +317,136 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
         OnClick = HandleChange
       end
     end
+    object sheet_attrs: TTabSheet
+      Caption = 'Attributes'
+      object label_attr_hint: TLabel
+        Left = 16
+        Top = 17
+        Width = 408
+        Height = 17
+        AutoSize = False
+        Caption = 'Choose Default to turn a color off.'
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        WordWrap = True
+      end
+      object label_folder_color: TLabel
+        Left = 16
+        Top = 59
+        Width = 200
+        Height = 13
+        Caption = 'Folder text color'
+      end
+      object color_folder: TColorBox
+        Left = 231
+        Top = 55
+        Width = 154
+        Height = 22
+        DefaultColorColor = clWindowText
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 0
+        OnSelect = HandleChange
+      end
+      object label_system_bg: TLabel
+        Left = 16
+        Top = 94
+        Width = 200
+        Height = 13
+        Caption = 'System attribute background'
+      end
+      object color_attr_system: TColorBox
+        Left = 231
+        Top = 90
+        Width = 154
+        Height = 22
+        DefaultColorColor = clWindow
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 1
+        OnSelect = HandleChange
+      end
+      object label_readonly_bg: TLabel
+        Left = 16
+        Top = 129
+        Width = 200
+        Height = 13
+        Caption = 'Read-only attribute background'
+      end
+      object color_attr_readonly: TColorBox
+        Left = 231
+        Top = 125
+        Width = 154
+        Height = 22
+        DefaultColorColor = clWindow
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 2
+        OnSelect = HandleChange
+      end
+      object label_hidden_bg: TLabel
+        Left = 16
+        Top = 164
+        Width = 200
+        Height = 13
+        Caption = 'Hidden attribute background'
+      end
+      object color_attr_hidden: TColorBox
+        Left = 231
+        Top = 160
+        Width = 154
+        Height = 22
+        DefaultColorColor = clWindow
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 3
+        OnSelect = HandleChange
+      end
+      object label_combined_bg: TLabel
+        Left = 16
+        Top = 199
+        Width = 200
+        Height = 13
+        Caption = 'Combined attribute background'
+      end
+      object color_attr_combined: TColorBox
+        Left = 231
+        Top = 195
+        Width = 154
+        Height = 22
+        DefaultColorColor = clWindow
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 4
+        OnSelect = HandleChange
+      end
+      object label_attr_note: TLabel
+        Left = 16
+        Top = 240
+        Width = 408
+        Height = 30
+        AutoSize = False
+        Caption = 'A file with more than one of the System, Read-only and Hidden attributes uses the combined background color.'
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        WordWrap = True
+      end
+    end
   end
   object FontDlg: TFontDialog
     Font.Charset = DEFAULT_CHARSET
