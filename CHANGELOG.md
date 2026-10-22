@@ -1,10 +1,7 @@
-# Changelog
+# CubicAdventurer Changelog
 
-The newest `## [x.yy]` header below is the version of the program: the Makefile reads it
-for the installer, the tag and the GitHub release (`make version`), and
-`make sync-version` copies it into the Delphi project.
-
-## [1.00] - unreleased
+## [1.00] - 2026-10-22
+- development builds
 
 First CubicAdventurer release: a revival of CubicExplorer 0.96.0.1582 (Marko Savolainen)
 for current Windows and Delphi 13 (Win32). Your existing CubicExplorer settings,
