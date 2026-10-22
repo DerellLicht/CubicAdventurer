@@ -1,10 +1,10 @@
 # CubicAdventurer Changelog
 
-## [1.00] - 2026-10-22
-- development builds
+## [1.00] - 2026-10-23
+- Initial release
 
-First CubicAdventurer release: a revival of CubicExplorer 0.96.0.1582 (Marko Savolainen)
-for current Windows and Delphi 13 (Win32). Your existing CubicExplorer settings,
+FIRST CUBICADVENTURER RELEASE: A REVIVAL OF CUBICEXPLORER 0.96.0.1582 (MARKO SAVOLAINEN)
+FOR CURRENT WINDOWS AND DELPHI 13 (WIN32). YOUR EXISTING CUBICEXPLORER SETTINGS,
 layout and sessions files load.
 
 ### Added
@@ -22,7 +22,7 @@ layout and sessions files load.
 - Help menu trimmed to what works. Version numbers are now `X.YY`.
 
 ### Removed
-- Update check, donate and web-site menu items.
+- Update check, donate and web-site menu items, Text Editor
 
 ### Known limitations
 - Win32 only, and not yet DPI-aware.
