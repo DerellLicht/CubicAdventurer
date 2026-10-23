@@ -4,6 +4,7 @@
 - Initial release (beta)
 - Fixed: range-check error when listing `.png` files in Thumbnail mode
 - Fixed: Options > Tabs "Auto fit tabs" worked backwards; it is now "Fit tabs to labels" and checked by default
+- Added demo program image to README file
 
 FIRST CUBICADVENTURER RELEASE: A REVIVAL OF CUBICEXPLORER 0.96.0.1582 (MARKO SAVOLAINEN)
 FOR CURRENT WINDOWS AND DELPHI 13 (WIN32). YOUR EXISTING CUBICEXPLORER SETTINGS,

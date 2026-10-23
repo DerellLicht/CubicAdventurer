@@ -9,6 +9,7 @@ Copyright 2006-2012 Marko Savolainen
 ## Original description (abridged)
 CubicExplorer is a file manager aimed for basic and advanced users. Its key features are tabs and bookmarks. It also has sessions, filtering, file previews, search and many more features.
 
+![example image](CA.example.image.jpg)
 ---
 
 Download the latest installer (a zip file) from [Releases](https://github.com/DerellLicht/CubicAdventurer/releases/latest).  
@@ -36,7 +37,8 @@ I have tested what I can think of, but I'm one user, on one computer.
 This build is a Debug build, which will generate error dialogs in some cases.  
 Please report any such errors, and any other issues you observe, on the
 [Issues](https://github.com/DerellLicht/CubicAdventurer/issues)
-page of this repository. A discussion page will be linked here once it exists.  
+page of this repository.  
+A discussion page will be linked here once it exists.  
 
 A useful report includes the text of the error dialog (for example "Range check error"),
 what you were doing when it appeared, and your version of Windows.

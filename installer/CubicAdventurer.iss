@@ -68,6 +68,7 @@ Source: "{#RepoRoot}\installer\settings.path"; DestDir: "{app}"; Flags: onlyifdo
 ; The licence stays in a Documents subfolder, matching the Licenses shortcut below.
 Source: "{#RepoRoot}\Documents\License.txt"; DestDir: "{app}\Documents"; Flags: ignoreversion
 Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "{#RepoRoot}\CA.example.image.jpg"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
