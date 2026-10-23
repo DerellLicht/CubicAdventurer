@@ -1,7 +1,7 @@
 # CubicAdventurer Changelog
 
-## [1.00] - 2026-10-23
-- Initial release
+## [0.97] - 2026-10-23
+- Initial release (beta)
 - Fixed: range-check error when listing `.png` files in Thumbnail mode
 
 FIRST CUBICADVENTURER RELEASE: A REVIVAL OF CUBICEXPLORER 0.96.0.1582 (MARKO SAVOLAINEN)
