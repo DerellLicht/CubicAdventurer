@@ -6,6 +6,8 @@
 ; Output: installer\output\CubicAdventurerV<version>.setup.exe
 
 #define MyAppName "CubicAdventurer"
+; Name shown in the Start Menu and on the desktop (file and folder names keep no space).
+#define MyAppDisplayName "Cubic Adventurer"
 #define MyAppPublisher "Derell Licht"
 #define MyAppURL "https://github.com/DerellLicht/CubicAdventurer"
 #define MyAppExeName "CubicAdventurer.exe"
@@ -30,7 +32,7 @@ AppSupportURL={#MyAppURL}
 PrivilegesRequired=lowest
 DefaultDirName={autopf}\{#MyAppName}
 DisableDirPage=no
-DefaultGroupName={#MyAppName}
+DefaultGroupName={#MyAppDisplayName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ; CubicAdventurer is a 32-bit (Win32) program, so there is no ArchitecturesAllowed line:
 ; it installs on 32-bit and 64-bit Windows alike.
@@ -69,9 +71,9 @@ Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifso
 Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\Cubic Adventurer"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{group}\{#MyAppDisplayName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{cm:UninstallProgram,{#MyAppDisplayName}}"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\{#MyAppDisplayName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{group}\Readme"; Filename: "{app}\README.md"
 Name: "{group}\Changelog"; Filename: "{app}\CHANGELOG.md"
 Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
