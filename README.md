@@ -18,6 +18,20 @@ See [Changelog](https://github.com/DerellLicht/CubicAdventurer/blob/master/CHANG
 
 `CubicAdventurer` uses multiple [Licenses](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/License.txt) ; view the combined license file here.  
 
+## NOTE regarding project status
+
+*** This is a beta release of this program !! ***
+
+I have tested what I can think of, but I'm one user, on one computer.  
+
+This build is a Debug build, which will generate error dialogs in some cases.  
+Any such errors, and any other issues that are observed, should be reported to the discussion forum at:  
+`[TBA]`.  
+
+Errors and issues *can* also be reported on the 
+[Issues](https://github.com/DerellLicht/CubicAdventurer/issues) 
+page on this repository.
+
 ## Source code locations
 
 One version of the source code is hosted at [vatterspun](https://github.com/vatterspun)'s 
