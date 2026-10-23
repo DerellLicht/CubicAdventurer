@@ -25,6 +25,7 @@ layout and sessions files load.
 - Help menu trimmed to what works. Version numbers are now `X.YY`.
 - "Show hidden files" and "Show file extensions" moved from the View menu to
   Tools > Options > Display > Fileview > Options.
+- "Restore Default Layout" moved from the Help menu to the bottom of the View menu.
 
 ### Removed
 - Update check, donate and web-site menu items, Version Manager and Translate menu items

@@ -356,6 +356,11 @@ object MainForm: TMainForm
         object SpTBXItem46: TSpTBXItem
           Action = CEActions.act_view_checkbox_selection
         end
+        object SpTBXSeparatorItem20: TSpTBXSeparatorItem
+        end
+        object but_reset_layout: TSpTBXItem
+          Action = CEActions.act_help_restore_layout
+        end
       end
       object bookmarkMenuItem: TSpTBXSubmenuItem
         Caption = 'Bookmarks'
@@ -410,11 +415,6 @@ object MainForm: TMainForm
       end
       object helpMenuItem: TSpTBXSubmenuItem
         Caption = 'Help'
-        object but_reset_layout: TSpTBXItem
-          Action = CEActions.act_help_restore_layout
-        end
-        object SpTBXSeparatorItem20: TSpTBXSeparatorItem
-        end
         object SpTBXItem1: TSpTBXItem
           Action = CEActions.act_help_about
         end
