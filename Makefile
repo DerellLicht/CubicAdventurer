@@ -69,7 +69,7 @@ check: check-exe
 check-exe:
 	@$(PYTHON) tools/version_tool.py check-exe $(VERSION) $(EXE)
 
-installer: check
+installer: check stop
 	"$(ISCC)" /Qp /DMyAppVersion=$(VERSION) installer/$(APP).iss
 
 # Only runs the setup program that "make installer" already built; it does not build anything.
@@ -101,7 +101,7 @@ check-clean:
 # First release of a version: tag HEAD, push the tag, create the GitHub release with the notes
 # from CHANGELOG.md and the zipped installer.  Fails at "git tag" if the tag already exists;
 # use "make update" for that.  Needs the gh CLI, signed in.
-release: check-clean dist
+release: check-clean dist stop
 	@echo Preparing GitHub release $(TAG)...
 	$(PYTHON) tools/release_notes.py $(VERSION) > temp_notes.md
 	git tag $(TAG)
@@ -112,7 +112,7 @@ release: check-clean dist
 
 # Refreshes an existing release: replaces the notes and (with --clobber) the uploaded zip; creates
 # the release if it does not exist yet.  Does not move the tag; see "retag".
-update: check-clean dist
+update: check-clean dist stop
 	@echo Updating release $(TAG)...
 	$(PYTHON) tools/release_notes.py $(VERSION) > temp_notes.md
 	@if gh release view $(TAG) -R $(GH_REPO) >/dev/null 2>&1; then \
