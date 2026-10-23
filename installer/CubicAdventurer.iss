@@ -76,5 +76,12 @@ Name: "{group}\Readme"; Filename: "{app}\README.md"
 Name: "{group}\Changelog"; Filename: "{app}\CHANGELOG.md"
 Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
 
+; [InstallDelete] -- template, not active.  Upgrades only add and overwrite; files and
+; shortcuts that a newer script no longer lists stay behind (uninstall still removes them).
+; When a release retires or renames something, uncomment this section and list it, e.g.:
+;[InstallDelete]
+;Type: files; Name: "{app}\OldFile.txt"
+;Type: files; Name: "{group}\Old Shortcut.lnk"
+
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#DoubleAmp(MyAppName)}}"; Flags: nowait postinstall skipifsilent
