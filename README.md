@@ -13,7 +13,7 @@ Home page is [here](https://github.com/DerellLicht/CubicAdventurer) in my GitHub
 
 See [Changelog](https://github.com/DerellLicht/CubicAdventurer/blob/master/CHANGELOG.md) for the full revision history  
 
-`CubicAdventurer` uses multiple [Licenses](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/License.txt) ; view the license file here.  
+`CubicAdventurer` uses multiple [Licenses](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/License.txt) ; view the combined license file here.  
 
 ## Source code locations
 
