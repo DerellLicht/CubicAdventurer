@@ -77,6 +77,8 @@ type
     fShowExtension: Boolean;
     fSmoothScroll: Boolean;
     fUsePNGAlpha: Boolean;
+    fHintLinkPath: string;    // shortcut under the mouse (tooltip cache)
+    fHintLinkTarget: string;  // its target path
     procedure SetFullSizeColumn(const Value: Integer);
     procedure SpSkinChange(var Message: TMessage); message WM_SPSKINCHANGE;
   protected
@@ -85,6 +87,8 @@ type
     procedure CEColumnHeaderMenuItemClick(Sender: TObject);
     procedure CEColumnSettingCallback(Sender: TObject);
     procedure UseRealShortcutName(NS: TNamespace);
+    procedure UpdateShortcutHint(const WindowPt: TPoint);
+    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
     procedure HandleContextMenuAfterCmdCallback(Namespace: TNamespace; Verb:
         string; MenuItemID: Integer; Successful: Boolean);
     procedure HandleContextMenuCmdCallback(Namespace: TNamespace; Verb: string;
@@ -731,6 +735,106 @@ begin
       Include(TNamespaceHack(NS).FShellCache.ShellCacheFlags, scInFolderName);
     end;
   end;
+end;
+
+{*------------------------------------------------------------------------------
+  Read the target of a shortcut (.lnk) file with the standard Windows
+  IShellLink interface.
+
+  Returns the target path stored in the shortcut (environment variables
+  expanded), or '' if the file can't be read or the shortcut has no file system
+  target (Control Panel items, for example). The shortcut is not resolved (no
+  disk search, no dialogs), so this never waits on a missing network drive.
+-------------------------------------------------------------------------------}
+function GetShortcutTargetPath(const LinkPath: string): string;
+var
+  link: IShellLinkW;
+  persist: IPersistFile;
+  buf: array[0..MAX_PATH] of WideChar;
+  findData: TWin32FindDataW;
+begin
+  Result:= '';
+  if Succeeded(CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER, IShellLinkW, link)) then
+  begin
+    persist:= link as IPersistFile;
+    if Succeeded(persist.Load(PWideChar(LinkPath), STGM_READ)) then
+    begin
+      buf[0]:= #0;
+      FillChar(findData, SizeOf(findData), 0);
+      if Succeeded(link.GetPath(PWideChar(@buf[0]), MAX_PATH, findData, 0)) then
+      begin
+        Result:= PWideChar(@buf[0]);
+      end;
+    end;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Show a shortcut's target path as its tooltip.
+
+  The library builds an item's tooltip starting from this control's Hint text
+  and only asks Windows for its own info tip when that text is empty. So while
+  the mouse is over a shortcut item, Hint is set to the shortcut's target path,
+  and it is cleared when the mouse is anywhere else. Windows' tooltip text is
+  replaced for shortcuts only; every other item is unchanged.
+
+  The target is read once per shortcut and kept until the mouse leaves it.
+-------------------------------------------------------------------------------}
+procedure TCECustomFileView.UpdateShortcutHint(const WindowPt: TPoint);
+var
+  viewPt: TPoint;
+  item: TEasyItem;
+  hitInfo: TEasyItemHitTestInfoSet;
+  NS: TNamespace;
+  linkPath: string;
+begin
+  linkPath:= '';
+  try
+    viewPt:= Scrollbars.MapWindowToView(WindowPt);
+    item:= Groups.ItemByPoint(viewPt);
+    if assigned(item) then
+    begin
+      item.HitTestAt(viewPt, hitInfo);
+      if not (ehtOnClickSelectBounds in hitInfo) then
+      begin
+        item:= nil;
+      end;
+    end;
+    if assigned(item) and ValidateNamespace(item, NS) then
+    begin
+      if NS.FileSystem and NS.Link and (not (assigned(NS.Parent) and NS.Parent.IsRecycleBin)) then
+      begin
+        linkPath:= NS.NameForParsing;
+      end;
+    end;
+  except
+    linkPath:= '';
+  end;
+
+  if linkPath = '' then
+  begin
+    fHintLinkPath:= '';
+    fHintLinkTarget:= '';
+  end
+  else if linkPath <> fHintLinkPath then
+  begin
+    fHintLinkPath:= linkPath;
+    fHintLinkTarget:= GetShortcutTargetPath(linkPath);
+  end;
+
+  if Hint <> fHintLinkTarget then
+  begin
+    Hint:= fHintLinkTarget;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Get's called when the mouse moves. Keeps the tooltip text of shortcuts current.
+-------------------------------------------------------------------------------}
+procedure TCECustomFileView.WMMouseMove(var Msg: TWMMouseMove);
+begin
+  inherited;
+  UpdateShortcutHint(Point(Msg.XPos, Msg.YPos));
 end;
 
 {*------------------------------------------------------------------------------
