@@ -31,13 +31,14 @@ Work on the `master` branch. The project file is `Source\CubicAdventurer.dproj`
 | Library | Source | How it was installed |
 |---|---|---|
 | Virtual Treeview 8.3 | GetIt | GetIt, built-in installer |
-| Mustangpeak Common Library and ListView / VirtualShell (the shell and file-list components) | GetIt | GetIt, built-in installer. **[CONFIRM exact GetIt package names]** |
+| Mustangpeak Common Library and Mustangpeak ListView (GetIt folders `MustangpeakCommonLibrary-13` and `MustangpeakListView-13`, version 2026.10) | GetIt | GetIt, built-in installer |
+| Mustangpeak VirtualShellTools (the shell components) | Git clone | **Manual**: cloned into its own folder and its `Source` folder added to the Library path. **[CONFIRM the repository URL]** |
 | SynEdit | GetIt | GetIt, built-in installer |
 | JCL | GetIt (source only) | **Manual build**, see below |
 | JVCL | GetIt (source only) | **Manual build**, see below |
 | Toolbar2000 (TB2K) and SpTBXLib | GitHub (SilverpointDev/sptbxlib for SpTBX) | **Manual**, see below |
-| Graphics32 | GitHub (graphics32/graphics32) | Manual. **[CONFIRM packages and paths]** |
-| PngComponents | GitHub (UweRaabe/PngComponents) | Manual. **[CONFIRM packages and paths]** |
+| Graphics32 | GitHub (graphics32/graphics32) | **Manual**; source folder added to the Library path. **[CONFIRM packages]** |
+| PngComponents | GitHub (UweRaabe/PngComponents) | **Manual**; source folder added to the Library path. **[CONFIRM packages]** |
 
 Components that ship inside the repo (CEAction, fcl-xml, DirectX headers, CubicCore, and the
 patched Mustangpeak copies under `Source\Components`) need no installation.
@@ -57,9 +58,9 @@ projects as below.
 1. In GetIt, install JCL (this only downloads the source).
 2. In the JCL source folder, copy `source\include\jcl.template.inc` to `jcld37win32.inc`.
 3. Open `packages\JclPackagesD370.groupproj` in the IDE and choose Build All.
-4. Add these to the Win32 Library path (Tools > Options > Language > Delphi > Library):
-   `lib\d37\win32`, `source\include`, `source\common`, `source\windows`, `source\vcl`
-   (each relative to the JCL folder, or give full paths).
+4. Add these to the Win32 Library path (Tools > Options > Language > Delphi > Library),
+   each under the JCL folder: `lib\d37\win32`, `source\include`, `source\common`,
+   `source\windows`, `source\vcl`. Use full paths.
 
 ### JVCL
 
@@ -67,9 +68,8 @@ projects as below.
 2. Open `packages\D37 Packages.groupproj` and choose Build All (large: about 3 million lines;
    it takes a while).
 3. Install the design-time packages. **[CONFIRM which packages and in what order]**
-4. Add the JVCL `resources` folder to the Win32 Library path. Without it the build fails on
-   `JvConsts.res`. Add the other JVCL source and library folders as well.
-   **[CONFIRM the exact list]**
+4. Add these to the Win32 Library path (each under the JVCL folder): `lib\d37\win32`, `common`,
+   `run` and `resources`. Without `resources` the build fails on `JvConsts.res`.
 
 ### Toolbar2000 and SpTBXLib
 
@@ -77,12 +77,50 @@ projects as below.
 2. Build and install the packages `tb2k_d12` and `tb2kdsgn_d12`.
 3. Get SpTBXLib (it needs Delphi XE2 or newer; it works with Delphi 13) and build and install
    `SpTBXLib` and `SpTBXLibDsgn`.
-4. Add both source folders to the Win32 Library path.
+4. Add the `Source` folder of each to the Win32 Library path.
 
 ### Graphics32 and PngComponents
 
-**[CONFIRM]** Both were installed by hand from their GitHub sources. List here the packages
-built and the folders added to the Library path.
+Both were installed by hand from their GitHub sources. Add the `Source` folder of each to the
+Win32 Library path (see the list below). **[CONFIRM which packages were built and installed in
+the IDE]**
+
+### VirtualShellTools
+
+Clone the Mustangpeak VirtualShellTools repository **[CONFIRM URL]** anywhere convenient and add
+its `Source` folder to the Win32 Library path.
+
+## The Library path
+
+This is the Win32 Library path the project was built with (Tools > Options > Language >
+Delphi > Library > Win32), after the Delphi defaults. `$(BDSCatalogRepository)` is the GetIt
+download folder (`Documents\Embarcadero\Studio\37.0\CatalogRepository`). Entries under it come
+from GetIt; the others are wherever you cloned or unpacked the library.
+
+```
+$(BDSCatalogRepository)\VirtualTreeview_by_JamSoftware-13\8.3\source\
+$(BDSCatalogRepository)\MustangpeakCommonLibrary-13\2026.10\source\
+$(BDSCatalogRepository)\MustangpeakListView-13\2026.10\source\
+<VirtualShellTools clone>\Source
+$(BDSCatalogRepository)\SynEdit-13\2026.10\source\
+$(BDSCatalogRepository)\SynEdit-13\2026.10\source\Highlighters\
+<Toolbar2000>\Source
+<SpTBXLib>\Source
+$(BDSCatalogRepository)\JEDICodeLibraryJCL-13\2026.08\lib\d37\win32
+$(BDSCatalogRepository)\JEDICodeLibraryJCL-13\2026.08\source\include
+$(BDSCatalogRepository)\JEDICodeLibraryJCL-13\2026.08\source\common
+$(BDSCatalogRepository)\JEDICodeLibraryJCL-13\2026.08\source\windows
+$(BDSCatalogRepository)\JEDICodeLibraryJCL-13\2026.08\source\vcl
+$(BDSCatalogRepository)\JEDIVisualComponentLibraryJVCL-13\2026.08\lib\d37\win32
+$(BDSCatalogRepository)\JEDIVisualComponentLibraryJVCL-13\2026.08\common
+$(BDSCatalogRepository)\JEDIVisualComponentLibraryJVCL-13\2026.08\run
+<graphics32>\Source
+<PngComponents>\Source
+$(BDSCatalogRepository)\JEDIVisualComponentLibraryJVCL-13\2026.08\resources
+```
+
+The GetIt folder names carry version numbers (`8.3`, `2026.10`, `2026.08`); if you install
+different versions, adjust them. Greyed entries in the IDE's list are paths that do not exist.
 
 ## Build the program
 
