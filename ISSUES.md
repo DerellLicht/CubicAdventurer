@@ -59,6 +59,16 @@ Last updated: 2026-10-23 (version 0.97).
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
   `CE_DockInfo.pas` stays until then). Wait for a user report before spending time here.
 
+- **CA-018 [bug] Options > Hotkeys page needs a cleanup.** The list is built from every
+  action in `dCE_Actions` (`fCE_OptionsPage_Hotkeys.pas`), so obsolete actions show up,
+  especially under Help and Tools (and probably other categories). Many rows show the
+  same icon (they just echo each action's `ImageIndex`, which many actions share), and
+  the Name column (142 px wide, plus the icon) truncates captions to the point of
+  being meaningless. Plan: (1) audit the actions and hide or delete the dead ones,
+  (2) drop the icons from the list (and the title label) or at least from the tree,
+  (3) widen the Name column or the whole page. Also check the category of
+  `act_help_restore_layout`, which is now in the View menu.
+
 ## Deferred (not started)
 
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
