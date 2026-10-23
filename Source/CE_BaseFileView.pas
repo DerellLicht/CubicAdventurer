@@ -343,7 +343,7 @@ begin
   fScrollSize:= 80;
   fScrollStep:= 10;
   fSmoothScroll:= false;
-  fHideShortcutExtension:= true;
+  fHideShortcutExtension:= false;  // links show '.lnk' when Show file extensions is on
   CheckBoxSelection:= false;
   
   ScrollAnimTimer:= TTimer.Create(Self);

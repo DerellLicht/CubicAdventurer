@@ -358,7 +358,7 @@ type
     property GroupBy: TCEGroupBySettings read fGroupBy write fGroupBy;
     property HiddenFiles: Boolean read fHiddenFiles write SetHiddenFiles;
     property HideShortcutExtension: Boolean read fHideShortcutExtension write
-        SetHideShortcutExtension default true;
+        SetHideShortcutExtension default false;
     property InfoBarSize: Integer read fInfoBarSize write fInfoBarSize;
     property PerFolderSettings: Boolean read fPerFolderSettings write
         SetPerFolderSettings;
@@ -1296,7 +1296,7 @@ begin
   fFont:= TFont.Create;
   SetDesktopIconFonts(fFont);
   fThumbnails:= TCEThumbnailSettings.Create;
-  fHideShortcutExtension:= true;
+  fHideShortcutExtension:= false;  // links follow 'Show file extensions' (shows '.lnk'); was true in CubicExplorer
   fShowExtensions:= true;  // no settings.xml: show extensions, as Explorer does
   fTrackChangesInMappedDrives:= true;
   // all off by default; settings.xml files without these keys keep this
