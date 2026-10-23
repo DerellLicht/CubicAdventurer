@@ -11,6 +11,10 @@ This program is released under [Mozilla Public License 1.1](Documents/License.tx
 
 Home page is [here](https://github.com/DerellLicht/CubicAdventurer) in my GitHub repository.
 
+See [Changelog](https://github.com/DerellLicht/CubicAdventurer/blob/master/CHANGELOG.md) for the full revision history  
+
+`CubicAdventurer` uses multiple [Licenses](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/License.txt) ; view the license file here.  
+
 ## Source code locations
 
 One version of the source code is hosted at [vatterspun](https://github.com/vatterspun)'s 
