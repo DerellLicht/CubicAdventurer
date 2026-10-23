@@ -10,17 +10,10 @@ Numbers are never reused.
 
 Last updated: 2026-10-23 (version 0.97).
 
-## Before the first public release
+## Release follow-up
 
-- **CA-001 [task] Installer extras.** Add README and any other wanted files to
-  `installer/CubicAdventurer.iss` and the Start Menu. Then run the setup wizard by hand
-  (licence page, folder page, launch box) and do a first run from a folder with no XML
-  files and no `settings.path`.
 - **CA-002 [task] THIRD-PARTY-NOTICES.txt.** Author, license and URL per library, with
   the license texts.
-- **CA-003 [task] `make release`.** Check the CHANGELOG date and the
-  `- development builds` line first. The make target tags, pushes the tag and creates the
-  GitHub release.
 - **CA-004 [task] Discussion page.** Decide between GitHub Discussions and/or github.io,
   then link it from `README.md`.
 - **CA-005 [task] Announce** on the old CubicExplorer forum threads, asking for a revival.
