@@ -128,7 +128,10 @@ begin
   MainForm.TabSet.Settings.OpenTabSelect:= check_opentab_switch.Checked;
   MainForm.TabSet.Settings.ReuseTabs:= check_reusetabs_switch.Checked;
   MainForm.TabSet.Settings.OpenNextToCurrent:= check_nexttocur_switch.Checked;
-  MainForm.TabSet.Settings.AutoFit:= check_autofit_switch.Checked;
+  // The checkbox is "Fit tabs to labels", the opposite of the stored AutoFit
+  // setting (AutoFit = stretch all tabs to fill the tab bar). The XML key keeps
+  // its old meaning so existing settings.xml files still load correctly.
+  MainForm.TabSet.Settings.AutoFit:= not check_autofit_switch.Checked;
   MainForm.TabSet.Settings.DblClickCloseTab:= check_dblclick_switch.Checked;
   MainForm.Settings.ExitOnLastTabClose:= check_exit.Checked;
 end;
@@ -204,8 +207,8 @@ begin
   check_reusetabs_switch.Checked:= MainForm.TabSet.Settings.ReuseTabs;
   // Switch to next to current
   check_nexttocur_switch.Checked:= MainForm.TabSet.Settings.OpenNextToCurrent;
-  // Switch to autofit
-  check_autofit_switch.Checked:= MainForm.TabSet.Settings.AutoFit;
+  // Fit tabs to labels (inverse of the stored AutoFit setting, see ApplySettings)
+  check_autofit_switch.Checked:= not MainForm.TabSet.Settings.AutoFit;
   // Switch to close on double click
   check_dblclick_switch.Checked:= MainForm.TabSet.Settings.DblClickCloseTab;
   // Switch to Exit on last tab close

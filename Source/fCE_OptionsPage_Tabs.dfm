@@ -105,7 +105,7 @@ inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
     Top = 244
     Width = 409
     Height = 17
-    Caption = 'Auto fit tabs'
+    Caption = 'Fit tabs to labels'
     TabOrder = 5
     OnClick = HandleChange
   end
