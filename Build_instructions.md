@@ -32,7 +32,7 @@ Work on the `master` branch. The project file is `Source\CubicAdventurer.dproj`
 |---|---|---|
 | Virtual Treeview 8.3 | GetIt | GetIt, built-in installer |
 | Mustangpeak Common Library and Mustangpeak ListView (GetIt folders `MustangpeakCommonLibrary-13` and `MustangpeakListView-13`, version 2026.10) | GetIt | GetIt, built-in installer |
-| Mustangpeak VirtualShellTools (the shell components) | Git clone | **Manual**: cloned into its own folder and its `Source` folder added to the Library path. **[CONFIRM the repository URL]** |
+| Mustangpeak VirtualShellTools (the shell components) | Git clone | **Manual**: cloned from `https://github.com/TurboPack/MustangpeakVirtualShellTools.git` into its own folder, with its `Source` folder added to the Library path |
 | SynEdit | GetIt | GetIt, built-in installer |
 | JCL | GetIt (source only) | **Manual build**, see below |
 | JVCL | GetIt (source only) | **Manual build**, see below |
@@ -87,8 +87,11 @@ the IDE]**
 
 ### VirtualShellTools
 
-Clone the Mustangpeak VirtualShellTools repository **[CONFIRM URL]** anywhere convenient and add
-its `Source` folder to the Win32 Library path.
+```
+git clone https://github.com/TurboPack/MustangpeakVirtualShellTools.git
+```
+
+Clone it anywhere convenient and add its `Source` folder to the Win32 Library path.
 
 ## The Library path
 
