@@ -804,22 +804,27 @@ procedure TCECustomFileView.DoItemThumbnailDraw(Item: TEasyItem; ACanvas:
     TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault:
     Boolean);
 
+  // Returns true when any pixel of the bitmap has a non-zero alpha value.
+  // Walks each scanline with a PColor32 pointer. PColor32Array is declared
+  // as array[0..0], so indexing it with x > 0 raises ERangeError whenever
+  // range checking is on (Debug configuration), once per painted thumbnail.
   function HasAlpha(bitmap: TBitmap32): Boolean;
   var
     y,x: Integer;
-    row: PColor32Array;
+    pix: PColor32;
   begin
     Result:= false;
     for y:= 0 to bitmap.Height - 1 do
     begin
-      row:= bitmap.ScanLine[y];
+      pix:= PColor32(bitmap.ScanLine[y]);
       for x:= 0 to bitmap.Width - 1 do
       begin
-        if ((row[x] shr 24) > 0) then
+        if ((pix^ shr 24) > 0) then
         begin
           Result:= true;
           exit;
         end;
+        Inc(pix);
       end;
     end;
   end;
