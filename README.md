@@ -2,12 +2,15 @@
 This is a port of the long-abandoned `CubicExplorer`,  
 An extremely customizable Windows file manager
 
+CubicAdventurer is a revival of CubicExplorer (Version 0.96.0.1582), the file manager created by Marko Savolainen.
+
 Copyright 2026 Derell Licht  
 Copyright 2006-2012 Marko Savolainen
 
-CubicAdventurer is a revival of CubicExplorer (Version 0.96.0.1582), the file manager created by Marko Savolainen. 
+## Original description: 
+CubicExplorer is a file manager aimed for basic and advanced users. Its key features are tabs and bookmarks. It also has sessions, filtering, file previews, search and many more features. First version was released in 2006 and it remains to be under active development. Currently it’s a Windows only application but there are plans for cross-platform support.
 
-This program is released under [Mozilla Public License 1.1](Documents/License.txt)
+---
 
 Home page is [here](https://github.com/DerellLicht/CubicAdventurer) in my GitHub repository.
 
