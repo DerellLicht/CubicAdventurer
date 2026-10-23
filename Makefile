@@ -43,6 +43,7 @@ help:
 	@echo "make check          check the project and $(EXE) carry $(VERSION)"
 	@echo "make installer      build the installer ($(SETUP)) from the existing $(EXE)"
 	@echo "make install        install the built setup silently (builds nothing)"
+	@echo "make install_raw    install the built setup interactively"
 	@echo "make dist           the installer, zipped for upload"
 	@echo "make release        first release of $(TAG): tag, push, GitHub release"
 	@echo "make update         refresh the notes and zip of an existing release"
@@ -72,6 +73,12 @@ installer: check
 install:
 	@test -f "$(SETUP)" || { echo "$(SETUP) not found -- run 'make installer' first."; exit 1; }
 	"$(SETUP)" /SILENT /SUPPRESSMSGBOXES /NORESTART
+
+# Only runs the setup program that "make installer" already built; it does not build anything.
+# *Not* Silent: let me set destination folder, etc.
+install_raw:
+	@test -f "$(SETUP)" || { echo "$(SETUP) not found -- run 'make installer' first."; exit 1; }
+	"$(SETUP)" 
 
 dist: installer
 	zip -j $(SETUP_ZIP) $(SETUP)
