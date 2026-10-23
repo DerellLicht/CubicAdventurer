@@ -84,6 +84,7 @@ type
     function BrowseObject(pidl: PItemIDList; flags: UINT): HResult; stdcall;
     procedure CEColumnHeaderMenuItemClick(Sender: TObject);
     procedure CEColumnSettingCallback(Sender: TObject);
+    procedure UseRealShortcutName(NS: TNamespace);
     procedure HandleContextMenuAfterCmdCallback(Namespace: TNamespace; Verb:
         string; MenuItemID: Integer; Successful: Boolean);
     procedure HandleContextMenuCmdCallback(Namespace: TNamespace; Verb: string;
@@ -703,6 +704,36 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
+  Make the cached item name of a shortcut include its extension.
+
+  Windows never includes ".lnk" in the display names it hands out, and
+  TNamespace.NameInFolder caches that plain name the first time anyone asks for
+  it. Several callers ask before DoItemGetCaption runs (the cell width
+  calculation in TCEFileView.DoEnumFolder, sorting, grouping), so the caption
+  code never got to build the name itself and the extension stayed hidden even
+  with "Show file extensions" on.
+
+  This replaces the cached name with the real file name for shortcuts. It does
+  nothing unless extensions are shown and HideShortcutExtension is off, and it
+  leaves Recycle Bin items alone (their file names are not the shown names).
+-------------------------------------------------------------------------------}
+procedure TCECustomFileView.UseRealShortcutName(NS: TNamespace);
+var
+  realName: string;
+begin
+  if fShowExtension and (not fHideShortcutExtension) and assigned(NS) and NS.FileSystem and NS.Link and
+     (not (assigned(NS.Parent) and NS.Parent.IsRecycleBin)) then
+  begin
+    realName:= NS.NameParseAddressInFolder;
+    if realName <> '' then
+    begin
+      TNamespaceHack(NS).FShellCache.Data.InFolderName:= realName;
+      Include(TNamespaceHack(NS).FShellCache.ShellCacheFlags, scInFolderName);
+    end;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
   Get's called when item caption is needed.
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.DoItemGetCaption(Item: TEasyItem; Column: NativeInt;
@@ -714,6 +745,8 @@ begin
   begin
     if Self.ValidateNamespace(Item, TNamespace(NS)) then
     begin
+      // shortcuts: the shell's cached name has no '.lnk'; see UseRealShortcutName
+      UseRealShortcutName(NS);
       if not (scInFolderName in NS.ShellCache.ShellCacheFlags) then
       begin
         // Normal files

@@ -827,6 +827,8 @@ procedure TCEFileView.DoEnumFolder(const Namespace: TNamespace; var
 begin
   if (View = elsList) and AutosizeListViewStyle then
   begin
+    // measure the name that will be shown (shortcuts include '.lnk')
+    UseRealShortcutName(Namespace);
     fCellWidth:= Max(fCellWidth, Canvas.TextWidth(Namespace.NameInFolder));
   end;
   
