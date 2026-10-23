@@ -33,7 +33,7 @@ TAG       = $(TAG_PREFIX)$(VERSION)
 SETUP     = installer/output/$(APP)V$(VERSION).setup.exe
 SETUP_ZIP = installer/output/$(APP)V$(VERSION).setup.zip
 
-.PHONY: all version sync-version check check-exe installer install install_raw dist release update retag re-release check-clean sha256 clean help
+.PHONY: all version sync-version check check-exe installer install install_raw dist stop release update retag re-release check-clean sha256 clean help
 
 all: help
 
