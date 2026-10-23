@@ -421,9 +421,8 @@ object CEAboutBox: TCEAboutBox
       'Copyright 2026 Derell Licht.'#13#10 +
       #13#10 +
       'CubicAdventurer is a revival of CubicExplorer, the file mana' +
-      'ger created by Marko Savolainen. Original CubicExplorer file' +
-      's remain under the Mozilla Public License 1.1; new work is r' +
-      'eleased under CC0.'#13#10 +
+      'ger created by Marko Savolainen, and is distributed under th' +
+      'e Mozilla Public License 1.1.'#13#10 +
       #13#10 +
       'Homepage - https://github.com/DerellLicht/CubicAdventurer'#13#10 +
       #13#10 +

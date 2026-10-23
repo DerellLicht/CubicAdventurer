@@ -5,7 +5,7 @@ An extremely customizable Windows file manager
 Copyright 2026 Derell Licht  
 Copyright 2006-2012 Marko Savolainen
 
-CubicAdventurer is a revival of CubicExplorer (Version 0.96.0.1582), the file manager created by Marko Savolainen. Original CubicExplorer files remain under the Mozilla Public License 1.1; new work is released under CC0.
+CubicAdventurer is a revival of CubicExplorer (Version 0.96.0.1582), the file manager created by Marko Savolainen. CubicAdventurer is distributed under the Mozilla Public License 1.1.
 
 Home page is [here](https://github.com/DerellLicht/CubicAdventurer/tree/ce_convert) in my GitHub repository.
 
