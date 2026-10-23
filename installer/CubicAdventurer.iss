@@ -63,8 +63,10 @@ Source: "{#RepoRoot}\BuildCE\Snapshot_configs\sessions.xml"; DestDir: "{app}"; F
 ; Where settings live: %APPDATA%\CubicAdventurer (see the comments in the file).  Delete this
 ; file from the install folder to keep settings next to the exe instead.
 Source: "{#RepoRoot}\installer\settings.path"; DestDir: "{app}"; Flags: onlyifdoesntexist
-Source: "{#RepoRoot}\Documents\License.txt"; DestDir: "{app}"; Flags: ignoreversion
+; The licence stays in a Documents subfolder, matching the Licenses shortcut below.
+Source: "{#RepoRoot}\Documents\License.txt"; DestDir: "{app}\Documents"; Flags: ignoreversion
 Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
