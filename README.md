@@ -75,7 +75,7 @@ Some elements of the original are either removed from this program, or simply ar
 - No support for high-DPI displays
 - not tested: treat zip (etc) archives as folders
 - not tested: File search, plugins, the media player and the image viewer.
-- not tested: Non-ASCII text: loading and saving it in the PO editor, in settings.xml and in text file thumbnails.
+- not tested: non-English (non-ASCII) text in saved settings and in thumbnails of text files.
 
 ##  Introducing the development team
 
