@@ -70,6 +70,9 @@ Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifso
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{group}\Readme"; Filename: "{app}\README.md"
+Name: "{group}\Changelog"; Filename: "{app}\CHANGELOG.md"
+Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#DoubleAmp(MyAppName)}}"; Flags: nowait postinstall skipifsilent

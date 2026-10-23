@@ -16,7 +16,7 @@ Home page is [here](https://github.com/DerellLicht/CubicAdventurer) in my GitHub
 One version of the source code is hosted at [vatterspun](https://github.com/vatterspun)'s 
 [CubicExplorer](https://github.com/vatterspun/cubicexplorer) repository on GitHub;  
 Sadly, it eventually turned out that this version is incomplete, missing all of the tabs from the  
-** Tools -> Options -> Display -> Fileview ** dialog, among other elements.   
+**Tools -> Options -> Display -> Fileview** dialog, among other elements.   
 
 Another, more complete repository was found in the 
 [Google Code](https://code.google.com/archive/p/cubicexplorer/source/default/source) 
