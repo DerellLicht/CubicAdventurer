@@ -22,6 +22,8 @@ layout and sessions files load.
 - The text editor works with the current SynEdit; syntax highlighting uses the
   highlighters' default colors.
 - Help menu trimmed to what works. Version numbers are now `X.YY`.
+- "Show hidden files" and "Show file extensions" moved from the View menu to
+  Tools > Options > Display > Fileview > Options.
 
 ### Removed
 - Update check, donate and web-site menu items, Version Manager and Translate menu items

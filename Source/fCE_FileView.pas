@@ -1297,6 +1297,7 @@ begin
   SetDesktopIconFonts(fFont);
   fThumbnails:= TCEThumbnailSettings.Create;
   fHideShortcutExtension:= true;
+  fShowExtensions:= true;  // no settings.xml: show extensions, as Explorer does
   fTrackChangesInMappedDrives:= true;
   // all off by default; settings.xml files without these keys keep this
   fFolderTextColor:= clDefault;

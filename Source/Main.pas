@@ -144,7 +144,6 @@ type
     SpTBXSeparatorItem3: TSpTBXSeparatorItem;
     SpTBXItem71: TSpTBXItem;
     SpTBXItem44: TSpTBXItem;
-    SpTBXItem35: TSpTBXItem;
     SpTBXItem50: TSpTBXItem;
     SpTBXItem53: TSpTBXItem;
     ToolbarPopupMenu: TSpTBXPopupMenu;
@@ -152,7 +151,6 @@ type
     SpTBXItem56: TSpTBXItem;
     SpTBXItem74: TSpTBXItem;
     StartUpTimer: TTimer;
-    SpTBXItem79: TSpTBXItem;
     SpTBXItem81: TSpTBXItem;
     LanguageMenuItem: TSpTBXSubmenuItem;
     SpTBXSeparatorItem20: TSpTBXSeparatorItem;

@@ -81,6 +81,8 @@ type
     check_gridlines: TCheckBox;
     check_fullrowselect: TCheckBox;
     check_remember_thumbs: TCheckBox;
+    check_hiddenfiles: TCheckBox;
+    check_showext: TCheckBox;
     sheet_attrs: TTabSheet;
     label_attr_hint: TLabel;
     label_folder_color: TLabel;
@@ -213,6 +215,10 @@ begin
     GlobalFileViewSettings.BrowseZipFolders:= check_browse_zip.Checked;
     GlobalFileViewSettings.FileSizeFormat:= TVirtualFileSizeFormat(combo_sizeformat.ItemIndex);
     GlobalFileViewSettings.Thumbnails.UseStorage:= check_remember_thumbs.Checked;
+    // these two used to live only on the View menu; the setters refresh
+    // the file views and the folder tree when EndUpdate sends the changes
+    GlobalFileViewSettings.HiddenFiles:= check_hiddenfiles.Checked;
+    GlobalFileViewSettings.ShowExtensions:= check_showext.Checked;
 
     // display
     GlobalFileViewSettings.BackgroundColor:= color_background.Selected;
@@ -477,6 +483,8 @@ begin
   check_browse_zip.Checked:= GlobalFileViewSettings.BrowseZipFolders;
   combo_sizeformat.ItemIndex:= Ord(GlobalFileViewSettings.FileSizeFormat);
   check_remember_thumbs.Checked:= GlobalFileViewSettings.Thumbnails.UseStorage;
+  check_hiddenfiles.Checked:= GlobalFileViewSettings.HiddenFiles;
+  check_showext.Checked:= GlobalFileViewSettings.ShowExtensions;
 
   // display
   color_background.Handle; // <-- hack around bug in TColorBox (http://qc.embarcadero.com/wc/qcmain.aspx?d=85895).

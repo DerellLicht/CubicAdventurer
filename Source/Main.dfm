@@ -202,12 +202,6 @@ object MainForm: TMainForm
         object SpTBXItem11: TSpTBXItem
           Action = CEActions.act_view_groupby
         end
-        object SpTBXItem35: TSpTBXItem
-          Action = CEActions.act_view_hiddenfiles
-        end
-        object SpTBXItem79: TSpTBXItem
-          Action = CEActions.act_view_showextensions
-        end
         object SpTBXSeparatorItem18: TSpTBXSeparatorItem
         end
         object toolbarsMenuItem: TSpTBXSubmenuItem

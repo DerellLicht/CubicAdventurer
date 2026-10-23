@@ -89,6 +89,24 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
         TabOrder = 8
         OnClick = HandleChange
       end
+      object check_hiddenfiles: TCheckBox
+        Left = 16
+        Top = 182
+        Width = 401
+        Height = 17
+        Caption = 'Show hidden files'
+        TabOrder = 9
+        OnClick = HandleChange
+      end
+      object check_showext: TCheckBox
+        Left = 16
+        Top = 201
+        Width = 401
+        Height = 17
+        Caption = 'Show file extensions'
+        TabOrder = 10
+        OnClick = HandleChange
+      end
     end
     object sheet_display: TTabSheet
       Caption = 'Display'
