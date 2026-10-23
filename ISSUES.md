@@ -79,9 +79,6 @@ Last updated: 2026-10-23 (version 0.97).
 - **CA-031 [task] Non-ASCII test of the UTF-8 changes.** Load a shipped Locale `.po` in
   the PO editor and save it; thumbnails of UTF-8 text files; confirm `settings.xml` still
   saves what matters.
-- **CA-032 [task] Options > Tabs > "Fit tabs to labels"** (fixed 2026-10-23): confirm
-  checked by default, unchecking stretches tabs to fill the bar, re-checking restores
-  label-sized tabs.
 
 ## Maintenance (internal)
 
