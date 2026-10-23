@@ -23,7 +23,7 @@ layout and sessions files load.
 - Help menu trimmed to what works. Version numbers are now `X.YY`.
 
 ### Removed
-- Update check, donate and web-site menu items
+- Update check, donate and web-site menu items, Version Manager and Translate menu items
 
 ### Known limitations
 - Win32 only, and not yet DPI-aware.
