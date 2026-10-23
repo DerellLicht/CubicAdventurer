@@ -1,3 +1,6 @@
+> **ARCHIVE (2026-10-23): historical record of the 2026 port; not maintained.**
+> Current build steps are in `Build_instructions.md`; open work is in `ISSUES.md`.
+
 # CubicAdventurer revival checklist (survey of repo as of 2026-10-18; status updated 2026-10-19)
 
 ## Status (updated 2026-10-19, evening)
