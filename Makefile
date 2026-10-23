@@ -53,6 +53,10 @@ help:
 version:
 	@echo $(VERSION)
 
+# the exe cannot be replaced while it is running; this stops it only if it is running
+stop:
+	@$(PYTHON) tools/stop_app.py $(APP)
+
 # Copies the changelog version into the Delphi project.  The exe is not rebuilt here.
 sync-version:
 	@$(PYTHON) tools/version_tool.py sync $(VERSION) $(DPROJ)
@@ -70,13 +74,13 @@ installer: check
 
 # Only runs the setup program that "make installer" already built; it does not build anything.
 # Silent: no wizard and no questions (Setup closes a running CubicAdventurer itself).
-install:
+install: stop
 	@test -f "$(SETUP)" || { echo "$(SETUP) not found -- run 'make installer' first."; exit 1; }
 	"$(SETUP)" /SILENT /SUPPRESSMSGBOXES /NORESTART
 
 # Only runs the setup program that "make installer" already built; it does not build anything.
 # *Not* Silent: let me set destination folder, etc.
-install_raw:
+install_raw: stop
 	@test -f "$(SETUP)" || { echo "$(SETUP) not found -- run 'make installer' first."; exit 1; }
 	"$(SETUP)" 
 
