@@ -42,7 +42,6 @@ Last updated: 2026-10-23 (version 0.97).
   filesystem path first.
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
   the program window edge (probably JVCL drop-zone logic).
-- **CA-013 [bug] Quickview does not remember its file.**
 - **CA-014 [bug] `layout.xml` holds about 2000 blank indentation-only lines** in the
   FileView toolbar section. Harmless.
 - **CA-015 [bug] Folder text color is not applied to selected items**, and the Folders

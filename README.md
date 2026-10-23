@@ -1,7 +1,5 @@
 # CubicAdventurer
-A port of the long-abandoned `CubicExplorer`: an extremely customizable Windows file manager.
-
-CubicAdventurer is a revival of CubicExplorer (Version 0.96.0.1582), the file manager created by Marko Savolainen.
+CubicAdventurer is a revival of the long-abandoned `CubicExplorer` (version 0.96.0.1582), an extremely customizable Windows file manager created by Marko Savolainen.
 
 Copyright 2026 Derell Licht  
 Copyright 2006-2012 Marko Savolainen
@@ -9,13 +7,24 @@ Copyright 2006-2012 Marko Savolainen
 ## Original description (abridged)
 CubicExplorer is a file manager aimed for basic and advanced users. Its key features are tabs and bookmarks. It also has sessions, filtering, file previews, search and many more features.
 
-![example image](CA.example.image.jpg)
+![CubicAdventurer showing a file list with read-only and hidden files and a floating Quickview panel](CA.example.image.jpg)
+
 ---
 
 Download the latest installer (a zip file) from [Releases](https://github.com/DerellLicht/CubicAdventurer/releases/latest).  
 CubicAdventurer is a 32-bit Windows program; it runs on both 32-bit and 64-bit Windows.
 
 See [Changelog](https://github.com/DerellLicht/CubicAdventurer/blob/master/CHANGELOG.md) for the current version and the full revision history.  
+
+## Installing
+
+Unzip the download and run the setup program inside it. It installs for the current user only
+(no administrator rights needed), by default under `%LocalAppData%\Programs\CubicAdventurer`.
+Your settings are kept separately, in `%APPDATA%\CubicAdventurer\`.
+To uninstall, use Windows Settings > Apps.
+
+If you used CubicExplorer before, you can bring your settings along: close CubicAdventurer,
+then copy your old `settings.xml`, `layout.xml` and `sessions.xml` into the settings folder.
 
 ## License
 
