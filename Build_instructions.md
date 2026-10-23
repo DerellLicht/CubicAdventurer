@@ -67,7 +67,8 @@ projects as below.
 1. In GetIt, install JVCL (source only).
 2. Open `packages\D37 Packages.groupproj` and choose Build All (large: about 3 million lines;
    it takes a while).
-3. Install the design-time packages. **[CONFIRM which packages and in what order]**
+3. Install the JVCL design-time packages (they show up in the IDE as *JVCL Core Components*,
+   *JVCL Custom Controls* and *JVCL Runtime Design Components*).
 4. Add these to the Win32 Library path (each under the JVCL folder): `lib\d37\win32`, `common`,
    `run` and `resources`. Without `resources` the build fails on `JvConsts.res`.
 
@@ -82,8 +83,8 @@ projects as below.
 ### Graphics32 and PngComponents
 
 Both were installed by hand from their GitHub sources. Add the `Source` folder of each to the
-Win32 Library path (see the list below). **[CONFIRM which packages were built and installed in
-the IDE]**
+Win32 Library path (see the list below). Build and install their design packages (*Graphics32
+Design Time Package* and *Png Components Designtime* in the IDE's list).
 
 ### VirtualShellTools
 
@@ -92,6 +93,25 @@ git clone https://github.com/TurboPack/MustangpeakVirtualShellTools.git
 ```
 
 Clone it anywhere convenient and add its `Source` folder to the Win32 Library path.
+
+## Design-time packages
+
+After the libraries are built, these design packages should be installed in the IDE
+(Component > Install Packages), with their boxes checked. Delphi's own packages are not listed.
+
+- Virtual Treeview: *VirtualTreeView Controls*
+- Mustangpeak: *Mustangpeak Common Library Delphi DesignTime Package*, *Mustangpeak EasyListview
+  Designtime Package* and *Virtual Shell Tools Delphi Designtime Package*
+- SynEdit: *TurboPack SynEdit Delphi designtime package*
+- JVCL: *JVCL Core Components*, *JVCL Custom Controls*, *JVCL Runtime Design Components*
+- Toolbar2000: *Toolbar2000 Design Package (Jordan Russell)* and *Toolbar2000 -- SpTBXLib Design
+  Package*
+- Graphics32: *Graphics32 Design Time Package*
+- PngComponents: *Png Components Designtime*
+- **This project's own package:** *CubicAdventurer design-time components (TCEToolbar,
+  TCEToolbarAction, ...)*. Open `Source\CE_Design.dproj`, build it and install it **last**, after
+  the libraries above. Without it the forms that use these components cannot be opened in the
+  form designer. **[CONFIRM whether the program also fails to compile without it]**
 
 ## The Library path
 
