@@ -71,7 +71,7 @@ Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autodesktop}\Cubic Adventurer"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{group}\Readme"; Filename: "{app}\README.md"
 Name: "{group}\Changelog"; Filename: "{app}\CHANGELOG.md"
 Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
