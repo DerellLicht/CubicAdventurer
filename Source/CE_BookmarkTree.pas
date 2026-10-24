@@ -48,6 +48,8 @@ type
     fDropNodeAcceptsDrop: Boolean;
     fIndActive: Boolean;
     fInternalDragAccept: Boolean;
+    fInternalDragActive: Boolean;
+    fSelfOverCalled: Boolean;
     fIndMode: TDropMode;
     fIndNode: PVirtualNode;
     fOnBookmarksChange: TNotifyEvent;
@@ -730,6 +732,11 @@ begin
 
   if Source = self then
   begin
+    fSelfOverCalled:= true;
+    if State <> dsDragLeave then
+    begin
+      fInternalDragActive:= true;
+    end;
     if State = dsDragLeave then
     begin
       Effect:= DROPEFFECT_NONE;
@@ -995,45 +1002,55 @@ end;
   Handle the Delphi (VCL) drag messages of a drag that started in this tree.
   Virtual Treeview 8 turns the "accepted" answer of such a drag into "refused",
   so Delphi cancelled every drop (dmDragLeave followed by dmDragCancel, never
-  dmDragDrop). DoDragOver stores its own verdict in fInternalDragAccept and that
-  verdict is put back as the message result here. The drop itself is done here
-  too, because Virtual Treeview never reaches its own DoDragDrop for it.
-  Drags from other controls and drops from Explorer go to Virtual Treeview as
-  before.
+  dmDragDrop). DoDragOver stores its own verdict in fInternalDragAccept (and
+  sets fSelfOverCalled, which tells this routine that DoDragOver ran for a drag
+  from this tree, whatever class Delphi uses for the drag object); the verdict
+  is put back as the message result here. The drop itself is done here too,
+  because Virtual Treeview never reaches its own DoDragDrop for it. Drags from
+  other controls and drops from Explorer go to Virtual Treeview as before.
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkTree.CMDrag(var Message: TCMDrag);
 var
+  rawSrc: TObject;
   src: TObject;
   pt: TPoint;
 begin
-  src:= nil;
+  rawSrc:= nil;
   if Assigned(Message.DragRec) then
   begin
-    src:= Message.DragRec^.Source;
-    if (src is TDragControlObject) then
-    begin
-      src:= TDragControlObject(src).Control;
-    end;
+    rawSrc:= Message.DragRec^.Source;
+  end;
+  src:= rawSrc;
+  if (src is TDragControlObject) then
+  begin
+    src:= TDragControlObject(src).Control;
   end;
 
-  if (src = Self) and (Message.DragMessage = dmDragDrop) then
+  if (Message.DragMessage = dmDragDrop) and ((src = Self) or fInternalDragActive) then
   begin
     DbgDrag('CMDRAG drop');
+    fInternalDragActive:= false;
     pt:= Self.ScreenToClient(Message.DragRec^.Pos);
     MoveSelectionTo(pt);
     Message.Result:= 0;
     Exit;
   end;
 
+  fSelfOverCalled:= false;
   inherited;
 
-  if (src = Self) and (Message.DragMessage in [dmDragEnter, dmDragMove]) then
+  if fSelfOverCalled and (Message.DragMessage in [dmDragEnter, dmDragMove]) then
   begin
     Message.Result:= Ord(fInternalDragAccept);
   end;
+
   if (Message.DragMessage in [dmDragLeave, dmDragCancel]) then
   begin
-    DbgDrag(Format('CMDRAG msg=%d', [Ord(Message.DragMessage)]));
+    DbgDrag(Format('CMDRAG msg=%d src=%s accept=%d', [Ord(Message.DragMessage), DbgSrc(rawSrc), Ord(fInternalDragAccept)]));
+    if (Message.DragMessage = dmDragCancel) then
+    begin
+      fInternalDragActive:= false;
+    end;
   end;
 end;
 
@@ -1060,6 +1077,8 @@ end;
   "above" (upper half) and "below" (lower half). "Below" an expanded node that
   has children means "first child", so Node is changed to that first child and
   the result is dmAbove; that is what the indicator line suggests visually.
+  Likewise "below" a node that has a next sibling is reported as "above" that
+  sibling (the same place), so only the last row of a level ever gets "below".
   Returns the drop mode; Node may be changed as described.
 -------------------------------------------------------------------------------}
 function TCEBookmarkTree.ResolveInternalDrop(var Node: PVirtualNode; Pt: TPoint): TDropMode;
@@ -1108,6 +1127,15 @@ begin
   if (Result = dmBelow) and (Node.ChildCount > 0) and Self.Expanded[Node] then
   begin
     Node:= Node.FirstChild;
+    Result:= dmAbove;
+  end;
+
+  // "Below" a node and "above" its next sibling are the same place. Always
+  // report the second one, so the indicator does not jump between the bottom of
+  // one row and the top of the next while the mouse moves over the boundary.
+  if (Result = dmBelow) and Assigned(Node.NextSibling) then
+  begin
+    Node:= Node.NextSibling;
     Result:= dmAbove;
   end;
 end;
