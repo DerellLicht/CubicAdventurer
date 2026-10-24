@@ -945,6 +945,33 @@ begin
   BookmarksChange;
 end;
 
+var
+  DbgLastTabDrag: string = '';
+
+{*------------------------------------------------------------------------------
+  TEMPORARY diagnostics for the tab drag; remove when it works.
+-------------------------------------------------------------------------------}
+procedure DbgTabDrag(const Msg: string);
+begin
+  if Msg <> DbgLastTabDrag then
+  begin
+    DbgLastTabDrag:= Msg;
+    OutputDebugString(PChar('CE_BookmarkDrag: ' + Msg));
+  end;
+end;
+
+function DbgSrcName(Source: TObject): string;
+begin
+  if Assigned(Source) then
+  begin
+    Result:= Source.ClassName;
+  end
+  else
+  begin
+    Result:= '(nil)';
+  end;
+end;
+
 {*------------------------------------------------------------------------------
   If Source is the drag object of a file view tab (a tab dragged by its label),
   return the absolute PIDL of the folder shown in that tab (owned by the tab,
@@ -1023,6 +1050,9 @@ begin
   if Assigned(Message.DragRec) then
   begin
     folder:= GetTabDragPIDL(Message.DragRec^.Source);
+    // TEMPORARY diagnostic (tab drag): one line per change of message / source class
+    DbgTabDrag(Format('CMDRAG msg=%d source=%s folder=%s', [Ord(Message.DragMessage),
+        DbgSrcName(Message.DragRec^.Source), BoolToStr(Assigned(folder), True)]));
   end;
   if not Assigned(folder) then
   begin
