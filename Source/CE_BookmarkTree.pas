@@ -1039,9 +1039,11 @@ begin
         node:= Self.GetNodeAt(pt.X, pt.Y);
         if node = nil then
         begin
-          if Assigned(Self.GetLastVisible) then
+          // Empty area below the items: the bookmark will be appended.
+          node:= Self.GetLastVisible;
+          if Assigned(node) then
           begin
-            ShowDropIndicator(Self.GetLastVisible, dmBelow);
+            ShowDropIndicator(node, dmBelow);
           end;
         end
         else
