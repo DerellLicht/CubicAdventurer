@@ -9,7 +9,7 @@
 - Changed: the tooltip of a shortcut shows the full path of its target
 - Fixed: Bookmarks panel entries showed two icons
 - Changed: opening a bookmark (double-click, Alt+click, middle-click, Enter) now always opens a new tab and never replaces the folder of the active tab; a single click only selects. The options "Single click mode" and "Open in new tab by default" are removed (old settings are ignored)
-- Added: bookmarks can be re-arranged by dragging them in the Bookmarks panel (above, below or inside another item; several at once)
+- Added: bookmarks can be re-arranged by dragging them in the Bookmarks panel
 - Fixed: the Bookmarks menu was empty until the first bookmark was added, when no bookmarks file existed yet
 - Added: Bookmarks menu item "Bookmark current folder", which adds the active tab's folder without opening the Bookmarks panel
 
