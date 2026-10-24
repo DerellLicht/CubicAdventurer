@@ -12,14 +12,7 @@ Last updated: 2026-10-24 (version 0.97).
 
 ## Before the first public release
 
-- **CA-007 [bug] Bookmarks panel entries show two icons.** Fix pushed 2026-10-24, waiting
-  for Derell's test (delete this entry when confirmed). Cause (probably):
-  `TCEBookmarkTree.DoGetImageIndex` (`CE_BookmarkTree.pas`, around line 423) returns the
-  bookmark's icon for every image kind except overlays, and Virtual Treeview 8 also asks
-  for the state image (`ikState`), so the same icon is drawn twice. Fix: return
-  `Index := -1` for `Kind = ikState`. If two icons still show, the cause is elsewhere
-  (look at `DoDrawImage` / the image list setup).
-- **CA-003 [task] `make release`** for the first version, after CA-007. The
+- **CA-003 [task] `make release`** for the first version. The
   CHANGELOG entries and date are already in place (Bookmarks and Sessions testing is finished); recheck the date and the `- development builds` line just before running
   it. The make target tags, pushes the tag and creates the GitHub release.
 
@@ -92,7 +85,8 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   usage hints in `README.md` (it is already long, and hints there are a slippery slope).
   Proposed instead: a short new-user document shipped with the program and linked from
   the Start Menu, e.g. `Quick_Start.md` or `Tips_and_Tricks.md`, that would cover Bookmarks
-  among other features. Content and name still to be discussed with the maintainer, so
+  among other features. Maintainer's own experience: he went years without finding Bookmarks, and they now replace
+  his habit of keeping rarely used folders open in tabs. Content and name still to be discussed with the maintainer, so
   nothing is written yet. It would need an installer entry (`installer/CubicAdventurer.iss`:
   file, Start Menu icon) and can follow `Documents/Bookmarks_and_Sessions.md` as a model.
 
