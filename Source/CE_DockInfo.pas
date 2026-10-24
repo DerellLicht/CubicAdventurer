@@ -490,7 +490,6 @@ procedure TCEDockInfoTree.ReadInfoFromAppStorage;
         if GetChildControlCount(InfoZone) > 1 then
         begin
           CreateHostControl(InfoZone);
-          OutputDebugString(PChar('CE_DockInfo: pre-created floating host ' + InfoZone.DockFormName));
         end;
       end;
       Zone:= Zone.NextSibling;
@@ -508,7 +507,6 @@ begin
       FCEDockInfoStyle := isReadInfo;
       CreateFloatingHosts;
       MiddleScanTree(TopTreeZone);
-      OutputDebugString(PChar('CE_DockInfo: after load: ' + DescribeDockState('FolderPanel')));
     finally
       FCEDockInfoStyle := isNone;
     end;
@@ -623,10 +621,6 @@ begin
     TForm(AForm).Position := poDesigned;
   end;
   AForm.ManualFloat(ASaved);
-  OutputDebugString(PChar(Format('CE_DockInfo: floated %s to saved rect [%d,%d,%d,%d]; now [%d,%d,%d,%d] parent=%s visible=%s',
-    [AForm.Name, ASaved.Left, ASaved.Top, ASaved.Right, ASaved.Bottom,
-     AForm.Left, AForm.Top, AForm.Left + AForm.Width, AForm.Top + AForm.Height,
-     CtrlName(AForm.Parent), BoolToStr(AForm.Visible, true)])));
 end;
 
 function GetChildControlCount(ATreeZone: TJvDockInfoZone): Integer;
@@ -656,8 +650,6 @@ begin
   begin
     if DockFormName = '' then
       Exit;
-    OutputDebugString(PChar(Format('CE_DockInfo: zone %s (parent=%s) | before: %s',
-      [DockFormName, ParentName, DescribeDockState('FolderPanel')])));
     Host := FindDockHost(DockFormName);
     // a host created earlier (CreateFloatingHosts) must be reused, not created twice
     if (Host = nil) and (Application.FindComponent(DockFormName) is TWinControl) then
@@ -721,11 +713,6 @@ begin
 
       // Floating zone whose form is parked in CenterPanel: put it at the saved
       // screen position (see FloatParkedFormToSavedRect).
-      if (ParentName = '') and (Host is TCustomForm) then
-      begin
-        OutputDebugString(PChar(Format('CE_DockInfo: floating zone %s saved [%d,%d,%d,%d] parent=%s',
-          [DockFormName, DockRect.Left, DockRect.Top, DockRect.Right, DockRect.Bottom, CtrlName(Host.Parent)])));
-      end;
       if (ParentName = '') and (Host is TCustomForm) and
          (Host.Parent = MainForm.DockHostForm.CenterPanel) then
       begin

@@ -887,7 +887,6 @@ begin
   begin
     AForm.Parent:= nil;
   end;
-  OutputDebugString(PChar('CE_Layout: floated stray dock form ' + AForm.Name));
 end;
 
 {*------------------------------------------------------------------------------

@@ -134,7 +134,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 - **CA-042 [task] Housekeeping.** Remove unused edits in the vendored
   `VirtualExplorerEasyListview.pas`; stale root-level `Components\fcl-xml` (needs OK);
   `.gitattributes` / CRLF decision (the repo has mixed line endings); retire the
-  `Options.inc` / `Compilers.inc` stubs; remove the `CE_DockInfo:` / `CE_Layout:`
-  `OutputDebugString` lines.
+  `Options.inc` / `Compilers.inc` stubs.
 - **CA-043 [task] `command-line-build.md`** is obsolete (Delphi Community Edition cannot
   compile from the command line): update it or retire it.
