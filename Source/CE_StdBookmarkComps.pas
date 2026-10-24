@@ -81,8 +81,7 @@ type
     procedure LoadFromPath(APath: WideString; RelativePath: Boolean = false);
     procedure LoadFromPIDL(APIDL: PItemIDList);
     procedure LoadFromXmlNode(XmlNode: TJvSimpleXmlElem); override;
-    procedure MouseClick(Shift: TShiftState; Button: TMouseButton; SingleClickMode:
-        Boolean = false); override;
+    procedure MouseClick(Shift: TShiftState; Button: TMouseButton); override;
     procedure Refresh(OnlyIfLocal: Boolean = false);
     procedure SaveToXmlNode(XmlNode: TJvSimpleXmlElem); override;
     function SupportsDragDrop: Boolean; override;
@@ -104,15 +103,13 @@ type
     function GetImageIndex(Open: Boolean = false; Overlay: Boolean = false):
         Integer; override;
     procedure LoadFromXmlNode(XmlNode: TJvSimpleXmlElem); override;
-    procedure MouseClick(Shift: TShiftState; Button: TMouseButton; SingleClickMode:
-        Boolean = false); override;
+    procedure MouseClick(Shift: TShiftState; Button: TMouseButton); override;
     procedure SaveToXmlNode(XmlNode: TJvSimpleXmlElem); override;
   published
     property SessionName: WideString read fSessionName write fSessionName;
   end;
 
 var
-  OpenBookmarkInNewTabByDefault: Boolean = false;  
   LastBookmarkIconRefresh: Integer = 0;
 
 implementation
@@ -653,7 +650,7 @@ end;
   Handle mouse click
 -------------------------------------------------------------------------------}
 procedure TCENormalItemComp.MouseClick(Shift: TShiftState; Button:
-    TMouseButton; SingleClickMode: Boolean = false);
+    TMouseButton);
 begin
   if not assigned(Namespace) then
   Exit;
@@ -668,30 +665,19 @@ begin
     begin
       Namespace.ShellExecuteNamespace('','');
     end
-    else if not SingleClickMode then
+    else
     begin
-      if OpenBookmarkInNewTabByDefault then
-      OpenFolderInTab(nil, Namespace.AbsolutePIDL, MainForm.TabSet.Settings.OpenTabSelect)
-      else
-      GlobalPathCtrl.ChangeGlobalPathPIDL(Self, Namespace.AbsolutePIDL);
+      // A bookmark never replaces the folder of the active tab: it always opens
+      // in a new tab (placement and selection follow the Tabs options).
+      OpenFolderInTab(nil, Namespace.AbsolutePIDL, MainForm.TabSet.Settings.OpenTabSelect);
     end;
-  end
-  else if Shift = [ssLeft] then
-  begin
-    if SingleClickMode and Namespace.Folder and not IsSameText(Namespace.Extension,'.zip') then
-    begin
-      if OpenBookmarkInNewTabByDefault then
-      OpenFolderInTab(nil, Namespace.AbsolutePIDL, MainForm.TabSet.Settings.OpenTabSelect)
-      else
-      GlobalPathCtrl.ChangeGlobalPathPIDL(Self, Namespace.AbsolutePIDL);
-    end
   end
   else if (Shift = [ssAlt,ssLeft]) then
   begin
-    if OpenBookmarkInNewTabByDefault then
-    GlobalPathCtrl.ChangeGlobalPathPIDL(Self, Namespace.AbsolutePIDL)
+    if Namespace.Folder and not IsSameText(Namespace.Extension,'.zip') then
+    OpenFolderInTab(nil, Namespace.AbsolutePIDL, MainForm.TabSet.Settings.OpenTabSelect)
     else
-    OpenFolderInTab(nil, Namespace.AbsolutePIDL, MainForm.TabSet.Settings.OpenTabSelect);
+    OpenFileInTab(Namespace.NameForParsing, MainForm.TabSet.Settings.OpenTabSelect);
   end
   else if (Shift = [ssMiddle]) then
   begin
@@ -842,8 +828,7 @@ end;
 {*------------------------------------------------------------------------------
   Handle mouse click
 -------------------------------------------------------------------------------}
-procedure TCESessionComp.MouseClick(Shift: TShiftState; Button: TMouseButton;
-    SingleClickMode: Boolean = false);
+procedure TCESessionComp.MouseClick(Shift: TShiftState; Button: TMouseButton);
 begin
   if Shift = [ssDouble,ssLeft] then
   begin

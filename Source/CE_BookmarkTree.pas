@@ -53,8 +53,6 @@ type
     fIndMode: TDropMode;
     fIndNode: PVirtualNode;
     fOnBookmarksChange: TNotifyEvent;
-    fPendingClickNode: PVirtualNode;
-    fSingleClickMode: Boolean;
   protected
     procedure ClearDropIndicator;
     procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
@@ -84,8 +82,6 @@ type
         override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
         override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-        override;
     procedure PopulateTree(XmlDoc: TJvSimpleXml); virtual;
     procedure RefreshScrollHeight;
     function ResolveInternalDrop(var Node: PVirtualNode; Pt: TPoint): TDropMode;
@@ -107,7 +103,6 @@ type
     function SaveToXmlString: string;
     property AutoCollapse: Boolean read fAutoCollapse write fAutoCollapse;
     property AutoExpand: Boolean read fAutoExpand write fAutoExpand;
-    property SingleClickMode: Boolean read fSingleClickMode write fSingleClickMode;
   published
     property OnBookmarksChange: TNotifyEvent read fOnBookmarksChange write
         fOnBookmarksChange;
@@ -586,7 +581,6 @@ var
   data: PCEBookData;
   HitInfo: THitInfo;
 begin
-  fPendingClickNode:= nil;
   Self.GetHitTestInfoAt(X,Y,true,HitInfo);
 
   if not assigned(HitInfo.HitNode) then
@@ -609,46 +603,13 @@ begin
     data:= GetNodeData(HitInfo.HitNode);
     if assigned(data.BookComp) then
     begin
-      if fSingleClickMode and (Shift = [ssLeft]) then
-      begin
-        // A plain click is carried out when the button is released (MouseUp), so
-        // that pressing the button to start a drag does not open the bookmark.
-        fPendingClickNode:= HitInfo.HitNode;
-      end
-      else
-      begin
-        data.BookComp.MouseClick(Shift,Button,fSingleClickMode);
-      end;
+      // A plain single click only selects; double-click / Alt / middle click act.
+      if Shift <> [ssLeft] then
+      data.BookComp.MouseClick(Shift,Button);
     end;
   end;
 
   inherited;
-end;
-
-{*------------------------------------------------------------------------------
-  Get's called on Mouse Up
--------------------------------------------------------------------------------}
-procedure TCEBookmarkTree.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-    Y: Integer);
-var
-  node: PVirtualNode;
-  data: PCEBookData;
-begin
-  node:= fPendingClickNode;
-  fPendingClickNode:= nil;
-  inherited;
-
-  // Single click mode: carry out the click that MouseDown postponed, but only
-  // when the button is released over the same row (no drag happened).
-  if (Button = mbLeft) and Assigned(node) and (Shift * [ssCtrl, ssShift, ssAlt] = [])
-      and (Self.GetNodeAt(X, Y) = node) then
-  begin
-    data:= GetNodeData(node);
-    if Assigned(data.BookComp) then
-    begin
-      data.BookComp.MouseClick([ssLeft], mbLeft, fSingleClickMode);
-    end;
-  end;
 end;
 
 {*------------------------------------------------------------------------------

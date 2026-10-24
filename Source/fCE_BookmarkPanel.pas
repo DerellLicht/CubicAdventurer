@@ -99,16 +99,12 @@ type
     fUseSystemPopupMenu: Boolean;
     function GetAutoCollapse: Boolean;
     function GetAutoExpand: Boolean;
-    function GetOpenInNewTab: Boolean;
-    function GetSingleClickMode: Boolean;
     procedure SetAutoCollapse(const Value: Boolean);
     procedure SetAutoExpand(const Value: Boolean);
     procedure SetFontSize(const Value: Integer);
     procedure SetLineHeight(const Value: Integer);
-    procedure SetOpenInNewTab(const Value: Boolean);
     procedure SetShowOpenAllAtTop(const Value: Boolean);
     procedure SetShowOpenAllItem(const Value: Boolean);
-    procedure SetSingleClickMode(const Value: Boolean);
   protected
     fAlwaysSaveAsPIDL: Boolean;
   public
@@ -120,13 +116,10 @@ type
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand;
     property FontSize: Integer read fFontSize write SetFontSize;
     property LineHeight: Integer read fLineHeight write SetLineHeight;
-    property OpenInNewTab: Boolean read GetOpenInNewTab write SetOpenInNewTab;
     property ShowOpenAllAtTop: Boolean read fShowOpenAllAtTop write
         SetShowOpenAllAtTop;
     property ShowOpenAllItem: Boolean read fShowOpenAllItem write
         SetShowOpenAllItem;
-    property SingleClickMode: Boolean read GetSingleClickMode write
-        SetSingleClickMode;
     property UseSystemPopupMenu: Boolean read fUseSystemPopupMenu write
         fUseSystemPopupMenu;
   end;
@@ -166,9 +159,6 @@ begin
   SetDesktopIconFonts(BookmarkTree.Font);
   BookmarkTree.Align:= alClient;
   BookmarkTree.Indent:= 24;
-  // A click only selects; a double-click opens the bookmark. (Tools > Options >
-  // Display > Bookmarks > Single click mode turns on opening with one click.)
-  BookmarkTree.SingleClickMode:= false;
   BookmarkTree.TabOrder:= 2;
   ImageList:= CE_Images.SmallIcons;
   ImageIndex:= 18;
@@ -232,10 +222,6 @@ begin
 
   if Assigned(BookmarkTree.FocusedNode) then
   begin
-    if Settings.OpenInNewTab then
-    but_open_new_tab.Caption:= _('Open in current tab')
-    else
-    but_open_new_tab.Caption:= _('Open in new tab');
     but_open_new_tab.Visible:= BookmarkTree.GetNodeComp(BookmarkTree.FocusedNode) is TCENormalItemComp;
   end;
 end;
@@ -305,9 +291,6 @@ begin
       if assigned(BookmarkTree.FocusedNode) then
       begin
         comp:= BookmarkTree.GetNodeComp(BookmarkTree.FocusedNode);
-        if Settings.OpenInNewTab then
-        comp.MouseClick([ssAlt,ssLeft], mbLeft)
-        else
         comp.MouseClick([ssMiddle], mbMiddle);
       end;
     end;
@@ -603,18 +586,6 @@ end;
 {##############################################################################}
 
 {-------------------------------------------------------------------------------
-  Get/Set SingleClickMode
--------------------------------------------------------------------------------}
-function TCEBookmarkPanelSettings.GetSingleClickMode: Boolean;
-begin
-  Result:= BookmarkPanel.BookmarkTree.SingleClickMode;
-end;
-procedure TCEBookmarkPanelSettings.SetSingleClickMode(const Value: Boolean);
-begin
-  BookmarkPanel.BookmarkTree.SingleClickMode:= Value;
-end;
-
-{-------------------------------------------------------------------------------
   Get/Set AutoExpand
 -------------------------------------------------------------------------------}
 function TCEBookmarkPanelSettings.GetAutoExpand: Boolean;
@@ -636,18 +607,6 @@ end;
 procedure TCEBookmarkPanelSettings.SetAutoCollapse(const Value: Boolean);
 begin
   BookmarkPanel.BookmarkTree.AutoCollapse:= Value;
-end;
-
-{-------------------------------------------------------------------------------
-  Get/Set OpenInNewTab
--------------------------------------------------------------------------------}
-function TCEBookmarkPanelSettings.GetOpenInNewTab: Boolean;
-begin
-  Result:= OpenBookmarkInNewTabByDefault;
-end;
-procedure TCEBookmarkPanelSettings.SetOpenInNewTab(const Value: Boolean);
-begin
-  OpenBookmarkInNewTabByDefault:= Value;
 end;
 
 {-------------------------------------------------------------------------------

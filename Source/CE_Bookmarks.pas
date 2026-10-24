@@ -58,8 +58,7 @@ type
         Integer; virtual;
     procedure KeyAction(CharCode: Word; Shift: TShiftState); virtual;
     procedure LoadFromXmlNode(XmlNode: TJvSimpleXmlElem); virtual;
-    procedure MouseClick(Shift: TShiftState; Button: TMouseButton; SingleClickMode:
-        Boolean = false); virtual;
+    procedure MouseClick(Shift: TShiftState; Button: TMouseButton); virtual;
     procedure SaveToXmlNode(XmlNode: TJvSimpleXmlElem); virtual;
     function SupportsDragDrop: Boolean; virtual;
     property Enabled: Boolean read fEnabled write fEnabled;
@@ -200,7 +199,7 @@ end;
   Handle mouse click
 -------------------------------------------------------------------------------}
 procedure TCECustomBookComp.MouseClick(Shift: TShiftState; Button:
-    TMouseButton; SingleClickMode: Boolean = false);
+    TMouseButton);
 begin
   // Override from descendant
 end;

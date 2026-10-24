@@ -50,6 +50,9 @@ Last updated: 2026-10-24 (version 0.97).
   unused `CMDrag` / `fInternalDrag*` code and the `DbgDrag` helpers. "Below row A" and "above row
   B" are now reported as the same place (the indicator used to jump between the two). The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
   `CE_BookmarkTree.pas`) are still in; remove them when this is closed.
+  Round 7 (2026-10-24): dragging works (confirmed). Opening a bookmark no longer changes the
+  active tab: every open goes through `OpenFolderInTab`; the Single click mode and Open in
+  new tab by default options are removed. Waiting for the multi-select drag test.
 - **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
   CHANGELOG entries and date are already in place (Bookmarks and Sessions testing, CA-006,
   is finished); recheck the date and the `- development builds` line just before running

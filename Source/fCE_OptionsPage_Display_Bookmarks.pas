@@ -35,8 +35,6 @@ type
   TCE_OptionsPage_Display_Bookmarks = class(TCEOptionsCustomPage)
     check_autoexpand: TCheckBox;
     check_autocollapse: TCheckBox;
-    check_singleclick: TCheckBox;
-    check_newtabdefault: TCheckBox;
   private
     { Private declarations }
   protected
@@ -74,8 +72,6 @@ begin
   // Toggles
   CEBookmarkPanel.Settings.AutoExpand:= check_autoexpand.Checked;
   CEBookmarkPanel.Settings.AutoCollapse:= check_autocollapse.Checked;
-  CEBookmarkPanel.Settings.SingleClickMode:= check_singleclick.Checked;
-  CEBookmarkPanel.Settings.OpenInNewTab:= check_newtabdefault.Checked;
 end;
 
 {-------------------------------------------------------------------------------
@@ -86,8 +82,6 @@ begin
   // Toggles
   check_autoexpand.Checked:= CEBookmarkPanel.Settings.AutoExpand;
   check_autocollapse.Checked:= CEBookmarkPanel.Settings.AutoCollapse;
-  check_singleclick.Checked:= CEBookmarkPanel.Settings.SingleClickMode;
-  check_newtabdefault.Checked:= CEBookmarkPanel.Settings.OpenInNewTab;
 end;
 
 {##############################################################################}

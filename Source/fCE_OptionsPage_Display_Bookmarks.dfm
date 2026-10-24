@@ -17,22 +17,4 @@ inherited CE_OptionsPage_Display_Bookmarks: TCE_OptionsPage_Display_Bookmarks
     TabOrder = 1
     OnClick = HandleChange
   end
-  object check_singleclick: TCheckBox
-    Left = 16
-    Top = 62
-    Width = 409
-    Height = 17
-    Caption = 'Single click mode'
-    TabOrder = 2
-    OnClick = HandleChange
-  end
-  object check_newtabdefault: TCheckBox
-    Left = 16
-    Top = 85
-    Width = 409
-    Height = 17
-    Caption = 'Open in new tab by default'
-    TabOrder = 3
-    OnClick = HandleChange
-  end
 end

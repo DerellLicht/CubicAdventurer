@@ -20,11 +20,11 @@ shown in the active tab is added at the top level of the list, and the panel doe
 be open. (Drag it into a category afterwards if you want it there.)
 
 **Use a bookmark**
-- Double-click a folder bookmark to open it in the current tab. With **Open in new tab by default**
-  turned on (Tools > Options > Display > Bookmarks), it opens in a new tab instead. Right-click >
-  **Open in new tab** or a middle-click also opens a new tab.
+- Double-click a folder bookmark to open it in a **new tab**. A bookmark never replaces the folder
+  of the tab you are in. Where the new tab goes and whether it is selected follow
+  Tools > Options > Tabs. A single click only selects the bookmark. Right-click >
+  **Open in new tab**, Alt+click or a middle-click do the same.
 - Double-click a file bookmark to launch the file.
-- With **Single click mode** (same options page), one click is enough.
 
 **Open a whole category at once**: select the category, then right-click > **Open All in Tabs**:
 - **Open All in Tabs**: every folder in it opens in its own tab.
