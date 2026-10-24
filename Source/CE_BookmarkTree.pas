@@ -53,6 +53,9 @@ type
     fSingleClickMode: Boolean;
   protected
     procedure ClearDropIndicator;
+    procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
+    procedure MoveSelectionTo(Pt: TPoint);
+    function TargetInsideSelection(Node: PVirtualNode; const Nodes: TNodeArray): Boolean;
     procedure ClearDropNode;
     procedure DoDragDrop(Source: TObject; const DataObject: TVTDragDataObject; const Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode:
         TDropMode); override;
@@ -623,8 +626,6 @@ var
   hd: TCommonShellIDList;
   data: PCEBookData;
   node: PVirtualNode;
-  target: PVirtualNode;
-  effMode: TDropMode;
 begin
   DbgDrag(Format('DROP source=%s isSelf=%s mode=%d effect=%d targetAssigned=%s selected=%d',
       [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(Mode), Effect,
@@ -646,46 +647,7 @@ begin
 
   if Source = self then // Moving nodes inside self.
   begin
-    Nodes:= self.GetSortedSelection(True);
-    target:= Self.DropTargetNode;
-    if (target = nil) then
-    begin
-      // dropped on the empty area below the items: append at the top level
-      DbgDrag(Format('DROP move: nodes=%d to end of list', [Length(Nodes)]));
-      for I := 0 to High(Nodes) do
-      begin
-        Self.MoveTo(Nodes[I], Self.RootNode, amAddChildLast, False);
-      end;
-    end
-    else
-    begin
-      effMode:= ResolveInternalDrop(target, Pt);
-      DbgDrag(Format('DROP move: nodes=%d effMode=%d', [Length(Nodes), Ord(effMode)]));
-      case effMode of
-        dmAbove:
-          begin
-            for I := 0 to High(Nodes) do
-            begin
-              Self.MoveTo(Nodes[I], target, amInsertBefore, False);
-            end;
-          end;
-        dmBelow:
-          begin
-            // each node goes right after the target, so go backwards to keep the order
-            for I := High(Nodes) downto 0 do
-            begin
-              Self.MoveTo(Nodes[I], target, amInsertAfter, False);
-            end;
-          end;
-      else
-        begin
-          for I := 0 to High(Nodes) do
-          begin
-            Self.MoveTo(Nodes[I], target, amAddChildLast, False);
-          end;
-        end;
-      end;
-    end;
+    MoveSelectionTo(Pt);
   end
   else if assigned(DataObject) then// Dropping from outside self.
   begin
@@ -930,6 +892,129 @@ begin
   data.BookComp:= CEBookCompList.CreateNewComp(ItemName);
   if not assigned(data.BookComp) then
   data.BookComp:= TCECustomBookComp.Create;
+end;
+
+{*------------------------------------------------------------------------------
+  True when Node, or any of its ancestors, is one of Nodes. Dropping the
+  selection there would move a node into itself or into its own descendant.
+-------------------------------------------------------------------------------}
+function TCEBookmarkTree.TargetInsideSelection(Node: PVirtualNode; const Nodes: TNodeArray): Boolean;
+var
+  i: Integer;
+begin
+  Result:= false;
+  // Stop at the invisible root node: its Parent field points at the tree object.
+  while Assigned(Node) and (Node <> Self.RootNode) do
+  begin
+    for i:= 0 to High(Nodes) do
+    begin
+      if (Node = Nodes[i]) then
+      begin
+        Result:= true;
+        Exit;
+      end;
+    end;
+    Node:= Node.Parent;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Move the selected nodes to the place under Pt (client coordinates), using the
+  same rules as the drop indicator (see ResolveInternalDrop). Dropping on the
+  empty area below the items appends the nodes at the top level. A drop onto the
+  selection itself is ignored.
+-------------------------------------------------------------------------------}
+procedure TCEBookmarkTree.MoveSelectionTo(Pt: TPoint);
+var
+  Nodes: TNodeArray;
+  target: PVirtualNode;
+  effMode: TDropMode;
+  i: Integer;
+begin
+  ClearDropIndicator;
+  Nodes:= Self.GetSortedSelection(True);
+  if (Length(Nodes) = 0) then
+  begin
+    Exit;
+  end;
+
+  target:= Self.GetNodeAt(Pt.X, Pt.Y);
+  if (target = nil) then
+  begin
+    DbgDrag(Format('MOVE nodes=%d to end of list', [Length(Nodes)]));
+    for i:= 0 to High(Nodes) do
+    begin
+      Self.MoveTo(Nodes[i], Self.RootNode, amAddChildLast, False);
+    end;
+  end
+  else
+  begin
+    effMode:= ResolveInternalDrop(target, Pt);
+    if TargetInsideSelection(target, Nodes) then
+    begin
+      DbgDrag('MOVE refused: target is inside the selection');
+      Exit;
+    end;
+    DbgDrag(Format('MOVE nodes=%d effMode=%d', [Length(Nodes), Ord(effMode)]));
+    case effMode of
+      dmAbove:
+        begin
+          for i:= 0 to High(Nodes) do
+          begin
+            Self.MoveTo(Nodes[i], target, amInsertBefore, False);
+          end;
+        end;
+      dmBelow:
+        begin
+          // each node goes right after the target, so go backwards to keep the order
+          for i:= High(Nodes) downto 0 do
+          begin
+            Self.MoveTo(Nodes[i], target, amInsertAfter, False);
+          end;
+        end;
+    else
+      begin
+        for i:= 0 to High(Nodes) do
+        begin
+          Self.MoveTo(Nodes[i], target, amAddChildLast, False);
+        end;
+      end;
+    end;
+  end;
+
+  RefreshScrollHeight;
+  Self.Invalidate;
+  BookmarksChange;
+end;
+
+{*------------------------------------------------------------------------------
+  Catch the drop of a drag that started in this tree. With a Delphi (VCL) drag,
+  Virtual Treeview 8 never reaches its own drop handler (DoDragDrop), so the
+  move is done here. Everything else (including drags from other controls and
+  drops from Explorer) goes to Virtual Treeview as before.
+-------------------------------------------------------------------------------}
+procedure TCEBookmarkTree.CMDrag(var Message: TCMDrag);
+var
+  src: TObject;
+  pt: TPoint;
+begin
+  DbgDrag(Format('CMDRAG msg=%d', [Ord(Message.DragMessage)]));
+  if (Message.DragMessage = dmDragDrop) and Assigned(Message.DragRec) then
+  begin
+    src:= Message.DragRec^.Source;
+    if (src is TDragControlObject) then
+    begin
+      src:= TDragControlObject(src).Control;
+    end;
+    if (src = Self) then
+    begin
+      pt:= Self.ScreenToClient(Message.DragRec^.Pos);
+      MoveSelectionTo(pt);
+      Message.Result:= 0;
+      Exit;
+    end;
+  end;
+  inherited;
 end;
 
 {*------------------------------------------------------------------------------

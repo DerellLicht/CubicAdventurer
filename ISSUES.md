@@ -35,7 +35,9 @@ Last updated: 2026-10-24 (version 0.97).
   or any node with children: top quarter above, middle inside, bottom quarter below; a
   plain bookmark: upper half above, lower half below, so it can no longer swallow items),
   empty area below the list appends at the top level, multi-node moves keep their order,
-  Ctrl-drag always moves. The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
+  Ctrl-drag always moves. Round 3: releasing the mouse did nothing because Virtual
+  Treeview 8 never calls `DoDragDrop` for a Delphi (VCL) drag, so the drop is now caught
+  in `TCEBookmarkTree.CMDrag` (`dmDragDrop`) and done by `MoveSelectionTo`. The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
   `CE_BookmarkTree.pas`) are still in; remove them when this is closed.
 - **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
   CHANGELOG entries and date are already in place (Bookmarks and Sessions testing, CA-006,
