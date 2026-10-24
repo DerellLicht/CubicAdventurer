@@ -40,7 +40,11 @@ Last updated: 2026-10-24 (version 0.97).
   in `TCEBookmarkTree.CMDrag` (`dmDragDrop`) and done by `MoveSelectionTo`. Round 4: the event log showed
   Delphi cancelling the drag on release (`dmDragLeave` then `dmDragCancel`, never `dmDragDrop`),
   i.e. Virtual Treeview 8 reports "drop refused" even though `DoDragOver` accepts; `CMDrag`
-  now puts the accept verdict back (`fInternalDragAccept`). The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
+  now puts the accept verdict back (`fInternalDragAccept`). Round 5: first try did not help (log still
+  leave + cancel), so the verdict is now restored whenever `DoDragOver` ran for the message
+  (`fSelfOverCalled`), not by comparing the drag object's class; the log line at leave and
+  cancel now shows the drag object's class and the verdict. "Below row A" and "above row
+  B" are now reported as the same place (the indicator used to jump between the two). The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
   `CE_BookmarkTree.pas`) are still in; remove them when this is closed.
 - **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
   CHANGELOG entries and date are already in place (Bookmarks and Sessions testing, CA-006,
