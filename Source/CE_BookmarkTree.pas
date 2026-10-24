@@ -47,6 +47,7 @@ type
     fDragEnterMouseShiftState: TShiftState;
     fDropNodeAcceptsDrop: Boolean;
     fIndActive: Boolean;
+    fInternalDragAccept: Boolean;
     fIndMode: TDropMode;
     fIndNode: PVirtualNode;
     fOnBookmarksChange: TNotifyEvent;
@@ -717,6 +718,7 @@ var
 begin
   inherited DoDragOver(Source,Shift,State,Pt,Mode,Effect);
   Result:= false;
+  fInternalDragAccept:= false;
   DbgDrag(Format('OVER source=%s isSelf=%s state=%d mode=%d targetAssigned=%s selected=%d',
       [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(State), Ord(Mode),
        BoolToStr(Assigned(Self.DropTargetNode), True), Self.SelectedCount]));
@@ -737,6 +739,7 @@ begin
       // Empty area below the items: the nodes will be appended at the top level.
       Effect:= DROPEFFECT_MOVE;
       Result:= true;
+      fInternalDragAccept:= true;
       ShowDropIndicator(Self.GetLastVisible, dmBelow);
     end
     else // Internal move
@@ -765,6 +768,7 @@ begin
       // Copying (Ctrl) is not implemented, so a drag inside the tree always moves.
       Effect:= DROPEFFECT_MOVE;
       Result:= true;
+      fInternalDragAccept:= true;
       ShowDropIndicator(dropNode, effMode);
     end;
   end
@@ -988,33 +992,49 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Catch the drop of a drag that started in this tree. With a Delphi (VCL) drag,
-  Virtual Treeview 8 never reaches its own drop handler (DoDragDrop), so the
-  move is done here. Everything else (including drags from other controls and
-  drops from Explorer) goes to Virtual Treeview as before.
+  Handle the Delphi (VCL) drag messages of a drag that started in this tree.
+  Virtual Treeview 8 turns the "accepted" answer of such a drag into "refused",
+  so Delphi cancelled every drop (dmDragLeave followed by dmDragCancel, never
+  dmDragDrop). DoDragOver stores its own verdict in fInternalDragAccept and that
+  verdict is put back as the message result here. The drop itself is done here
+  too, because Virtual Treeview never reaches its own DoDragDrop for it.
+  Drags from other controls and drops from Explorer go to Virtual Treeview as
+  before.
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkTree.CMDrag(var Message: TCMDrag);
 var
   src: TObject;
   pt: TPoint;
 begin
-  DbgDrag(Format('CMDRAG msg=%d', [Ord(Message.DragMessage)]));
-  if (Message.DragMessage = dmDragDrop) and Assigned(Message.DragRec) then
+  src:= nil;
+  if Assigned(Message.DragRec) then
   begin
     src:= Message.DragRec^.Source;
     if (src is TDragControlObject) then
     begin
       src:= TDragControlObject(src).Control;
     end;
-    if (src = Self) then
-    begin
-      pt:= Self.ScreenToClient(Message.DragRec^.Pos);
-      MoveSelectionTo(pt);
-      Message.Result:= 0;
-      Exit;
-    end;
   end;
+
+  if (src = Self) and (Message.DragMessage = dmDragDrop) then
+  begin
+    DbgDrag('CMDRAG drop');
+    pt:= Self.ScreenToClient(Message.DragRec^.Pos);
+    MoveSelectionTo(pt);
+    Message.Result:= 0;
+    Exit;
+  end;
+
   inherited;
+
+  if (src = Self) and (Message.DragMessage in [dmDragEnter, dmDragMove]) then
+  begin
+    Message.Result:= Ord(fInternalDragAccept);
+  end;
+  if (Message.DragMessage in [dmDragLeave, dmDragCancel]) then
+  begin
+    DbgDrag(Format('CMDRAG msg=%d', [Ord(Message.DragMessage)]));
+  end;
 end;
 
 {*------------------------------------------------------------------------------

@@ -37,7 +37,10 @@ Last updated: 2026-10-24 (version 0.97).
   empty area below the list appends at the top level, multi-node moves keep their order,
   Ctrl-drag always moves. Round 3: releasing the mouse did nothing because Virtual
   Treeview 8 never calls `DoDragDrop` for a Delphi (VCL) drag, so the drop is now caught
-  in `TCEBookmarkTree.CMDrag` (`dmDragDrop`) and done by `MoveSelectionTo`. The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
+  in `TCEBookmarkTree.CMDrag` (`dmDragDrop`) and done by `MoveSelectionTo`. Round 4: the event log showed
+  Delphi cancelling the drag on release (`dmDragLeave` then `dmDragCancel`, never `dmDragDrop`),
+  i.e. Virtual Treeview 8 reports "drop refused" even though `DoDragOver` accepts; `CMDrag`
+  now puts the accept verdict back (`fInternalDragAccept`). The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
   `CE_BookmarkTree.pas`) are still in; remove them when this is closed.
 - **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
   CHANGELOG entries and date are already in place (Bookmarks and Sessions testing, CA-006,
