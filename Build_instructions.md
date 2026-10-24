@@ -13,7 +13,7 @@ How to assemble the tools and libraries and build CubicAdventurer from source wi
   installed and registered.
 - Git.
 - The third-party libraries below. The original author's dependency list is in
-  `Compiling_Instructions.txt`; it is out of date, so use this file.
+  `dev_notes\Compiling_Instructions.txt`; it is out of date, so use this file.
 - Only for packaging a release: GNU make (Cygwin; *not* Delphi's own `make.exe`), Python 3,
   Inno Setup 7 and the `gh` command-line tool. See "Packaging" at the end.
 
