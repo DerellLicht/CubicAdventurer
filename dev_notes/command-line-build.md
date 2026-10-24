@@ -1,3 +1,8 @@
+# 10/23/26 NOTE
+This document is completely irrelevant, since Delphi 13 Community Edition
+does not support command-line builds at all.
+I am leaving this document here as a reference, in case something good happens in the future.
+
 # Command-line build of CubicAdventurer (Delphi 13 Community Edition)
 
 Status: **untested**. Everything here is based on what we know about the install, not on a build that has actually run. Test steps 1-3 first and send me the output.
