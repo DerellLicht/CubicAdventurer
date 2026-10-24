@@ -17,7 +17,8 @@ categories and bookmarks, stored in `bookmarks.xml` in the settings folder.
 
 **Quick way:** open the **Bookmarks** menu and choose **Bookmark current folder**. The folder
 shown in the active tab is added at the top level of the list, and the panel does not have to
-be open. (Drag it into a category afterwards if you want it there.)
+be open. (Drag it into a category afterwards if you want it there.) You can also drag a folder's
+tab onto the open Bookmarks panel and drop it where you want the bookmark.
 
 **Use a bookmark**
 - Double-click a folder bookmark to open it in a **new tab**. A bookmark never replaces the folder
