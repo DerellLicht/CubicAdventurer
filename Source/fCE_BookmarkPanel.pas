@@ -166,7 +166,9 @@ begin
   SetDesktopIconFonts(BookmarkTree.Font);
   BookmarkTree.Align:= alClient;
   BookmarkTree.Indent:= 24;
-  BookmarkTree.SingleClickMode:= true;
+  // A click only selects; a double-click opens the bookmark. (Tools > Options >
+  // Display > Bookmarks > Single click mode turns on opening with one click.)
+  BookmarkTree.SingleClickMode:= false;
   BookmarkTree.TabOrder:= 2;
   ImageList:= CE_Images.SmallIcons;
   ImageIndex:= 18;
