@@ -12,9 +12,9 @@ Last updated: 2026-10-24 (version 0.97).
 
 ## Before the first public release
 
-- **CA-003 [task] `make release`** for the first version. The
-  CHANGELOG entries and date are already in place (Bookmarks and Sessions testing is finished); recheck the date and the `- development builds` line just before running
-  it. The make target tags, pushes the tag and creates the GitHub release.
+- **CA-003 [task] `make release`** for the first version. The CHANGELOG entries and date
+  (2026-10-24) are in place; the make target tags, pushes the tag and creates the GitHub
+  release.
 
 ## After the release, before announcing
 
