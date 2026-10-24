@@ -587,7 +587,6 @@ procedure TCEBookmarkTree.DoDragDrop(Source: TObject; const DataObject: TVTDragD
 var
  // data: PCEBookData;
   Attachmode: TVTNodeAttachMode;
-  Nodes: TNodeArray;
   i: Integer;
   hd: TCommonShellIDList;
   data: PCEBookData;
