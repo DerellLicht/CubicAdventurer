@@ -20,6 +20,7 @@ call.stack.*.txt
 xml_history/
 unicode.font.list.md
 ce.wiki
+dev_notes/
 
 # CubicAdventurer runtime settings written next to the exe (repo root)
 /settings.xml
