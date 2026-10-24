@@ -1063,6 +1063,10 @@ begin
   pt:= Self.ScreenToClient(Message.DragRec^.Pos);
   Message.Result:= 0;
   case Message.DragMessage of
+    // Delphi first asks which control takes the drag: this tree does. (Without
+    // this answer the drag never gets past this message and no drop is possible.)
+    dmFindTarget:
+      Message.Result:= LRESULT(Self);
     dmDragEnter, dmDragMove:
       begin
         node:= Self.GetNodeAt(pt.X, pt.Y);
