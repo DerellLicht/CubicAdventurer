@@ -26,5 +26,6 @@ dev_notes/
 /settings.xml
 /layout.xml
 /sessions.xml
+/bookmarks.xml
 installer/output/
 temp_notes.md
