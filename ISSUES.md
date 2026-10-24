@@ -8,16 +8,29 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
 Numbers are never reused.
 
-Last updated: 2026-10-23 (version 0.97).
+Last updated: 2026-10-24 (version 0.97).
 
 ## Before the first public release
 
-- **CA-006 [task] Test Bookmarks and Sessions** (see `Documents/Bookmarks_and_Sessions.md`).
-  This is the only thing the release waits for.
-- **CA-003 [task] `make release`** for the first version, after CA-006. The CHANGELOG
-  entries and date are already in place; recheck the date and the `- development builds`
-  line just before running it. The make target tags, pushes the tag and creates the
-  GitHub release.
+- **CA-007 [bug] Bookmarks panel entries show two icons.** Cause (probably):
+  `TCEBookmarkTree.DoGetImageIndex` (`CE_BookmarkTree.pas`, around line 423) returns the
+  bookmark's icon for every image kind except overlays, and Virtual Treeview 8 also asks
+  for the state image (`ikState`), so the same icon is drawn twice. Fix: return
+  `Index := -1` for `Kind = ikState`. Small change, easy to verify by eye.
+- **CA-008 [feature] Re-arrange bookmarks by dragging in the Bookmarks panel.** The code
+  for moving nodes inside the tree already exists (`TCEBookmarkTree.DoDragOver` /
+  `DoDragDrop`, `Source = self` branch, `MoveTo`), so it is a port bug and not a missing
+  feature: something in Virtual Treeview 8 differs from the 5.x the code was written for
+  (candidates: `Source` is not the tree for `dtVCL` drags, the drop mode or target node
+  is not what the code expects, or `GetSortedSelection` / `toAutoDeleteMovedNodes`
+  behave differently). Needs a diagnostic run: add `OutputDebugString` lines in both
+  handlers (Source class, Mode, DropTargetNode) and read them in the Event Log. Effort
+  is unknown until then; likely small, but it could grow if VT8 needs a different drag
+  setup. Also decide whether Ctrl-drag copy (currently a `// TODO`) should be hidden.
+- **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
+  CHANGELOG entries and date are already in place (Bookmarks and Sessions testing, CA-006,
+  is finished); recheck the date and the `- development builds` line just before running
+  it. The make target tags, pushes the tag and creates the GitHub release.
 
 ## After the release, before announcing
 
@@ -75,6 +88,19 @@ Last updated: 2026-10-23 (version 0.97).
 ## Wishlist
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
+
+- **CA-051 [feature] "Add to Bookmarks" in the file view's right-click menu** (for
+  folders, and perhaps for the current folder in the List view). Today a bookmark can only
+  be added from inside the Bookmarks panel, which has to be open already, so a new user
+  will probably never find the feature. Caveat: the item context menu is the standard
+  Explorer shell menu; adding an entry means hooking the menu-building code in the file
+  view (insert our own item into the shell menu before it is shown) and may not be
+  practical for every menu. Alternatives that cost less: a toolbar button, a menu item
+  under the Bookmarks menu ("Bookmark current folder"), or a hotkey, all of which work on
+  the current tab's folder without opening the panel.
+- **CA-052 [feature] Make Bookmarks easier to discover.** Related to CA-051. Ideas:
+  mention it in `README.md` and the first-run experience, and let the Bookmarks menu add
+  the current folder directly.
 
 - **CA-050 [feature] Background color for selected extensions.** On Tools > Options >
   Display > Fileview > Colors, add a "Background color" checkbox. When it is checked,
