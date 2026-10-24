@@ -1,6 +1,6 @@
 # CubicAdventurer Changelog
 
-## [0.97] - 2026-10-23
+## [0.97] - 2026-10-24
 - Initial release (beta)
 - Fixed: range-check error when listing `.png` files in Thumbnail mode
 - Fixed: Options > Tabs "Auto fit tabs" worked backwards; it is now "Fit tabs to labels" and checked by default
