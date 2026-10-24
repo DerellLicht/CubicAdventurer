@@ -46,9 +46,13 @@ type
     fAutoExpand: Boolean;
     fDragEnterMouseShiftState: TShiftState;
     fDropNodeAcceptsDrop: Boolean;
+    fIndActive: Boolean;
+    fIndMode: TDropMode;
+    fIndNode: PVirtualNode;
     fOnBookmarksChange: TNotifyEvent;
     fSingleClickMode: Boolean;
   protected
+    procedure ClearDropIndicator;
     procedure ClearDropNode;
     procedure DoDragDrop(Source: TObject; const DataObject: TVTDragDataObject; const Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode:
         TDropMode); override;
@@ -77,6 +81,8 @@ type
         override;
     procedure PopulateTree(XmlDoc: TJvSimpleXml); virtual;
     procedure RefreshScrollHeight;
+    function ResolveInternalDrop(var Node: PVirtualNode; Pt: TPoint): TDropMode;
+    procedure ShowDropIndicator(Node: PVirtualNode; Mode: TDropMode);
   public
     constructor Create(AOwner: TComponent); override;
     procedure EditSelectedNode;
@@ -151,6 +157,9 @@ begin
   Self.NodeDataSize:= SizeOf(TCEBookData);
   Self.TreeOptions.SelectionOptions:= [toRightClickSelect, toMultiSelect];
   Self.TreeOptions.AnimationOptions:= [];
+  // The tree draws its own drop indicator (ShowDropIndicator), so that the line
+  // always matches the place where the drop will really go.
+  Self.TreeOptions.PaintOptions:= Self.TreeOptions.PaintOptions - [toShowDropmark];
   Self.TreeOptions.AutoOptions:= [toAutoDropExpand,toAutoScrollOnExpand,toAutoTristateTracking,toAutoDeleteMovedNodes];
   Self.TreeOptions.MiscOptions:= [toAcceptOLEDrop,toEditable,toFullRepaintOnResize,toInitOnSave];
   Self.Header.Options:= [hoAutoResize,hoColumnResize];
@@ -614,6 +623,8 @@ var
   hd: TCommonShellIDList;
   data: PCEBookData;
   node: PVirtualNode;
+  target: PVirtualNode;
+  effMode: TDropMode;
 begin
   DbgDrag(Format('DROP source=%s isSelf=%s mode=%d effect=%d targetAssigned=%s selected=%d',
       [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(Mode), Effect,
@@ -631,18 +642,49 @@ begin
     AttachMode := amNowhere;
   end;
 
+  ClearDropIndicator;
+
   if Source = self then // Moving nodes inside self.
   begin
     Nodes:= self.GetSortedSelection(True);
-    if Effect = DROPEFFECT_COPY then
+    target:= Self.DropTargetNode;
+    if (target = nil) then
     begin
-      // TODO
+      // dropped on the empty area below the items: append at the top level
+      DbgDrag(Format('DROP move: nodes=%d to end of list', [Length(Nodes)]));
+      for I := 0 to High(Nodes) do
+      begin
+        Self.MoveTo(Nodes[I], Self.RootNode, amAddChildLast, False);
+      end;
     end
     else
     begin
-      DbgDrag(Format('DROP move: nodes=%d attachMode=%d', [Length(Nodes), Ord(AttachMode)]));
-      for I := 0 to High(Nodes) do
-      self.MoveTo(Nodes[I], self.DropTargetNode, AttachMode, False);
+      effMode:= ResolveInternalDrop(target, Pt);
+      DbgDrag(Format('DROP move: nodes=%d effMode=%d', [Length(Nodes), Ord(effMode)]));
+      case effMode of
+        dmAbove:
+          begin
+            for I := 0 to High(Nodes) do
+            begin
+              Self.MoveTo(Nodes[I], target, amInsertBefore, False);
+            end;
+          end;
+        dmBelow:
+          begin
+            // each node goes right after the target, so go backwards to keep the order
+            for I := High(Nodes) downto 0 do
+            begin
+              Self.MoveTo(Nodes[I], target, amInsertAfter, False);
+            end;
+          end;
+      else
+        begin
+          for I := 0 to High(Nodes) do
+          begin
+            Self.MoveTo(Nodes[I], target, amAddChildLast, False);
+          end;
+        end;
+      end;
     end;
   end
   else if assigned(DataObject) then// Dropping from outside self.
@@ -707,6 +749,8 @@ var
   Nodes: TNodeArray;
   i: Integer;
   tmpNode: PVirtualNode;
+  dropNode: PVirtualNode;
+  effMode: TDropMode;
   data: PCEBookData;
 begin
   inherited DoDragOver(Source,Shift,State,Pt,Mode,Effect);
@@ -715,16 +759,30 @@ begin
       [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(State), Ord(Mode),
        BoolToStr(Assigned(Self.DropTargetNode), True), Self.SelectedCount]));
 
+  if State = dsDragLeave then
+  begin
+    ClearDropIndicator;
+  end;
+
   if Source = self then
   begin
-    if self.DropTargetNode = nil then
+    if State = dsDragLeave then
     begin
       Effect:= DROPEFFECT_NONE;
+    end
+    else if self.DropTargetNode = nil then
+    begin
+      // Empty area below the items: the nodes will be appended at the top level.
+      Effect:= DROPEFFECT_MOVE;
+      Result:= true;
+      ShowDropIndicator(Self.GetLastVisible, dmBelow);
     end
     else // Internal move
     begin
       Nodes:= self.GetSortedSelection(True);
-      tmpNode:= self.DropTargetNode;
+      dropNode:= self.DropTargetNode;
+      effMode:= ResolveInternalDrop(dropNode, Pt);
+      tmpNode:= dropNode;
       // Stop at the invisible root node: in Virtual Treeview its Parent field
       // points back at the tree object, not at a node, so walking past it read
       // garbage (access violation on every drag over the tree).
@@ -735,17 +793,17 @@ begin
           if tmpNode = Nodes[i] then
           begin
             Effect:= DROPEFFECT_NONE;
+            ClearDropIndicator;
             Exit;
           end;
         end;
         tmpNode:= tmpNode.Parent;
       end;
 
-      if Shift = [ssCtrl] then
-      Effect:= DROPEFFECT_COPY
-      else
+      // Copying (Ctrl) is not implemented, so a drag inside the tree always moves.
       Effect:= DROPEFFECT_MOVE;
       Result:= true;
+      ShowDropIndicator(dropNode, effMode);
     end;
   end
   else if (source is TCESpTabToolbar) or (source is TSpTBXItemDragObject) then
@@ -755,6 +813,15 @@ begin
   end
   else // Shell drop
   begin
+    if (State <> dsDragLeave) and Assigned(Self.DropTargetNode) and (Mode <> dmNowhere) then
+    begin
+      ShowDropIndicator(Self.DropTargetNode, Mode);
+    end
+    else
+    begin
+      ClearDropIndicator;
+    end;
+
     if State = dsDragLeave then
     begin
       ClearDropNode;
@@ -863,6 +930,129 @@ begin
   data.BookComp:= CEBookCompList.CreateNewComp(ItemName);
   if not assigned(data.BookComp) then
   data.BookComp:= TCECustomBookComp.Create;
+end;
+
+{*------------------------------------------------------------------------------
+  Remove the drop indicator from the screen (if one is shown).
+-------------------------------------------------------------------------------}
+procedure TCEBookmarkTree.ClearDropIndicator;
+begin
+  if fIndActive then
+  begin
+    fIndActive:= false;
+    fIndNode:= nil;
+    Self.Invalidate;
+    Self.Update;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Work out where a drag inside the tree would really drop, from the mouse
+  position (Pt, client coordinates) over the target row.
+  A category (or any node that already has children) can take items: the middle
+  of its row means "inside", the top and bottom quarters mean "above" and
+  "below". A plain bookmark cannot take items, so its row is only split in
+  "above" (upper half) and "below" (lower half). "Below" an expanded node that
+  has children means "first child", so Node is changed to that first child and
+  the result is dmAbove; that is what the indicator line suggests visually.
+  Returns the drop mode; Node may be changed as described.
+-------------------------------------------------------------------------------}
+function TCEBookmarkTree.ResolveInternalDrop(var Node: PVirtualNode; Pt: TPoint): TDropMode;
+var
+  r: TRect;
+  h: Integer;
+  comp: TCECustomBookComp;
+  isContainer: Boolean;
+begin
+  Result:= dmOnNode;
+  if (Node = nil) then
+  begin
+    Exit;
+  end;
+
+  r:= Self.GetDisplayRect(Node, NoColumn, False);
+  h:= r.Bottom - r.Top;
+  if (h <= 0) then
+  begin
+    Exit;
+  end;
+
+  comp:= GetNodeComp(Node);
+  isContainer:= (Node.ChildCount > 0) or (comp is TCECategoryComp);
+
+  if isContainer then
+  begin
+    if (Pt.Y < r.Top + (h div 4)) then
+    begin
+      Result:= dmAbove;
+    end
+    else if (Pt.Y >= r.Bottom - (h div 4)) then
+    begin
+      Result:= dmBelow;
+    end;
+  end
+  else if (Pt.Y < r.Top + (h div 2)) then
+  begin
+    Result:= dmAbove;
+  end
+  else
+  begin
+    Result:= dmBelow;
+  end;
+
+  if (Result = dmBelow) and (Node.ChildCount > 0) and Self.Expanded[Node] then
+  begin
+    Node:= Node.FirstChild;
+    Result:= dmAbove;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Draw the drop indicator for Node: a line above or below the row, or a frame
+  around the row for "inside". The previous indicator is erased first when it
+  was somewhere else. The line is drawn straight onto the tree's canvas, which
+  is how Virtual Treeview draws its own drop mark.
+-------------------------------------------------------------------------------}
+procedure TCEBookmarkTree.ShowDropIndicator(Node: PVirtualNode; Mode: TDropMode);
+var
+  r: TRect;
+begin
+  if fIndActive and ((Node <> fIndNode) or (Mode <> fIndMode)) then
+  begin
+    fIndActive:= false;
+    Self.Invalidate;
+    Self.Update;
+  end;
+
+  fIndNode:= Node;
+  fIndMode:= Mode;
+  fIndActive:= Assigned(Node) and (Mode <> dmNowhere);
+  if not fIndActive then
+  begin
+    Exit;
+  end;
+
+  r:= Self.GetDisplayRect(Node, NoColumn, False);
+  Canvas.Pen.Style:= psSolid;
+  Canvas.Pen.Color:= clHighlight;
+  Canvas.Pen.Width:= 2;
+  case Mode of
+    dmAbove:
+      begin
+        Canvas.MoveTo(r.Left, r.Top + 1);
+        Canvas.LineTo(r.Right, r.Top + 1);
+      end;
+    dmBelow:
+      begin
+        Canvas.MoveTo(r.Left, r.Bottom - 1);
+        Canvas.LineTo(r.Right, r.Bottom - 1);
+      end;
+    dmOnNode:
+      begin
+        Canvas.Brush.Style:= bsClear;
+        Canvas.Rectangle(r.Left, r.Top, r.Right, r.Bottom);
+      end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------

@@ -29,10 +29,14 @@ Last updated: 2026-10-24 (version 0.97).
   handlers (Source class, Mode, DropTargetNode) and read them in the Event Log. Effort
   is unknown until then; likely small, but it could grow if VT8 needs a different drag
   setup. Also decide whether Ctrl-drag copy (currently a `// TODO`) should be hidden.
-  Status 2026-10-24: diagnostic lines (`CE_BookmarkDrag:` prefix, helper `DbgDrag` in
-  `CE_BookmarkTree.pas`) are pushed. Test: run from the IDE (F9), drag one bookmark to a
-  new place, and paste the `CE_BookmarkDrag:` lines from the Event Log. No lines at all
-  means the drag never starts. Remove the helper when this is closed.
+  Status 2026-10-24: the crash (parent walk past the root node) is fixed. Second round
+  pushed, waiting for Derell's test: own drop indicator (line above/below a row, frame for
+  "inside"; Virtual Treeview's `toShowDropmark` is switched off), drop zones (a category
+  or any node with children: top quarter above, middle inside, bottom quarter below; a
+  plain bookmark: upper half above, lower half below, so it can no longer swallow items),
+  empty area below the list appends at the top level, multi-node moves keep their order,
+  Ctrl-drag always moves. The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
+  `CE_BookmarkTree.pas`) are still in; remove them when this is closed.
 - **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
   CHANGELOG entries and date are already in place (Bookmarks and Sessions testing, CA-006,
   is finished); recheck the date and the `- development builds` line just before running
