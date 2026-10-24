@@ -725,7 +725,10 @@ begin
     begin
       Nodes:= self.GetSortedSelection(True);
       tmpNode:= self.DropTargetNode;
-      while assigned(tmpNode) do
+      // Stop at the invisible root node: in Virtual Treeview its Parent field
+      // points back at the tree object, not at a node, so walking past it read
+      // garbage (access violation on every drag over the tree).
+      while assigned(tmpNode) and (tmpNode <> Self.RootNode) do
       begin
         for i := 0 to High(Nodes) do
         begin
