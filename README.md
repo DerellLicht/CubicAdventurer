@@ -47,7 +47,9 @@ This build is a Debug build, which will generate error dialogs in some cases.
 Please report any such errors, and any other issues you observe, on the
 [Issues](https://github.com/DerellLicht/CubicAdventurer/issues)
 page of this repository.  
-A discussion page will be linked here once it exists.  
+Questions, ideas and general discussion are welcome on the
+[Discussions](https://github.com/DerellLicht/CubicAdventurer/discussions)
+page.  
 
 A useful report includes the text of the error dialog (for example "Range check error"),
 what you were doing when it appeared, and your version of Windows.
