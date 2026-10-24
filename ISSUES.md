@@ -72,6 +72,22 @@ Last updated: 2026-10-23 (version 0.97).
   (3) widen the Name column or the whole page. Also check the category of
   `act_help_restore_layout`, which is now in the View menu.
 
+## Wishlist
+
+Nice-to-have ideas, taken up when there is no bug list to work on.
+
+- **CA-050 [feature] Background color for selected extensions.** On Tools > Options >
+  Display > Fileview > Colors, add a "Background color" checkbox. When it is checked,
+  enable a second extension list with its own color selection box, identical to the
+  existing extension-color one (the existing one sets the text color). Use case, from
+  the maintainer's `ndir32` directory lister: make files that "should stand out" show
+  up, mainly `.bak`, plus rarer ones such as `.err`. Probable approach: reuse the
+  attribute-background mechanism in `CE_FileViewColors.pas` (view-item subclasses) and
+  the extension-list handling in `fCE_FileView.AssignExtensionColors`. Remember the
+  settings policy: new properties get constructor defaults, and old `settings.xml`
+  files must still load. Backgrounds only render in Report, List and SmallIcon views
+  (see CA-010).
+
 ## Deferred (not started)
 
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
