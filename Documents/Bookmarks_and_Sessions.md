@@ -5,7 +5,7 @@ sessions). **Sessions** remember a whole set of open tabs.
 
 ## Bookmarks
 
-Open the Bookmarks panel with **Ctrl+B** (or the **Bookmarks** menu). It is a tree of
+Open the Bookmarks panel with **Ctrl+2** (or the **Bookmarks** menu). It is a tree of
 categories and bookmarks, stored in `bookmarks.xml` in the settings folder.
 
 **Add a category or bookmark**
