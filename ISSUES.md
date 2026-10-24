@@ -19,43 +19,8 @@ Last updated: 2026-10-24 (version 0.97).
   for the state image (`ikState`), so the same icon is drawn twice. Fix: return
   `Index := -1` for `Kind = ikState`. If two icons still show, the cause is elsewhere
   (look at `DoDrawImage` / the image list setup).
-- **CA-008 [feature] Re-arrange bookmarks by dragging in the Bookmarks panel.** The code
-  for moving nodes inside the tree already exists (`TCEBookmarkTree.DoDragOver` /
-  `DoDragDrop`, `Source = self` branch, `MoveTo`), so it is a port bug and not a missing
-  feature: something in Virtual Treeview 8 differs from the 5.x the code was written for
-  (candidates: `Source` is not the tree for `dtVCL` drags, the drop mode or target node
-  is not what the code expects, or `GetSortedSelection` / `toAutoDeleteMovedNodes`
-  behave differently). Needs a diagnostic run: add `OutputDebugString` lines in both
-  handlers (Source class, Mode, DropTargetNode) and read them in the Event Log. Effort
-  is unknown until then; likely small, but it could grow if VT8 needs a different drag
-  setup. Also decide whether Ctrl-drag copy (currently a `// TODO`) should be hidden.
-  Status 2026-10-24: the crash (parent walk past the root node) is fixed. Second round
-  pushed, waiting for Derell's test: own drop indicator (line above/below a row, frame for
-  "inside"; Virtual Treeview's `toShowDropmark` is switched off), drop zones (a category
-  or any node with children: top quarter above, middle inside, bottom quarter below; a
-  plain bookmark: upper half above, lower half below, so it can no longer swallow items),
-  empty area below the list appends at the top level, multi-node moves keep their order,
-  Ctrl-drag always moves. Round 3: releasing the mouse did nothing because Virtual
-  Treeview 8 never calls `DoDragDrop` for a Delphi (VCL) drag, so the drop is now caught
-  in `TCEBookmarkTree.CMDrag` (`dmDragDrop`) and done by `MoveSelectionTo`. Round 4: the event log showed
-  Delphi cancelling the drag on release (`dmDragLeave` then `dmDragCancel`, never `dmDragDrop`),
-  i.e. Virtual Treeview 8 reports "drop refused" even though `DoDragOver` accepts; `CMDrag`
-  now puts the accept verdict back (`fInternalDragAccept`). Round 5: first try did not help (log still
-  leave + cancel), so the verdict is now restored whenever `DoDragOver` ran for the message
-  (`fSelfOverCalled`), not by comparing the drag object's class; the log line at leave and
-  cancel now shows the drag object's class and the verdict. Round 6: still
-  cancelled (the drag object is `TDragControlObjectEx`; the verdict printed at leave is always 0
-  because the leave call resets it, so it proves nothing), so the tree now uses an OLE drag
-  (`DragType := dtOLE`) and `toAutoDeleteMovedNodes` is off. If this works, delete the now
-  unused `CMDrag` / `fInternalDrag*` code and the `DbgDrag` helpers. "Below row A" and "above row
-  B" are now reported as the same place (the indicator used to jump between the two). The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
-  `CE_BookmarkTree.pas`) are still in; remove them when this is closed.
-  Round 7 (2026-10-24): dragging works (confirmed). Opening a bookmark no longer changes the
-  active tab: every open goes through `OpenFolderInTab`; the Single click mode and Open in
-  new tab by default options are removed. Waiting for the multi-select drag test.
-- **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
-  CHANGELOG entries and date are already in place (Bookmarks and Sessions testing, CA-006,
-  is finished); recheck the date and the `- development builds` line just before running
+- **CA-003 [task] `make release`** for the first version, after CA-007. The
+  CHANGELOG entries and date are already in place (Bookmarks and Sessions testing is finished); recheck the date and the `- development builds` line just before running
   it. The make target tags, pushes the tag and creates the GitHub release.
 
 ## After the release, before announcing

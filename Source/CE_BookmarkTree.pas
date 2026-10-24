@@ -47,15 +47,11 @@ type
     fDragEnterMouseShiftState: TShiftState;
     fDropNodeAcceptsDrop: Boolean;
     fIndActive: Boolean;
-    fInternalDragAccept: Boolean;
-    fInternalDragActive: Boolean;
-    fSelfOverCalled: Boolean;
     fIndMode: TDropMode;
     fIndNode: PVirtualNode;
     fOnBookmarksChange: TNotifyEvent;
   protected
     procedure ClearDropIndicator;
-    procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
     procedure MoveSelectionTo(Pt: TPoint);
     function TargetInsideSelection(Node: PVirtualNode; const Nodes: TNodeArray): Boolean;
     procedure ClearDropNode;
@@ -112,38 +108,6 @@ implementation
 
 uses
   CE_StdBookmarkComps, dCE_Actions, CE_LanguageEngine, Forms;
-
-var
-  DbgLastDragMsg: string = '';
-
-{*------------------------------------------------------------------------------
-  TEMPORARY (CA-008): write a drag diagnostic line to the debugger Event Log.
-  A line identical to the previous one is skipped, because DoDragOver is called
-  on every mouse move. Remove together with the calls once CA-008 is closed.
--------------------------------------------------------------------------------}
-procedure DbgDrag(const Msg: string);
-begin
-  if (Msg <> DbgLastDragMsg) then
-  begin
-    DbgLastDragMsg:= Msg;
-    OutputDebugString(PChar('CE_BookmarkDrag: ' + Msg));
-  end;
-end;
-
-{*------------------------------------------------------------------------------
-  TEMPORARY (CA-008): class name of a drag source, safe for nil
--------------------------------------------------------------------------------}
-function DbgSrc(Source: TObject): string;
-begin
-  if Assigned(Source) then
-  begin
-    Result:= Source.ClassName;
-  end
-  else
-  begin
-    Result:= '(nil)';
-  end;
-end;
 
 {*------------------------------------------------------------------------------
   Create an instance of TCEBookmarkTree object
@@ -626,9 +590,6 @@ var
   data: PCEBookData;
   node: PVirtualNode;
 begin
-  DbgDrag(Format('DROP source=%s isSelf=%s mode=%d effect=%d targetAssigned=%s selected=%d',
-      [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(Mode), Effect,
-       BoolToStr(Assigned(Self.DropTargetNode), True), Self.SelectedCount]));
 
   // Get Attach mode
   case Mode of
@@ -718,10 +679,6 @@ var
 begin
   inherited DoDragOver(Source,Shift,State,Pt,Mode,Effect);
   Result:= false;
-  fInternalDragAccept:= false;
-  DbgDrag(Format('OVER source=%s isSelf=%s state=%d mode=%d targetAssigned=%s selected=%d',
-      [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(State), Ord(Mode),
-       BoolToStr(Assigned(Self.DropTargetNode), True), Self.SelectedCount]));
 
   if State = dsDragLeave then
   begin
@@ -730,11 +687,6 @@ begin
 
   if Source = self then
   begin
-    fSelfOverCalled:= true;
-    if State <> dsDragLeave then
-    begin
-      fInternalDragActive:= true;
-    end;
     if State = dsDragLeave then
     begin
       Effect:= DROPEFFECT_NONE;
@@ -744,7 +696,6 @@ begin
       // Empty area below the items: the nodes will be appended at the top level.
       Effect:= DROPEFFECT_MOVE;
       Result:= true;
-      fInternalDragAccept:= true;
       ShowDropIndicator(Self.GetLastVisible, dmBelow);
     end
     else // Internal move
@@ -773,7 +724,6 @@ begin
       // Copying (Ctrl) is not implemented, so a drag inside the tree always moves.
       Effect:= DROPEFFECT_MOVE;
       Result:= true;
-      fInternalDragAccept:= true;
       ShowDropIndicator(dropNode, effMode);
     end;
   end
@@ -950,7 +900,6 @@ begin
   target:= Self.GetNodeAt(Pt.X, Pt.Y);
   if (target = nil) then
   begin
-    DbgDrag(Format('MOVE nodes=%d to end of list', [Length(Nodes)]));
     for i:= 0 to High(Nodes) do
     begin
       Self.MoveTo(Nodes[i], Self.RootNode, amAddChildLast, False);
@@ -961,10 +910,8 @@ begin
     effMode:= ResolveInternalDrop(target, Pt);
     if TargetInsideSelection(target, Nodes) then
     begin
-      DbgDrag('MOVE refused: target is inside the selection');
       Exit;
     end;
-    DbgDrag(Format('MOVE nodes=%d effMode=%d', [Length(Nodes), Ord(effMode)]));
     case effMode of
       dmAbove:
         begin
@@ -994,62 +941,6 @@ begin
   RefreshScrollHeight;
   Self.Invalidate;
   BookmarksChange;
-end;
-
-{*------------------------------------------------------------------------------
-  Handle the Delphi (VCL) drag messages of a drag that started in this tree.
-  Virtual Treeview 8 turns the "accepted" answer of such a drag into "refused",
-  so Delphi cancelled every drop (dmDragLeave followed by dmDragCancel, never
-  dmDragDrop). DoDragOver stores its own verdict in fInternalDragAccept (and
-  sets fSelfOverCalled, which tells this routine that DoDragOver ran for a drag
-  from this tree, whatever class Delphi uses for the drag object); the verdict
-  is put back as the message result here. The drop itself is done here too,
-  because Virtual Treeview never reaches its own DoDragDrop for it. Drags from
-  other controls and drops from Explorer go to Virtual Treeview as before.
--------------------------------------------------------------------------------}
-procedure TCEBookmarkTree.CMDrag(var Message: TCMDrag);
-var
-  rawSrc: TObject;
-  src: TObject;
-  pt: TPoint;
-begin
-  rawSrc:= nil;
-  if Assigned(Message.DragRec) then
-  begin
-    rawSrc:= Message.DragRec^.Source;
-  end;
-  src:= rawSrc;
-  if (src is TDragControlObject) then
-  begin
-    src:= TDragControlObject(src).Control;
-  end;
-
-  if (Message.DragMessage = dmDragDrop) and ((src = Self) or fInternalDragActive) then
-  begin
-    DbgDrag('CMDRAG drop');
-    fInternalDragActive:= false;
-    pt:= Self.ScreenToClient(Message.DragRec^.Pos);
-    MoveSelectionTo(pt);
-    Message.Result:= 0;
-    Exit;
-  end;
-
-  fSelfOverCalled:= false;
-  inherited;
-
-  if fSelfOverCalled and (Message.DragMessage in [dmDragEnter, dmDragMove]) then
-  begin
-    Message.Result:= Ord(fInternalDragAccept);
-  end;
-
-  if (Message.DragMessage in [dmDragLeave, dmDragCancel]) then
-  begin
-    DbgDrag(Format('CMDRAG msg=%d src=%s accept=%d', [Ord(Message.DragMessage), DbgSrc(rawSrc), Ord(fInternalDragAccept)]));
-    if (Message.DragMessage = dmDragCancel) then
-    begin
-      fInternalDragActive:= false;
-    end;
-  end;
 end;
 
 {*------------------------------------------------------------------------------
