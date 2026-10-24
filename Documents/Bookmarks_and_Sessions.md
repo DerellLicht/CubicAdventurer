@@ -15,6 +15,10 @@ categories and bookmarks, stored in `bookmarks.xml` in the settings folder.
 3. **Rename** and **Delete** are on the same menu. Drag items inside the tree to reorder them or
    move them between categories.
 
+**Quick way:** open the **Bookmarks** menu and choose **Bookmark current folder**. The folder
+shown in the active tab is added at the top level of the list, and the panel does not have to
+be open. (Drag it into a category afterwards if you want it there.)
+
 **Use a bookmark**
 - Double-click a folder bookmark to open it in the current tab. With **Open in new tab by default**
   turned on (Tools > Options > Display > Bookmarks), it opens in a new tab instead. Right-click >

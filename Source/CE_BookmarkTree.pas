@@ -105,6 +105,38 @@ implementation
 uses
   CE_StdBookmarkComps, dCE_Actions, CE_LanguageEngine, Forms;
 
+var
+  DbgLastDragMsg: string = '';
+
+{*------------------------------------------------------------------------------
+  TEMPORARY (CA-008): write a drag diagnostic line to the debugger Event Log.
+  A line identical to the previous one is skipped, because DoDragOver is called
+  on every mouse move. Remove together with the calls once CA-008 is closed.
+-------------------------------------------------------------------------------}
+procedure DbgDrag(const Msg: string);
+begin
+  if (Msg <> DbgLastDragMsg) then
+  begin
+    DbgLastDragMsg:= Msg;
+    OutputDebugString(PChar('CE_BookmarkDrag: ' + Msg));
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  TEMPORARY (CA-008): class name of a drag source, safe for nil
+-------------------------------------------------------------------------------}
+function DbgSrc(Source: TObject): string;
+begin
+  if Assigned(Source) then
+  begin
+    Result:= Source.ClassName;
+  end
+  else
+  begin
+    Result:= '(nil)';
+  end;
+end;
+
 {*------------------------------------------------------------------------------
   Create an instance of TCEBookmarkTree object
 -------------------------------------------------------------------------------}
@@ -432,6 +464,15 @@ begin
     Exit;
   end;
 
+  // CA-007: Virtual Treeview 8 asks for the state image too (ikState). The
+  // bookmark icon was returned for it as well, so every entry showed its icon
+  // twice. Only the normal/selected image and the overlay are wanted.
+  if (Kind = ikState) then
+  begin
+    Index:= -1;
+    Exit;
+  end;
+
   data:= GetNodeData(Node);
   if assigned(data.BookComp) then
   begin
@@ -574,6 +615,9 @@ var
   data: PCEBookData;
   node: PVirtualNode;
 begin
+  DbgDrag(Format('DROP source=%s isSelf=%s mode=%d effect=%d targetAssigned=%s selected=%d',
+      [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(Mode), Effect,
+       BoolToStr(Assigned(Self.DropTargetNode), True), Self.SelectedCount]));
 
   // Get Attach mode
   case Mode of
@@ -596,6 +640,7 @@ begin
     end
     else
     begin
+      DbgDrag(Format('DROP move: nodes=%d attachMode=%d', [Length(Nodes), Ord(AttachMode)]));
       for I := 0 to High(Nodes) do
       self.MoveTo(Nodes[I], self.DropTargetNode, AttachMode, False);
     end;
@@ -666,6 +711,9 @@ var
 begin
   inherited DoDragOver(Source,Shift,State,Pt,Mode,Effect);
   Result:= false;
+  DbgDrag(Format('OVER source=%s isSelf=%s state=%d mode=%d targetAssigned=%s selected=%d',
+      [DbgSrc(Source), BoolToStr(Source = Self, True), Ord(State), Ord(Mode),
+       BoolToStr(Assigned(Self.DropTargetNode), True), Self.SelectedCount]));
 
   if Source = self then
   begin

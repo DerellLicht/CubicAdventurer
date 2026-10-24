@@ -80,6 +80,7 @@ type
     BookmarkMenuItems: TComponentList;
     BookmarksPath: WideString;
     BookmarkTree: TCEBookmarkTree;
+    procedure AddCurrentFolder;
     procedure LoadBookmarks;
     procedure OnBookmarksChange(Sender: TObject);
     procedure OpenAll(Mode: Integer = 0);
@@ -366,6 +367,28 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
+  Add the folder shown in the active tab as a new bookmark at the top level of
+  the bookmark tree. Works whether or not the panel is visible. Does nothing
+  when the active tab is not a file view (for example the text editor).
+-------------------------------------------------------------------------------}
+procedure TCEBookmarkPanel.AddCurrentFolder;
+var
+  apidl: PItemIDList;
+  comp: TCECustomBookComp;
+  node: PVirtualNode;
+begin
+  if GlobalPathCtrl.ActivePage is TCEFileViewPage then
+  begin
+    node:= BookmarkTree.AddBookItem('item', nil);
+    comp:= BookmarkTree.GetNodeComp(node);
+    apidl:= PIDLMgr.CopyPIDL(TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.RootFolderNamespace.AbsolutePIDL);
+    TCENormalItemComp(comp).LoadFromPIDL(apidl);
+    // saves bookmarks.xml and rebuilds the Bookmarks menu
+    BookmarkTree.BookmarksChange;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
   Load Bookmarks
 -------------------------------------------------------------------------------}
 procedure TCEBookmarkPanel.LoadBookmarks;
@@ -489,7 +512,10 @@ begin
   begin
     item:= TTBCustomItem(BookmarkMenuItems.Items[i]);
     item.ViewBeginUpdate;
-    PopulateBookmarkItem(item, BookmarkTree, item is TSpTBXSubmenuItem);
+    // Only the Bookmarks menu (a submenu item) gets "Open All" and
+    // "Bookmark current folder"; the bookmark toolbar does not.
+    PopulateBookmarkItem(item, BookmarkTree, item is TSpTBXSubmenuItem, false,
+        item is TSpTBXSubmenuItem);
     item.ViewEndUpdate;
   end;
 end;

@@ -84,6 +84,14 @@ type
     procedure OpenAll(Mode: Integer = 0);
   end;
 
+  // Menu item "Bookmark current folder": adds the folder of the active tab to
+  // the bookmarks without the Bookmarks panel having to be open.
+  TCEAddCurrentFolderItem = class(TSpTBXItem)
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure Click; override;
+  end;
+
 
   TCEBookmarkToolbar = class(TCEToolbar)
   private
@@ -96,7 +104,7 @@ type
 
 procedure PopulateBookmarkItem(RootItem: TTBCustomItem; BookmarkTree:
     TCEBookmarkTree; OpenAllToRoot: Boolean = false; LargeIcons: Boolean =
-    false);
+    false; AddCurrentFolder: Boolean = false);
 
 var
   UpdatingBookmarkItems: Boolean = false;
@@ -104,14 +112,45 @@ var
 implementation
 
 uses
-  CE_StdBookmarkComps, CE_Utils, dCE_Input;
+  CE_StdBookmarkComps, CE_Utils, dCE_Input, dCE_Images;
+
+{##############################################################################}
+// TCEAddCurrentFolderItem
+
+{*------------------------------------------------------------------------------
+  Create an instance of TCEAddCurrentFolderItem
+-------------------------------------------------------------------------------}
+constructor TCEAddCurrentFolderItem.Create(AOwner: TComponent);
+begin
+  inherited;
+  Self.Caption:= _('Bookmark current folder');
+  Self.CustomHeight:= 24;
+  Self.DisplayMode:= nbdmImageAndText;
+  Self.Images:= CE_Images.SmallIcons;
+  Self.ImageIndex:= 18; // same icon as the Bookmarks panel
+end;
+
+{*------------------------------------------------------------------------------
+  Add the active tab's folder to the bookmarks. The work is queued instead of
+  done here: adding a bookmark rebuilds the Bookmarks menu, which frees this
+  very item, and that must not happen while its Click is still running.
+-------------------------------------------------------------------------------}
+procedure TCEAddCurrentFolderItem.Click;
+begin
+  inherited;
+  TThread.ForceQueue(nil,
+    procedure
+    begin
+      CEBookmarkPanel.AddCurrentFolder;
+    end);
+end;
 
 {*------------------------------------------------------------------------------
   Populate BookmarkItem
 -------------------------------------------------------------------------------}
 procedure PopulateBookmarkItem(RootItem: TTBCustomItem; BookmarkTree:
     TCEBookmarkTree; OpenAllToRoot: Boolean = false; LargeIcons: Boolean =
-    false);
+    false; AddCurrentFolder: Boolean = false);
 var
   sep: TSpTBXSeparatorItem;
   openAll: TCEOpenAllBookmarksItem;
@@ -125,6 +164,14 @@ begin
 
     if not assigned(BookmarkTree) then
     Exit;
+
+    // "Bookmark current folder" is always the first entry of the Bookmarks menu
+    if AddCurrentFolder then
+    begin
+      RootItem.Add(TCEAddCurrentFolderItem.Create(RootItem));
+      sep:= TSpTBXSeparatorItem.Create(RootItem);
+      RootItem.Add(sep);
+    end;
 
     // Show "Open All in Tabs" at top of the menu (Opera style)
     if CEBookmarkPanel.Settings.ShowOpenAllItem and OpenAllToRoot and CEBookmarkPanel.Settings.ShowOpenAllAtTop then
