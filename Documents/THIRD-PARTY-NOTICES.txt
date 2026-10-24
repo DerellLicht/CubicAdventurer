@@ -1,0 +1,311 @@
+CubicAdventurer - third-party notices
+=====================================
+
+CubicAdventurer is a revival of CubicExplorer, written by Marko Savolainen, and is
+licensed under the Mozilla Public License 1.1 (MPL). The full text of that license, and
+the LGPL notice for 7z.dll, are in License.txt, in this same folder. This file lists the
+other people's work that is built into CubicAdventurer or shipped with it, who wrote it,
+where it comes from, and which license it is used under. Where a library is offered under
+more than one license, CubicAdventurer uses it under the one named here.
+
+Abbreviations: MPL = Mozilla Public License; LGPL = GNU Lesser General Public License;
+GPL = GNU General Public License; JEDI = Joint Endeavour of Delphi Innovators.
+
+If you spot a mistake or a missing credit, please open an issue at
+https://github.com/DerellLicht/CubicAdventurer/issues
+
+
+1. Code built into the program
+------------------------------
+
+Virtual Treeview (version 8)
+  Authors:  digital publishing AG (original code, Copyright (C) 1999-2001), Mike Lischke
+            (most of the code, 2000-2009), and later contributors. Now maintained by
+            JAM Software.
+  Source:   https://github.com/JAM-Software/Virtual-TreeView
+  License:  MPL 1.1 or LGPL 2.1 (with a static linking exception). Used under MPL 1.1.
+
+Mustangpeak Common Library, Mustangpeak ListView (EasyListview) and VirtualShellTools
+  Authors:  Jim Kueneman (initial developer); portions by Derek Moore of Alastria Software;
+            later maintenance by the TurboPack project.
+  Source:   https://github.com/TurboPack/MustangpeakVirtualShellTools
+            https://github.com/TurboPack/MustangpeakCommonLib
+  License:  MPL 1.1 or LGPL 2.1 or later. Used under MPL 1.1.
+  Note:     Patched copies of some of these units (under Source/Components/Mustangpeak)
+            were modified by Marko Savolainen for CubicExplorer; they remain under the MPL.
+  VirtualThumbnails (version 2.4.0) was written by Robert Lee, with credits to many
+  contributors listed in the file. Its header states no license beyond the usual
+  "as is" warranty disclaimer. The patched copy in this repository was modified by
+  Marko Savolainen.
+
+SynEdit
+  Authors:  Martin Waldenburg (mwEdit, Copyright (C) 1998), Mael Horz (Unicode
+            translation), and the contributors listed in SynEdit's Contributors.txt.
+  Source:   https://github.com/TurboPack/SynEdit
+  License:  MPL 1.1 (alternatively the GPL version 2 or later). Used under MPL 1.1.
+
+Toolbar2000
+  Author:   Jordan Russell, Copyright (C) 1998-2008.
+  Source:   http://www.jrsoftware.org/
+  License:  Toolbar2000 License (full text in section 4). It is also offered under the
+            GPL; CubicAdventurer uses it under the Toolbar2000 License.
+  Note:     Under that license, programs that are commercial, shareware or that their
+            author profits from require paid registration. CubicAdventurer is free and
+            non-commercial.
+
+SpTBXLib (version 2.5.12)
+  Author:   Robert Lee (Silverpoint Development).
+  Source:   https://github.com/SilverpointDev/sptbxlib
+  License:  SpTBXLib License or MPL 1.1, at the user's option. Used under MPL 1.1.
+  Note:     The skin unit SpTBXChromeSkin.pas was written by Marko Savolainen.
+
+Graphics32
+  Author:   Alex A. Denisov (initial developer, Copyright (C) 2000-2009) and contributors.
+  Source:   https://github.com/graphics32/graphics32
+  License:  MPL 1.1 or LGPL 2.1 with a linking exception. Used under MPL 1.1.
+
+JEDI Code Library (JCL)
+  Authors:  Project JEDI and its many contributors; each source file names its own authors
+            (for example Marcel van Brakel, the initial developer of JclBase.pas, with
+            Peter Friese, Robert Marquardt, Robert Rossmair, Petr Vones and Florent Ouchet).
+  Source:   https://github.com/project-jedi/jcl
+  License:  MPL 1.1.
+
+JEDI Visual Component Library (JVCL)
+  Authors:  Project JEDI and its many contributors; each source file names its own authors
+            (for example Fedor Koshevnikov, Igor Pavluk, Serge Korolev and SGB Software
+            for JvConsts.pas). CubicAdventurer uses its docking, application storage
+            and related units.
+  Source:   https://github.com/project-jedi/jvcl
+  License:  MPL 1.1.
+
+PngComponents, with pngimage
+  Authors:  Martijn Saly (PngComponents, Copyright (C) 2002-2005); adapted for current
+            Delphi versions by Uwe Raabe. The bundled pngimage unit (PNG reading and
+            writing) was written by Gustavo Huffenbacher Daud and includes the zlib
+            compression library by Jean-loup Gailly and Mark Adler.
+  Source:   https://github.com/UweRaabe/PngComponents
+  License:  PngComponents License (full text in section 4).
+  Note:     pngimage's own header states no separate license terms.
+
+fcl-xml (XML reading and writing units)
+  Authors:  The Free Pascal Development Team.
+  Source:   https://www.freepascal.org (source files are in Source/Components/fcl-xml)
+  License:  LGPL 2.1 with the Free Pascal linking exception (section 4), so programs
+            that include it may be distributed under their own license.
+
+DirectX headers for Delphi (DirectShow9, Direct3D9 and related units)
+  Authors:  Microsoft Corporation (the original headers); Delphi adaptation by
+            Alexey Barkovoy, obtained through Project JEDI.
+  Source:   Source/Components/DirectX
+  License:  Used with permission, under MPL 1.1.
+
+TFindFileW (file search component)
+  Author:   Kambiz R. Khojasteh (Delphi Area), version 4.02, Unicode version.
+            Modified by Marko Savolainen.
+  Source:   http://www.delphiarea.com
+  License:  The file header states no license terms.
+
+CubicCore, CEAction and the remaining units in Source are CubicExplorer code by Marko
+Savolainen, under the MPL.
+
+
+2. Files shipped with the program
+---------------------------------
+
+7z.dll (7-Zip, used to open archives)
+  Author:   Igor Pavlov.
+  Source:   https://www.7-zip.org
+  License:  GNU LGPL (see License.txt).
+
+Skins (the .skn files in the Skins folder)
+  These skins came with CubicExplorer. The files name these authors where they give
+  one: OldDays1.2 by "badloginname", Paint It Black by "PirateMonkey" (made with
+  http://www.kolorgenerator.godula.com), gBW v1.1 by "g..". Gold, Greener, Hacker BW and
+  Vista Blue refer to http://www.mytreedb.com. For the others no author is recorded.
+
+Icons and images (toolbar icons, application icon, about banner, options dialog and
+installer images)
+  These come from CubicExplorer or were made for CubicAdventurer. The original sources of
+  some of the toolbar icons are not recorded; if you know them, please tell us.
+
+Translations (the Locale folder)
+  Translation files from the CubicExplorer project, contributed by its volunteer
+  translators. They are not enabled in this release.
+
+
+3. License texts
+----------------
+
+The MPL 1.1 and the LGPL notice for 7z.dll are printed in full in License.txt, in this
+same folder. The licenses that are not reproduced there follow.
+
+
+4. Toolbar2000 License, PngComponents License, Free Pascal linking exception
+----------------------------------------------------------------------------
+
+== Toolbar2000 License (Jordan Russell), from TB2k-LICENSE.txt ==
+
+Toolbar2000 License v3.2
+========================
+
+"Author" herein refers to Jordan Russell (the creator of the Toolbar2000
+components).
+"Software" refers to all files bearing this notice, as well as any other
+files and source code included with Toolbar2000 (typically extracted from a
+.zip archive), and all content in them, regardless of whether any
+modifications have been made.
+
+Except where otherwise noted, all of the documentation and Software included
+in the Toolbar2000 package is copyrighted by Jordan Russell (the Author).
+
+Copyright (C) 1998-2008 Jordan Russell. All rights reserved.
+
+Use and distribution of the software is permitted provided that all of the
+following terms are accepted:
+
+1. The Software is provided "as-is," without any express or implied
+   warranty. In no event shall the Author be held liable for any damages
+   arising from the use of the Software.
+
+2. All redistributions of the Software's files must be in their original,
+   unmodified form. Distributions of modified versions of the files is not
+   permitted without express written permission of the Author.
+
+3. All redistributions of the Software's files must retain all copyright
+   notices and web site addresses that are currently in place, and must
+   include this list of conditions without modification.
+
+4. None of the Software's files may be redistributed for profit or as part
+   of another software package without express written permission of the
+   Author.
+
+5. You are permitted to Compile the Software into any kind of applications.
+   ("Compile" here refers to the automatic process of translating the
+   Software's source code into executable machine code by a compiler such
+   as the one included with Borland's Delphi or C++Builder.)
+   However, compilation into commercial or shareware applications, or any
+   applications that you or your organization are profiting from, requires
+   registration (payment) of the software. Such payment is made to the Author
+   of the Software (Jordan Russell).
+   For information on registering, see the Toolbar2000 documentation or this
+   web page:
+   http://www.jrsoftware.org/tb2kreg.php
+
+6. Redistribution of any of the Software's files in object form (including
+   but not limited to .DCU and .OBJ formats) is strictly prohibited without
+   express written permission of the Author.
+
+7. Full backward compatibility in future versions of the Software is not
+   guaranteed. In no event shall the Author be held liable for any
+   inconvenience or damages arising from lack of backward compatibility.
+
+If you do not agree to all of the above terms, you are not permitted to
+use the Software in any way, and all copies of it must be deleted from your
+system(s).
+
+Jordan Russell
+jr-2008 AT jrsoftware.org
+http://www.jrsoftware.org/
+
+
+== PngComponents License (Martijn Saly), from Docs/License.txt in PngComponents ==
+
+END-USER LICENSE AGREEMENT
+
+All files included in this archive are Copyright (C) 2002-2005
+ Martijn Saly.
+Use and/or distribution of them requires acceptance of the following License
+Agreement.
+
+--------------------------------------------------------------------------------
+
+- "Author" herein refers to Martijn Saly (the creator of this package and
+  containing files and software).
+- "Software" herein refers to all files bearing this notice, as well as any
+  other files and source code included with this package (typically extracted
+  from a .zip or .cab archive), and all content in them, regardless of whether
+  any modifications have been made.
+- "Compile" herein refers to the automatic process of translating the Software's
+  source code into executable machine code by a compiler such as the one
+  included with Borland's Delphi or C++Builder.
+
+Except where otherwise noted, all of the documentation and Software included in
+the this package is copyrighted by Martijn Saly (the Author).
+
+Copyright (C) 2002-2005 Martijn Saly. All rights reserved.
+
+
+Use and distribution of the software is permitted provided that all of the
+following terms are accepted. Terms 5 through 8 apply only to distributions
+which include source code that one can Compile.
+
+1) The Software is provided "as-is," without any express or implied warranty. In
+   no event shall the Author be held liable for any damages arising from the use
+   or Compile of the Software.
+
+2) All redistributions of the Software's files must be in their original,
+   unmodified form. Distributions of modified versions of the files is not
+   permitted without express written permission of the Author.
+
+3) All redistributions of the Software's files must retain all copyright notices
+   and web site addresses that are currently in place, and must include this
+   list of conditions in its original, unmodified form.
+
+4) None of the Software's files may be redistributed for profit or as part of
+   another software package without express written permission of the Author.
+
+5) If applicable, you are permitted to Compile the Software, in orginal or
+   modified form, into any kind of application, including commercial or
+   shareware applications, or any application you are profiting from.
+
+6) If applicable, redistribution of any of the Software's files in object form
+   (including but not limited to .DCU and .OBJ formats) is strictly prohibited
+   without express written permission of the Author.
+
+7) If applicable, distribution of the Software in compiled package format
+   (the BPL file) is permitted, as long as the Software is distributed as part
+   of an application.
+
+8) If applicable, distribution of the Software in compiled package format
+   (the BPL file) is prohibed if the distribution does not specifically belong
+   to an application, written by the same author as the application was written
+   by.
+
+9) Full backward compatibility in future versions of the Software is not
+   guaranteed. In no event shall the Author be held liable for any inconvenience
+   or damages arising from lack of backward compatibility.
+
+If you do not agree to all of the above terms, you are not permitted to use or
+Compile the Software in any way, and all copies of it must be deleted from your
+system(s).
+
+----------------------------------------------------------------------------
+
+Martijn Saly
+martijn@thany.org
+http://www.thany.org/
+
+
+== Free Pascal linking exception, from COPYING.FPC in fcl-xml ==
+
+This is the file COPYING.FPC, it applies to the Free Pascal Run-Time Library
+(RTL) and packages (packages) distributed by members of the Free Pascal
+Development Team.
+
+The source code of the Free Pascal Runtime Libraries and packages are
+distributed under the Library GNU General Public License
+(see the file COPYING) with the following modification:
+
+As a special exception, the copyright holders of this library give you
+permission to link this library with independent modules to produce an
+executable, regardless of the license terms of these independent modules,
+and to copy and distribute the resulting executable under terms of your choice,
+provided that you also meet, for each linked independent module, the terms
+and conditions of the license of that module. An independent module is a module
+which is not derived from or based on this library. If you modify this
+library, you may extend this exception to your version of the library, but you are
+not obligated to do so. If you do not wish to do so, delete this exception
+statement from your version.
+
+(The LGPL 2.1 text it modifies is in Source/Components/fcl-xml/COPYING.)

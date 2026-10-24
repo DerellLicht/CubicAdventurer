@@ -12,9 +12,15 @@ Last updated: 2026-10-24 (version 0.97).
 
 ## After the release
 
-- **CA-005 [task] Announce** on the old CubicExplorer forum threads, asking for a revival.
-- **CA-002 [task] THIRD-PARTY-NOTICES.txt.** Author, license and URL per library, with
-  the license texts. Not needed for the first release, but do it soon after.
+- **CA-005a [task] Spread the word further.** The first announcement reached fewer places
+  than hoped. Brain-storm other options: Windows file-manager discussion sites on Reddit
+  and similar communities, software directories, and forums for other Delphi-era tools.
+- **CA-032 [task] Follow-ups to `Documents/THIRD-PARTY-NOTICES.txt`.** Keep it current when
+  a library is added or updated (it names Virtual Treeview 8 and SpTBXLib 2.5.12). Open
+  gaps: the sources of some toolbar icons are unknown; the headers of `FindFileW.pas` and
+  `VirtualThumbnails.pas` state no license terms; `Source/Components/Tb2K/TB2Item.pas` is
+  not compiled (commented out in the `.dpr`) and Toolbar2000 forbids redistributing
+  modified copies, so delete it from the repo unless it is identical to upstream.
 
 
 ## Open bugs and gaps

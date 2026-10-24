@@ -67,6 +67,8 @@ Source: "{#RepoRoot}\BuildCE\Snapshot_configs\sessions.xml"; DestDir: "{app}"; F
 Source: "{#RepoRoot}\installer\settings.path"; DestDir: "{app}"; Flags: onlyifdoesntexist
 ; The licence stays in a Documents subfolder, matching the Licenses shortcut below.
 Source: "{#RepoRoot}\Documents\License.txt"; DestDir: "{app}\Documents"; Flags: ignoreversion
+; Credits and license texts for the libraries built into the program (see CA-002).
+Source: "{#RepoRoot}\Documents\THIRD-PARTY-NOTICES.txt"; DestDir: "{app}\Documents"; Flags: ignoreversion
 Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#RepoRoot}\CA.example.image.jpg"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
@@ -78,6 +80,7 @@ Name: "{autodesktop}\{#MyAppDisplayName}"; Filename: "{app}\{#MyAppExeName}"; Ta
 Name: "{group}\Readme"; Filename: "{app}\README.md"
 Name: "{group}\Changelog"; Filename: "{app}\CHANGELOG.md"
 Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
+Name: "{group}\Third-party notices"; Filename: "{app}\Documents\THIRD-PARTY-NOTICES.txt"
 
 ; [InstallDelete] -- template, not active.  Upgrades only add and overwrite; files and
 ; shortcuts that a newer script no longer lists stay behind (uninstall still removes them).
