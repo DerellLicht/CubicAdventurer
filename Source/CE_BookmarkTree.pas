@@ -159,14 +159,19 @@ begin
   Self.BevelOuter:= bvNone;
   Self.BorderStyle:= bsNone;
   Self.DragMode:= dmAutomatic;
-  self.DragType:= dtVCL;
+  // OLE drag: the mode Virtual Treeview's DoDragOver / DoDragDrop are made for.
+  // With a Delphi (dtVCL) drag, Delphi cancelled every drop on mouse release
+  // (dmDragLeave, dmDragCancel; CA-008) and DoDragDrop was never called.
+  self.DragType:= dtOLE;
   Self.NodeDataSize:= SizeOf(TCEBookData);
   Self.TreeOptions.SelectionOptions:= [toRightClickSelect, toMultiSelect];
   Self.TreeOptions.AnimationOptions:= [];
   // The tree draws its own drop indicator (ShowDropIndicator), so that the line
   // always matches the place where the drop will really go.
   Self.TreeOptions.PaintOptions:= Self.TreeOptions.PaintOptions - [toShowDropmark];
-  Self.TreeOptions.AutoOptions:= [toAutoDropExpand,toAutoScrollOnExpand,toAutoTristateTracking,toAutoDeleteMovedNodes];
+  // toAutoDeleteMovedNodes is left out on purpose: moves inside the tree are done
+  // with MoveTo, and Virtual Treeview must not delete the moved nodes afterwards.
+  Self.TreeOptions.AutoOptions:= [toAutoDropExpand,toAutoScrollOnExpand,toAutoTristateTracking];
   Self.TreeOptions.MiscOptions:= [toAcceptOLEDrop,toEditable,toFullRepaintOnResize,toInitOnSave];
   Self.Header.Options:= [hoAutoResize,hoColumnResize];
   Self.ButtonFillMode:= fmShaded;
@@ -651,6 +656,8 @@ begin
   if Source = self then // Moving nodes inside self.
   begin
     MoveSelectionTo(Pt);
+    // Tell the drag source that nothing is left to do (no copy, no delete).
+    Effect:= DROPEFFECT_NONE;
   end
   else if assigned(DataObject) then// Dropping from outside self.
   begin

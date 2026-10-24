@@ -43,7 +43,11 @@ Last updated: 2026-10-24 (version 0.97).
   now puts the accept verdict back (`fInternalDragAccept`). Round 5: first try did not help (log still
   leave + cancel), so the verdict is now restored whenever `DoDragOver` ran for the message
   (`fSelfOverCalled`), not by comparing the drag object's class; the log line at leave and
-  cancel now shows the drag object's class and the verdict. "Below row A" and "above row
+  cancel now shows the drag object's class and the verdict. Round 6: still
+  cancelled (the drag object is `TDragControlObjectEx`; the verdict printed at leave is always 0
+  because the leave call resets it, so it proves nothing), so the tree now uses an OLE drag
+  (`DragType := dtOLE`) and `toAutoDeleteMovedNodes` is off. If this works, delete the now
+  unused `CMDrag` / `fInternalDrag*` code and the `DbgDrag` helpers. "Below row A" and "above row
   B" are now reported as the same place (the indicator used to jump between the two). The `CE_BookmarkDrag:` diagnostics (`DbgDrag` in
   `CE_BookmarkTree.pas`) are still in; remove them when this is closed.
 - **CA-003 [task] `make release`** for the first version, after CA-007 and CA-008. The
