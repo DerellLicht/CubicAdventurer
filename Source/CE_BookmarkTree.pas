@@ -48,6 +48,8 @@ type
     fDropNodeAcceptsDrop: Boolean;
     fIndActive: Boolean;
     fIndMode: TDropMode;
+    fTabDragPos: TPoint;
+    fTabDragDone: Boolean;
     fIndNode: PVirtualNode;
     fOnBookmarksChange: TNotifyEvent;
   protected
@@ -1069,6 +1071,11 @@ begin
       Message.Result:= LRESULT(Self);
     dmDragEnter, dmDragMove:
       begin
+        if Message.DragMessage = dmDragEnter then
+        begin
+          fTabDragDone:= false;
+        end;
+        fTabDragPos:= pt;
         node:= Self.GetNodeAt(pt.X, pt.Y);
         if node = nil then
         begin
@@ -1086,12 +1093,30 @@ begin
         end;
         Message.Result:= 1;
       end;
-    dmDragLeave, dmDragCancel:
+    dmDragLeave:
       ClearDropIndicator;
+    dmDragCancel:
+      begin
+        ClearDropIndicator;
+        // Delphi ends this drag with dmDragLeave + dmDragCancel even when the
+        // button is released over the tree (dmDragDrop is never sent; the event
+        // log shows it). A cancel with the left button already up and Esc not
+        // pressed is therefore the drop; Esc cancels while the button is held.
+        if not fTabDragDone and ((GetAsyncKeyState(VK_LBUTTON) and $8000) = 0)
+            and ((GetAsyncKeyState(VK_ESCAPE) and $8000) = 0) then
+        begin
+          fTabDragDone:= true;
+          InsertFolderAt(folder, fTabDragPos);
+        end;
+      end;
     dmDragDrop:
       begin
         ClearDropIndicator;
-        InsertFolderAt(folder, pt);
+        if not fTabDragDone then
+        begin
+          fTabDragDone:= true;
+          InsertFolderAt(folder, pt);
+        end;
       end;
   end;
 end;
