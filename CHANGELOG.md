@@ -8,7 +8,7 @@
 - Fixed: shortcut (`.lnk`) files were always shown without their extension; they now follow "Show file extensions"
 - Changed: the tooltip of a shortcut shows the full path of its target
 - Fixed: Bookmarks panel entries showed two icons
-- Added: bookmarks can be re-arranged by dragging them in the Bookmarks panel
+- Added: bookmarks can be re-arranged by dragging them in the Bookmarks panel, and a folder tab can be dragged onto the panel to bookmark its folder
 
 FIRST CUBICADVENTURER RELEASE: A REVIVAL OF CUBICEXPLORER 0.96.0.1582 (MARKO SAVOLAINEN)
 FOR CURRENT WINDOWS AND DELPHI 13 (WIN32). YOUR EXISTING CUBICEXPLORER SETTINGS,

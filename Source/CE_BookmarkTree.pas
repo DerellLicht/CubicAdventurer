@@ -51,6 +51,9 @@ type
     fIndNode: PVirtualNode;
     fOnBookmarksChange: TNotifyEvent;
   protected
+    procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
+    function GetTabDragPIDL(Source: TObject): PItemIDList;
+    procedure InsertFolderAt(APIDL: PItemIDList; Pt: TPoint);
     procedure ClearDropIndicator;
     procedure MoveSelectionTo(Pt: TPoint);
     function TargetInsideSelection(Node: PVirtualNode; const Nodes: TNodeArray): Boolean;
@@ -107,7 +110,7 @@ type
 implementation
 
 uses
-  CE_StdBookmarkComps, dCE_Actions, CE_LanguageEngine, Forms;
+  CE_StdBookmarkComps, dCE_Actions, CE_LanguageEngine, Forms, SpTBXTabs, TB2Item, fCE_FileView;
 
 {*------------------------------------------------------------------------------
   Create an instance of TCEBookmarkTree object
@@ -941,6 +944,121 @@ begin
   RefreshScrollHeight;
   Self.Invalidate;
   BookmarksChange;
+end;
+
+{*------------------------------------------------------------------------------
+  If Source is the drag object of a file view tab (a tab dragged by its label),
+  return the absolute PIDL of the folder shown in that tab (owned by the tab,
+  do not free it). Returns nil for any other drag, or a tab that is not a file
+  view (text editor and so on).
+-------------------------------------------------------------------------------}
+function TCEBookmarkTree.GetTabDragPIDL(Source: TObject): PItemIDList;
+var
+  item: TTBCustomItem;
+begin
+  Result:= nil;
+  if Source is TSpTBXTabItemDragObject then
+  begin
+    item:= TSpTBXTabItemDragObject(Source).SouceItem;
+    if (item is TCESpTabItem) and (TCESpTabItem(item).Page is TCEFileViewPage) then
+    begin
+      Result:= TCEFileViewPage(TCESpTabItem(item).Page).FileView.RootFolderNamespace.AbsolutePIDL;
+    end;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Add a new bookmark for APIDL (the PIDL is copied) at the tree position under
+  Pt, using the same above / inside / below rules as the drop indicator. Over
+  empty space the bookmark is appended at the top level.
+-------------------------------------------------------------------------------}
+procedure TCEBookmarkTree.InsertFolderAt(APIDL: PItemIDList; Pt: TPoint);
+var
+  target, node: PVirtualNode;
+  mode: TDropMode;
+  attach: TVTNodeAttachMode;
+  data: PCEBookData;
+begin
+  target:= Self.GetNodeAt(Pt.X, Pt.Y);
+  if target = nil then
+  begin
+    node:= InsertNode(Self.RootNode, amAddChildLast);
+  end
+  else
+  begin
+    mode:= ResolveInternalDrop(target, Pt);
+    case mode of
+      dmAbove: attach:= amInsertBefore;
+      dmOnNode: attach:= amAddChildLast;
+    else
+      attach:= amInsertAfter;
+    end;
+    node:= InsertNode(target, attach);
+    if mode = dmOnNode then
+    begin
+      Self.Expanded[target]:= true;
+    end;
+  end;
+  Self.ValidateNode(node, false);
+  data:= GetNodeData(node);
+  data.BookComp:= TCENormalItemComp.Create;
+  TCENormalItemComp(data.BookComp).LoadFromPIDL(PIDLMgr.CopyPIDL(APIDL));
+  RefreshScrollHeight;
+  Self.Invalidate;
+  BookmarksChange;
+end;
+
+{*------------------------------------------------------------------------------
+  Delphi (VCL) drag messages. Only a file view tab dragged over the tree is
+  handled here (drop = bookmark that tab's folder); every other drag goes to
+  Virtual Treeview as before.
+-------------------------------------------------------------------------------}
+procedure TCEBookmarkTree.CMDrag(var Message: TCMDrag);
+var
+  folder: PItemIDList;
+  pt: TPoint;
+  node: PVirtualNode;
+  mode: TDropMode;
+begin
+  folder:= nil;
+  if Assigned(Message.DragRec) then
+  begin
+    folder:= GetTabDragPIDL(Message.DragRec^.Source);
+  end;
+  if not Assigned(folder) then
+  begin
+    inherited;
+    Exit;
+  end;
+
+  pt:= Self.ScreenToClient(Message.DragRec^.Pos);
+  Message.Result:= 0;
+  case Message.DragMessage of
+    dmDragEnter, dmDragMove:
+      begin
+        node:= Self.GetNodeAt(pt.X, pt.Y);
+        if node = nil then
+        begin
+          if Assigned(Self.GetLastVisible) then
+          begin
+            ShowDropIndicator(Self.GetLastVisible, dmBelow);
+          end;
+        end
+        else
+        begin
+          mode:= ResolveInternalDrop(node, pt);
+          ShowDropIndicator(node, mode);
+        end;
+        Message.Result:= 1;
+      end;
+    dmDragLeave, dmDragCancel:
+      ClearDropIndicator;
+    dmDragDrop:
+      begin
+        ClearDropIndicator;
+        InsertFolderAt(folder, pt);
+      end;
+  end;
 end;
 
 {*------------------------------------------------------------------------------
