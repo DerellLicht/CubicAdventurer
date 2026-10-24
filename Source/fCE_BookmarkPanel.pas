@@ -400,9 +400,12 @@ begin
       BookmarkTree.LoadFromXmlFile(BookmarksPath);
     finally
       BookmarkTree.EndUpdate;
-      RePopulateBookmarkItems;
     end;
   end;
+  // Always build the menu items, even when there is no bookmarks.xml yet
+  // (first run). Otherwise the Bookmarks menu stays empty, without its
+  // "Bookmark current folder" item, until the first bookmark is added.
+  RePopulateBookmarkItems;
 end;
 
 {*------------------------------------------------------------------------------
