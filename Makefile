@@ -69,7 +69,10 @@ check: check-exe
 check-exe:
 	@$(PYTHON) tools/version_tool.py check-exe $(VERSION) $(EXE)
 
-installer: check stop
+# "clean" runs last among the prerequisites: if "check" fails (exe has the wrong version) make
+# stops before anything is deleted.  This empties installer/output so files of an earlier
+# version never pile up; dist, release and update all go through this rule.
+installer: check stop clean
 	"$(ISCC)" /Qp /DMyAppVersion=$(VERSION) installer/$(APP).iss
 
 # Only runs the setup program that "make installer" already built; it does not build anything.
