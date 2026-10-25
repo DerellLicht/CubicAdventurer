@@ -45,8 +45,8 @@ Other options on the same page: **Auto expand tree** and **Auto collapse tree**.
 A session is the set of tabs you have open: each tab's folder and settings, and which tab was
 selected. Sessions are stored in `sessions.xml` in the settings folder.
 
-**Start a new session**: **Sessions > New Session** closes all tabs (they are first added to
-History if **Auto Save History** is on) and opens a single tab at **This PC**. Open the
+**Start a new session**: **Sessions > New Session** closes all tabs (if they were not part of a
+saved session they are first copied to History) and opens a single tab at **This PC**. Open the
 folders you want, then use **Sessions > Save...** to give the session a name.
 
 **Save the current tabs**: **Sessions > Save...**, type a name, OK. Using an existing name
@@ -57,6 +57,8 @@ session automatically** in the same dialog if the session should follow your tab
 
 **Load a session**: pick it from the **Sessions** menu (saved sessions are listed there) or from
 the Sessions toolbar. **Loading closes all current tabs first**, then opens the saved ones.
+If the tabs you had open were not part of a saved session, a copy of them is put in **History**
+first, so you can get them back from there.
 
 **Sessions > Manage...** lets you delete and rename sessions, change their order by dragging, and
 switch **Save changes to this session automatically** for a session. While that session is the
@@ -68,9 +70,16 @@ saved into it within a few seconds, and again when you switch to another session
 - **Auto Save History** takes one every time you exit. The last 10 are kept.
 - **Clear History** deletes them all.
 
+History is for tabs that are *not* part of a saved session. While a saved session is active,
+exiting adds nothing to History; the program remembers the session's name instead.
+
 **Start with your tabs back**: Tools > Options > General > **On Startup**:
 - **Open default tab**: the normal start.
-- **Continue from last time**: restores the tabs you had when you last closed the program.
+- **Continue from last time**: if a saved session was active when you closed the program, that
+  session is loaded again exactly as saved (with **Save changes to this session automatically**
+  off, it returns to the folders you saved, whatever you changed since; with it on, it returns
+  to where you left off). Otherwise the tabs you had when you last closed the program are
+  restored.
 - **Load session**: starts with a saved session of your choice.
 
 Note: a session holds only your open **tabs**.

@@ -112,9 +112,14 @@ type
     fAutoSaveHistory: Boolean;
     fAutoSaveTimer: TTimer;
     fHistoryCount: Integer;
+    fLastActiveName: string;
     fSessionHistory: TCESessionList;
     fSessions: TCESessionList;
     function GetActiveSessionIndex: Integer;
+    function GetPlainTabSetActive: Boolean;
+    procedure ForgetDeletedActive;
+    procedure SnapshotPlainTabs;
+    procedure StoreActiveName;
     procedure AutoSaveTimerTick(Sender: TObject);
     procedure SaveDlgNameChange(Sender: TObject);
     procedure SetActiveSession(const Value: TCESessionItem);
@@ -128,6 +133,7 @@ type
     procedure Flush;
     procedure LoadAutoSession;
     function LoadFromFile(AFilePath: WideString): Boolean; override;
+    procedure LoadLastTimeSession;
     procedure LoadLatestHistorySession;
     procedure SaveActiveSession;
     procedure SaveSessionDlg;
@@ -137,6 +143,11 @@ type
         SetActiveSession;
     property ActiveSessionIndex: Integer read GetActiveSessionIndex;
     property ActiveSessionIsHistory: Boolean read fActiveSessionIsHistory;
+    // Name of the saved session that was active when sessions.xml was last written
+    // ('' if none). Read at start-up by LoadLastTimeSession.
+    property LastActiveSessionName: string read fLastActiveName;
+    // True when no saved session is active: the tabs are a plain (unnamed) set.
+    property PlainTabSetActive: Boolean read GetPlainTabSetActive;
     property AutoLoadSession: TCESessionItem read fAutoLoadSession write
         fAutoLoadSession;
     property SessionHistory: TCESessionList read fSessionHistory write
@@ -357,6 +368,7 @@ begin
   
   // Save session
   SessionHistory.SaveSession(session);
+  ForgetDeletedActive;
 end;
 
 {-------------------------------------------------------------------------------
@@ -372,6 +384,7 @@ begin
                  TD_BUTTON_YES + TD_BUTTON_NO) = TD_RESULT_YES) then
   begin
     SessionHistory.ClearSessions;
+    ForgetDeletedActive;
   end;
 end;
 
@@ -420,8 +433,8 @@ end;
   Close Tabs For New Session
 
   Prepares "New Session": the current tabs are kept first (updated into the
-  active session if that has the automatic-save flag, and added to History if
-  Auto Save History is on), then all tabs are closed and no session is active.
+  active session if that has the automatic-save flag; a plain tab set is copied
+  to History), then all tabs are closed and no session is active.
   Returns false if a tab refused to close; the caller then opens nothing.
 -------------------------------------------------------------------------------}
 function TCESessions.CloseTabsForNewSession: Boolean;
@@ -432,10 +445,7 @@ begin
     begin
       SaveActiveSession;
     end;
-    if AutoSaveHistory then
-    begin
-      AddHistorySession;
-    end;
+    SnapshotPlainTabs;
     Result:= MainForm.TabSet.CloseAllTabs;
     if Result then
     begin
@@ -469,10 +479,26 @@ end;
   Load From File (adds a diagnostic line to the Event Log)
 -------------------------------------------------------------------------------}
 function TCESessions.LoadFromFile(AFilePath: WideString): Boolean;
+var
+  node: TDOMNode;
 begin
   Result:= inherited LoadFromFile(AFilePath);
-  OutputDebugString(PChar(Format('CA sessions: load %s from %s: %d sessions, %d history entries',
-    [BoolToStr(Result, true), AFilePath, Sessions.Count, SessionHistory.Count])));
+  fLastActiveName:= '';
+  if Result and assigned(XML.DocumentElement) then
+  begin
+    node:= XML.DocumentElement.FirstChild;
+    while assigned(node) do
+    begin
+      if node.NodeName = 'ActiveSession' then
+      begin
+        fLastActiveName:= TDOMElement(node).AttribStrings['name'];
+        break;
+      end;
+      node:= node.NextSibling;
+    end;
+  end;
+  OutputDebugString(PChar(Format('CA sessions: load %s from %s: %d sessions, %d history entries, last active "%s"',
+    [BoolToStr(Result, true), AFilePath, Sessions.Count, SessionHistory.Count, fLastActiveName])));
 end;
 
 {-------------------------------------------------------------------------------
@@ -492,6 +518,138 @@ end;
 procedure TCESessions.LoadAutoSession;
 begin
   ActiveSession:= AutoLoadSession;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PlainTabSetActive
+-------------------------------------------------------------------------------}
+function TCESessions.GetPlainTabSetActive: Boolean;
+begin
+  Result:= not assigned(fActiveSession) or fActiveSessionIsHistory;
+end;
+
+{-------------------------------------------------------------------------------
+  Forget Deleted Active
+
+  History entries are deleted when the history is cleared, shrunk or full. If
+  the active session was one of them, the pointer would dangle; clear it.
+  (Compares pointers only, never uses the possibly freed object.)
+-------------------------------------------------------------------------------}
+procedure TCESessions.ForgetDeletedActive;
+begin
+  if assigned(fActiveSession) then
+  begin
+    if (Sessions.fItems.IndexOf(fActiveSession) = -1) and
+       (SessionHistory.fItems.IndexOf(fActiveSession) = -1) then
+    begin
+      fActiveSession:= nil;
+      fActiveSessionIsHistory:= false;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Snapshot Plain Tabs
+
+  Called just before the plain (unnamed) tab set is replaced by a session or
+  by New Session: keeps a copy of the open tabs in History so they can be
+  brought back. Does nothing when a saved session is active, when no tab is
+  open (start-up), or when the active History entry is unchanged (no
+  duplicate). Whatever fActiveSession points to may be deleted by this
+  (History keeps a limited number of entries), so callers must not use it
+  afterwards.
+-------------------------------------------------------------------------------}
+procedure TCESessions.SnapshotPlainTabs;
+var
+  tabsNode: TDOMElement;
+  unchanged: Boolean;
+begin
+  if not PlainTabSetActive then
+  begin
+    Exit;
+  end;
+  if not assigned(MainForm) or (MainForm.TabSet.TabCount = 0) then
+  begin
+    Exit;
+  end;
+  unchanged:= false;
+  if assigned(fActiveSession) then
+  begin
+    tabsNode:= SessionHistory.CreateTabsNode;
+    try
+      unchanged:= SessionHistory.NodeToSig(tabsNode) = fActiveSession.LastSig;
+    finally
+      tabsNode.Free;
+    end;
+  end;
+  if not unchanged then
+  begin
+    AddHistorySession;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Store Active Name
+
+  Writes the name of the active saved session (or '' if none) into sessions.xml
+  as <ActiveSession name="..."/>, so the next start can return to it. Older
+  program versions ignore the element, and a file without it means "none".
+-------------------------------------------------------------------------------}
+procedure TCESessions.StoreActiveName;
+var
+  node: TDOMNode;
+  elem: TDOMElement;
+  name: WideString;
+begin
+  name:= '';
+  if assigned(fActiveSession) and (Sessions.fItems.IndexOf(fActiveSession) > -1) then
+  begin
+    name:= fActiveSession.Name;
+  end;
+  elem:= nil;
+  node:= XML.DocumentElement.FirstChild;
+  while assigned(node) do
+  begin
+    if node.NodeName = 'ActiveSession' then
+    begin
+      elem:= TDOMElement(node);
+      break;
+    end;
+    node:= node.NextSibling;
+  end;
+  if not assigned(elem) then
+  begin
+    elem:= XML.CreateElement('ActiveSession');
+    XML.DocumentElement.AppendChild(elem);
+  end;
+  elem.AttribStrings['name']:= name;
+end;
+
+{-------------------------------------------------------------------------------
+  Load Last Time Session
+
+  Start-up for "Continue from last time": if a saved session was active when
+  the program last ran and still exists, it is loaded as saved (so a session
+  without automatic save returns to its saved folders). Otherwise the newest
+  History snapshot is restored.
+-------------------------------------------------------------------------------}
+procedure TCESessions.LoadLastTimeSession;
+var
+  session: TCESessionItem;
+begin
+  session:= nil;
+  if fLastActiveName <> '' then
+  begin
+    session:= Sessions.FindSession(fLastActiveName);
+  end;
+  if assigned(session) then
+  begin
+    ActiveSession:= session;
+  end
+  else
+  begin
+    LoadLatestHistorySession;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -596,6 +754,7 @@ begin
   try
     if not assigned(XML.DocumentElement) then
     XML.AppendChild(XML.CreateElement('CubicExplorer'));
+    StoreActiveName;
     WriteXML(XML.DocumentElement, FileStream);
   finally
     FileStream.Free;
@@ -614,6 +773,11 @@ begin
   begin
     if ActiveSession.AutoSave then
     SaveActiveSession;
+  end;
+  // Leaving a plain tab set for a session: keep a copy of it in History
+  if assigned(Value) then
+  begin
+    SnapshotPlainTabs;
   end;
   // Load session (the automatic-save timer must not run meanwhile)
   Inc(fAutoSaveBlock);
@@ -641,6 +805,8 @@ begin
     Dec(fAutoSaveBlock);
   end;
   MainForm.SessionsToolbar.Recreate;
+  // record which session is active, so the next start can return to it
+  Flush;
 end;
 
 {-------------------------------------------------------------------------------
@@ -653,6 +819,7 @@ begin
   begin
     SessionHistory.DeleteOldestSession;
   end;
+  ForgetDeletedActive;
 end;
 
 {-------------------------------------------------------------------------------

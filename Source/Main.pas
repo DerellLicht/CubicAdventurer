@@ -853,7 +853,7 @@ begin
     case Settings.StartupType of
       stNormal: CEActions.act_tabs_addtab.Execute;
       stSession: GlobalSessions.LoadAutoSession;
-      stLastSession: GlobalSessions.LoadLatestHistorySession;
+      stLastSession: GlobalSessions.LoadLastTimeSession;
     end;
   end;
 
@@ -985,10 +985,16 @@ begin
     GlobalSessions.SaveActiveSession;
   end;
   
-  if GlobalSessions.AutoSaveHistory then
-  GlobalSessions.AddHistorySession
-  else if Settings.StartupType = stLastSession then
-  GlobalSessions.AddHistorySession(true);
+  // History snapshots are for a plain (unnamed) tab set only. With a saved
+  // session active, nothing goes to History; the session's name is recorded
+  // in sessions.xml instead (see TCESessions.StoreActiveName).
+  if GlobalSessions.PlainTabSetActive then
+  begin
+    if GlobalSessions.AutoSaveHistory then
+    GlobalSessions.AddHistorySession
+    else if Settings.StartupType = stLastSession then
+    GlobalSessions.AddHistorySession(true);
+  end;
 
   if GlobalPathCtrl.ActivePage is TCECustomTabPage then
   Layouts.SaveCurrentLayout;

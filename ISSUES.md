@@ -54,6 +54,12 @@ Last updated: 2026-10-25 (version 0.98 in progress).
   `act_help_restore_layout`, which is now in the View menu.
 ## Wishlist
 
+- **CA-057 [feature] A first-class "default" session.** Idea: the plain tab set becomes a real
+  session that is always there (shown in the Sessions menu), and **On Startup** only decides
+  how new sessions start (their automatic-save flag). Would replace the History snapshot used
+  for "Continue from last time". Needs migration of old `sessions.xml` / `settings.xml`, a
+  reserved name, and menu / toolbar / Options changes. The 0.98 rules (History for plain tab
+  sets only, active session name recorded in `sessions.xml`) do not block it.
 - **CA-056 [feature] Merge the Save Session and Manage Sessions dialogs.** With the unused
   Save/Load Settings group gone, Manage (list, name, automatic-save check box, Delete) and
   Save (name combo, automatic-save check box) overlap. One dialog could list the sessions,

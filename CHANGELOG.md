@@ -7,6 +7,9 @@
 - Added: the Save Session dialog has the "Save changes to this session automatically" check box (it shows the setting of an existing session you pick)
 - Changed: removed the unused Save/Load Settings group (Tabs, Bookmarks, Layouts) from Manage Sessions
 - Fixed: Manage Sessions renamed a session only when the name box was clicked; it now renames as you type
+- Changed: "Continue from last time" returns to the saved session that was active when you exited; a session without automatic save comes back as saved
+- Changed: exiting with a saved session active no longer adds a History entry; leaving a plain (unnamed) tab set for a session or New Session first copies it to History
+- Fixed: the Save Session dialog's automatic-save box starts cleared for a new name
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 
 ## [0.97] - 2026-10-24
