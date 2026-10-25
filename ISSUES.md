@@ -12,26 +12,6 @@ Last updated: 2026-10-25 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-053 [feature] "New Session" menu item.** Implemented in 0104fcb; awaiting test.
-  There was no way to start a new session except by closing every tab by hand. Now
-  **Sessions > New Session** closes all tabs (a History snapshot is taken first when Auto
-  Save History is on) and opens one tab at **This PC**; the new session has no name until
-  the user does Sessions > Save.
-- **CA-054 [bug] Saved sessions are gone after restarting the program.** Save-now fix and
-  diagnostics in 0104fcb; awaiting test. Sessions created with Sessions > Save worked until
-  CubicAdventurer was closed and re-opened, then the list was empty. Save only changed the
-  in-memory XML; `sessions.xml` is written once, at shutdown (`TMainForm.Shutdown`). Save
-  now writes `sessions.xml` immediately and makes the saved session the active one. The
-  DbgView log of 2026-10-25 shows sessions surviving restarts. Cause of the original loss
-  not confirmed (the shutdown code looks correct); `CA sessions:` lines in the Event Log
-  report every load and save, so if it ever happens again, send those lines and the
-  `sessions.xml` file.
-- **CA-055 [bug] "Save settings automatically" (Sessions > Manage) did not do what it
-  says.** Implemented in 0104fcb; awaiting test. It was a per-session flag honoured only on
-  exit or when switching to another session, and only for the *active* session (set by
-  loading one, not by saving one). Now, while a session with the flag set is active, a change
-  to its tabs (folder, tab added, closed, moved or selected, view settings) is written to
-  `sessions.xml` within a few seconds. The check box caption was changed to say so.
 - **CA-010 [feature] Attribute background colors in Tiles and Thumbnails views.** The
   System / Read-only / Hidden / Combined backgrounds only render in Report, List and
   SmallIcon views. Text colors work in every view. Possible fix: add `elsTile` and
