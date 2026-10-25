@@ -128,8 +128,8 @@ Skins (the .skn files in the Skins folder)
 
 Icons and images (toolbar icons, application icon, about banner, options dialog and
 installer images)
-  These come from CubicExplorer or were made for CubicAdventurer. The original sources of
-  some of the toolbar icons are not recorded; if you know them, please tell us.
+  Inherited from CubicExplorer, except items made for CubicAdventurer (such as the About
+  banner). The original sources of the inherited icons and images are not known.
 
 Translations (the Locale folder)
   Translation files from the CubicExplorer project, contributed by its volunteer
