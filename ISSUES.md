@@ -10,15 +10,27 @@ Numbers are never reused.
 
 Last updated: 2026-10-25 (version 0.98 in progress).
 
-## After the release
-
-- **CA-005a [task] Spread the word further.** The first announcement reached fewer places
-  than hoped. Brain-storm other options: Windows file-manager discussion sites on Reddit
-  and similar communities, software directories, and forums for other Delphi-era tools.
-
-
 ## Open bugs and gaps
 
+- **CA-053 [feature] "New Session" menu item.** Implemented in 0104fcb; awaiting test.
+  There was no way to start a new session except by closing every tab by hand. Now
+  **Sessions > New Session** closes all tabs (a History snapshot is taken first when Auto
+  Save History is on) and opens one tab at **This PC**; the new session has no name until
+  the user does Sessions > Save.
+- **CA-054 [bug] Saved sessions are gone after restarting the program.** Save-now fix and
+  diagnostics in 0104fcb; awaiting test. Sessions created with Sessions > Save worked until
+  CubicAdventurer was closed and re-opened, then the list was empty. Save only changed the
+  in-memory XML; `sessions.xml` is written once, at shutdown (`TMainForm.Shutdown`). Save
+  now writes `sessions.xml` immediately and makes the saved session the active one. Cause
+  of the lost list at restart not confirmed (the shutdown code looks correct); `CA sessions:`
+  lines in the Event Log report every load and save, so if it still happens, send those
+  lines and the `sessions.xml` file.
+- **CA-055 [bug] "Save settings automatically" (Sessions > Manage) did not do what it
+  says.** Implemented in 0104fcb; awaiting test. It was a per-session flag honoured only on
+  exit or when switching to another session, and only for the *active* session (set by
+  loading one, not by saving one). Now, while a session with the flag set is active, a change
+  to its tabs (folder, tab added, closed, moved or selected, view settings) is written to
+  `sessions.xml` within a few seconds. The check box caption was changed to say so.
 - **CA-010 [feature] Attribute background colors in Tiles and Thumbnails views.** The
   System / Read-only / Hidden / Combined backgrounds only render in Report, List and
   SmallIcon views. Text colors work in every view. Possible fix: add `elsTile` and
@@ -59,24 +71,6 @@ Last updated: 2026-10-25 (version 0.98 in progress).
   (2) drop the icons from the list (and the title label) or at least from the tree,
   (3) widen the Name column or the whole page. Also check the category of
   `act_help_restore_layout`, which is now in the View menu.
-- **CA-053 [feature] "New Session" menu item.** There is no way to start a new session
-  except by closing every tab by hand. Wanted: **Sessions > New Session** closes all tabs
-  (a History snapshot is taken first when Auto Save History is on) and opens one tab at
-  **This PC**; the new session has no name until the user does Sessions > Save.
-- **CA-054 [bug] Saved sessions are gone after restarting the program.** Sessions created
-  with Sessions > Save worked until CubicAdventurer was closed and re-opened, then the list
-  was empty. Save only changed the in-memory XML; `sessions.xml` is written once, at shutdown
-  (`TMainForm.Shutdown`). Wanted: Save writes `sessions.xml` immediately, and the session
-  just saved becomes the active session. Cause of the lost list at restart not yet confirmed
-  (the shutdown code looks correct); diagnostic log lines (`CA sessions:`) were added to the
-  Event Log, so if it still happens, send those lines and the `sessions.xml` file.
-- **CA-055 [bug] "Save settings automatically" (Sessions > Manage) does not do what it
-  says.** It is a per-session flag that is only honoured when the program exits or the user
-  switches to another session, and only for the *active* session (set by loading one, not by
-  saving one). Wanted: while a session with the flag set is active, a change to its tabs
-  (folder, tab added, closed, moved or selected, view settings) is written to `sessions.xml`
-  within a few seconds. The check box caption should say what it does.
-
 ## Wishlist
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
@@ -131,6 +125,12 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   files; confirm `settings.xml` still saves what matters. (The PO translation editor can
   no longer be reached from the menus; test loading and saving a shipped Locale `.po` in it
   under CA-020, when language support is taken up.)
+
+## Misc tasks
+
+- **CA-005a [task] Spread the word further.** The first announcement reached fewer places
+  than hoped. Brain-storm other options: Windows file-manager discussion sites on Reddit
+  and similar communities, software directories, and forums for other Delphi-era tools.
 
 ## Maintenance (internal)
 
