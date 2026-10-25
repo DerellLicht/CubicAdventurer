@@ -27,10 +27,8 @@ tab onto the open Bookmarks panel and drop it where you want the bookmark.
   **Open in new tab**, Alt+click or a middle-click do the same.
 - Double-click a file bookmark to launch the file.
 
-**Open a whole category at once**: select the category, then right-click > **Open All in Tabs**:
-- **Open All in Tabs**: every folder in it opens in its own tab.
-- **...And Launch Files**: folders open in tabs and files are launched.
-- **...Launch Files Only**: only the files are launched.
+**Open a whole category at once**: select the category, then right-click > **Open All in Tabs**.
+Every folder bookmark in it opens in its own tab (file bookmarks are skipped).
 
 **Properties...** shows a bookmark's target. You can change it, browse for another one, or store
 it as a relative path.

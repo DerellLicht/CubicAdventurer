@@ -27,21 +27,10 @@ inherited CEBookmarkPanel: TCEBookmarkPanel
       Caption = 'Open in new tab'
       OnClick = PopupMenuClick
     end
-    object but_openAll: TSpTBXSubmenuItem
+    object but_openAll: TSpTBXItem
       Tag = 5
       Caption = 'Open All in Tabs'
       OnClick = PopupMenuClick
-      DropdownCombo = True
-      object SpTBXItem1: TSpTBXItem
-        Tag = 6
-        Caption = 'And Launch Files'
-        OnClick = PopupMenuClick
-      end
-      object SpTBXItem2: TSpTBXItem
-        Tag = 7
-        Caption = 'Launch Files Only'
-        OnClick = PopupMenuClick
-      end
     end
     object SpTBXSeparatorItem2: TSpTBXSeparatorItem
     end

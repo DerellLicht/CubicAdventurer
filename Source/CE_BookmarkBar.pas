@@ -76,12 +76,11 @@ type
     procedure Click; override;
   end;
 
-  TCEOpenAllBookmarksItem = class(TSpTBXSubmenuItem)
+  TCEOpenAllBookmarksItem = class(TSpTBXItem)
   public
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
-    procedure OnSubMenuClick(Sender: TObject);
-    procedure OpenAll(Mode: Integer = 0);
+    procedure OpenAll;
   end;
 
   // Menu item "Bookmark current folder": adds the folder of the active tab to
@@ -496,28 +495,9 @@ end;
   Create an instance of TCEOpenAllBookmarksItem
 -------------------------------------------------------------------------------}
 constructor TCEOpenAllBookmarksItem.Create(AOwner: TComponent);
-var
-  item: TSpTBXItem;
 begin
   inherited;
-  Self.DropdownCombo:= true;
   Self.Caption:= _('Open All in Tabs');
-
-  // "And Launch Files" item
-  item:= TSpTBXItem.Create(self);
-  item.Caption:= _('And Launch Files');
-  item.CustomHeight:= 24;
-  item.Tag:= 1;
-  item.OnClick:= OnSubMenuClick;
-  self.Add(item);
-
-  // "Launch Files Only" item
-  item:= TSpTBXItem.Create(self);
-  item.Caption:= _('Launch Files Only');
-  item.CustomHeight:= 24;
-  item.Tag:= 2;
-  item.OnClick:= OnSubMenuClick;
-  self.Add(item);
 end;
 
 {*------------------------------------------------------------------------------
@@ -535,17 +515,10 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Handle Sub menu item click
+  Open all items: every folder bookmark in the menu this item belongs to opens
+  in its own tab. File bookmarks, categories and sessions are skipped.
 -------------------------------------------------------------------------------}
-procedure TCEOpenAllBookmarksItem.OnSubMenuClick(Sender: TObject);
-begin
-  OpenAll(TSpTBXItem(sender).Tag);
-end;
-
-{*------------------------------------------------------------------------------
-  Open all items
--------------------------------------------------------------------------------}
-procedure TCEOpenAllBookmarksItem.OpenAll(Mode: Integer = 0);
+procedure TCEOpenAllBookmarksItem.OpenAll;
 var
   comp: TCECustomBookComp;
   i: Integer;
@@ -566,17 +539,9 @@ begin
     else
     comp:= nil;
 
-    if comp is TCENormalItemComp then
+    if (comp is TCENormalItemComp) and TCENormalItemComp(comp).IsFolder then
     begin
-      if TCENormalItemComp(comp).IsFolder then
-      begin
-        if Mode < 2 then
-        comp.MouseClick([ssShift,ssMiddle],mbMiddle)
-      end
-      else if Mode > 0  then
-      begin
-        comp.MouseClick([ssDouble, ssLeft], mbLeft);
-      end;
+      comp.MouseClick([ssShift,ssMiddle],mbMiddle);
     end;
   end;
 end;

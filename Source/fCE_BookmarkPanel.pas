@@ -51,9 +51,7 @@ type
     but_rename: TSpTBXItem;
     but_delete: TSpTBXItem;
     SpTBXSeparatorItem2: TSpTBXSeparatorItem;
-    but_openAll: TSpTBXSubmenuItem;
-    SpTBXItem1: TSpTBXItem;
-    SpTBXItem2: TSpTBXItem;
+    but_openAll: TSpTBXItem;
     but_properties: TSpTBXItem;
     but_refresh: TSpTBXItem;
     SpTBXSeparatorItem3: TSpTBXSeparatorItem;
@@ -83,7 +81,7 @@ type
     procedure AddCurrentFolder;
     procedure LoadBookmarks;
     procedure OnBookmarksChange(Sender: TObject);
-    procedure OpenAll(Mode: Integer = 0);
+    procedure OpenAll;
     procedure RePopulateBookmarkItems;
     procedure SaveBookmarks;
   published
@@ -254,8 +252,6 @@ begin
     3: BookmarkTree.EditSelectedNode;
     4: BookmarkTree.SafeDeleteSelectedNodes;
     5: OpenAll;
-    6: OpenAll(1);
-    7: OpenAll(2);
     8: begin
          if assigned(BookmarkTree.FocusedNode) then
          begin
@@ -298,13 +294,13 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Open all bookmarks
+  Open all bookmarks in tabs.
 
-  0 = Only Folders
-  1 = Open Folders and Launch Files
-  2 = Launch only files
+  With one category selected, every folder bookmark directly inside it opens in
+  its own tab. With several nodes selected, every selected folder bookmark
+  opens. File bookmarks, nested categories and session bookmarks are skipped.
 -------------------------------------------------------------------------------}
-procedure TCEBookmarkPanel.OpenAll(Mode: Integer = 0);
+procedure TCEBookmarkPanel.OpenAll;
 var
   node, chNode: PVirtualNode;
   comp: TCECustomBookComp;
@@ -316,14 +312,9 @@ begin
     while assigned(chNode) do
     begin
       comp:= BookmarkTree.GetNodeComp(chNode);
-      if TCENormalItemComp(comp).IsFolder then
+      if (comp is TCENormalItemComp) and TCENormalItemComp(comp).IsFolder then
       begin
-        if Mode < 2 then
-        comp.MouseClick([ssShift,ssMiddle],mbMiddle)
-      end
-      else if Mode > 0 then
-      begin
-        comp.MouseClick([ssDouble, ssLeft], mbLeft);
+        comp.MouseClick([ssShift,ssMiddle],mbMiddle);
       end;
       chNode:= chNode.NextSibling;
     end;
@@ -334,17 +325,9 @@ begin
     while assigned(node) do
     begin
       comp:= BookmarkTree.GetNodeComp(node);
-      if comp is TCENormalItemComp then
+      if (comp is TCENormalItemComp) and TCENormalItemComp(comp).IsFolder then
       begin
-        if TCENormalItemComp(comp).IsFolder then
-        begin
-          if Mode < 2 then
-          comp.MouseClick([ssShift,ssMiddle],mbMiddle)
-        end
-        else if Mode > 0  then
-        begin
-          comp.MouseClick([ssDouble, ssLeft], mbLeft);
-        end;
+        comp.MouseClick([ssShift,ssMiddle],mbMiddle);
       end;
       node:= BookmarkTree.GetNextSelected(node);
     end;
