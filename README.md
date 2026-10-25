@@ -31,7 +31,7 @@ then copy your old `settings.xml`, `layout.xml` and `sessions.xml` into the sett
 CubicAdventurer is licensed under the Mozilla Public License 1.1 (MPL 1.1); the original author is Marko Savolainen.  
 The bundled `7z.dll` is under the LGPL.  
 See the [combined license file](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/License.txt) for the full texts.  
-The libraries built into the program, and their authors and licenses, are listed in the [third-party notices](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/THIRD-PARTY-NOTICES.txt).  
+The libraries built into the program, and their authors and licenses, are listed in the [third-party notices](https://github.com/DerellLicht/CubicAdventurer/blob/master/THIRD-PARTY-NOTICES.txt).  
 
 ## Documentation
 

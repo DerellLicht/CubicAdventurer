@@ -1,7 +1,7 @@
 # CubicAdventurer Changelog
 
 ## [0.98] - 2026-10-24
-- Added: third-party notices file (authors and licenses of the libraries used), installed with the program
+- Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)
