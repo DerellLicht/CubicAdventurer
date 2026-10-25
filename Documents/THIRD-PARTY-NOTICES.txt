@@ -33,10 +33,10 @@ Mustangpeak Common Library, Mustangpeak ListView (EasyListview) and VirtualShell
   License:  MPL 1.1 or LGPL 2.1 or later. Used under MPL 1.1.
   Note:     Patched copies of some of these units (under Source/Components/Mustangpeak)
             were modified by Marko Savolainen for CubicExplorer; they remain under the MPL.
-  VirtualThumbnails (version 2.4.0) was written by Robert Lee, with credits to many
-  contributors listed in the file. Its header states no license beyond the usual
-  "as is" warranty disclaimer. The patched copy in this repository was modified by
-  Marko Savolainen.
+  VirtualThumbnails (version 2.4.0) is part of the Mustangpeak VirtualShellTools
+  distribution. It was written by Robert Lee, with credits to many contributors listed
+  in the file, and is distributed "as is" without warranty. The patched copy in this
+  repository was modified by Marko Savolainen.
 
 SynEdit
   Authors:  Martin Waldenburg (mwEdit, Copyright (C) 1998), Mael Horz (Unicode
@@ -103,8 +103,10 @@ DirectX headers for Delphi (DirectShow9, Direct3D9 and related units)
 TFindFileW (file search component)
   Author:   Kambiz R. Khojasteh (Delphi Area), version 4.02, Unicode version.
             Modified by Marko Savolainen.
-  Source:   http://www.delphiarea.com
-  License:  The file header states no license terms.
+  Source:   Delphi Area (www.delphiarea.com, a former source of
+            Delphi components; the site is no longer online). Included here as it came
+            with CubicExplorer.
+  License:  The file header names the author and his web site but gives no license terms.
 
 CubicCore, CEAction and the remaining units in Source are CubicExplorer code by Marko
 Savolainen, under the MPL.
