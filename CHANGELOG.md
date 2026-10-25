@@ -1,5 +1,8 @@
 # CubicAdventurer Changelog
 
+## [0.98] - 2026-10-24
+- Added: third-party notices file (authors and licenses of the libraries used), installed with the program
+
 ## [0.97] - 2026-10-24
 - Initial release (beta)
 - Fixed: range-check error when listing `.png` files in Thumbnail mode
