@@ -92,7 +92,7 @@ object CESessionManager: TCESessionManager
       end
       object check_autosave: TSpTBXCheckBox
         Left = 202
-        Top = 160
+        Top = 66
         Width = 185
         Height = 31
         Caption = 'Save changes to this session automatically.'
@@ -109,58 +109,7 @@ object CESessionManager: TCESessionManager
         Height = 21
         Anchors = [akTop, akRight]
         TabOrder = 1
-        OnClick = edit_nameChange
-      end
-      object group_loadsave: TSpTBXGroupBox
-        Left = 202
-        Top = 60
-        Width = 185
-        Height = 95
-        Caption = 'Save/Load Settings'
-        Anchors = [akTop, akRight]
-        Enabled = False
-        TabOrder = 2
-        DesignSize = (
-          185
-          95)
-        object check_tabs: TSpTBXCheckBox
-          Left = 12
-          Top = 18
-          Width = 170
-          Height = 21
-          Caption = 'Tabs'
-          Anchors = [akLeft, akTop, akRight]
-          AutoSize = False
-          Enabled = False
-          TabOrder = 0
-          Wrapping = twEndEllipsis
-          Checked = True
-          State = cbChecked
-        end
-        object check_bookmarks: TSpTBXCheckBox
-          Left = 12
-          Top = 41
-          Width = 170
-          Height = 21
-          Caption = 'Bookmarks'
-          Anchors = [akLeft, akTop, akRight]
-          AutoSize = False
-          Enabled = False
-          TabOrder = 1
-          Wrapping = twEndEllipsis
-        end
-        object check_layout: TSpTBXCheckBox
-          Left = 12
-          Top = 66
-          Width = 170
-          Height = 21
-          Caption = 'Layouts'
-          Anchors = [akLeft, akTop, akRight]
-          AutoSize = False
-          Enabled = False
-          TabOrder = 2
-          Wrapping = twEndEllipsis
-        end
+        OnChange = edit_nameChange
       end
       object SpTBXLabel1: TSpTBXLabel
         Left = 202

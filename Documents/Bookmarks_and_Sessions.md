@@ -51,7 +51,9 @@ folders you want, then use **Sessions > Save...** to give the session a name.
 
 **Save the current tabs**: **Sessions > Save...**, type a name, OK. Using an existing name
 overwrites that session. The session is written to disk at once, and it becomes the active
-session (the one shown with a check mark in the Sessions menu).
+session (the one shown with a check mark in the Sessions menu). Tick **Save changes to this
+session automatically** in the same dialog if the session should follow your tabs from now on
+(see Manage, below).
 
 **Load a session**: pick it from the **Sessions** menu (saved sessions are listed there) or from
 the Sessions toolbar. **Loading closes all current tabs first**, then opens the saved ones.
@@ -71,5 +73,4 @@ saved into it within a few seconds, and again when you switch to another session
 - **Continue from last time**: restores the tabs you had when you last closed the program.
 - **Load session**: starts with a saved session of your choice.
 
-Note: for now only **tabs** are saved in a session. The Bookmarks and Layouts check boxes in the
-Manage dialog have no effect yet.
+Note: a session holds only your open **tabs**.

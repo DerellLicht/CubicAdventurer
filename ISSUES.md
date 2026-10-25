@@ -21,10 +21,11 @@ Last updated: 2026-10-25 (version 0.98 in progress).
   diagnostics in 0104fcb; awaiting test. Sessions created with Sessions > Save worked until
   CubicAdventurer was closed and re-opened, then the list was empty. Save only changed the
   in-memory XML; `sessions.xml` is written once, at shutdown (`TMainForm.Shutdown`). Save
-  now writes `sessions.xml` immediately and makes the saved session the active one. Cause
-  of the lost list at restart not confirmed (the shutdown code looks correct); `CA sessions:`
-  lines in the Event Log report every load and save, so if it still happens, send those
-  lines and the `sessions.xml` file.
+  now writes `sessions.xml` immediately and makes the saved session the active one. The
+  DbgView log of 2026-10-25 shows sessions surviving restarts. Cause of the original loss
+  not confirmed (the shutdown code looks correct); `CA sessions:` lines in the Event Log
+  report every load and save, so if it ever happens again, send those lines and the
+  `sessions.xml` file.
 - **CA-055 [bug] "Save settings automatically" (Sessions > Manage) did not do what it
   says.** Implemented in 0104fcb; awaiting test. It was a per-session flag honoured only on
   exit or when switching to another session, and only for the *active* session (set by
@@ -73,6 +74,11 @@ Last updated: 2026-10-25 (version 0.98 in progress).
   `act_help_restore_layout`, which is now in the View menu.
 ## Wishlist
 
+- **CA-056 [feature] Merge the Save Session and Manage Sessions dialogs.** With the unused
+  Save/Load Settings group gone, Manage (list, name, automatic-save check box, Delete) and
+  Save (name combo, automatic-save check box) overlap. One dialog could list the sessions,
+  take a name, hold the check box, and have Save, Delete and Close buttons. Not urgent;
+  needs a form redesign that should be checked on screen.
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
 - **CA-051 [feature] "Add to Bookmarks" in the file view's right-click menu** (for

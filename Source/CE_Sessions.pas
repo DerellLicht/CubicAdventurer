@@ -116,6 +116,7 @@ type
     fSessions: TCESessionList;
     function GetActiveSessionIndex: Integer;
     procedure AutoSaveTimerTick(Sender: TObject);
+    procedure SaveDlgNameChange(Sender: TObject);
     procedure SetActiveSession(const Value: TCESessionItem);
     procedure SetHistoryCount(const Value: Integer);
   public
@@ -516,6 +517,25 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Save Dlg Name Change
+
+  When the name in the Save Session dialog matches an existing session, the
+  automatic-save check box shows that session's current setting.
+-------------------------------------------------------------------------------}
+procedure TCESessions.SaveDlgNameChange(Sender: TObject);
+var
+  dlg: TCEItemSelectSaveDlg;
+  session: TCESessionItem;
+begin
+  dlg:= TCEItemSelectSaveDlg(Sender);
+  session:= Sessions.FindSession(dlg.combo.Text);
+  if assigned(session) then
+  begin
+    dlg.OptionChecked:= session.AutoSave;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Save Session Dlg
 -------------------------------------------------------------------------------}
 procedure TCESessions.SaveSessionDlg;
@@ -525,6 +545,9 @@ var
 begin
   dlg:= CreateSaveSessionDlg;
   try
+    dlg.ShowOption(_('Save changes to this session automatically'), false);
+    SaveDlgNameChange(dlg);
+    dlg.OnNameChange:= SaveDlgNameChange;
     if dlg.ShowModal = mrOK then
     begin
       session:= Sessions.FindSession(dlg.combo.Text);
@@ -533,6 +556,7 @@ begin
         session:= Sessions.AddSession;
         session.Name:= dlg.combo.Text;
       end;
+      session.AutoSave:= dlg.OptionChecked;
       Sessions.SaveSession(session);
       // The session just saved becomes the active one (so its automatic-save
       // flag applies from now on), and sessions.xml is written immediately.

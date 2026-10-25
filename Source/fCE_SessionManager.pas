@@ -37,10 +37,6 @@ type
   TCESessionManager = class(TForm)
     SpTBXLabel1: TSpTBXLabel;
     edit_name: TSpTBXEdit;
-    group_loadsave: TSpTBXGroupBox;
-    check_tabs: TSpTBXCheckBox;
-    check_bookmarks: TSpTBXCheckBox;
-    check_layout: TSpTBXCheckBox;
     check_autosave: TSpTBXCheckBox;
     but_delete: TSpTBXButton;
     SpTBXPanel2: TSpTBXPanel;
@@ -121,20 +117,11 @@ procedure TCESessionManager.SetSessionPropertiesEnabled(const Value: Boolean);
 begin
   fSessionPropertiesEnabled:= Value;
   edit_name.Enabled:= SessionPropertiesEnabled;
-
-  // TODO: Session SaveLoadItems
-  //check_tabs.Enabled:= SessionPropertiesEnabled;
-  //check_bookmarks.Enabled:= SessionPropertiesEnabled;
-  //check_layout.Enabled:= SessionPropertiesEnabled;
-
   check_autosave.Enabled:= SessionPropertiesEnabled;
   but_delete.Enabled:= SessionPropertiesEnabled;
   if not SessionPropertiesEnabled then
   begin
     edit_name.Text:= '';
-    check_tabs.Checked:= false;
-    check_bookmarks.Checked:= false;
-    check_layout.Checked:= false;
     check_autosave.Checked:= false;
   end;
 end;
@@ -189,11 +176,6 @@ begin
   begin
     edit_name.Text:= fSelectedSession.Name;
     check_autosave.Checked:= fSelectedSession.AutoSave;
-    
-    // TODO: Session SaveLoadItems
-    check_tabs.Checked:= true; //sliTabs in fSelectedSession.SaveLoadItems;
-    //check_bookmarks.Checked:= sliBookmarks in fSelectedSession.SaveLoadItems;
-    //check_layout.Checked:= sliLayout in fSelectedSession.SaveLoadItems;
 
     SessionPropertiesEnabled:= true;
   end

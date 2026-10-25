@@ -4,6 +4,9 @@
 - Added: Sessions > New Session (closes all tabs and opens one tab at This PC)
 - Fixed: Sessions > Save now writes `sessions.xml` immediately, and the saved session becomes the active session
 - Fixed: "Save changes to this session automatically" (Sessions > Manage) now saves tab changes while the session is active, instead of only when switching away or exiting
+- Added: the Save Session dialog has the "Save changes to this session automatically" check box (it shows the setting of an existing session you pick)
+- Changed: removed the unused Save/Load Settings group (Tabs, Bookmarks, Layouts) from Manage Sessions
+- Fixed: Manage Sessions renamed a session only when the name box was clicked; it now renames as you type
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 
 ## [0.97] - 2026-10-24

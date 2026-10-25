@@ -44,13 +44,22 @@ type
     fExistsWarningContent: WideString;
     fExistsWarningDescription: WideString;
     fExistsWarningTitle: WideString;
+    fOnNameChange: TNotifyEvent;
+    fOption: TSpTBXCheckBox;
     fShowExistsWarning: Boolean;
+    function GetOptionChecked: Boolean;
     procedure SetAllowEmptyText(const Value: Boolean);
+    procedure SetOptionChecked(const Value: Boolean);
     { Private declarations }
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure ShowOption(const ACaption: string; AChecked: Boolean);
+    // Called after the text in the combo box has changed (typed or picked).
+    property OnNameChange: TNotifyEvent read fOnNameChange write fOnNameChange;
+    // State of the optional check box (see ShowOption); false when not shown.
+    property OptionChecked: Boolean read GetOptionChecked write SetOptionChecked;
     { Public declarations }
   published
     property AllowEmptyText: Boolean read fAllowEmptyText write SetAllowEmptyText;
@@ -115,7 +124,55 @@ end;
 procedure TCEItemSelectSaveDlg.comboChange(Sender: TObject);
 begin
   if not fAllowEmptyText then
-  but_ok.Enabled:= combo.Text <> '';
+  begin
+    but_ok.Enabled:= combo.Text <> '';
+  end;
+  if assigned(fOnNameChange) then
+  begin
+    fOnNameChange(Self);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Get/Set OptionChecked
+-------------------------------------------------------------------------------}
+function TCEItemSelectSaveDlg.GetOptionChecked: Boolean;
+begin
+  Result:= assigned(fOption) and fOption.Checked;
+end;
+
+procedure TCEItemSelectSaveDlg.SetOptionChecked(const Value: Boolean);
+begin
+  if assigned(fOption) then
+  begin
+    fOption.Checked:= Value;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Show Option
+
+  Adds a check box with the given caption between the combo box and the
+  buttons (created in code, so dialogs that do not call this are unchanged).
+  The form grows and the buttons move down to make room.
+-------------------------------------------------------------------------------}
+procedure TCEItemSelectSaveDlg.ShowOption(const ACaption: string; AChecked: Boolean);
+const
+  ExtraHeight = 28;
+begin
+  if not assigned(fOption) then
+  begin
+    fOption:= TSpTBXCheckBox.Create(Self);
+    fOption.Parent:= panel_background;
+    fOption.AutoSize:= false;
+    fOption.SetBounds(8, 58, 265, 21);
+    fOption.Anchors:= [akLeft, akTop, akRight];
+    ClientHeight:= ClientHeight + ExtraHeight;
+    but_ok.Top:= but_ok.Top + ExtraHeight;
+    but_cancel.Top:= but_cancel.Top + ExtraHeight;
+  end;
+  fOption.Caption:= ACaption;
+  fOption.Checked:= AChecked;
 end;
 
 {-------------------------------------------------------------------------------
