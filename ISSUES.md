@@ -18,9 +18,7 @@ Last updated: 2026-10-24 (version 0.97).
 - **CA-032 [task] Follow-ups to `Documents/THIRD-PARTY-NOTICES.txt`.** Keep it current when
   a library is added or updated (it names Virtual Treeview 8 and SpTBXLib 2.5.12). Open
   gaps: the sources of some toolbar icons are unknown; the headers of `FindFileW.pas` and
-  `VirtualThumbnails.pas` state no license terms; `Source/Components/Tb2K/TB2Item.pas` is
-  not compiled (commented out in the `.dpr`) and Toolbar2000 forbids redistributing
-  modified copies, so delete it from the repo unless it is identical to upstream.
+  `VirtualThumbnails.pas` state no license terms.
 
 
 ## Open bugs and gaps
