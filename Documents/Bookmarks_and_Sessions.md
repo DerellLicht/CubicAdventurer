@@ -49,6 +49,10 @@ selected. Sessions are stored in `sessions.xml` in the settings folder.
 saved session they are first copied to History) and opens a single tab at **This PC**. Open the
 folders you want, then use **Sessions > Save...** to give the session a name.
 
+**Update a session once**: **Sessions > Update Current Session** saves the open tabs into the active
+session right away. Use it for a one-time change (for example, adding a drive to a session that
+does not have **Save changes to this session automatically**).
+
 **Leave a session, keeping the tabs**: **Sessions > Detach from Session**. The tabs stay open but
 are no longer part of the session; they are a plain tab set again (and are handled like one at
 exit). A session with **Save changes to this session automatically** is brought up to date

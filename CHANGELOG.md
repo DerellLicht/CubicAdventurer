@@ -10,6 +10,7 @@
 - Changed: "Continue from last time" returns to the saved session that was active when you exited; a session without automatic save comes back as saved
 - Changed: exiting with a saved session active no longer adds a History entry; leaving a plain (unnamed) tab set for a session or New Session first copies it to History
 - Fixed: the Save Session dialog's automatic-save box starts cleared for a new name
+- Added: Sessions > Update Current Session (saves the open tabs into the active session once)
 - Added: Sessions > Detach from Session (keeps the open tabs, leaves the active session)
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 

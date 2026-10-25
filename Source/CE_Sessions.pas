@@ -140,6 +140,7 @@ type
     procedure SaveSessionDlg;
     procedure SaveToFile(AFilePath: WideString); override;
     procedure ShowSessionManager;
+    procedure UpdateActiveSession;
     property ActiveSession: TCESessionItem read fActiveSession write
         SetActiveSession;
     property ActiveSessionIndex: Integer read GetActiveSessionIndex;
@@ -459,6 +460,23 @@ begin
   finally
     Dec(fAutoSaveBlock);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  Update Active Session
+
+  One-time update: saves the open tabs into the active saved session and
+  writes sessions.xml, whatever the session's automatic-save flag says. Does
+  nothing when no saved session is active.
+-------------------------------------------------------------------------------}
+procedure TCESessions.UpdateActiveSession;
+begin
+  if PlainTabSetActive then
+  begin
+    Exit;
+  end;
+  Sessions.SaveSession(fActiveSession);
+  Flush;
 end;
 
 {-------------------------------------------------------------------------------

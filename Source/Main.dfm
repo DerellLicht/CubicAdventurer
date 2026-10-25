@@ -376,6 +376,9 @@ object MainForm: TMainForm
         object SpTBXItem95: TSpTBXItem
           Action = CEActions.act_sessions_save
         end
+        object sessionUpdateMenuItem: TSpTBXItem
+          Action = CEActions.act_sessions_update
+        end
         object SpTBXItem94: TSpTBXItem
           Action = CEActions.act_sessions_manage
         end

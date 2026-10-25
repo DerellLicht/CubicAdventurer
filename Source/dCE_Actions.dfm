@@ -429,6 +429,13 @@ object CEActions: TCEActions
       Hint = 'Keep the open tabs, but no longer treat them as part of the active session.'
       OnExecute = ActionExecute
     end
+    object act_sessions_update: TAction
+      Tag = 858
+      Category = 'Sessions'
+      Caption = 'Update Current Session'
+      Hint = 'Save the open tabs into the active session now.'
+      OnExecute = ActionExecute
+    end
     object act_sessions_save: TAction
       Tag = 851
       Category = 'Sessions'
