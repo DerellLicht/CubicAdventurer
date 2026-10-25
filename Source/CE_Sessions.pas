@@ -310,7 +310,7 @@ begin
   fSessionHistory.AStorage:= Self;
 
   fAutoSaveHistory:= false;
-  fHistoryCount:= 10;
+  fHistoryCount:= 30;
   fActiveSessionIsHistory:= false;
   fActiveSession:= nil;
 
