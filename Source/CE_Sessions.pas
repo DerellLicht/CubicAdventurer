@@ -520,7 +520,8 @@ end;
   Save Dlg Name Change
 
   When the name in the Save Session dialog matches an existing session, the
-  automatic-save check box shows that session's current setting.
+  automatic-save check box shows that session's current setting; for a new
+  name it is cleared.
 -------------------------------------------------------------------------------}
 procedure TCESessions.SaveDlgNameChange(Sender: TObject);
 var
@@ -532,6 +533,11 @@ begin
   if assigned(session) then
   begin
     dlg.OptionChecked:= session.AutoSave;
+  end
+  else
+  begin
+    // a new name means a new session, which starts with the option off
+    dlg.OptionChecked:= false;
   end;
 end;
 
