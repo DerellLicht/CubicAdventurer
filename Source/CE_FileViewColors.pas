@@ -11,8 +11,8 @@ unit CE_FileViewColors;
 //
 //   * Files whose extension is listed in Options > Display > Fileview > Colors
 //     with "Enable background color" checked get that entry's background color.
-//     This wins over the attribute colors (the extension is the more specific
-//     choice: a read-only .bak should still stand out as a .bak).
+//     The attribute colors win over it: a System, Read-only or Hidden file
+//     always shows its attribute color, never hidden by an extension color.
 //
 // Every color uses clDefault (or clNone) to mean "off": that item is drawn
 // exactly as before. All colors default to "off".
@@ -328,8 +328,8 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Fills the background of Item's cell with the extension background color or,
-  if the file's extension has none, the attribute background color.
+  Fills the background of Item's cell with the attribute background color or,
+  if the file has no attribute color, the extension background color.
   FullCell = true: the whole cell. Used by the Report views (the colored row is
   continuous across the columns) and by the Icon, Thumbnail and Tile views (the
   cell is a card holding the picture and caption).
@@ -342,8 +342,8 @@ var
   color: TColor;
   r: TRect;
 begin
-  if (not CE_GetExtBackgroundColor(Item, color)) and
-      (not CE_GetAttrBackgroundColor(Item, color)) then
+  if (not CE_GetAttrBackgroundColor(Item, color)) and
+      (not CE_GetExtBackgroundColor(Item, color)) then
   begin
     Exit;
   end;

@@ -77,8 +77,8 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   Implemented (not compiled): Options > Display > Fileview > Colors, per extension entry,
   "Enable background color" plus a second color box. Stored as optional trailing fields of
   `<ExtensionColors>` (`exts,color,bold,italic,underline,bgEnabled,bgColor`); old files
-  load with no backgrounds. Painted by `CE_FileViewColors.pas` (extension background wins
-  over the attribute backgrounds; folders never get one; the "Use extension colors" check
+  load with no backgrounds. Painted by `CE_FileViewColors.pas` (the attribute backgrounds
+  win over the extension background; folders never get one; the "Use extension colors" check
   box is the master switch for text and background). Test: add `bak` with a background,
   tick the check box, Apply, check all views; select another entry and back (check box and
   color must follow the entry); close and reopen Options; restart and confirm
