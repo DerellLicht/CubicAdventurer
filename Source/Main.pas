@@ -185,6 +185,7 @@ type
     SpTBXItem94: TSpTBXItem;
     SpTBXItem95: TSpTBXItem;
     sessionNewMenuItem: TSpTBXItem;
+    sessionDetachMenuItem: TSpTBXItem;
     SpTBXSeparatorItem26: TSpTBXSeparatorItem;
     sessionHistoryMenuItem: TSpTBXSubmenuItem;
     SpTBXSeparatorItem27: TSpTBXSeparatorItem;

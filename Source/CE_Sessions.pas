@@ -130,6 +130,7 @@ type
     procedure AddHistorySession(AIsLastTimeSession: Boolean = false);
     procedure ClearHistory;
     function CloseTabsForNewSession: Boolean;
+    procedure DetachSession;
     procedure Flush;
     procedure LoadAutoSession;
     function LoadFromFile(AFilePath: WideString): Boolean; override;
@@ -458,6 +459,30 @@ begin
   finally
     Dec(fAutoSaveBlock);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  Detach Session
+
+  Leaves the active saved session but keeps the open tabs, which become a
+  plain (unnamed) tab set. If the session has the automatic-save flag it is
+  brought up to date first; otherwise it keeps what was saved. Does nothing
+  when no saved session is active.
+-------------------------------------------------------------------------------}
+procedure TCESessions.DetachSession;
+begin
+  if PlainTabSetActive then
+  begin
+    Exit;
+  end;
+  if fActiveSession.AutoSave then
+  begin
+    SaveActiveSession;
+  end;
+  fActiveSession:= nil;
+  fActiveSessionIsHistory:= false;
+  MainForm.SessionsToolbar.Recreate;
+  Flush;
 end;
 
 {-------------------------------------------------------------------------------

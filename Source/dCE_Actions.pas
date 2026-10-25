@@ -172,6 +172,7 @@ type
     act_view_loadskin: TAction;
     act_tools_showoptions: TAction;
     act_sessions_new: TAction;
+    act_sessions_detach: TAction;
     act_sessions_save: TAction;
     act_sessions_manage: TAction;
     act_view_dropstack: TAction;
@@ -1327,6 +1328,7 @@ begin
     end;
     855: GlobalSessions.AutoSaveHistory:= not GlobalSessions.AutoSaveHistory;
     856: StartNewSession;
+    857: GlobalSessions.DetachSession;
   end;
 end;
 
@@ -1338,6 +1340,11 @@ begin
   TargetAction.Enabled:= true;
   if ActionID = 855 then
   TargetAction.Checked:= GlobalSessions.AutoSaveHistory;
+  if ActionID = 857 then
+  begin
+    // only meaningful while a saved session is active
+    TargetAction.Enabled:= not GlobalSessions.PlainTabSetActive;
+  end;
 end;
 
 {##############################################################################}

@@ -422,6 +422,13 @@ object CEActions: TCEActions
       Hint = 'Close all tabs and start a new session at This PC.'
       OnExecute = ActionExecute
     end
+    object act_sessions_detach: TAction
+      Tag = 857
+      Category = 'Sessions'
+      Caption = 'Detach from Session'
+      Hint = 'Keep the open tabs, but no longer treat them as part of the active session.'
+      OnExecute = ActionExecute
+    end
     object act_sessions_save: TAction
       Tag = 851
       Category = 'Sessions'

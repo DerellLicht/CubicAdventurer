@@ -370,6 +370,9 @@ object MainForm: TMainForm
         object sessionNewMenuItem: TSpTBXItem
           Action = CEActions.act_sessions_new
         end
+        object sessionDetachMenuItem: TSpTBXItem
+          Action = CEActions.act_sessions_detach
+        end
         object SpTBXItem95: TSpTBXItem
           Action = CEActions.act_sessions_save
         end
