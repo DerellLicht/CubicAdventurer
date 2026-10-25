@@ -1,6 +1,9 @@
 # CubicAdventurer Changelog
 
 ## [0.98] - 2026-10-24
+- Added: Sessions > New Session (closes all tabs and opens one tab at This PC)
+- Fixed: Sessions > Save now writes `sessions.xml` immediately, and the saved session becomes the active session
+- Fixed: "Save changes to this session automatically" (Sessions > Manage) now saves tab changes while the session is active, instead of only when switching away or exiting
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 
 ## [0.97] - 2026-10-24

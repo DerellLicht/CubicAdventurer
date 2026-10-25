@@ -95,7 +95,7 @@ object CESessionManager: TCESessionManager
         Top = 160
         Width = 185
         Height = 31
-        Caption = 'Save settings automatically.'
+        Caption = 'Save changes to this session automatically.'
         Anchors = [akTop, akRight]
         AutoSize = False
         TabOrder = 3

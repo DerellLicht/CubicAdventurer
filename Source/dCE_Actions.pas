@@ -171,6 +171,7 @@ type
     act_help_poedit_form: TAction;
     act_view_loadskin: TAction;
     act_tools_showoptions: TAction;
+    act_sessions_new: TAction;
     act_sessions_save: TAction;
     act_sessions_manage: TAction;
     act_view_dropstack: TAction;
@@ -1296,6 +1297,19 @@ end;
 {##############################################################################}
 
 {*------------------------------------------------------------------------------
+  Start a new session: close all tabs (see TCESessions.CloseTabsForNewSession)
+  and open a single tab at This PC (the Drives folder, the same on every
+  Windows version). The new session is unnamed until the user saves it.
+-------------------------------------------------------------------------------}
+procedure StartNewSession;
+begin
+  if GlobalSessions.CloseTabsForNewSession then
+  begin
+    OpenFolderInTab(nil, DrivesFolder.AbsolutePIDL, true, false, true);
+  end;
+end;
+
+{*------------------------------------------------------------------------------
   Session Category Execute
 -------------------------------------------------------------------------------}
 procedure ExecuteSessionsCategory(ActionID: Integer);
@@ -1303,9 +1317,16 @@ begin
   case ActionID of
     851: GlobalSessions.SaveSessionDlg;
     852: GlobalSessions.ShowSessionManager;
-    853: GlobalSessions.AddHistorySession;
-    854: GlobalSessions.ClearHistory;
+    853: begin
+      GlobalSessions.AddHistorySession;
+      GlobalSessions.Flush;
+    end;
+    854: begin
+      GlobalSessions.ClearHistory;
+      GlobalSessions.Flush;
+    end;
     855: GlobalSessions.AutoSaveHistory:= not GlobalSessions.AutoSaveHistory;
+    856: StartNewSession;
   end;
 end;
 

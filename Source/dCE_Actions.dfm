@@ -415,11 +415,18 @@ object CEActions: TCEActions
       ImageIndex = 39
       OnExecute = ActionExecute
     end
+    object act_sessions_new: TAction
+      Tag = 856
+      Category = 'Sessions'
+      Caption = 'New Session'
+      Hint = 'Close all tabs and start a new session at This PC.'
+      OnExecute = ActionExecute
+    end
     object act_sessions_save: TAction
       Tag = 851
       Category = 'Sessions'
       Caption = 'Save...'
-      Hint = 'Save active session.'
+      Hint = 'Save the open tabs as a session.'
       OnExecute = ActionExecute
     end
     object act_sessions_manage: TAction

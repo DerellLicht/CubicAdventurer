@@ -31,7 +31,7 @@ uses
   // SpTBX
   SpTBXItem, TB2Item,
   // System Units
-  Classes, SysUtils, StrUtils, Windows, Contnrs, Math, Controls, Dialogs;
+  Classes, SysUtils, StrUtils, Windows, Contnrs, Math, Controls, Dialogs, ExtCtrls;
 
 type
   TCESessionSaveLoadItem = (sliTabs, sliBookmarks, sliLayout);
@@ -53,6 +53,9 @@ type
     procedure SetTime(const Value: TDateTime);
   public
     fNode: TDOMElement;
+    // Serialized form of the Tabs node as last saved or loaded; used to detect
+    // whether the open tabs have changed since (see SaveSessionIfChanged).
+    LastSig: AnsiString;
     property Node: TDOMElement read fNode write fNode;
   published
     property AutoSave: Boolean read fAutoSave write SetAutoSave;
@@ -74,6 +77,8 @@ type
     ARootNode: TDOMNode;
     AStorage: TCEAppSettings;
     fItems: TObjectList;
+    function CreateTabsNode: TDOMElement;
+    function NodeToSig(ANode: TDOMNode): AnsiString;
   public
     constructor Create;
     destructor Destroy; override;
@@ -90,6 +95,7 @@ type
     procedure LoadSession(ASession: TCESessionItem);
     procedure MoveSession(CurIndex: Integer; NewIndex: Integer);
     procedure SaveSession(ASession: TCESessionItem);
+    function SaveSessionIfChanged(ASession: TCESessionItem): Boolean;
     procedure SortByTime;
     property Items[Index: Integer]: TCESessionItem read GetItems;
     property RootNodeName: WideString read fRootNodeName write fRootNodeName;
@@ -102,11 +108,14 @@ type
     fActiveSession: TCESessionItem;
     fActiveSessionIsHistory: Boolean;
     fAutoLoadSession: TCESessionItem;
+    fAutoSaveBlock: Integer;
     fAutoSaveHistory: Boolean;
+    fAutoSaveTimer: TTimer;
     fHistoryCount: Integer;
     fSessionHistory: TCESessionList;
     fSessions: TCESessionList;
     function GetActiveSessionIndex: Integer;
+    procedure AutoSaveTimerTick(Sender: TObject);
     procedure SetActiveSession(const Value: TCESessionItem);
     procedure SetHistoryCount(const Value: Integer);
   public
@@ -114,7 +123,10 @@ type
     destructor Destroy; override;
     procedure AddHistorySession(AIsLastTimeSession: Boolean = false);
     procedure ClearHistory;
+    function CloseTabsForNewSession: Boolean;
+    procedure Flush;
     procedure LoadAutoSession;
+    function LoadFromFile(AFilePath: WideString): Boolean; override;
     procedure LoadLatestHistorySession;
     procedure SaveActiveSession;
     procedure SaveSessionDlg;
@@ -183,7 +195,7 @@ implementation
 uses
   fCE_TabPage, WideSupport, XMLWrite, Main, CE_SpTabBar,
   fCE_SessionManager, CE_LanguageEngine, dCE_Images, fCE_FileView,
-  CE_VistaFuncs, Forms;
+  CE_VistaFuncs, CE_Utils, Forms;
 
 var
   fGlobalSessions: TCESessions;  
@@ -287,6 +299,14 @@ begin
   fHistoryCount:= 10;
   fActiveSessionIsHistory:= false;
   fActiveSession:= nil;
+
+  // Timer that writes the active session when its tabs have changed
+  // (only for sessions with the "save changes automatically" flag).
+  fAutoSaveBlock:= 0;
+  fAutoSaveTimer:= TTimer.Create(nil);
+  fAutoSaveTimer.Interval:= 3000;
+  fAutoSaveTimer.OnTimer:= AutoSaveTimerTick;
+  fAutoSaveTimer.Enabled:= true;
 end;
 
 {-------------------------------------------------------------------------------
@@ -294,6 +314,7 @@ end;
 -------------------------------------------------------------------------------}
 destructor TCESessions.Destroy;
 begin
+  fAutoSaveTimer.Free;
   fSessions.Free;
   fSessionHistory.Free;
   inherited;
@@ -351,6 +372,106 @@ begin
   begin
     SessionHistory.ClearSessions;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  Auto Save Timer Tick
+
+  Runs every few seconds. If the active session is one of the user's saved
+  sessions and has "Save changes automatically" set, and its tabs differ from
+  what was last saved, the session is updated and sessions.xml is written.
+  Does nothing while a session is being loaded or closed, during start-up and
+  shutdown, or when no tab is open (an empty tab set must never overwrite a
+  session).
+-------------------------------------------------------------------------------}
+procedure TCESessions.AutoSaveTimerTick(Sender: TObject);
+begin
+  if fAutoSaveBlock > 0 then
+  begin
+    Exit;
+  end;
+  if not assigned(fActiveSession) or fActiveSessionIsHistory or not fActiveSession.AutoSave then
+  begin
+    Exit;
+  end;
+  if not assigned(MainForm) or not MainForm.IsReady or MainForm.CEIsClosing then
+  begin
+    Exit;
+  end;
+  if MainForm.TabSet.TabCount = 0 then
+  begin
+    Exit;
+  end;
+  try
+    if Sessions.SaveSessionIfChanged(fActiveSession) then
+    begin
+      Flush;
+    end;
+  except
+    on E: Exception do
+    begin
+      OutputDebugString(PChar('CA sessions: automatic save failed: ' + E.Message));
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Close Tabs For New Session
+
+  Prepares "New Session": the current tabs are kept first (updated into the
+  active session if that has the automatic-save flag, and added to History if
+  Auto Save History is on), then all tabs are closed and no session is active.
+  Returns false if a tab refused to close; the caller then opens nothing.
+-------------------------------------------------------------------------------}
+function TCESessions.CloseTabsForNewSession: Boolean;
+begin
+  Inc(fAutoSaveBlock);
+  try
+    if assigned(fActiveSession) and not fActiveSessionIsHistory and fActiveSession.AutoSave then
+    begin
+      SaveActiveSession;
+    end;
+    if AutoSaveHistory then
+    begin
+      AddHistorySession;
+    end;
+    Result:= MainForm.TabSet.CloseAllTabs;
+    if Result then
+    begin
+      // Not through SetActiveSession: that would save the (now empty) tab set.
+      fActiveSession:= nil;
+      fActiveSessionIsHistory:= false;
+      MainForm.SessionsToolbar.Recreate;
+      Flush;
+    end;
+  finally
+    Dec(fAutoSaveBlock);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Flush
+
+  Writes sessions.xml to the settings folder now, instead of waiting for the
+  program to exit. Does nothing when settings are read-only.
+-------------------------------------------------------------------------------}
+procedure TCESessions.Flush;
+begin
+  if ReadOnlySettings or (SettingsDirPath = '') then
+  begin
+    Exit;
+  end;
+  SaveToFile(SettingsDirPath + 'sessions.xml');
+end;
+
+{-------------------------------------------------------------------------------
+  Load From File (adds a diagnostic line to the Event Log)
+-------------------------------------------------------------------------------}
+function TCESessions.LoadFromFile(AFilePath: WideString): Boolean;
+begin
+  Result:= inherited LoadFromFile(AFilePath);
+  OutputDebugString(PChar(Format('CA sessions: load %s from %s: %d sessions, %d history entries',
+    [BoolToStr(Result, true), AFilePath, Sessions.Count, SessionHistory.Count])));
 end;
 
 {-------------------------------------------------------------------------------
@@ -413,6 +534,11 @@ begin
         session.Name:= dlg.combo.Text;
       end;
       Sessions.SaveSession(session);
+      // The session just saved becomes the active one (so its automatic-save
+      // flag applies from now on), and sessions.xml is written immediately.
+      fActiveSession:= session;
+      fActiveSessionIsHistory:= false;
+      Flush;
       MainForm.SessionsToolbar.Recreate;
     end;
   finally
@@ -430,7 +556,11 @@ begin
   try
     FileStream:= TWideFileStream.Create(AFilePath, fmCreate);
   except
-    Exit;
+    on E: Exception do
+    begin
+      OutputDebugString(PChar('CA sessions: cannot write ' + AFilePath + ': ' + E.Message));
+      Exit;
+    end;
   end;
   
   try
@@ -440,6 +570,8 @@ begin
   finally
     FileStream.Free;
   end;
+  OutputDebugString(PChar(Format('CA sessions: saved %d sessions, %d history entries to %s',
+    [Sessions.Count, SessionHistory.Count, AFilePath])));
 end;
 
 {-------------------------------------------------------------------------------
@@ -453,25 +585,30 @@ begin
     if ActiveSession.AutoSave then
     SaveActiveSession;
   end;
-  // Load session
-  fActiveSession:= Value;
-  if assigned(fActiveSession) then
-  begin
-    if Sessions.fItems.IndexOf(fActiveSession) > -1 then
+  // Load session (the automatic-save timer must not run meanwhile)
+  Inc(fAutoSaveBlock);
+  try
+    fActiveSession:= Value;
+    if assigned(fActiveSession) then
     begin
-      Sessions.LoadSession(fActiveSession);
-      fActiveSessionIsHistory:= false;
-    end
-    else if SessionHistory.fItems.IndexOf(fActiveSession) > -1 then
-    begin
-      SessionHistory.LoadSession(fActiveSession);
-      fActiveSessionIsHistory:= true;
-    end
-    else
-    begin
-      fActiveSessionIsHistory:= false;
-      fActiveSession:= nil;
+      if Sessions.fItems.IndexOf(fActiveSession) > -1 then
+      begin
+        Sessions.LoadSession(fActiveSession);
+        fActiveSessionIsHistory:= false;
+      end
+      else if SessionHistory.fItems.IndexOf(fActiveSession) > -1 then
+      begin
+        SessionHistory.LoadSession(fActiveSession);
+        fActiveSessionIsHistory:= true;
+      end
+      else
+      begin
+        fActiveSessionIsHistory:= false;
+        fActiveSession:= nil;
+      end;
     end;
+  finally
+    Dec(fAutoSaveBlock);
   end;
   MainForm.SessionsToolbar.Recreate;
 end;
@@ -502,6 +639,8 @@ begin
   finally
     manager.Free;
     MainForm.SessionsToolbar.Recreate;
+    // names, order, deletions and the automatic-save flags changed in the dialog
+    Flush;
   end;
 end;
 
@@ -770,6 +909,7 @@ procedure TCESessionList.LoadSession(ASession: TCESessionItem);
 
 var
   chNode: TDOMNode;
+  tabsNode: TDOMElement;
 begin
   if assigned(ASession) then
   begin
@@ -784,6 +924,12 @@ begin
           LoadTabs(chNode);
         end;
         chNode:= chNode.NextSibling;
+      end;
+      tabsNode:= CreateTabsNode;
+      try
+        ASession.LastSig:= NodeToSig(tabsNode);
+      finally
+        tabsNode.Free;
       end;
     finally
       MainForm.EndUIUpdate;
@@ -817,37 +963,60 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Save Session
--------------------------------------------------------------------------------}
-procedure TCESessionList.SaveSession(ASession: TCESessionItem);
+  Create Tabs Node
 
-  procedure SaveTabs(ATabsNode: TDOMNode);
-  var
-    chNode: TDOMNode;
-    tab: TCESpTabItem;
-    i: Integer;
-    s: String;
+  Builds a new, unattached 'Tabs' element describing the tabs that are open
+  now (one child per tab, plus the 'active' attribute). The caller attaches it
+  to a session node or frees it.
+-------------------------------------------------------------------------------}
+function TCESessionList.CreateTabsNode: TDOMElement;
+var
+  chNode: TDOMNode;
+  tab: TCESpTabItem;
+  i: Integer;
+  s: String;
+begin
+  Result:= AStorage.XML.CreateElement('Tabs');
+  for i:= 0 to MainForm.TabSet.Items.Count - 1 do
   begin
-    for i:= 0 to MainForm.TabSet.Items.Count - 1 do
+    if MainForm.TabSet.Items.Items[i] is TCESpTabItem then
     begin
-      if MainForm.TabSet.Items.Items[i] is TCESpTabItem then
+      tab:= TCESpTabItem(MainForm.TabSet.Items.Items[i]);
+      if assigned(tab.Page) then
       begin
-        tab:= TCESpTabItem(MainForm.TabSet.Items.Items[i]);
-        if assigned(tab.Page) then
+        s:= TabPageClassList.GetName(TCECustomTabPageClass(tab.Page.ClassType));
+        if s <> '' then
         begin
-          s:= TabPageClassList.GetName(TCECustomTabPageClass(tab.Page.ClassType));
-          if s <> '' then
-          begin
-            chNode:= AStorage.XML.CreateElement(s);
-            ATabsNode.AppendChild(chNode);
-            AStorage.SaveObjectProperties(tab.Page.Settings, chNode);
-          end;
+          chNode:= AStorage.XML.CreateElement(s);
+          Result.AppendChild(chNode);
+          AStorage.SaveObjectProperties(tab.Page.Settings, chNode);
         end;
       end;
     end;
-    TDOMElement(ATabsNode).AttribStrings['active']:= IntToStr(MainForm.TabSet.CEActiveTabIndex);
   end;
+  Result.AttribStrings['active']:= IntToStr(MainForm.TabSet.CEActiveTabIndex);
+end;
 
+{-------------------------------------------------------------------------------
+  Node To Sig (serialize a node to a string, for comparing two states)
+-------------------------------------------------------------------------------}
+function TCESessionList.NodeToSig(ANode: TDOMNode): AnsiString;
+var
+  ms: TMemoryStream;
+begin
+  ms:= TMemoryStream.Create;
+  try
+    WriteXML(ANode, ms);
+    SetString(Result, PAnsiChar(ms.Memory), ms.Size);
+  finally
+    ms.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Save Session
+-------------------------------------------------------------------------------}
+procedure TCESessionList.SaveSession(ASession: TCESessionItem);
 var
   chNode: TDOMElement;
 begin
@@ -856,11 +1025,43 @@ begin
     TDOMElementHack(ASession.Node).FreeChildren;
     // TODO: Session SaveLoadItems
     // Tabs
-    chNode:= AStorage.XML.CreateElement('Tabs');
+    chNode:= CreateTabsNode;
     ASession.Node.AppendChild(chNode);
-    SaveTabs(chNode);
+    ASession.LastSig:= NodeToSig(chNode);
     // Time
     ASession.Time:= Now;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Save Session If Changed
+
+  Saves the open tabs into ASession only when they differ from what the
+  session holds (compared as serialized text). Returns true if the session
+  was changed, so the caller knows sessions.xml has to be written.
+-------------------------------------------------------------------------------}
+function TCESessionList.SaveSessionIfChanged(ASession: TCESessionItem): Boolean;
+var
+  newNode: TDOMElement;
+  sig: AnsiString;
+begin
+  Result:= false;
+  if assigned(ASession) then
+  begin
+    newNode:= CreateTabsNode;
+    sig:= NodeToSig(newNode);
+    if sig = ASession.LastSig then
+    begin
+      newNode.Free;
+    end
+    else
+    begin
+      TDOMElementHack(ASession.Node).FreeChildren;
+      ASession.Node.AppendChild(newNode);
+      ASession.LastSig:= sig;
+      ASession.Time:= Now;
+      Result:= true;
+    end;
   end;
 end;
 

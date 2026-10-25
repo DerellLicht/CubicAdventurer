@@ -184,6 +184,7 @@ type
     ApplicationEvents: TApplicationEvents;
     SpTBXItem94: TSpTBXItem;
     SpTBXItem95: TSpTBXItem;
+    sessionNewMenuItem: TSpTBXItem;
     SpTBXSeparatorItem26: TSpTBXSeparatorItem;
     sessionHistoryMenuItem: TSpTBXSubmenuItem;
     SpTBXSeparatorItem27: TSpTBXSeparatorItem;
@@ -308,6 +309,7 @@ type
     property SingleInstance: Boolean read fSingleInstance write SetSingleInstance;
   published
     property CEIsClosing: Boolean read fCEIsClosing;
+    property IsReady: Boolean read fIsReady;
   end;
 
   TCEStartupType = (stNormal, stSession, stLastSession);

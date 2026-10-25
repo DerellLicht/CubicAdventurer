@@ -8,7 +8,7 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
 Numbers are never reused.
 
-Last updated: 2026-10-24 (version 0.97).
+Last updated: 2026-10-25 (version 0.98 in progress).
 
 ## After the release
 
@@ -59,6 +59,23 @@ Last updated: 2026-10-24 (version 0.97).
   (2) drop the icons from the list (and the title label) or at least from the tree,
   (3) widen the Name column or the whole page. Also check the category of
   `act_help_restore_layout`, which is now in the View menu.
+- **CA-053 [feature] "New Session" menu item.** There is no way to start a new session
+  except by closing every tab by hand. Wanted: **Sessions > New Session** closes all tabs
+  (a History snapshot is taken first when Auto Save History is on) and opens one tab at
+  **This PC**; the new session has no name until the user does Sessions > Save.
+- **CA-054 [bug] Saved sessions are gone after restarting the program.** Sessions created
+  with Sessions > Save worked until CubicAdventurer was closed and re-opened, then the list
+  was empty. Save only changed the in-memory XML; `sessions.xml` is written once, at shutdown
+  (`TMainForm.Shutdown`). Wanted: Save writes `sessions.xml` immediately, and the session
+  just saved becomes the active session. Cause of the lost list at restart not yet confirmed
+  (the shutdown code looks correct); diagnostic log lines (`CA sessions:`) were added to the
+  Event Log, so if it still happens, send those lines and the `sessions.xml` file.
+- **CA-055 [bug] "Save settings automatically" (Sessions > Manage) does not do what it
+  says.** It is a per-session flag that is only honoured when the program exits or the user
+  switches to another session, and only for the *active* session (set by loading one, not by
+  saving one). Wanted: while a session with the flag set is active, a change to its tabs
+  (folder, tab added, closed, moved or selected, view settings) is written to `sessions.xml`
+  within a few seconds. The check box caption should say what it does.
 
 ## Wishlist
 

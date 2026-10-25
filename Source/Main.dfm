@@ -367,6 +367,9 @@ object MainForm: TMainForm
       end
       object sessionsMenuItem: TSpTBXSubmenuItem
         Caption = 'Sessions'
+        object sessionNewMenuItem: TSpTBXItem
+          Action = CEActions.act_sessions_new
+        end
         object SpTBXItem95: TSpTBXItem
           Action = CEActions.act_sessions_save
         end

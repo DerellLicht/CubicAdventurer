@@ -45,15 +45,21 @@ Other options on the same page: **Auto expand tree** and **Auto collapse tree**.
 A session is the set of tabs you have open: each tab's folder and settings, and which tab was
 selected. Sessions are stored in `sessions.xml` in the settings folder.
 
+**Start a new session**: **Sessions > New Session** closes all tabs (they are first added to
+History if **Auto Save History** is on) and opens a single tab at **This PC**. Open the
+folders you want, then use **Sessions > Save...** to give the session a name.
+
 **Save the current tabs**: **Sessions > Save...**, type a name, OK. Using an existing name
-overwrites that session.
+overwrites that session. The session is written to disk at once, and it becomes the active
+session (the one shown with a check mark in the Sessions menu).
 
 **Load a session**: pick it from the **Sessions** menu (saved sessions are listed there) or from
 the Sessions toolbar. **Loading closes all current tabs first**, then opens the saved ones.
 
-**Sessions > Manage...** lets you delete sessions, change their order by dragging, and switch
-**Save settings automatically** for a session (the session is updated with your current tabs when
-you switch away from it).
+**Sessions > Manage...** lets you delete and rename sessions, change their order by dragging, and
+switch **Save changes to this session automatically** for a session. While that session is the
+active one, any change to your tabs (a folder, a tab added, closed or moved, the selected tab) is
+saved into it within a few seconds, and again when you switch to another session or exit.
 
 **History** (a submenu of **Sessions**) keeps automatic snapshots:
 - **Add History Item** takes a snapshot now.
