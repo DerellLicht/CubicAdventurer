@@ -46,49 +46,19 @@ Last updated: 2026-10-25 (version 0.98 in progress).
   (2) drop the icons from the list (and the title label) or at least from the tree,
   (3) widen the Name column or the whole page. Also check the category of
   `act_help_restore_layout`, which is now in the View menu.
+
 ## Wishlist
 
-- **CA-057 [feature] A first-class "default" session.** Idea: the plain tab set becomes a real
-  session that is always there (shown in the Sessions menu), and **On Startup** only decides
-  how new sessions start (their automatic-save flag). Would replace the History snapshot used
-  for "Continue from last time". Needs migration of old `sessions.xml` / `settings.xml`, a
-  reserved name, and menu / toolbar / Options changes. The 0.98 rules (History for plain tab
-  sets only, active session name recorded in `sessions.xml`) do not block it.
-- **CA-056 [feature] Merge the Save Session and Manage Sessions dialogs.** With the unused
-  Save/Load Settings group gone, Manage (list, name, automatic-save check box, Delete) and
-  Save (name combo, automatic-save check box) overlap. One dialog could list the sessions,
-  take a name, hold the check box, and have Save, Delete and Close buttons. Not urgent;
-  needs a form redesign that should be checked on screen.
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
-- **CA-051 [feature] "Add to Bookmarks" in the file view's right-click menu** (for
-  folders, and perhaps for the current folder in the List view). Partly done 2026-10-24:
-  the Bookmarks menu now starts with **Bookmark current folder**, so a bookmark can be
-  added without opening the panel. Still open: the right-click entry. The item context
-  menu is the standard Explorer shell menu; adding an entry means hooking the menu-building
-  code in the file view (insert our own item into the shell menu before it is shown) and
-  may not be practical for every menu. A toolbar button and a hotkey were considered and
-  rejected as too hidden (toolbars are often off; a hotkey is as invisible as the panel).
-- **CA-052 [feature] Make Bookmarks easier to discover.** Related to CA-051. Do not put
+- **CA-052 [feature] New-user document (Quick Start or Tips and Tricks).** Do not put
   usage hints in `README.md` (it is already long, and hints there are a slippery slope).
   Proposed instead: a short new-user document shipped with the program and linked from
-  the Start Menu, e.g. `Quick_Start.md` or `Tips_and_Tricks.md`, that would cover Bookmarks
-  among other features. Maintainer's own experience: he went years without finding Bookmarks, and they now replace
-  his habit of keeping rarely used folders open in tabs. Content and name still to be discussed with the maintainer, so
-  nothing is written yet. It would need an installer entry (`installer/CubicAdventurer.iss`:
-  file, Start Menu icon) and can follow `Documents/Bookmarks_and_Sessions.md` as a model.
-
-- **CA-050 [feature] Background color for selected extensions.** On Tools > Options >
-  Display > Fileview > Colors, add a "Background color" checkbox. When it is checked,
-  enable a second extension list with its own color selection box, identical to the
-  existing extension-color one (the existing one sets the text color). Use case, from
-  the maintainer's `ndir32` directory lister: make files that "should stand out" show
-  up, mainly `.bak`, plus rarer ones such as `.err`. Probable approach: reuse the
-  attribute-background mechanism in `CE_FileViewColors.pas` (view-item subclasses) and
-  the extension-list handling in `fCE_FileView.AssignExtensionColors`. Remember the
-  settings policy: new properties get constructor defaults, and old `settings.xml`
-  files must still load. Backgrounds render in every view except Filmstrip
-  (see CA-010).
+  the Start Menu, e.g. `Quick_Start.md` or `Tips_and_Tricks.md`, that would cover the
+  features people tend to miss. Content and name still to be discussed with the
+  maintainer, so nothing is written yet. It would need an installer entry
+  (`installer/CubicAdventurer.iss`: file, Start Menu icon) and can follow
+  `Documents/Bookmarks_and_Sessions.md` as a model.
 
 ## Deferred (not started)
 
@@ -103,6 +73,16 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
+- **CA-050 [task] Test extension background colors.**
+  Implemented (not compiled): Options > Display > Fileview > Colors, per extension entry,
+  "Enable background color" plus a second color box. Stored as optional trailing fields of
+  `<ExtensionColors>` (`exts,color,bold,italic,underline,bgEnabled,bgColor`); old files
+  load with no backgrounds. Painted by `CE_FileViewColors.pas` (extension background wins
+  over the attribute backgrounds; folders never get one; the "Use extension colors" check
+  box is the master switch for text and background). Test: add `bak` with a background,
+  tick the check box, Apply, check all views; select another entry and back (check box and
+  color must follow the entry); close and reopen Options; restart and confirm
+  `settings.xml` round-trips; load a pre-change `settings.xml`.
 - **CA-010 [task] Test attribute backgrounds in Icon, Thumbnail and Tile views.**
   Implemented (not compiled): `TCEViewIconItem`, `TCEViewThumbnailItem` and
   `TCEViewTileItem` in `CE_FileViewColors.pas` fill the whole item card behind the picture

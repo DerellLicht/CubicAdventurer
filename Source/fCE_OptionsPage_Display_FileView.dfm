@@ -334,6 +334,29 @@ inherited CE_OptionsPage_Display_FileView: TCE_OptionsPage_Display_FileView
         TabOrder = 7
         OnClick = HandleChange
       end
+      object check_ext_bg: TCheckBox
+        Left = 231
+        Top = 150
+        Width = 193
+        Height = 17
+        Caption = 'Enable background color'
+        Enabled = False
+        TabOrder = 8
+        OnClick = HandleExtColorChange
+      end
+      object color_extension_bg: TColorBox
+        Left = 231
+        Top = 172
+        Width = 154
+        Height = 22
+        DefaultColorColor = clWindow
+        Enabled = False
+        Selected = clDefault
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        ItemHeight = 16
+        TabOrder = 9
+        OnSelect = HandleExtColorChange
+      end
     end
     object sheet_attrs: TTabSheet
       Caption = 'Attributes'

@@ -1510,6 +1510,8 @@ begin
       CEFileViewColors.ReadOnlyBgColor:= fReadOnlyBgColor;
       CEFileViewColors.HiddenBgColor:= fHiddenBgColor;
       CEFileViewColors.CombinedBgColor:= fCombinedBgColor;
+      // extension background colors (the optional last two fields of ExtensionColors)
+      CE_SetExtensionBgColors(fExtensionColorsEnabled, fExtensionColors);
       // thumbnails
       fileView.ThumbsManager.AutoLoad:= Thumbnails.fUseStorage;
       fileView.ThumbsManager.AutoSave:= Thumbnails.fUseStorage;

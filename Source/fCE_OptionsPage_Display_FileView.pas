@@ -44,6 +44,8 @@ type
     fItalic: Boolean;
     fUnderline: Boolean;
     fColor: TColor;
+    fBgEnabled: Boolean;
+    fBgColor: TColor;
   end;
 
   TCE_OptionsPage_Display_FileView = class(TCEOptionsCustomPage)
@@ -96,6 +98,8 @@ type
     label_combined_bg: TLabel;
     color_attr_combined: TColorBox;
     label_attr_note: TLabel;
+    check_ext_bg: TCheckBox;
+    color_extension_bg: TColorBox;
     procedure HandleChange(Sender: TObject);
     procedure list_extsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -116,7 +120,7 @@ type
     procedure but_fontClick(Sender: TObject);
     procedure color_backgroundSelect(Sender: TObject);
   private
-    { Private declarations }
+    procedure UpdateExtBgControls(AHasNode: Boolean);
   protected
     fExtValuesChanging: Boolean;
   public
@@ -192,7 +196,9 @@ procedure TCE_OptionsPage_Display_FileView.ApplySettings;
               IntToStr(data.fColor) + ',' +                        // color
               BoolToStr(data.fBold) + ',' +                        // bold
               BoolToStr(data.fItalic) + ',' +                      // italic
-              BoolToStr(data.fUnderline);                          // underline
+              BoolToStr(data.fUnderline) + ',' +                   // underline
+              BoolToStr(data.fBgEnabled) + ',' +                   // background enabled
+              IntToStr(data.fBgColor);                             // background color
 
       node:= list_exts.GetNext(node);
     end;
@@ -249,6 +255,16 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Enables the background controls of the extension list: the check box needs a
+  focused list entry, the color box also needs the check box to be checked.
+-------------------------------------------------------------------------------}
+procedure TCE_OptionsPage_Display_FileView.UpdateExtBgControls(AHasNode: Boolean);
+begin
+  check_ext_bg.Enabled:= AHasNode;
+  color_extension_bg.Enabled:= AHasNode and check_ext_bg.Checked;
+end;
+
+{-------------------------------------------------------------------------------
   HandleExtColorChange
 -------------------------------------------------------------------------------}
 procedure TCE_OptionsPage_Display_FileView.HandleExtColorChange(
@@ -266,6 +282,9 @@ begin
     data.fItalic:= check_ext_italic.Checked;
     data.fUnderline:= check_ext_underline.Checked;
     data.fColor:= color_extension.Selected;
+    data.fBgEnabled:= check_ext_bg.Checked;
+    data.fBgColor:= color_extension_bg.Selected;
+    UpdateExtBgControls(true);
   end;
   HandleChange(Sender);
 end;
@@ -276,8 +295,11 @@ end;
 procedure TCE_OptionsPage_Display_FileView.but_addClick(Sender: TObject);
 var
   node: PVirtualNode;
+  data: PExtListData;
 begin
   node:= list_exts.AddChild(nil);
+  data:= list_exts.GetNodeData(node);
+  data.fBgColor:= clDefault;  // a zeroed record would mean a black background
   list_exts.Selected[node]:= true;
   list_exts.FocusedNode:= node;
   list_exts.EditNode(node, 0);
@@ -322,6 +344,14 @@ procedure TCE_OptionsPage_Display_FileView.color_backgroundSelect(
   Sender: TObject);
 begin
   panel_font.Color:= color_background.Selected;
+  if color_background.Selected = clDefault then
+  begin
+    color_extension_bg.DefaultColorColor:= clWindow;
+  end
+  else
+  begin
+    color_extension_bg.DefaultColorColor:= color_background.Selected;
+  end;
   HandleChange(Sender);
 end;
 
@@ -383,10 +413,13 @@ begin
       check_ext_italic.Checked:= data.fItalic;
       check_ext_underline.Checked:= data.fUnderline;
       color_extension.Selected:= data.fColor;
+      check_ext_bg.Checked:= data.fBgEnabled;
+      color_extension_bg.Selected:= data.fBgColor;
     finally
       fExtValuesChanging:= false;
     end;
   end;
+  UpdateExtBgControls(assigned(Node));
 
   but_delete.Enabled:= assigned(Node);
   check_ext_bold.Enabled:= but_delete.Enabled;
@@ -462,11 +495,15 @@ procedure TCE_OptionsPage_Display_FileView.RefreshSettings;
           data.fBold:= StrToBoolDef(WideGetNextItem(ws, ','), false);  // bold
           data.fItalic:= StrToBoolDef(WideGetNextItem(ws, ','), false);  // italic
           data.fUnderline:= StrToBoolDef(WideGetNextItem(ws, ','), false);  // underline
+          // optional, missing in older settings.xml files
+          data.fBgEnabled:= StrToBoolDef(WideGetNextItem(ws, ','), false);  // background enabled
+          data.fBgColor:= StrToIntDef(WideGetNextItem(ws, ','), clDefault);  // background color
         end;
       end;
     finally
       list.Free;
     end;
+    UpdateExtBgControls(false);
   end;
 
 begin
@@ -495,6 +532,14 @@ begin
   color_font.Handle;
   color_font.Selected:= panel_font.Font.Color;
   color_extension.DefaultColorColor:= color_font.Selected;
+  if color_background.Selected = clDefault then
+  begin
+    color_extension_bg.DefaultColorColor:= clWindow;
+  end
+  else
+  begin
+    color_extension_bg.DefaultColorColor:= color_background.Selected;
+  end;
 
   // colors
   check_extension_colors.Checked:= GlobalFileViewSettings.ExtensionColorsEnabled;

@@ -1,12 +1,18 @@
 unit CE_FileViewColors;
 
-// Folder text color and attribute background colors for the file view.
+// Folder text color, attribute background colors and extension background
+// colors for the file view.
 // (CubicAdventurer addition; modeled on the ndir32 lister.)
 //
 //   * Folders get their own text (foreground) color.
 //   * Files with the System, Read-only or Hidden attribute get a background
 //     color; a file with more than one of those attributes set gets the
 //     "combined" background color.
+//
+//   * Files whose extension is listed in Options > Display > Fileview > Colors
+//     with "Enable background color" checked get that entry's background color.
+//     This wins over the attribute colors (the extension is the more specific
+//     choice: a read-only .bak should still stand out as a .bak).
 //
 // Every color uses clDefault (or clNone) to mean "off": that item is drawn
 // exactly as before. All colors default to "off".
@@ -24,7 +30,7 @@ unit CE_FileViewColors;
 interface
 
 uses
-  Windows, Classes, Graphics,
+  Windows, SysUtils, Classes, Graphics, Generics.Collections,
   EasyListview, VirtualExplorerEasyListview, MPShellUtilities;
 
 type
@@ -108,12 +114,26 @@ function CE_GetFolderTextColor(Item: TEasyItem; out AColor: TColor): Boolean;
 // Hidden attribute and a matching background color is configured.
 function CE_GetAttrBackgroundColor(Item: TEasyItem; out AColor: TColor): Boolean;
 
+// Loads the extension background colors from the stored ExtensionColors string
+// (entries 'exts,color,bold,italic,underline,bgEnabled,bgColor' separated by
+// '|'; the last two fields are optional). AEnabled is the "Use extension
+// colors" master switch; when it is false no extension gets a background.
+procedure CE_SetExtensionBgColors(AEnabled: Boolean; const AColors: WideString);
+
+// True (and the color in AColor) if Item is a file whose extension has a
+// background color configured.
+function CE_GetExtBackgroundColor(Item: TEasyItem; out AColor: TColor): Boolean;
+
 // Replaces View with the matching colorizing view class when ViewStyle is one
 // of the views listed above and no other custom view has been chosen.
 procedure CE_ColorizeItemView(ViewStyle: TEasyListStyle; var View:
     TEasyViewItemClass);
 
 implementation
+
+var
+  // Lower case extension (no dot) -> background color. See CE_SetExtensionBgColors.
+  ExtBgColors: TDictionary<string, TColor>;
 
 {*------------------------------------------------------------------------------
   Returns the namespace of Item, or nil if it has none.
@@ -222,7 +242,94 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Fills the background of Item's cell.
+  Parses the stored extension color list and keeps the entries that have a
+  background color enabled. An extension listed twice keeps its first color.
+  Entries without the two optional trailing fields (settings written before
+  background colors existed) simply have no background.
+-------------------------------------------------------------------------------}
+procedure CE_SetExtensionBgColors(AEnabled: Boolean; const AColors: WideString);
+var
+  stored, entry, ext, key: string;
+  fields, exts: TArray<string>;
+  color: TColor;
+begin
+  ExtBgColors.Clear;
+  if (not AEnabled) or (AColors = '') then
+  begin
+    Exit;
+  end;
+
+  stored:= AColors;
+  for entry in stored.Split(['|']) do
+  begin
+    fields:= entry.Split([',']);
+    // 0 extensions, 1 color, 2 bold, 3 italic, 4 underline, 5 bg enabled, 6 bg color
+    if Length(fields) < 7 then
+    begin
+      Continue;
+    end;
+    if not StrToBoolDef(Trim(fields[5]), false) then
+    begin
+      Continue;
+    end;
+    color:= StrToIntDef(Trim(fields[6]), clDefault);
+    if not CE_IsColorSet(color) then
+    begin
+      Continue;
+    end;
+
+    // the extensions field is stored with ';' as separator; also accept ':'
+    exts:= fields[0].Replace(':', ';').Split([';']);
+    for ext in exts do
+    begin
+      // strip blanks and any '*' / '.' prefix, keep the bare lower case extension
+      key:= LowerCase(Trim(ext));
+      while (key <> '') and ((key[1] = '*') or (key[1] = '.')) do
+      begin
+        Delete(key, 1, 1);
+      end;
+      if (key <> '') and (not ExtBgColors.ContainsKey(key)) then
+      begin
+        ExtBgColors.Add(key, color);
+      end;
+    end;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Extension background color of a file (never for folders).
+-------------------------------------------------------------------------------}
+function CE_GetExtBackgroundColor(Item: TEasyItem; out AColor: TColor): Boolean;
+var
+  ns: TNamespace;
+  ext: string;
+begin
+  Result:= false;
+  AColor:= clDefault;
+  if ExtBgColors.Count = 0 then
+  begin
+    Exit;
+  end;
+  ns:= ItemNamespace(Item);
+  if (not Assigned(ns)) or (not ns.FileSystem) or ns.Directory then
+  begin
+    Exit;
+  end;
+  ext:= LowerCase(ns.Extension);
+  if (ext <> '') and (ext[1] = '.') then
+  begin
+    Delete(ext, 1, 1);
+  end;
+  if ext = '' then
+  begin
+    Exit;
+  end;
+  Result:= ExtBgColors.TryGetValue(ext, AColor) and CE_IsColorSet(AColor);
+end;
+
+{*------------------------------------------------------------------------------
+  Fills the background of Item's cell with the extension background color or,
+  if the file's extension has none, the attribute background color.
   FullCell = true: the whole cell. Used by the Report views (the colored row is
   continuous across the columns) and by the Icon, Thumbnail and Tile views (the
   cell is a card holding the picture and caption).
@@ -235,7 +342,8 @@ var
   color: TColor;
   r: TRect;
 begin
-  if not CE_GetAttrBackgroundColor(Item, color) then
+  if (not CE_GetExtBackgroundColor(Item, color)) and
+      (not CE_GetAttrBackgroundColor(Item, color)) then
   begin
     Exit;
   end;
@@ -385,5 +493,11 @@ begin
     end;
   end;
 end;
+
+initialization
+  ExtBgColors:= TDictionary<string, TColor>.Create;
+
+finalization
+  FreeAndNil(ExtBgColors);
 
 end.
