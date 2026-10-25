@@ -4,6 +4,7 @@
 - History now keeps the last 30 entries by default (was 10).
 - Made various improvements to the Sessions engine
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
+- Added: attribute background colors (System, Read-only, Hidden) now also show in the Icon, Thumbnail and Tile views
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)

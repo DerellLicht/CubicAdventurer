@@ -11,6 +11,10 @@ unit CE_FileViewColors;
 // Every color uses clDefault (or clNone) to mean "off": that item is drawn
 // exactly as before. All colors default to "off".
 //
+// Report, List and Small Icon views color a row (or icon plus text); Icon,
+// Thumbnail and Tile views color the whole item "card" behind the picture and
+// caption. Filmstrip is left alone.
+//
 // The backgrounds are painted by small TEasyViewItem descendants. They are
 // swapped in for the library's standard item views from
 // TCECustomFileView.DoItemCustomView, and they paint in PaintBefore, which the
@@ -32,8 +36,8 @@ type
     CombinedBgColor: TColor;
   end;
 
-  // One descendant per standard view that shows a one-row-per-item layout.
-  // (Icon, Thumbnail, Tile and Filmstrip views are left alone.)
+  // One descendant per standard item view that gets a background color.
+  // (The Filmstrip view is left alone.)
   TCEViewSmallIconItem = class(TEasyViewSmallIconItem)
   public
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
@@ -56,6 +60,27 @@ type
   end;
 
   TCEViewReportThumbItem = class(TEasyViewReportThumbItem)
+  public
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
+        string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
+        Boolean); override;
+  end;
+
+  TCEViewIconItem = class(TEasyViewIconItem)
+  public
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
+        string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
+        Boolean); override;
+  end;
+
+  TCEViewThumbnailItem = class(TEasyViewThumbnailItem)
+  public
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
+        string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
+        Boolean); override;
+  end;
+
+  TCEViewTileItem = class(TEasyViewTileItem)
   public
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
@@ -198,9 +223,11 @@ end;
 
 {*------------------------------------------------------------------------------
   Fills the background of Item's cell.
-  Report views: the whole cell, so the colored row is continuous across the
-  columns. Other views: icon plus text only (the cell itself can be much wider
-  than the name).
+  FullCell = true: the whole cell. Used by the Report views (the colored row is
+  continuous across the columns) and by the Icon, Thumbnail and Tile views (the
+  cell is a card holding the picture and caption).
+  FullCell = false: icon plus text only (Small Icon and List views, where the
+  cell itself can be much wider than the name).
 -------------------------------------------------------------------------------}
 procedure PaintAttrBackground(Item: TEasyItem; ACanvas: TCanvas; const
     RectArray: TEasyRectArrayObject; FullCell: Boolean);
@@ -275,6 +302,36 @@ begin
   PaintAttrBackground(Item, ACanvas, RectArray, true);
 end;
 
+{ TCEViewIconItem }
+
+procedure TCEViewIconItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn;
+    const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject;
+    var Handled: Boolean);
+begin
+  inherited PaintBefore(Item, Column, Caption, ACanvas, RectArray, Handled);
+  PaintAttrBackground(Item, ACanvas, RectArray, true);
+end;
+
+{ TCEViewThumbnailItem }
+
+procedure TCEViewThumbnailItem.PaintBefore(Item: TEasyItem; Column:
+    TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray:
+    TEasyRectArrayObject; var Handled: Boolean);
+begin
+  inherited PaintBefore(Item, Column, Caption, ACanvas, RectArray, Handled);
+  PaintAttrBackground(Item, ACanvas, RectArray, true);
+end;
+
+{ TCEViewTileItem }
+
+procedure TCEViewTileItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn;
+    const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject;
+    var Handled: Boolean);
+begin
+  inherited PaintBefore(Item, Column, Caption, ACanvas, RectArray, Handled);
+  PaintAttrBackground(Item, ACanvas, RectArray, true);
+end;
+
 {*------------------------------------------------------------------------------
   Swap the library's standard item view for the colorizing one.
   Only done when nobody else chose a custom view (View is nil or the stock
@@ -284,6 +341,24 @@ procedure CE_ColorizeItemView(ViewStyle: TEasyListStyle; var View:
     TEasyViewItemClass);
 begin
   case ViewStyle of
+    elsIcon: begin
+      if (View = nil) or (View = TEasyViewIconItem) then
+      begin
+        View:= TCEViewIconItem;
+      end;
+    end;
+    elsThumbnail: begin
+      if (View = nil) or (View = TEasyViewThumbnailItem) then
+      begin
+        View:= TCEViewThumbnailItem;
+      end;
+    end;
+    elsTile: begin
+      if (View = nil) or (View = TEasyViewTileItem) then
+      begin
+        View:= TCEViewTileItem;
+      end;
+    end;
     elsSmallIcon: begin
       if (View = nil) or (View = TEasyViewSmallIconItem) then
       begin

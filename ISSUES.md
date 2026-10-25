@@ -12,12 +12,6 @@ Last updated: 2026-10-25 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-010 [feature] Attribute background colors in Tiles and Thumbnails views.** The
-  System / Read-only / Hidden / Combined backgrounds only render in Report, List and
-  SmallIcon views. Text colors work in every view. Possible fix: add `elsTile` and
-  `elsThumbnail` view-item subclasses in `CE_FileViewColors.pas` the same way (class
-  names `TEasyViewTileItem` / `TEasyViewThumbnailItem` are unverified against the
-  installed library). Filmstrip behaves like the original CubicExplorer and is accepted.
 - **CA-011 [bug] File view does not auto-update when files are added** (new downloads
   appear only after F5; the original CubicExplorer did the same). Suspect:
   `TCEFileView.SetNotifyFolder` (`CE_FileView.pas`, around line 1413) sets a directory
@@ -93,7 +87,7 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   attribute-background mechanism in `CE_FileViewColors.pas` (view-item subclasses) and
   the extension-list handling in `fCE_FileView.AssignExtensionColors`. Remember the
   settings policy: new properties get constructor defaults, and old `settings.xml`
-  files must still load. Backgrounds only render in Report, List and SmallIcon views
+  files must still load. Backgrounds render in every view except Filmstrip
   (see CA-010).
 
 ## Deferred (not started)
@@ -109,6 +103,14 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
+- **CA-010 [task] Test attribute backgrounds in Icon, Thumbnail and Tile views.**
+  Implemented (not compiled): `TCEViewIconItem`, `TCEViewThumbnailItem` and
+  `TCEViewTileItem` in `CE_FileViewColors.pas` fill the whole item card behind the picture
+  and caption. Test: set System / Read-only / Hidden / Combined colors, then look at a
+  folder with such files in each of those views, selected and not selected. If a
+  background is missing or covers the thumbnail, the installed library's `PaintBefore`
+  differs from the vendored copy; try filling before calling `inherited`. Filmstrip stays
+  as in the original CubicExplorer. When it passes, delete this item.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
