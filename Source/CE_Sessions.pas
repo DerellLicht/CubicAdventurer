@@ -476,7 +476,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Load From File (adds a diagnostic line to the Event Log)
+  Load From File (also reads the name of the session that was active last time)
 -------------------------------------------------------------------------------}
 function TCESessions.LoadFromFile(AFilePath: WideString): Boolean;
 var
@@ -497,8 +497,6 @@ begin
       node:= node.NextSibling;
     end;
   end;
-  OutputDebugString(PChar(Format('CA sessions: load %s from %s: %d sessions, %d history entries, last active "%s"',
-    [BoolToStr(Result, true), AFilePath, Sessions.Count, SessionHistory.Count, fLastActiveName])));
 end;
 
 {-------------------------------------------------------------------------------
@@ -759,8 +757,6 @@ begin
   finally
     FileStream.Free;
   end;
-  OutputDebugString(PChar(Format('CA sessions: saved %d sessions, %d history entries to %s',
-    [Sessions.Count, SessionHistory.Count, AFilePath])));
 end;
 
 {-------------------------------------------------------------------------------
