@@ -81,13 +81,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   files; confirm `settings.xml` still saves what matters. (The PO translation editor can
   no longer be reached from the menus; test loading and saving a shipped Locale `.po` in it
   under CA-020, when language support is taken up.)
-- **CA-058 [task] Test Open All in Tabs after the launch-file sub-items were removed**
-  (not compiled when pushed). Check that the item now appears without a submenu arrow
-  in all three places (Bookmarks menu, a category's submenu, the panel's right-click
-  menu), that clicking it opens every folder bookmark in its own tab, and that file
-  bookmarks, nested categories and session bookmarks are skipped. Also confirm the
-  panel's right-click menu still builds (the `.dfm` lost two child items and the item
-  is now a plain `TSpTBXItem`).
 
 ## Misc tasks
 

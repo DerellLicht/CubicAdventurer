@@ -164,12 +164,18 @@ begin
     if not assigned(BookmarkTree) then
     Exit;
 
-    // "Bookmark current folder" is always the first entry of the Bookmarks menu
+    // "Bookmark current folder" is always the first entry of the Bookmarks menu.
+    // A separator follows it, except when "Open All in Tabs" is the second
+    // entry (it is shown at the top); the two sit together without one.
     if AddCurrentFolder then
     begin
       RootItem.Add(TCEAddCurrentFolderItem.Create(RootItem));
-      sep:= TSpTBXSeparatorItem.Create(RootItem);
-      RootItem.Add(sep);
+      if not (CEBookmarkPanel.Settings.ShowOpenAllItem and OpenAllToRoot and
+          CEBookmarkPanel.Settings.ShowOpenAllAtTop) then
+      begin
+        sep:= TSpTBXSeparatorItem.Create(RootItem);
+        RootItem.Add(sep);
+      end;
     end;
 
     // Show "Open All in Tabs" at top of the menu (Opera style)
