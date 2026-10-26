@@ -60,19 +60,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-053 [task] Test the Folders tree colors.** The tree now uses the file view's folder
-  text color, System / Read-only / Hidden backgrounds, the glyph fallback font and the
-  file view's background color (decided 2026-10-26: no separate tree setting)
-  (`CE_FolderTree.pas` `DoPaintText` / `DoBeforeCellPaint`; shared lookups in
-  `CE_FileViewColors.pas`). Not compiled yet. Check: colors and attribute backgrounds show
-  in the tree (including `ProgramData`), text stays readable on the tree's background
-  (the + / - expand buttons are visible on the black background (they use the tree-line
-  color when the background is dark); the tree should now be the same black as the file view, at startup and after a
-  change of the file view Background color), selected nodes look right, the
-  background bar fits the label, and the address-bar / breadcrumb folder popups still
-  draw. A color change in Options probably shows in the tree only after a repaint
-  (scroll or refresh). Also unexplained: on 2026-10-26 a Unicode folder name showed boxes
-  in the file view but correctly in the tree; not reproduced since.
 - **CA-054 [task] Test folder colors on selected items.** Select a mix of files and
   folders (focused and unfocused list): folders should keep the Folder text color like
   files keep their extension colors, not turn black. Not compiled yet. If the contrast on
