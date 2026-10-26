@@ -88,14 +88,15 @@ Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
 [InstallDelete]
 Type: files; Name: "{group}\Readme.lnk"
 Type: files; Name: "{group}\Changelog.lnk"
+Type: files; Name: "{group}\Bookmarks and Sessions Guide.url"
 
 ; Windows has no viewer for .md files (they open in Notepad), so the Readme, Changelog and
-; guide shortcuts are web links that open the pages on GitHub, where Markdown is rendered.
+; Tips and Tricks shortcuts are web links that open the pages on GitHub, where Markdown is rendered.
 ; Shortcuts to web addresses are .url files, written with [INI] entries.  README.md and
 ; CHANGELOG.md are still installed above, for reading offline.
 [INI]
 Filename: "{group}\Readme.url"; Section: "InternetShortcut"; Key: "URL"; String: "{#MyAppURL}/blob/master/README.md"
-Filename: "{group}\Bookmarks and Sessions Guide.url"; Section: "InternetShortcut"; Key: "URL"; String: "{#MyAppURL}/blob/master/Documents/Bookmarks_and_Sessions.md"
+Filename: "{group}\Tips and Tricks.url"; Section: "InternetShortcut"; Key: "URL"; String: "{#MyAppURL}/blob/master/Documents/Tips_and_Tricks.md"
 Filename: "{group}\Changelog.url"; Section: "InternetShortcut"; Key: "URL"; String: "{#MyAppURL}/blob/master/CHANGELOG.md"
 
 [UninstallDelete]

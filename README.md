@@ -35,7 +35,7 @@ The libraries built into the program, and their authors and licenses, are listed
 
 ## Documentation
 
-- [Bookmarks and Sessions quick guide](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/Bookmarks_and_Sessions.md)
+- [Tips and Tricks](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/Tips_and_Tricks.md): bookmarks, sessions, the Workspace panel, toolbar buttons and hotkeys
 - [Build instructions](https://github.com/DerellLicht/CubicAdventurer/blob/master/Build_instructions.md), if you want to build it yourself or fork it
 
 ## NOTE regarding project status
