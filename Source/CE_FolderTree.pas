@@ -76,6 +76,7 @@ type
     procedure WMKILLFOCUS(var Message: TMessage); message WM_KILLFOCUS;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure ApplyViewBackground(AColor: TColor);
     function PasteShortcutFromClipboard: Boolean;
     function Refresh: Boolean;
     procedure ScrollToView(ANode: PVirtualNode; AVertical: Boolean = true;
@@ -139,6 +140,26 @@ begin
   fSelectionTimer.Interval:= 500;
   fSelectionTimer.OnTimer:= SelectionTimer;
   Self.DefaultNodeHeight:= SmallShellIconSize + 1;
+end;
+
+{*------------------------------------------------------------------------------
+  Gives the tree the file view's background color (CA-053), so the folder text
+  and attribute colors, which are chosen for that background, stay readable.
+  clDefault / clNone mean the system window color (same rule as the file view).
+  Called from TCEFileViewSettings.SendChanges whenever the file view settings
+  change; repaints the tree so the other color settings show up too.
+-------------------------------------------------------------------------------}
+procedure TCEFolderTree.ApplyViewBackground(AColor: TColor);
+begin
+  if (AColor = clDefault) or (AColor = clNone) then
+  begin
+    AColor:= clWindow;
+  end;
+  if Self.Color <> AColor then
+  begin
+    Self.Color:= AColor;
+  end;
+  Self.Invalidate;
 end;
 
 {*------------------------------------------------------------------------------

@@ -1499,6 +1499,11 @@ begin
       fileView.Color:= clWindow
       else
       fileView.Color:= fBackgroundColor;
+      // CA-053: also covers startup, when the first view applies the settings
+      if assigned(CEFolderPanel) and assigned(CEFolderPanel.FolderTree) then
+      begin
+        CEFolderPanel.FolderTree.ApplyViewBackground(fBackgroundColor);
+      end;
       fileView.Font.Assign(fFont);
       // colors
       fileView.ExtensionColorCode:= fExtensionColorsEnabled;
@@ -1802,6 +1807,8 @@ begin
 
   end;
   CEFolderPanel.FolderTree.HiddenFiles:= fHiddenFiles;
+  // CA-053: the Folders tree follows the file view background color
+  CEFolderPanel.FolderTree.ApplyViewBackground(fBackgroundColor);
 end;
 
 {*------------------------------------------------------------------------------
