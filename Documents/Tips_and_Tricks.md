@@ -136,6 +136,10 @@ you a dual-pane file manager, like XTree or Total Commander.
    **pointer touches that edge** of the window, a shaded block appears showing where the panel
    will land. Release the mouse button and it snaps into place. This works the same way for
    every dockable panel.
+
+   ![The shaded block shows where the Workspace panel will land](CA.panel.docking.shadow.jpg)
+
+   *The shaded area on the right is the drop target: the panel will fill it when you release the mouse.*
 4. Browse each pane to a different folder, then drag files from one to the other as you would in
    Windows Explorer (hold Ctrl to copy, Shift to move).
 
