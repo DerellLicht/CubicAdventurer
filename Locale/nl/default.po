@@ -1298,7 +1298,7 @@ msgstr "Ga naar Volgende Tab"
 msgid "Switch to a new tab immediately"
 msgstr "Ga onmiddellijk naar nieuw tabblad"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Ga naar Vorige Tab"
 
 msgid "System"

@@ -764,7 +764,7 @@ msgstr ""
 msgid "Switch to a new tab immediately"
 msgstr "מעבר אל הלשונית החדשה מיד"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr ""
 
 msgid "System"

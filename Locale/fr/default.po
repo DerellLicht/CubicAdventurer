@@ -1391,7 +1391,7 @@ msgstr "Basculer vers l'onglet suivant"
 msgid "Switch to a new tab immediately"
 msgstr " Se rendre immédiatement sur les nouveaux onglets"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Basculer vers l'onglet précédent"
 
 msgid "System"

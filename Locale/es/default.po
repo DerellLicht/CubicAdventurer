@@ -1340,7 +1340,7 @@ msgstr "Cambiar a la siguiente pestaña"
 msgid "Switch to a new tab immediately"
 msgstr "Cambiar inmediatamente a la nueva pestaña"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Cambiar a la pestaña anterior"
 
 msgid "System"

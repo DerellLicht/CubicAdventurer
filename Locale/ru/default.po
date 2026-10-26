@@ -1241,7 +1241,7 @@ msgstr "Следующая вкладка"
 msgid "Switch to a new tab immediately"
 msgstr "Сразу переключаться на новую вкладку"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Предыдыдущая вкладка"
 
 msgid "System"

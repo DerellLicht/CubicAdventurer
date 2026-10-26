@@ -695,7 +695,7 @@ msgstr ""
 
 #. CEActions..ActionList..act_tabs_prev..Caption
 #: dCE_Actions.dfm:622 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr ""
 
 #. CEActions..ActionList..act_focus_addressbar..Category

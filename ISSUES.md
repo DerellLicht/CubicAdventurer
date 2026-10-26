@@ -22,15 +22,17 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
   `CE_DockInfo.pas` stays until then). Wait for a user report before spending time here.
 
-- **CA-018 [bug] Options > Hotkeys page: audit of the action list.** The list is built from
-  every action in `dCE_Actions` (`fCE_OptionsPage_Hotkeys.pas`), so actions that cannot take a
-  hotkey or are obsolete still show up. Done and confirmed 2026-10-26: list icons removed,
-  group box captions fixed (all group boxes are `TSpTBXGroupBox`), labels readable. Audit
-  result (2026-10-26), waiting for the maintainer's OK: hide `act_tabs_menu`, `act_stack_open`
-  and `act_stack_save` (custom toolbar widgets, no handler: set `CanExecute = False` like the
-  other menu actions); `act_view_archiver` is dead (invisible, no handler); hide
-  `act_help_poedit_form` (its menu item is gone, see CA-020) and the invisible
-  `act_tabs_copyhere` / `act_tabs_movehere`; move `act_help_restore_layout` to category View.
+- **CA-018 [bug] Options > Hotkeys page cleanup.** Done and confirmed 2026-10-26: list icons
+  removed, group box captions fixed. Done, not tested (2026-10-26): Options dialog 80 px wider
+  (only the Hotkeys page uses the room; the other pages keep their size), Hotkeys list and its
+  two columns widened, "Swith" typo fixed in the action caption and all Locale files. Still
+  open: (a) the child page Options > Hotkeys > Global (system-wide hotkeys, a working feature)
+  repeats the whole action list, with icons and no keys assigned; the maintainer is deciding
+  whether to delete it or just tidy it. (b) Audit result, waiting for the maintainer's OK: hide
+  from the hotkey lists `act_tabs_menu`, `act_stack_open`, `act_stack_save`,
+  `act_help_poedit_form` (no menu item since CA-020), `act_tabs_copyhere` and
+  `act_tabs_movehere`; `act_view_archiver` is dead (invisible, no handler); move
+  `act_help_restore_layout` to category View.
 
 ## Wishlist
 

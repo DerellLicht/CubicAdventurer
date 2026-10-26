@@ -1253,7 +1253,7 @@ msgstr "Schimba la Tabul Urmator"
 msgid "Switch to a new tab immediately"
 msgstr "Schimba la un tab nou imediat "
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Schimba la Tabul Precedent"
 
 msgid "System"

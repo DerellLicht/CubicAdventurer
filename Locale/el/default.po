@@ -807,7 +807,7 @@ msgstr "Μετακίνηση σε νέα καρτέλα αμέσως"
 msgid "Switch to new tab."
 msgstr "Μετάβαση στη νέα καρτέλα"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Μετάβαση στην προηγούμενη καρτέλα"
 
 msgid "System"

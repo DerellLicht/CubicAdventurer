@@ -1325,7 +1325,7 @@ msgstr "Zum nächsten Tab"
 msgid "Switch to a new tab immediately"
 msgstr "Sofort zu neu eröffnetem Tab springen"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Zum vorherigen Tab"
 
 msgid "System"

@@ -914,7 +914,7 @@ msgstr "Sonraki Sekmeye Geç"
 msgid "Switch to a new tab immediately"
 msgstr "Hemen yeni sekmeye geç"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Önceki Sekmeye Geç"
 
 msgid "System"

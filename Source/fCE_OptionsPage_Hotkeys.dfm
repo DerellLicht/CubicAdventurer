@@ -1,13 +1,16 @@
 inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
+  Width = 521
+  Constraints.MaxWidth = 521
+  Constraints.MinWidth = 521
   object TntBevel1: TBevel
-    Left = 241
+    Left = 321
     Top = 12
     Width = 192
     Height = 25
     Shape = bsBottomLine
   end
   object TntLabel1: TLabel
-    Left = 249
+    Left = 329
     Top = 48
     Width = 39
     Height = 13
@@ -16,7 +19,7 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
   object HotkeyList: TVirtualStringTree
     Left = 8
     Top = 12
-    Width = 221
+    Width = 301
     Height = 313
     Align = alCustom
     DragType = dtVCL
@@ -43,18 +46,18 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     Columns = <
       item
         Position = 0
-        Width = 142
+        Width = 170
         WideText = 'Name'
       end
       item
         Alignment = taRightJustify
         Position = 1
-        Width = 75
+        Width = 110
         WideText = 'Shortcut'
       end>
   end
   object label_action_name: TSpTBXLabel
-    Left = 241
+    Left = 321
     Top = 12
     Width = 192
     Height = 25
@@ -69,7 +72,7 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     Images = CE_Images.SmallIcons
   end
   object list_actionhotkeys: TListBox
-    Left = 249
+    Left = 329
     Top = 63
     Width = 176
     Height = 106
@@ -82,7 +85,7 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     OnMouseDown = list_actionhotkeysMouseDown
   end
   object TntGroupBox1: TSpTBXGroupBox
-    Left = 249
+    Left = 329
     Top = 179
     Width = 176
     Height = 146

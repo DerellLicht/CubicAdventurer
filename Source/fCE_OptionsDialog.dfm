@@ -5,7 +5,7 @@ object CEOptionsDialog: TCEOptionsDialog
   BorderStyle = bsSingle
   Caption = 'CubicAdventurer Options'
   ClientHeight = 407
-  ClientWidth = 590
+  ClientWidth = 670
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -59,7 +59,7 @@ object CEOptionsDialog: TCEOptionsDialog
   object MainPanel: TPanel
     Left = 0
     Top = 0
-    Width = 590
+    Width = 670
     Height = 364
     Align = alClient
     BevelOuter = bvNone
@@ -67,7 +67,7 @@ object CEOptionsDialog: TCEOptionsDialog
     object PagePanel: TPanel
       Left = 141
       Top = 0
-      Width = 449
+      Width = 529
       Height = 364
       Align = alClient
       BevelOuter = bvNone
@@ -76,7 +76,7 @@ object CEOptionsDialog: TCEOptionsDialog
       object PageContainer: TPanel
         Left = 4
         Top = 24
-        Width = 441
+        Width = 521
         Height = 336
         Align = alClient
         BevelOuter = bvNone
@@ -85,7 +85,7 @@ object CEOptionsDialog: TCEOptionsDialog
       object PageTitlePanel: TPanel
         Left = 4
         Top = 4
-        Width = 441
+        Width = 521
         Height = 20
         Align = alTop
         Alignment = taLeftJustify
@@ -138,7 +138,7 @@ object CEOptionsDialog: TCEOptionsDialog
   object BottomPanel: TPanel
     Left = 0
     Top = 364
-    Width = 590
+    Width = 670
     Height = 43
     Align = alBottom
     BevelEdges = [beTop]
@@ -146,10 +146,10 @@ object CEOptionsDialog: TCEOptionsDialog
     BevelOuter = bvNone
     TabOrder = 1
     DesignSize = (
-      590
+      670
       41)
     object but_ok: TButton
-      Left = 345
+      Left = 425
       Top = 6
       Width = 75
       Height = 29
@@ -160,7 +160,7 @@ object CEOptionsDialog: TCEOptionsDialog
       OnClick = but_okClick
     end
     object but_cancel: TButton
-      Left = 426
+      Left = 506
       Top = 6
       Width = 75
       Height = 29
@@ -170,7 +170,7 @@ object CEOptionsDialog: TCEOptionsDialog
       OnClick = but_cancelClick
     end
     object but_apply: TButton
-      Left = 507
+      Left = 587
       Top = 6
       Width = 75
       Height = 29

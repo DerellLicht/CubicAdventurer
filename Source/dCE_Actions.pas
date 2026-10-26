@@ -1174,7 +1174,7 @@ begin
     667: MainForm.TabSet.UndoTabClose;
     // Switch to Next Tab
     668: MainForm.TabSet.SelectNextTab(true);
-    // Swith to Previous Tab
+    // Switch to Previous Tab
     669: MainForm.TabSet.SelectNextTab(false);
     // Copy/Move Selected Here
     671, 672: begin

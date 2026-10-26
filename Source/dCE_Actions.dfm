@@ -604,7 +604,7 @@ object CEActions: TCEActions
     object act_tabs_prev: TAction
       Tag = 669
       Category = 'Tabs'
-      Caption = 'Swith to Previous Tab'
+      Caption = 'Switch to Previous Tab'
       ShortCut = 24585
       SecondaryShortCuts.Strings = (
         'Ctrl+PgUp')

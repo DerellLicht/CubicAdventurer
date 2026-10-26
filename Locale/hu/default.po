@@ -1340,7 +1340,7 @@ msgstr "Átváltás a következő fülre"
 msgid "Switch to a new tab immediately"
 msgstr "Átváltás új fülre azonnal"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Átváltás az előző fülre"
 
 msgid "System"

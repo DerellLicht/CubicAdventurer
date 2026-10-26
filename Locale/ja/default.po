@@ -740,7 +740,7 @@ msgstr "次のタブに切り替え"
 
 #. CEActions..ActionList..act_tabs_prev..Caption
 #: dCE_Actions.dfm:621
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "前のタブに切り替え"
 
 #. CEActions..ActionList..act_focus_addressbar..Category

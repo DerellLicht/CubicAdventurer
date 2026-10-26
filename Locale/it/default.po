@@ -1382,7 +1382,7 @@ msgstr "Passa ad una nuova scheda immediatamente"
 msgid "Switch to new tab."
 msgstr "Passa alla nuova scheda"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Passa alla Scheda Precedente"
 
 msgid "System"

@@ -1347,7 +1347,7 @@ msgstr "Mudar para novo tabulador imediatamente"
 msgid "Switch to new tab."
 msgstr "Mudar para novo tabulador."
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Mudar para o Tabulador Anterior"
 
 msgid "System"

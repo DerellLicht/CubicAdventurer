@@ -1280,7 +1280,7 @@ msgstr "Prejsť na nasledujúcu kartu"
 msgid "Switch to a new tab immediately"
 msgstr "Ihneď prepnúť do novej karty"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Prejsť na predchádzajúcu kartu"
 
 msgid "System"

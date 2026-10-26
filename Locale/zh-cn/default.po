@@ -1271,7 +1271,7 @@ msgstr "切换到下一个标签"
 msgid "Switch to a new tab immediately"
 msgstr "立即切换到新标签"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "切换到上一个标签"
 
 msgid "System"

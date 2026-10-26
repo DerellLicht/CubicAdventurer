@@ -1217,7 +1217,7 @@ msgstr "다음 탭으로 전환"
 msgid "Switch to a new tab immediately"
 msgstr "즉시 새 탭으로 전환"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "이전 탭으로 전환"
 
 msgid "System"

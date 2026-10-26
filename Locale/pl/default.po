@@ -1337,7 +1337,7 @@ msgstr "Zmień na następną kartę"
 msgid "Switch to a new tab immediately"
 msgstr "Przejdź od razu do nowej karty"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Zmień na poprzednią kartę"
 
 msgid "System"

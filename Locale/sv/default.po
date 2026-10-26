@@ -1337,7 +1337,7 @@ msgstr "Växla till nästa flik"
 msgid "Switch to a new tab immediately"
 msgstr "Byt till ny flik omedelbart"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Växla till föregående flik"
 
 msgid "System"

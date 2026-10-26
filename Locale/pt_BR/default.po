@@ -1316,7 +1316,7 @@ msgstr "Alternar para próxima aba"
 msgid "Switch to a new tab immediately"
 msgstr "Alternar imediatamente para nova aba"
 
-msgid "Swith to Previous Tab"
+msgid "Switch to Previous Tab"
 msgstr "Alternar para aba anterior"
 
 msgid "System"
