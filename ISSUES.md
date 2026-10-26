@@ -8,7 +8,7 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
 Numbers are never reused.
 
-Last updated: 2026-10-25 (version 0.98 in progress).
+Last updated: 2026-10-26 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
