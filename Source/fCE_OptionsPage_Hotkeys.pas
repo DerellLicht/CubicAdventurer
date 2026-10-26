@@ -41,7 +41,6 @@ type
     ActionItem: TAction;
     IsCategory: Boolean;
     Name: WideString;
-    IconIndex: Integer;
   end;
   
   TTCEOptionsPage_Hotkeys = class(TCEOptionsCustomPage)
@@ -58,10 +57,6 @@ type
     but_reset: TButton;
     procedure HotkeyListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure HotkeyListGetImageIndexEx(Sender: TBaseVirtualTree;
-      Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-      var Ghosted: Boolean; var ImageIndex: TImageIndex;
-      var ImageList: TCustomImageList);
     procedure HotkeyListPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
@@ -149,7 +144,6 @@ begin
     data:= ATree.GetNodeData(Node);
     data.IsCategory:= true;
     data.Name:= CatName;
-    data.IconIndex:= -1;
   end;
 
   Result:= Node;
@@ -177,8 +171,8 @@ begin
   HotkeyList.NodeDataSize:= SizeOf(ACEActTreeData);
   label_action_name.Images:= CE_Images.SmallIcons;
 
-  // Populate HotkeyList
-  HotkeyList.Images:= CE_Images.SmallIcons;
+  // Populate HotkeyList (no icons: many actions share one ImageIndex, so the
+  // icons told the user nothing and cost 30+ pixels of the Name column)
   HotkeyList.Clear;
   for i:= 0 to CEActions.ActionList.ActionCount - 1 do
   begin
@@ -193,7 +187,6 @@ begin
     data:= HotkeyList.GetNodeData(chNode);
     data.ActionItem:= act;
     data.Name:= act.Caption;
-    data.IconIndex:= act.ImageIndex;
     data.IsCategory:= false;
   end;
   HotkeyList.FullExpand;
@@ -254,27 +247,6 @@ end;
 procedure TTCEOptionsPage_Hotkeys.RefreshSettings;
 begin
   //
-end;
-
-{-------------------------------------------------------------------------------
-  On HotkeyList.GetImageIndexEx
--------------------------------------------------------------------------------}
-procedure TTCEOptionsPage_Hotkeys.HotkeyListGetImageIndexEx(
-  Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
-  Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: TImageIndex;
-  var ImageList: TCustomImageList);
-var
-  data: PCEActTreeData;
-begin
-  if Column = 0 then
-  begin
-    data:= HotkeyList.GetNodeData(Node);
-    ImageIndex:= data.IconIndex;
-    if not data.IsCategory then
-    ImageList:= CE_Images.SmallIcons
-    else
-    ImageList:= HotkeyList.Images;
-  end;
 end;
 
 {-------------------------------------------------------------------------------
