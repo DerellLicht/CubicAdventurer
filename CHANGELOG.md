@@ -3,6 +3,7 @@
 ## [0.98] - 2026-10-25
 - History now keeps the last 30 entries by default (was 10).
 - Made various improvements to the Sessions engine
+- Added: a Bookmarks and Sessions guide, linked from the Start Menu
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 - Added: attribute background colors (System, Read-only, Hidden) now also show in the Icon, Thumbnail and Tile views
 - Added: background colors for file extensions (Options > Display > Fileview > Colors)

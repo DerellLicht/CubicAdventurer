@@ -67,6 +67,8 @@ Source: "{#RepoRoot}\BuildCE\Snapshot_configs\sessions.xml"; DestDir: "{app}"; F
 Source: "{#RepoRoot}\installer\settings.path"; DestDir: "{app}"; Flags: onlyifdoesntexist
 ; The licence stays in a Documents subfolder, matching the Licenses shortcut below.
 Source: "{#RepoRoot}\Documents\License.txt"; DestDir: "{app}\Documents"; Flags: ignoreversion
+; User guide for Bookmarks and Sessions, linked from the Start Menu (CA-052).
+Source: "{#RepoRoot}\Documents\Bookmarks_and_Sessions.md"; DestDir: "{app}\Documents"; Flags: ignoreversion
 Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#RepoRoot}\CA.example.image.jpg"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
@@ -76,6 +78,7 @@ Name: "{group}\{#MyAppDisplayName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppDisplayName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppDisplayName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{group}\Readme"; Filename: "{app}\README.md"
+Name: "{group}\Bookmarks and Sessions Guide"; Filename: "{app}\Documents\Bookmarks_and_Sessions.md"
 Name: "{group}\Changelog"; Filename: "{app}\CHANGELOG.md"
 Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
 

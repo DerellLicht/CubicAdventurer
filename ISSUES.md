@@ -42,14 +42,7 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
-- **CA-052 [feature] New-user document (Quick Start or Tips and Tricks).** Do not put
-  usage hints in `README.md` (it is already long, and hints there are a slippery slope).
-  Proposed instead: a short new-user document shipped with the program and linked from
-  the Start Menu, e.g. `Quick_Start.md` or `Tips_and_Tricks.md`, that would cover the
-  features people tend to miss. Content and name still to be discussed with the
-  maintainer, so nothing is written yet. It would need an installer entry
-  (`installer/CubicAdventurer.iss`: file, Start Menu icon) and can follow
-  `Documents/Bookmarks_and_Sessions.md` as a model.
+(none at the moment)
 
 ## Deferred (not started)
 
@@ -64,6 +57,9 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
+- **CA-053 [task] Installer: Bookmarks and Sessions guide.** After the next `make installer`,
+  check that the "Bookmarks and Sessions Guide" Start Menu entry opens
+  `Documents\Bookmarks_and_Sessions.md` (the installer script change is not tested).
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
