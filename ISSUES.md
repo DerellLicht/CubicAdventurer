@@ -22,21 +22,15 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
   `CE_DockInfo.pas` stays until then). Wait for a user report before spending time here.
 
-- **CA-018 [bug] Options > Hotkeys page needs a cleanup.** The list is built from every
-  action in `dCE_Actions` (`fCE_OptionsPage_Hotkeys.pas`), so obsolete actions show up,
-  especially under Help and Tools (and probably other categories). Many rows show the
-  same icon (they just echo each action's `ImageIndex`, which many actions share), and
-  the Name column (142 px wide, plus the icon) truncates captions to the point of
-  being meaningless. Plan: (1) audit the actions and hide or delete the dead ones,
-  (2) drop the icons from the list (and the title label) or at least from the tree,
-  (3) widen the Name column or the whole page. Also check the category of
-  `act_help_restore_layout`, which is now in the View menu.
-  Progress (2026-10-26): step 2 done for the list icons (not compiled, not tested; the
-  double icon came from `OnGetImageIndexEx` ignoring `Kind`) and the "Modify Hotkey" group
-  box caption clipped under a non-standard skin font. Fix: every plain `TGroupBox` (13, in
-  6 forms) is now a `TSpTBXGroupBox`, which measures its caption with the skin font (same
-  fix as the Fileview Display tab, commit 6e83677). Not compiled, not tested. Still open:
-  step 1 (audit), step 3 only if the labels are still too short after testing.
+- **CA-018 [bug] Options > Hotkeys page: audit of the action list.** The list is built from
+  every action in `dCE_Actions` (`fCE_OptionsPage_Hotkeys.pas`), so actions that cannot take a
+  hotkey or are obsolete still show up. Done and confirmed 2026-10-26: list icons removed,
+  group box captions fixed (all group boxes are `TSpTBXGroupBox`), labels readable. Audit
+  result (2026-10-26), waiting for the maintainer's OK: hide `act_tabs_menu`, `act_stack_open`
+  and `act_stack_save` (custom toolbar widgets, no handler: set `CanExecute = False` like the
+  other menu actions); `act_view_archiver` is dead (invisible, no handler); hide
+  `act_help_poedit_form` (its menu item is gone, see CA-020) and the invisible
+  `act_tabs_copyhere` / `act_tabs_movehere`; move `act_help_restore_layout` to category View.
 
 ## Wishlist
 
@@ -57,11 +51,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-053 [task] Installer: Start Menu web links.** Readme, Changelog and the new
-  "Bookmarks and Sessions Guide" are now `.url` shortcuts to their GitHub pages (Windows opens
-  `.md` files in Notepad). After the next `make installer`, check that all three open the
-  rendered page, that an upgrade install leaves no duplicate Readme/Changelog entries, and
-  that uninstall removes the Start Menu folder (installer script not tested).
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
