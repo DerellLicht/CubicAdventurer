@@ -1006,36 +1006,7 @@ end;
   Do ShellNotify
 -------------------------------------------------------------------------------}
 procedure TCEFileView.DoShellNotify(ShellEvent: TVirtualShellEvent);
-var
-  ns: TNamespace;
-  evName: string;
-  isRoot: Boolean;
 begin
-  // CA-011 diagnostic (temporary): shows when each change event reaches this view
-  // (DbgView adds the time), which folder it names, and whether that folder is
-  // recognized as this view's root folder.
-  evName:= '';
-  isRoot:= false;
-  try
-    if Assigned(ShellEvent.PIDL1) then begin
-      ns:= TNamespace.Create(ShellEvent.PIDL1, nil);
-      ns.FreePIDLOnDestroy:= false;
-      try
-        evName:= ns.NameForParsing;
-      finally
-        ns.Free;
-      end;
-      isRoot:= IsRootNamespace(ShellEvent.PIDL1);
-    end;
-  except
-    evName:= '(error reading PIDL)';
-  end;
-  OutputDebugString(PChar('CA notify event: view=' + IntToHex(NativeInt(Self), 8) +
-    ' viewroot=' + RootFolderNamespace.NameForParsing +
-    ' active=' + BoolToStr(Active, true) + ' visible=' + BoolToStr(GetRealVisibility(Self), true) +
-    ' type=' + IntToStr(Ord(ShellEvent.ShellNotifyEvent)) +
-    ' pidl1=' + evName + ' root=' + BoolToStr(isRoot, true)));
-
   inherited;
   UpdateBackgroundText;
 end;
