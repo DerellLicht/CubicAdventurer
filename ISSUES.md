@@ -43,9 +43,8 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   and the fallback font (`CE_FileViewColors.pas`, `CE_FontFallback.pas`); the Folders tree
   (`CE_FolderTree.pas`) uses none of them, and other panels have not been checked. Derell
   (2026-10-26) would like the tree to follow the same color scheme if it can be done.
-  Low priority, only if trivial: the fallback shows boxes for astral characters (some
-  emoji); Derell does not know how to create such a name, so test with a folder made by
-  script. On 2026-10-26 a Unicode folder name showed as boxes in the file view but
+  Emoji names were tested on 2026-10-26 and display correctly in the file view.
+  On 2026-10-26 a Unicode folder name showed as boxes in the file view but
   correctly in the tree (Derell's report; not reproduced here), so the tree's own text
   drawing already differs from the file view's: check that first. A name switching font
   as a whole is accepted behavior.
