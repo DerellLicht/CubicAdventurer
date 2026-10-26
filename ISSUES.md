@@ -12,18 +12,6 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-011 [bug] File view does not auto-update when files are added** (a download into
-  Downloads shows in Explorer but only appears in the view after F5). Findings
-  (2026-10-26): the library's directory watch is set correctly, every view receives every
-  event (5 tabs = 5 copies), and re-pointing the watch on tab selection changed nothing:
-  a browser download (temporary name, then rename) produces no event for the Downloads
-  folder at all, while `copy` does. Fix being tested (not compiled): each view now also
-  watches its folder with `FindFirstChangeNotificationW`, polled by a 500 ms timer
-  (`StartDirWatch`, `DirWatchTimerTick` in `CE_FileView.pas`), and rebuilds like F5 after
-  changes settle, only while visible. Temporary `OutputDebugString` lines `CA notify:`
-  (in `SetNotifyFolder`) and `CA dirwatch:` (before the rebuild); remove both when
-  confirmed. Test: download a file into Downloads; `copy nul x.txt` in a typed-path
-  folder; delete a file in Explorer; unzip many files (one refresh, no flicker).
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
   the program window edge (probably JVCL drop-zone logic).
 - **CA-014 [bug] `layout.xml` holds about 2000 blank indentation-only lines** in the

@@ -1,6 +1,7 @@
 # CubicAdventurer Changelog
 
 ## [0.98] - 2026-10-25
+- Fixed: the file view now updates by itself when files are added, renamed or deleted (for example browser downloads), without pressing F5
 - History now keeps the last 30 entries by default (was 10).
 - Made various improvements to the Sessions engine
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)

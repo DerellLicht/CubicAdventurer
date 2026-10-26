@@ -1463,10 +1463,6 @@ begin
         useKernel:= driveType = DRIVE_FIXED;
       end;
 
-      // CA-011 diagnostic (temporary): remove once file view auto-update is confirmed.
-      OutputDebugString(PChar('CA notify: parse=' + Namespace.NameForParsing + ' path=' + watchPath +
-        ' drive=' + IntToStr(driveType) + ' watch=' + BoolToStr(useKernel, true)));
-
       if useKernel then begin
         ChangeNotifier.NotifyWatchFolder(Self, watchPath);
         StartDirWatch(watchPath);
@@ -1551,8 +1547,6 @@ begin
      not EditManager.Editing and not ContextMenuShowing and
      not fLeftMouseButton_IsDown and not fRightMouseButton_IsDown then begin
     fDirWatchPending:= false;
-    // CA-011 diagnostic (temporary): remove once file view auto-update is confirmed.
-    OutputDebugString(PChar('CA dirwatch: refresh ' + fDirWatchPath));
     Rebuild(true);
   end;
 end;
