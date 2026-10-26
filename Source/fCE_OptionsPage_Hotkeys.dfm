@@ -39,7 +39,6 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     OnFocusChanged = HotkeyListFocusChanged
     OnGetText = HotkeyListGetText
     OnPaintText = HotkeyListPaintText
-    OnGetImageIndexEx = HotkeyListGetImageIndexEx
     OnKeyDown = HotkeyListKeyDown
     Columns = <
       item
@@ -87,7 +86,7 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     Top = 179
     Width = 176
     Height = 146
-    Caption = 'Modify Hotkey'
+    Caption = 'Modify'
     TabOrder = 3
     object edit_hotkey: TEdit
       Left = 12

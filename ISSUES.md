@@ -31,6 +31,10 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   (2) drop the icons from the list (and the title label) or at least from the tree,
   (3) widen the Name column or the whole page. Also check the category of
   `act_help_restore_layout`, which is now in the View menu.
+  Progress (2026-10-26): step 2 done for the list icons (not compiled, not tested; the
+  double icon came from `OnGetImageIndexEx` ignoring `Kind`) and the "Modify Hotkey" group
+  box caption was shortened to "Modify" (it truncated with a non-standard font). Still open:
+  step 1 (audit), step 3 only if the labels are still too short after testing.
 
 ## Wishlist
 
