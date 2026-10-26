@@ -39,13 +39,17 @@ uses
 type
   TSpTBXCustomItemHack = class(TSpTBXCustomItem);
 
-  TCE_AMemo = class(TMemo)
+  // Single-line edit used by the address bar. It is a TEdit (not a TMemo) because the
+  // Windows AutoComplete service only works with single-line edit controls.
+  TCE_AEdit = class(TEdit)
   private
     fOnValueChange: TNotifyEvent;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
   protected
+    procedure CreateWnd; override;
     procedure KeyPress(var Key: Char); override;
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure AdjustSize; override;
@@ -109,7 +113,7 @@ type
     procedure GlobalPIDLChanged(Sender: TObject; NewPIDL: PItemIDList); stdcall;
     procedure SetParent(AParent: TWinControl); override;
   public
-    TextEditor: TCE_AMemo;
+    TextEditor: TCE_AEdit;
     Icon: TCE_AIcon;
     DropButton: TCE_AButton;
     BreadToggleButton: TCE_AButton;
@@ -159,14 +163,32 @@ uses
   System.Types,
   dCE_Images, CE_LanguageEngine, CE_WideCompat;
 
+const
+  // SHAutoComplete flags (shlwapi.h), declared here so this unit does not depend on
+  // which of them the Delphi ShlwApi unit happens to expose.
+  CE_SHACF_FILESYS_DIRS = $00000020;          // complete folder names only
+  CE_SHACF_AUTOSUGGEST_FORCE_ON = $10000000;  // show the drop-down list while typing
+
+{*------------------------------------------------------------------------------
+  Attaches the standard Windows AutoComplete drop-down to a single-line edit control.
+  Windows draws the list, expands environment variables such as %appdata% and handles
+  the keyboard and mouse. COM must be initialized (the VCL does this); if it is not, or
+  the call fails for any other reason, the edit simply has no suggestions.
+-------------------------------------------------------------------------------}
+function CE_SHAutoComplete(hwndEdit: HWND; dwFlags: DWORD): HRESULT; stdcall;
+    external 'shlwapi.dll' name 'SHAutoComplete';
+
 {##############################################################################}
 
 {*------------------------------------------------------------------------------
-  Create an instance of TCE_AMemo
+  Create an instance of TCE_AEdit
 -------------------------------------------------------------------------------}
-constructor TCE_AMemo.Create(AOwner: TComponent);
+constructor TCE_AEdit.Create(AOwner: TComponent);
 begin
   inherited;
+  // The edit is aligned alClient inside the address bar; AdjustSize centers the text
+  // vertically by setting top and bottom margins, so the VCL must not resize it.
+  AutoSize:= false;
   Self.Margins.Left:= 0;
   Self.Margins.Top:= 0;
   Self.Margins.Bottom:= 0;
@@ -175,12 +197,16 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Adjust Editor rect Size
+  Center the text vertically. A single-line edit cannot do this itself (EM_SETRECT works
+  only for multi-line edits), so the edit is made one text line high and the rest of the
+  available height goes into equal top and bottom margins. The available height is
+  Height + Margins.Top + Margins.Bottom while the edit is aligned alClient, so repeated
+  calls give the same result; margins are assigned only when they change, which keeps
+  the re-alignment this triggers from looping.
 -------------------------------------------------------------------------------}
-procedure TCE_AMemo.AdjustSize;
+procedure TCE_AEdit.AdjustSize;
 var
-  XRect: TRect;
-  h: Integer;
+  h, avail, m: Integer;
   b: TBitmap;
 begin
   if not Self.HasParent then
@@ -192,16 +218,23 @@ begin
   finally
     b.Free;
   end;
-  XRect:= ClientRect;
-  XRect.Top:= Round((ClientHeight-h) / 2);
-  XRect.Bottom:= XRect.Top + h;
-  SendMessage(Handle, EM_SETRECT, 0, integer(@XRect));
+  avail:= Height + Margins.Top + Margins.Bottom;
+  m:= (avail - h) div 2;
+  if m < 0 then
+  begin
+    m:= 0;
+  end;
+  if (Margins.Top <> m) or (Margins.Bottom <> m) then
+  begin
+    Margins.Top:= m;
+    Margins.Bottom:= m;
+  end;
 end;
 
 {*------------------------------------------------------------------------------
   CNCommand
 -------------------------------------------------------------------------------}
-procedure TCE_AMemo.CNCommand(var Message: TWMCommand);
+procedure TCE_AEdit.CNCommand(var Message: TWMCommand);
 begin
   inherited;  
   if Message.NotifyCode = EN_SETFOCUS then
@@ -211,7 +244,7 @@ end;
 {*------------------------------------------------------------------------------
   Handle Key Press
 -------------------------------------------------------------------------------}
-procedure TCE_AMemo.KeyPress(var Key: Char);
+procedure TCE_AEdit.KeyPress(var Key: Char);
 begin
   if (Key = Char(VK_RETURN)) then
   begin
@@ -231,10 +264,30 @@ end;
 {*------------------------------------------------------------------------------
   Handle WMSetFocus message
 -------------------------------------------------------------------------------}
-procedure TCE_AMemo.WMSetFocus(var Message: TWMSetFocus);
+procedure TCE_AEdit.WMSetFocus(var Message: TWMSetFocus);
 begin
   inherited;
   self.SelectAll;
+end;
+
+{*------------------------------------------------------------------------------
+  Create the window handle and attach AutoComplete to it. This is done here (not in the
+  constructor) because the VCL can recreate the handle, and AutoComplete is attached to
+  the handle, not to the Delphi object.
+-------------------------------------------------------------------------------}
+procedure TCE_AEdit.CreateWnd;
+begin
+  inherited;
+  CE_SHAutoComplete(Handle, CE_SHACF_FILESYS_DIRS or CE_SHACF_AUTOSUGGEST_FORCE_ON);
+end;
+
+{*------------------------------------------------------------------------------
+  Keep the text centered when the address bar changes height
+-------------------------------------------------------------------------------}
+procedure TCE_AEdit.Resize;
+begin
+  inherited;
+  AdjustSize;
 end;
 
 {##############################################################################}
@@ -371,7 +424,7 @@ constructor TCEAddressBar.Create(AOwner: TComponent);
 begin
   inherited;
   self.BorderWidth:= 1;
-  TextEditor:= TCE_AMemo.Create(nil);
+  TextEditor:= TCE_AEdit.Create(nil);
   Icon:= TCE_AIcon.Create(nil);
   Icon.Color:= clWindow;
   DropButton:= TCE_AButton.Create(nil);
@@ -422,7 +475,6 @@ procedure TCEAddressBar.Initialize;
 begin
   TextEditor.Parent:= self;
   TextEditor.Align:= alClient;
-  TextEditor.WordWrap:= false;
   TextEditor.BorderStyle:= bsNone;
   TextEditor.OnValueChange:= DoValueChanged;
   TextEditor.OnKeyDown:= OnTextKeyDown;

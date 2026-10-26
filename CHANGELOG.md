@@ -6,6 +6,7 @@
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 - Added: attribute background colors (System, Read-only, Hidden) now also show in the Icon, Thumbnail and Tile views
 - Added: background colors for file extensions (Options > Display > Fileview > Colors)
+- Added: the address bar now suggests matching folder names as you type, like Windows Explorer
 - Removed: the "And Launch Files" and "Launch Files Only" choices under Bookmarks > Open All in Tabs (which still opens every folder bookmark in tabs)
 
 ## [0.97] - 2026-10-24

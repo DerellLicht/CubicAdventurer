@@ -73,6 +73,13 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
+- **CA-059 [task] Test address bar folder suggestions.** The address bar text box is now
+  a single-line edit (was a memo) with the Windows AutoComplete drop-down attached
+  (`SHAutoComplete`, folders only). Not compiled. Check: typing `C:\Pr` and `%appdata%\C`
+  lists matching folders; Enter navigates, also with the list open; Esc restores the
+  current path; Ctrl+A selects all; the text is vertically centered and stays centered
+  after a skin change; the list still appears after the address bar is toggled to
+  breadcrumbs and back.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
