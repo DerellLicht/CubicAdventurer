@@ -160,7 +160,6 @@ type
     SpTBXItem84: TSpTBXItem;
     sessionsMenuItem: TSpTBXSubmenuItem;
     SpTBXItem51: TSpTBXItem;
-    SpTBXSeparatorItem15: TSpTBXSeparatorItem;
     SpTBXSeparatorItem18: TSpTBXSeparatorItem;
     SpTBXItem72: TSpTBXItem;
     SpTBXItem73: TSpTBXItem;

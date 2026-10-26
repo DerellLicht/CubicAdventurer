@@ -413,8 +413,6 @@ object MainForm: TMainForm
         object SpTBXItem44: TSpTBXItem
           Action = CEActions.act_tools_showcustomizer
         end
-        object SpTBXSeparatorItem15: TSpTBXSeparatorItem
-        end
         object SpTBXItem84: TSpTBXItem
           Action = CEActions.act_tools_showoptions
         end
