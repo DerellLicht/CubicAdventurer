@@ -45,6 +45,7 @@ type
   private
     fOnValueChange: TNotifyEvent;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+    procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
   protected
     procedure CreateWnd; override;
@@ -178,6 +179,12 @@ const
 function CE_SHAutoComplete(hwndEdit: HWND; dwFlags: DWORD): HRESULT; stdcall;
     external 'shlwapi.dll' name 'SHAutoComplete';
 
+// TEMPORARY diagnostics for the Enter-key problem (CA-059); remove when solved.
+procedure CE_AddrLog(const Msg: string);
+begin
+  OutputDebugString(PChar('CA addr: ' + Msg));
+end;
+
 {##############################################################################}
 
 {*------------------------------------------------------------------------------
@@ -246,6 +253,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCE_AEdit.KeyPress(var Key: Char);
 begin
+  CE_AddrLog('KeyPress char=' + IntToStr(Ord(Key)));
   if (Key = Char(VK_RETURN)) then
   begin
     Key:= #0;
@@ -279,6 +287,17 @@ procedure TCE_AEdit.CreateWnd;
 begin
   inherited;
   CE_SHAutoComplete(Handle, CE_SHACF_FILESYS_DIRS or CE_SHACF_AUTOSUGGEST_FORCE_ON);
+end;
+
+{*------------------------------------------------------------------------------
+  Tell Windows this edit wants every key, as the old TMemo did (Tab excluded). A plain
+  single-line edit does not claim Enter, so a docked toolbar or the form can treat it as a
+  dialog key and the edit never sees it.
+-------------------------------------------------------------------------------}
+procedure TCE_AEdit.WMGetDlgCode(var Message: TWMGetDlgCode);
+begin
+  inherited;
+  Message.Result:= (Message.Result or DLGC_WANTALLKEYS) and not DLGC_WANTTAB;
 end;
 
 {*------------------------------------------------------------------------------
@@ -555,10 +574,12 @@ var
   errCode: Cardinal;
 begin
   ws:= Trim(TextEditor.Text);
+  CE_AddrLog('DoValueChanged text=[' + ws + ']');
   if ws = '' then
   Exit;
 
   ReplaceSystemVariablePath(ws);
+  CE_AddrLog('expanded=[' + ws + ']');
 
   if IsUNC(ws) then
   begin
@@ -576,6 +597,7 @@ begin
   end;
 
   PIDL:= PathToPIDL(ws);
+  CE_AddrLog('PIDL assigned=' + BoolToStr(Assigned(PIDL), true));
 
   if assigned(PIDL) then
   begin
@@ -720,6 +742,7 @@ end;
 procedure TCEAddressBar.OnTextKeyDown(Sender: TObject; var Key: Word; Shift:
     TShiftState);
 begin
+  CE_AddrLog('KeyDown vk=' + IntToStr(Key));
   if Key = VK_ESCAPE then
   begin
     if assigned(RootNamespace) then
