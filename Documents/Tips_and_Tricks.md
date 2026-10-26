@@ -117,8 +117,8 @@ The View menu turns the side panels on and off. Each has a keyboard shortcut.
 | Stack | Ctrl+5 | A holding area: drag files into it from several folders, then drag them out to a destination later. |
 | Workspace | Ctrl+6 | A second file list (see below). |
 
-Panels can be dragged to other places in the window, or left floating. **View > Lock Panels**
-stops them from moving by accident, and **View > Lock Toolbars** does the same for the toolbars.
+Panels can be dragged to other places in the window, or left floating. **View > Panels > Lock
+Panels** stops them from moving by accident, and **View > Toolbars > Lock Toolbars** does the same for the toolbars.
 If you cannot drag a panel or toolbar, check whether the matching Lock item is ticked.
 
 ## Workspace: a second file list
@@ -130,9 +130,12 @@ you a dual-pane file manager, like XTree or Total Commander.
 
 **Set up a dual-pane layout**
 1. Turn it on with **View > Workspace** (or Ctrl+6).
-2. Make sure **View > Lock Panels** is not ticked.
-3. Drag the Workspace panel by its title bar toward the file list. Docking arrows appear; drop it
-   on the arrow for the side you want (for example the right side) and it snaps into place.
+2. Make sure **View > Panels > Lock Panels** is not ticked.
+3. Drag the Workspace panel by its title bar toward the edge where you want it (for example the
+   right side). Unlike Windows, nothing happens when the panel's edge touches the window edge.
+   Keep dragging until the **middle** of the panel reaches that edge. At that point a shaded
+   block appears showing where the panel will land; release the mouse button and it snaps into
+   place.
 4. Browse each pane to a different folder, then drag files from one to the other as you would in
    Windows Explorer (hold Ctrl to copy, Shift to move).
 
