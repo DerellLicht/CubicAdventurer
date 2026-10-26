@@ -52,7 +52,7 @@ type
     label_action_name: TSpTBXLabel;
     TntLabel1: TLabel;
     list_actionhotkeys: TListBox;
-    TntGroupBox1: TGroupBox;
+    TntGroupBox1: TSpTBXGroupBox;
     edit_hotkey: TEdit;
     but_add: TButton;
     but_replace: TButton;

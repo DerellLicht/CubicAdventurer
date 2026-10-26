@@ -1,5 +1,5 @@
 inherited CEOptionsPage_Tabs: TCEOptionsPage_Tabs
-  object NewTabGroup: TGroupBox
+  object NewTabGroup: TSpTBXGroupBox
     Left = 16
     Top = 16
     Width = 409

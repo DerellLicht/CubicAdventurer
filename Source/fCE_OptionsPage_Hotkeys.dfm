@@ -81,12 +81,12 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     OnDragOver = list_actionhotkeysDragOver
     OnMouseDown = list_actionhotkeysMouseDown
   end
-  object TntGroupBox1: TGroupBox
+  object TntGroupBox1: TSpTBXGroupBox
     Left = 249
     Top = 179
     Width = 176
     Height = 146
-    Caption = 'Modify'
+    Caption = 'Modify Hotkey'
     TabOrder = 3
     object edit_hotkey: TEdit
       Left = 12

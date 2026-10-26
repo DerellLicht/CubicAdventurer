@@ -33,7 +33,9 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   `act_help_restore_layout`, which is now in the View menu.
   Progress (2026-10-26): step 2 done for the list icons (not compiled, not tested; the
   double icon came from `OnGetImageIndexEx` ignoring `Kind`) and the "Modify Hotkey" group
-  box caption was shortened to "Modify" (it truncated with a non-standard font). Still open:
+  box caption clipped under a non-standard skin font. Fix: every plain `TGroupBox` (13, in
+  6 forms) is now a `TSpTBXGroupBox`, which measures its caption with the skin font (same
+  fix as the Fileview Display tab, commit 6e83677). Not compiled, not tested. Still open:
   step 1 (audit), step 3 only if the labels are still too short after testing.
 
 ## Wishlist

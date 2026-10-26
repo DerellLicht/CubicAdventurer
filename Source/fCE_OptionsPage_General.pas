@@ -34,7 +34,7 @@ type
   TCEOptionsPage_General = class(TCEOptionsCustomPage)
     check_singleinstance: TCheckBox;
     radio_default: TRadioButton;
-    group_startup: TGroupBox;
+    group_startup: TSpTBXGroupBox;
     radio_lasttime: TRadioButton;
     radio_session: TRadioButton;
     combo_sessions: TComboBox;
@@ -42,8 +42,8 @@ type
     check_tray_minimize: TCheckBox;
     check_tray_close: TCheckBox;
     check_tray_start: TCheckBox;
-    TntGroupBox1: TGroupBox;
-    TntGroupBox2: TGroupBox;
+    TntGroupBox1: TSpTBXGroupBox;
+    TntGroupBox2: TSpTBXGroupBox;
     but_register: TSpTBXButton;
     but_unregister: TSpTBXButton;
     procedure HandleChange(Sender: TObject);

@@ -29,13 +29,15 @@ uses
   CE_FileUtils, CE_CommonObjects, FileCtrl,
   // VSTools
   MPShellUtilities,
+  // SpTBX
+  SpTBXControls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, ShlObj, StrUtils;
 
 type
   TCEOptionsPage_Tabs = class(TCEOptionsCustomPage)
-    NewTabGroup: TGroupBox;
+    NewTabGroup: TSpTBXGroupBox;
     radio_newtab_1: TRadioButton;
     radio_newtab_2: TRadioButton;
     radio_newtab_3: TRadioButton;
