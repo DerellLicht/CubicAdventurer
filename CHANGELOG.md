@@ -8,6 +8,7 @@
 - Added: background colors for file extensions (Options > Display > Fileview > Colors)
 - Added: the address bar now suggests matching folder names as you type, like Windows Explorer
 - Removed: the "And Launch Files" and "Launch Files Only" choices under Bookmarks > Open All in Tabs (which still opens every folder bookmark in tabs)
+- Fixed: `layout.xml` no longer collects thousands of blank lines (existing files are cleaned when loaded)
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)

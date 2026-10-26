@@ -14,8 +14,6 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
   the program window edge (probably JVCL drop-zone logic).
-- **CA-014 [bug] `layout.xml` holds about 2000 blank indentation-only lines** in the
-  FileView toolbar section. Harmless.
 - **CA-015 [bug] Folder text color is not applied to selected items**, and the Folders
   tree and other panels get neither the folder/attribute colors nor the glyph fallback
   font. The fallback also still boxes astral characters (some emoji), and a whole name
@@ -66,6 +64,9 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
+- **CA-014 [task] Test the `layout.xml` clean-up.** Start the program with the old
+  `layout.xml` (about 1800 blank lines), exit with File > Exit, and confirm the saved file
+  has no blank-line runs and the toolbars/panels look the same. Not compiled yet.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that

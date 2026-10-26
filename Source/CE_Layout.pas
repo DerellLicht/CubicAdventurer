@@ -240,6 +240,54 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
+  Remove stray text nodes from a loaded layout tree (CA-014).
+
+  The layout file only holds elements and attributes, never mixed content.
+  A stray non-blank character between two elements is loaded as a text node,
+  and the XML writer saves it with the indentation plus a line break. Each
+  save/load cycle then multiplied the blank lines (about 1800 of them had piled
+  up in the FileView Toolbars section). Dropping every text node child of a
+  node that also has element children makes the file heal itself on load.
+  Nodes whose only content is a text value are left alone (the XML parser
+  stores that as the node's Value, not as a child).
+-------------------------------------------------------------------------------}
+procedure StripStrayTextNodes(Node: TJvSimpleXMLElem);
+var
+  i: Integer;
+  hasElem: Boolean;
+begin
+  if not assigned(Node) then
+  begin
+    Exit;
+  end;
+
+  hasElem:= false;
+  for i:= 0 to Node.Items.Count - 1 do
+  begin
+    if not (Node.Items.Item[i] is TJvSimpleXMLElemText) then
+    begin
+      hasElem:= true;
+      Break;
+    end;
+  end;
+
+  for i:= Node.Items.Count - 1 downto 0 do
+  begin
+    if Node.Items.Item[i] is TJvSimpleXMLElemText then
+    begin
+      if hasElem then
+      begin
+        Node.Items.Delete(i);
+      end;
+    end
+    else
+    begin
+      StripStrayTextNodes(Node.Items.Item[i]);
+    end;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
   Load layout configuration from file
 -------------------------------------------------------------------------------}
 procedure TCELayoutController.LoadFromFile(AFilePath: WideString);
@@ -259,6 +307,8 @@ begin
         except
           AppStorage.Xml.LoadFromResourceName(hInstance, 'DEFAULT_LAYOUT_DATA');
         end;
+        // CA-014: heal files that already contain stray text nodes
+        StripStrayTextNodes(AppStorage.Xml.Root);
       finally
         s.Free;
       end;
