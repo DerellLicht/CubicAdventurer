@@ -1411,23 +1411,51 @@ end;
 
 {-------------------------------------------------------------------------------
   Set Notify Folder
+
+  Chooses the folder that the kernel change notification (ReadDirectoryChanges
+  style watch) observes for this view. Only local fixed drives are watched, so
+  the real file system path of the folder is needed. Known folders such as
+  Downloads can have a parsing name of the form "::{GUID}", which is not a path
+  (CA-011); SHGetPathFromIDListW resolves those to the real directory.
+  If no file system path can be resolved, nothing is watched (as before).
 -------------------------------------------------------------------------------}
 procedure TCEFileView.SetNotifyFolder(Namespace: TNamespace);
 var
   useKernel: Boolean;
+  watchPath: WideString;
+  driveType: Integer;
+  buf: array[0..MAX_PATH] of WideChar;
 begin
-  if assigned(Namespace) then
-  begin
-    if fUseKernelNotification then
-    begin
+  if assigned(Namespace) then begin
+    if fUseKernelNotification then begin
+      watchPath:= '';
       useKernel:= not Namespace.IsNetworkNeighborhoodChild;
-      if useKernel then
-      useKernel:= WideGetDriveType(IncludeTrailingBackslash(Namespace.NameForParsing)) = DRIVE_FIXED;
+      if useKernel then begin
+        // Real path first (handles known folders), parsing name as fallback.
+        if SHGetPathFromIDListW(Namespace.AbsolutePIDL, buf) then begin
+          watchPath:= buf;
+        end
+        else if Copy(Namespace.NameForParsing, 1, 2) <> '::' then begin
+          watchPath:= Namespace.NameForParsing;
+        end;
+        useKernel:= watchPath <> '';
+      end;
+      driveType:= DRIVE_UNKNOWN;
+      if useKernel then begin
+        driveType:= WideGetDriveType(IncludeTrailingBackslash(ExtractFileDrive(watchPath)));
+        useKernel:= driveType = DRIVE_FIXED;
+      end;
 
-      if useKernel then
-      ChangeNotifier.NotifyWatchFolder(Self, Namespace.NameForParsing)
-      else
-      ChangeNotifier.NotifyWatchFolder(Self, '');
+      // CA-011 diagnostic (temporary): remove once file view auto-update is confirmed.
+      OutputDebugString(PChar('CA notify: parse=' + Namespace.NameForParsing + ' path=' + watchPath +
+        ' drive=' + IntToStr(driveType) + ' watch=' + BoolToStr(useKernel, true)));
+
+      if useKernel then begin
+        ChangeNotifier.NotifyWatchFolder(Self, watchPath);
+      end
+      else begin
+        ChangeNotifier.NotifyWatchFolder(Self, '');
+      end;
     end;
   end;
 end;
