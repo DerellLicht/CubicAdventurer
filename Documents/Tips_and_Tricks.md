@@ -185,8 +185,6 @@ a toolbar as a button (see **Customize > Buttons**):
 - **Refresh** (F5) reloads the file list and also rebuilds its thumbnails. **Refresh Fileview**
   (Shift+F5) reloads the list without touching the thumbnail cache.
 - **Scroll Left** and **Scroll Right** move the tab bar when you have more tabs than fit.
-- **Default File Manager** (Tools > Options > General): **Register** makes CubicAdventurer open
-  folders when another program asks Windows to open one. Windows asks for permission, because
-  this changes a system setting. **Unregister** puts Windows back the way it was.
-- **File > New Window** starts a second copy of the program. Right-clicking the taskbar icon and
-  choosing the program name does the same.
+- **Only one window runs at a time.** Starting CubicAdventurer again (from the Start Menu, for
+  example) brings the existing window forward instead of opening a second one. To work in
+  several places at once, use tabs, sessions and the Workspace panel.

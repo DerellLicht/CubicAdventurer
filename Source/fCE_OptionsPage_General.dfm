@@ -1,13 +1,4 @@
 inherited CEOptionsPage_General: TCEOptionsPage_General
-  object check_singleinstance: TCheckBox
-    Left = 16
-    Top = 296
-    Width = 401
-    Height = 17
-    Caption = 'Single Instance Only'
-    TabOrder = 0
-    OnClick = HandleChange
-  end
   object group_startup: TSpTBXGroupBox
     Left = 16
     Top = 12
@@ -108,41 +99,6 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       Caption = 'Start minimized to tray'
       TabOrder = 3
       OnClick = HandleChange
-    end
-  end
-  object TntGroupBox2: TSpTBXGroupBox
-    Left = 272
-    Top = 12
-    Width = 153
-    Height = 129
-    Caption = 'Default File Manager'
-    TabOrder = 3
-    DesignSize = (
-      153
-      129)
-    object but_register: TSpTBXButton
-      Left = 16
-      Top = 24
-      Width = 121
-      Height = 33
-      Caption = 'Register'
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 0
-      OnClick = but_registerClick
-      Images = CE_Images.MiscImages
-      ImageIndex = 6
-    end
-    object but_unregister: TSpTBXButton
-      Left = 16
-      Top = 71
-      Width = 121
-      Height = 34
-      Caption = 'Unregister'
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 1
-      OnClick = but_unregisterClick
-      Images = CE_Images.MiscImages
-      ImageIndex = 6
     end
   end
 end

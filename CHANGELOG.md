@@ -3,6 +3,10 @@
 ## [0.98] - 2026-10-25
 - History now keeps the last 30 entries by default (was 10).
 - Made various improvements to the Sessions engine
+- Changed: only one CubicAdventurer window runs at a time; starting it again brings the existing window forward (the Single Instance option and File > New Window are gone)
+- Removed: the Default File Manager Register / Unregister buttons
+- Added: the Hotkeys page now tells you, as you press a key combination, whether it is free or which command already uses it
+- Cleaned up the Hotkeys page (wider, no icons, commands that cannot take a hotkey are hidden, Global page removed) and the Customize > Buttons page (clearer instructions)
 - Added: a Tips and Tricks guide (bookmarks, sessions, the Workspace panel, toolbar buttons, hotkeys), linked from the Start Menu
 - Added: third-party notices file (authors and licenses of the libraries used), kept in the repository (not installed)
 - Added: attribute background colors (System, Read-only, Hidden) now also show in the Icon, Thumbnail and Tile views

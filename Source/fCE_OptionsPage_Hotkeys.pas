@@ -48,6 +48,7 @@ type
     list_actionhotkeys: TListBox;
     label_action_name: TSpTBXLabel;
     TntLabel1: TLabel;
+    label_status: TLabel;
     edit_hotkey: TEdit;
     TntBevel1: TBevel;
     TntGroupBox1: TSpTBXGroupBox;
@@ -89,6 +90,7 @@ type
     function CheckDuplicateHotkey(AShortcut: TShortcut; AShowWarning: Boolean):
         Boolean;
     procedure UpdateActionShortcuts;
+    procedure UpdateHotkeyStatus;
     property newHotkey: TShortcut read fnewHotkey write SetnewHotkey;
     property selectedAction: TAction read fselectedAction write
         SetselectedAction;
@@ -118,9 +120,8 @@ uses
 const
   // Commands that are not offered in the hotkey list, by action Tag.  Pressing a key for
   // them would do nothing, or they are leftovers, or Windows already provides the function.
-  HiddenFromHotkeys: array[0..8] of Integer = (
+  HiddenFromHotkeys: array[0..7] of Integer = (
     101,  // Show/Hide (Windows already minimizes and restores windows)
-    103,  // New Window (File menu and the taskbar icon do this)
     104,  // Make Visible (same reason as Show/Hide)
     504,  // Translate CubicAdventurer (no menu item, see CA-020)
     670,  // Tabs (a tab bar dropdown button, not a command)
@@ -247,6 +248,7 @@ begin
   newHotkey:= ShortCut(Key, Shift);
   Key:= 0;
   edit_hotkey.Text:= ShortCutToTextRaw(newHotkey);
+  UpdateHotkeyStatus;
 
   // Alt causes buttons not to draw for some reason in Windows 7.
   // This is a cheap fix.
@@ -365,6 +367,7 @@ end;
 procedure TTCEOptionsPage_Hotkeys.list_actionhotkeysClick(Sender: TObject);
 begin
   newHotkey:= 0;
+  label_status.Caption:= '';
   if list_actionhotkeys.ItemIndex > -1 then
   begin
     edit_hotkey.Text:= list_actionhotkeys.Items.Strings[list_actionhotkeys.ItemIndex];
@@ -465,6 +468,7 @@ var
   i: Integer;
 begin
   fselectedAction:= Value;
+  label_status.Caption:= '';
   list_actionhotkeys.Clear;
   if assigned(fselectedAction) then
   begin
@@ -643,6 +647,48 @@ begin
     end;
   end;
   HotkeyList.Repaint;
+end;
+
+{-------------------------------------------------------------------------------
+  Tell the user, before Add or Replace is clicked, whether the key just pressed
+  is free or already belongs to a command.
+-------------------------------------------------------------------------------}
+procedure TTCEOptionsPage_Hotkeys.UpdateHotkeyStatus;
+var
+  i: Integer;
+  act, owner: TAction;
+begin
+  label_status.Caption:= '';
+  // A lone Ctrl, Shift or Alt is not a usable hotkey yet
+  case WordRec(fnewHotkey).Lo of
+    0, $10..$12: begin
+      Exit; // -->
+    end;
+  end;
+
+  owner:= nil;
+  for i:= 0 to CEActions.ActionList.ActionCount - 1 do
+  begin
+    act:= TAction(CEActions.ActionList.Actions[i]);
+    if (act.ShortCut = fnewHotkey) or (act.SecondaryShortCuts.IndexOfShortCut(fnewHotkey) > -1) then
+    begin
+      owner:= act;
+      Break;
+    end;
+  end;
+
+  if owner = nil then
+  begin
+    label_status.Caption:= _('Not assigned to any command');
+  end
+  else if owner = selectedAction then
+  begin
+    label_status.Caption:= _('Already assigned to this command');
+  end
+  else
+  begin
+    label_status.Caption:= ShortCutToText(fnewHotkey) + ' ' + _('is already assigned to') + ': ' + owner.Caption;
+  end;
 end;
 
 {##############################################################################}

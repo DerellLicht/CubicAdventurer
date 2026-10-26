@@ -22,15 +22,6 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
   `CE_DockInfo.pas` stays until then). Wait for a user report before spending time here.
 
-- **CA-055 [bug] Default File Manager entry still says CubicExplorer.** Options > General >
-  Register writes the registry key `Folder\shell\cubicexplorer` with the description "Open in
-  CubicExplorer" (`CE_ElevatedActions.pas`, `CE_FileUtils.pas`), which shows up as a verb name
-  in Explorer's folder context menu. Rename to CubicAdventurer? Careful: a machine that has the
-  original CubicExplorer registered uses the same key name. The two `.reg` files in `Documents`
-  are old manual "reset Explorer" files from the XP era; the Register/Unregister buttons do not
-  use them, so they are not in the installer. Register/Unregister itself is untested on
-  current Windows.
-
 ## Wishlist
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
@@ -54,6 +45,10 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   Tabs / Stack Open / Stack Save / Translate / Show-Hide / Make Visible / New Window rows,
   Restore Default Layout under View, no Global child page. View menu has no Archiver item.
   Tools > Customize > Buttons: one icon per row, new hint readable (dialog is 16 px taller).
+  Options > Hotkeys: pressing a key combination shows who owns it (or "Not assigned") under
+  the Hotkeys list. Options > General: no Single Instance box and no Default File Manager
+  group; File menu has no New Window; starting the program twice brings the first window
+  forward (a `SingleInstance` value in an old `settings.xml` is ignored).
   Tips and Tricks (`Documents/Tips_and_Tricks.md`): the Workspace docking steps and the Start
   Menu "Tips and Tricks" link (upgrade removes the old "Bookmarks and Sessions Guide" link).
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
@@ -81,4 +76,7 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 - **CA-042 [task] Housekeeping.** Remove unused edits in the vendored
   `VirtualExplorerEasyListview.pas`; stale root-level `Components\fcl-xml` (needs OK);
   `.gitattributes` / CRLF decision (the repo has mixed line endings); retire the
-  `Options.inc` / `Compilers.inc` stubs.
+  `Options.inc` / `Compilers.inc` stubs. Dead code left behind on 2026-10-26: the
+  `SingleInstance` property and settings key (`Main.pas`, `dCE_Settings.pas`) and the unused
+  Register / Unregister Default File Manager routines (`CE_ElevatedActions.pas`,
+  `CE_FileUtils.pas`). The two old `.reg` files in `Documents` are not used by anything.

@@ -75,7 +75,7 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     Left = 329
     Top = 63
     Width = 176
-    Height = 106
+    Height = 76
     DragMode = dmAutomatic
     ItemHeight = 13
     TabOrder = 2
@@ -83,6 +83,14 @@ inherited TCEOptionsPage_Hotkeys: TTCEOptionsPage_Hotkeys
     OnDragDrop = list_actionhotkeysDragDrop
     OnDragOver = list_actionhotkeysDragOver
     OnMouseDown = list_actionhotkeysMouseDown
+  end
+  object label_status: TLabel
+    Left = 329
+    Top = 143
+    Width = 176
+    Height = 30
+    AutoSize = False
+    WordWrap = True
   end
   object TntGroupBox1: TSpTBXGroupBox
     Left = 329

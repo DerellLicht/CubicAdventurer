@@ -211,7 +211,6 @@ type
     act_filters_pattern: TCEToolbarAction;
     act_filters_clear: TAction;
     act_view_checkbox_selection: TAction;
-    act_gen_new_instance: TAction;
     act_edit_undo_delete: TCEToolbarAction;
     act_tools_emptytrash: TAction;
     act_tools_systempower: TCEToolbarAction;
@@ -515,10 +514,6 @@ begin
         Sleep(1000);
         Application.MainForm.Close;
       end;
-    end;
-    103: begin
-      fDisableSingleInstanceTemporarily:= GetTickCount;
-      WideShellExecute(0, 'open', ParamStr(0), '', '', SW_SHOWNORMAL);
     end;
     104: MainForm.MakeVisible;
   end;
@@ -1527,7 +1522,10 @@ end;
 -------------------------------------------------------------------------------}
 function IsSingleInstance: Boolean;
 begin
-  Result:= MainForm.SingleInstance;
+  // Only one window runs at a time: a second start brings the first one forward.  Several
+  // windows would overwrite each other's settings, sessions and layout files.  The old
+  // Single Instance option is gone, so a SingleInstance value in settings.xml is ignored.
+  Result:= true;
 end;
 
 {##############################################################################}

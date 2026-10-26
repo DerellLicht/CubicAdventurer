@@ -32,7 +32,6 @@ uses
 
 type
   TCEOptionsPage_General = class(TCEOptionsCustomPage)
-    check_singleinstance: TCheckBox;
     radio_default: TRadioButton;
     group_startup: TSpTBXGroupBox;
     radio_lasttime: TRadioButton;
@@ -43,13 +42,8 @@ type
     check_tray_close: TCheckBox;
     check_tray_start: TCheckBox;
     TntGroupBox1: TSpTBXGroupBox;
-    TntGroupBox2: TSpTBXGroupBox;
-    but_register: TSpTBXButton;
-    but_unregister: TSpTBXButton;
     procedure HandleChange(Sender: TObject);
     procedure radioClick(Sender: TObject);
-    procedure but_registerClick(Sender: TObject);
-    procedure but_unregisterClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -64,7 +58,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Main, CE_Sessions, CE_ElevatedActions, MPCommonUtilities;
+  Main, CE_Sessions, MPCommonUtilities;
 
 {-------------------------------------------------------------------------------
   Create an instance of TCEOptionsPage_General
@@ -84,8 +78,6 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCEOptionsPage_General.ApplySettings;
 begin
-  // Single Instance
-  MainForm.Settings.SingleInstance:= check_singleinstance.Checked;
   // On Startup
   if radio_lasttime.Checked then
   MainForm.Settings.StartupType:= stLastSession
@@ -139,9 +131,6 @@ begin
   if ws <> '' then
   combo_sessions.ItemIndex:= combo_sessions.Items.IndexOf(ws);
 
-  // Single Instance
-  check_singleinstance.Checked:= MainForm.Settings.SingleInstance;
-
   // Tray Icon
   check_tray_enable.Checked:= MainForm.Settings.ShowTray;
   check_tray_minimize.Checked:= MainForm.Settings.MinimizeToTray;
@@ -160,22 +149,6 @@ procedure TCEOptionsPage_General.radioClick(Sender: TObject);
 begin
   HandleChange(Sender);
   combo_sessions.Enabled:= radio_session.Checked;
-end;
-
-{-------------------------------------------------------------------------------
-  On but_register.Click
--------------------------------------------------------------------------------}
-procedure TCEOptionsPage_General.but_registerClick(Sender: TObject);
-begin
-  Elevated_RegisterDefaultFileManager(Self.Handle);
-end;
-
-{-------------------------------------------------------------------------------
-  On but_unregister.Click
--------------------------------------------------------------------------------}
-procedure TCEOptionsPage_General.but_unregisterClick(Sender: TObject);
-begin
-  Elevated_UnRegisterDefaultFileManager(Self.Handle);
 end;
 
 {##############################################################################}

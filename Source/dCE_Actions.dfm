@@ -641,13 +641,6 @@ object CEActions: TCEActions
       ImageIndex = 44
       OnExecute = ActionExecute
     end
-    object act_gen_new_instance: TAction
-      Tag = 103
-      Category = 'General'
-      Caption = 'New Window'
-      ImageIndex = 61
-      OnExecute = ActionExecute
-    end
     object act_tools_emptytrash: TAction
       Tag = 453
       Category = 'Tools'
