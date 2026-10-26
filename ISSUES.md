@@ -14,10 +14,6 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
   the program window edge (probably JVCL drop-zone logic).
-- **CA-015 [bug] Folder text color is not applied to selected items**, and the Folders
-  tree and other panels get neither the folder/attribute colors nor the glyph fallback
-  font. The fallback also still boxes astral characters (some emoji), and a whole name
-  switches font at once.
 - **CA-016 [feature] Text editor.** No highlighter-settings editor (highlighters use
   SynEdit default colors). Alt-drag column selection not re-checked (probably
   `eoAltSetsColumnMode` missing from Options). Combo box SkinType TODO in
@@ -42,6 +38,16 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
+- **CA-053 [feature] Folders tree: use the file view colors and glyph fallback.** The
+  file view shows folder text color, attribute backgrounds (System / Read-only / Hidden)
+  and the fallback font (`CE_FileViewColors.pas`, `CE_FontFallback.pas`); the Folders tree
+  (`CE_FolderTree.pas`) uses none of them, and other panels have not been checked. Derell
+  (2026-10-26) would like the tree to follow the same color scheme if it can be done. Also
+  open from the old CA-015: the fallback still shows boxes for astral characters (some
+  emoji) and a whole name switches font at once; selected items do not use the folder text
+  color (probably fine for contrast). On 2026-10-26 a Cyrillic folder name showed as boxes
+  in the file view but correctly in the tree, so the tree's own text drawing already
+  differs from the file view's: check that first.
 - **CA-052 [feature] New-user document (Quick Start or Tips and Tricks).** Do not put
   usage hints in `README.md` (it is already long, and hints there are a slippery slope).
   Proposed instead: a short new-user document shipped with the program and linked from
