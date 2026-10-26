@@ -915,8 +915,9 @@ begin
     // use a fallback font when the current font lacks glyphs for the name
     CE_ApplyFontFallback(ACanvas, Item.Caption);
     // folder text color (set last, so it wins over an extension color).
-    // Selected items keep the selection text color for contrast.
-    if (not Item.Selected) and CE_GetFolderTextColor(Item, folderColor) then
+    // Applied to selected items too, like extension colors on files; otherwise
+    // selected folders fell back to the (black) selection text color.
+    if CE_GetFolderTextColor(Item, folderColor) then
     begin
       ACanvas.Font.Color:= folderColor;
     end;
