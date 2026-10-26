@@ -79,4 +79,4 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   `Options.inc` / `Compilers.inc` stubs. Dead code left behind on 2026-10-26: the
   `SingleInstance` property and settings key (`Main.pas`, `dCE_Settings.pas`) and the unused
   Register / Unregister Default File Manager routines (`CE_ElevatedActions.pas`,
-  `CE_FileUtils.pas`). The two old `.reg` files in `Documents` are not used by anything.
+  `CE_FileUtils.pas`).
