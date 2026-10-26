@@ -67,8 +67,6 @@ Source: "{#RepoRoot}\BuildCE\Snapshot_configs\sessions.xml"; DestDir: "{app}"; F
 Source: "{#RepoRoot}\installer\settings.path"; DestDir: "{app}"; Flags: onlyifdoesntexist
 ; The licence stays in a Documents subfolder, matching the Licenses shortcut below.
 Source: "{#RepoRoot}\Documents\License.txt"; DestDir: "{app}\Documents"; Flags: ignoreversion
-; User guide for Bookmarks and Sessions, linked from the Start Menu (CA-052).
-Source: "{#RepoRoot}\Documents\Bookmarks_and_Sessions.md"; DestDir: "{app}\Documents"; Flags: ignoreversion
 Source: "{#RepoRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#RepoRoot}\CA.example.image.jpg"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
@@ -77,9 +75,6 @@ Source: "{#RepoRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
 Name: "{group}\{#MyAppDisplayName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppDisplayName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppDisplayName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{group}\Readme"; Filename: "{app}\README.md"
-Name: "{group}\Bookmarks and Sessions Guide"; Filename: "{app}\Documents\Bookmarks_and_Sessions.md"
-Name: "{group}\Changelog"; Filename: "{app}\CHANGELOG.md"
 Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
 
 ; [InstallDelete] -- template, not active.  Upgrades only add and overwrite; files and
@@ -88,6 +83,23 @@ Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
 ;[InstallDelete]
 ;Type: files; Name: "{app}\OldFile.txt"
 ;Type: files; Name: "{group}\Old Shortcut.lnk"
+
+; Active: the Readme and Changelog shortcuts used to be .lnk files to local .md files.
+[InstallDelete]
+Type: files; Name: "{group}\Readme.lnk"
+Type: files; Name: "{group}\Changelog.lnk"
+
+; Windows has no viewer for .md files (they open in Notepad), so the Readme, Changelog and
+; guide shortcuts are web links that open the pages on GitHub, where Markdown is rendered.
+; Shortcuts to web addresses are .url files, written with [INI] entries.  README.md and
+; CHANGELOG.md are still installed above, for reading offline.
+[INI]
+Filename: "{group}\Readme.url"; Section: "InternetShortcut"; Key: "URL"; String: "{#MyAppURL}/blob/master/README.md"
+Filename: "{group}\Bookmarks and Sessions Guide.url"; Section: "InternetShortcut"; Key: "URL"; String: "{#MyAppURL}/blob/master/Documents/Bookmarks_and_Sessions.md"
+Filename: "{group}\Changelog.url"; Section: "InternetShortcut"; Key: "URL"; String: "{#MyAppURL}/blob/master/CHANGELOG.md"
+
+[UninstallDelete]
+Type: files; Name: "{group}\*.url"
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#DoubleAmp(MyAppName)}}"; Flags: nowait postinstall skipifsilent

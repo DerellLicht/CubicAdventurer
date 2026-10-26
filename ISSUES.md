@@ -57,9 +57,11 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-053 [task] Installer: Bookmarks and Sessions guide.** After the next `make installer`,
-  check that the "Bookmarks and Sessions Guide" Start Menu entry opens
-  `Documents\Bookmarks_and_Sessions.md` (the installer script change is not tested).
+- **CA-053 [task] Installer: Start Menu web links.** Readme, Changelog and the new
+  "Bookmarks and Sessions Guide" are now `.url` shortcuts to their GitHub pages (Windows opens
+  `.md` files in Notepad). After the next `make installer`, check that all three open the
+  rendered page, that an upgrade install leaves no duplicate Readme/Changelog entries, and
+  that uninstall removes the Start Menu folder (installer script not tested).
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
