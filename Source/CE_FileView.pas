@@ -1029,7 +1029,10 @@ begin
   except
     evName:= '(error reading PIDL)';
   end;
-  OutputDebugString(PChar('CA notify event: type=' + IntToStr(Ord(ShellEvent.ShellNotifyEvent)) +
+  OutputDebugString(PChar('CA notify event: view=' + IntToHex(NativeInt(Self), 8) +
+    ' viewroot=' + RootFolderNamespace.NameForParsing +
+    ' active=' + BoolToStr(Active, true) + ' visible=' + BoolToStr(GetRealVisibility(Self), true) +
+    ' type=' + IntToStr(Ord(ShellEvent.ShellNotifyEvent)) +
     ' pidl1=' + evName + ' root=' + BoolToStr(isRoot, true)));
 
   inherited;
