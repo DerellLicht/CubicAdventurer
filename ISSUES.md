@@ -12,6 +12,8 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
+- **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
+  the program window edge (probably JVCL drop-zone logic).
 - **CA-016 [feature] Text editor.** No highlighter-settings editor (highlighters use
   SynEdit default colors). Alt-drag column selection not re-checked (probably
   `eoAltSetsColumnMode` missing from Options). Combo box SkinType TODO in
@@ -58,14 +60,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-012 [task] Test edge docking of a floating panel.** A floating panel should now
-  dock to an empty window edge as soon as its border touches the edge, instead of when the
-  cursor reaches it (`TJvDockVSNETPanelTBX.CustomGetSiteInfo` in
-  `CEJvDockVSNetStyleTBX.pas`). Not compiled yet. Check all four edges, with the panel
-  grabbed near its left end, middle and right end; the dock preview should not flicker
-  between the edge and inner dock zones near the edge, and docking into the middle of the
-  window must still work. Only empty edge panels are covered; an edge that already holds
-  a docked panel keeps JVCL's own behavior. If it misbehaves, delete the override.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that

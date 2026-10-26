@@ -11,7 +11,6 @@
 - Fixed: `layout.xml` no longer collects thousands of blank lines (existing files are cleaned when loaded)
 - Fixed: selected folders now keep the folder text color instead of turning black
 - Added: the Folders tree now uses the file view's background, folder text, System / Read-only / Hidden colors and Unicode fallback font
-- Fixed: a floating panel now docks to a window edge as soon as its border touches the edge
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)
