@@ -22,17 +22,14 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
   `CE_DockInfo.pas` stays until then). Wait for a user report before spending time here.
 
-- **CA-018 [bug] Options > Hotkeys page cleanup.** Done and confirmed 2026-10-26: list icons
-  removed, group box captions fixed. Done, not tested (2026-10-26): Options dialog 80 px wider
-  (only the Hotkeys page uses the room; the other pages keep their size), Hotkeys list and its
-  two columns widened, "Swith" typo fixed in the action caption and all Locale files. Still
-  open: (a) the child page Options > Hotkeys > Global (system-wide hotkeys, a working feature)
-  repeats the whole action list, with icons and no keys assigned; the maintainer is deciding
-  whether to delete it or just tidy it. (b) Audit result, waiting for the maintainer's OK: hide
-  from the hotkey lists `act_tabs_menu`, `act_stack_open`, `act_stack_save`,
-  `act_help_poedit_form` (no menu item since CA-020), `act_tabs_copyhere` and
-  `act_tabs_movehere`; `act_view_archiver` is dead (invisible, no handler); move
-  `act_help_restore_layout` to category View.
+- **CA-055 [bug] Default File Manager entry still says CubicExplorer.** Options > General >
+  Register writes the registry key `Folder\shell\cubicexplorer` with the description "Open in
+  CubicExplorer" (`CE_ElevatedActions.pas`, `CE_FileUtils.pas`), which shows up as a verb name
+  in Explorer's folder context menu. Rename to CubicAdventurer? Careful: a machine that has the
+  original CubicExplorer registered uses the same key name. The two `.reg` files in `Documents`
+  are old manual "reset Explorer" files from the XP era; the Register/Unregister buttons do not
+  use them, so they are not in the installer. Register/Unregister itself is untested on
+  current Windows.
 
 ## Wishlist
 
@@ -53,6 +50,12 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
+- **CA-054 [task] Check the 2026-10-26 Options/Customize cleanup.** Options > Hotkeys: no
+  Tabs / Stack Open / Stack Save / Translate / Show-Hide / Make Visible / New Window rows,
+  Restore Default Layout under View, no Global child page. View menu has no Archiver item.
+  Tools > Customize > Buttons: one icon per row, new hint readable (dialog is 16 px taller).
+  Tips and Tricks (`Documents/Tips_and_Tricks.md`): the Workspace docking steps and the Start
+  Menu "Tips and Tricks" link (upgrade removes the old "Bookmarks and Sessions Guide" link).
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
