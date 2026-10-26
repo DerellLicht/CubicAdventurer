@@ -20,6 +20,10 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   `VirtualExplorerEasyListview.pas`) ignoring them because `IsRootNamespace` is false for
   the event's folder. Temporary `OutputDebugString` lines `CA notify:` (in
   `SetNotifyFolder`) and `CA notify event:` (in `DoShellNotify`); remove both when fixed.
+  Working theory (2026-10-26): every view gets every event (5 tabs = 5 copies), and
+  the directory watch is only re-pointed when a view navigates, so a tab that is merely
+  selected may not be the folder being watched. `UpdateNotifyFolder` is now called from
+  `TCEFileViewPage.SelectPage` to test this.
   Test: open Downloads, download a file (also try `copy nul x.txt` in a typed-path
   folder) and send the DbgView lines.
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches

@@ -821,6 +821,8 @@ begin
   GlobalPathCtrl.ChangeGlobalPathPIDL(Self, FileView.RootFolderNamespace.AbsolutePIDL);
   GlobalPathCtrl.GlobalPathCaption:= FileView.RootFolderNamespace.NameParseAddress;
   FileView.SetFocus;
+  // CA-011: follow the selected tab with the directory change watch.
+  FileView.UpdateNotifyFolder;
 
   // Change focued path
   if assigned(FileView.Selection.FocusedItem) and (FileView.Selection.Count > 0) then

@@ -138,6 +138,7 @@ type
     procedure ClearHistory;
     procedure CreateEmptyFile;
     procedure CreateNewFolder;
+    procedure UpdateNotifyFolder;
     function DragInitiated: Boolean;
     procedure EndHistoryUpdate;
     procedure GoBackInHistory;
@@ -1486,6 +1487,20 @@ begin
         ChangeNotifier.NotifyWatchFolder(Self, '');
       end;
     end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Update Notify Folder
+
+  Points the directory change watch at this view's current folder. The watch is
+  otherwise set only when the view navigates, so a tab that is merely selected
+  again would keep whatever folder was watched last (CA-011).
+-------------------------------------------------------------------------------}
+procedure TCEFileView.UpdateNotifyFolder;
+begin
+  if Assigned(RootFolderNamespace) then begin
+    SetNotifyFolder(RootFolderNamespace);
   end;
 end;
 
