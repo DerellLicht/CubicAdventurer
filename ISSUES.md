@@ -12,6 +12,24 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
+- **CA-011 [bug] File view does not auto-update when files are added** (a browser
+  download into Downloads shows in Explorer but only appears in the view after F5; the
+  original CubicExplorer did the same). Findings (2026-10-26, all code reverted):
+  - Not the path. The directory watch IS set for Downloads (`SetNotifyFolder` gets the
+    real path and `DRIVE_FIXED`); resolving the path with `SHGetPathFromIDListW` changed
+    nothing.
+  - Every view receives every shell event (5 tabs = 5 copies, each view filters by
+    `IsRootNamespace`). Re-pointing the watch when a tab is selected changed nothing.
+  - The library DOES report files created with `copy`, `ren`, or DbgView Save, in
+    Downloads and elsewhere. A browser download produces no event for the Downloads
+    folder at all (the browser is not identified; it is not simply create-then-rename).
+  - What worked, but was reverted (commit 5ddab61 has it): a per-view
+    `FindFirstChangeNotificationW` watch polled by a 500 ms timer that calls
+    `Rebuild(true)` (same as F5) after changes settle. Reverted because of possible side
+    effects (lost multi-selection, constant refresh in busy folders, unverified locking
+    of the watched folder, a second notification mechanism beside the library's).
+  - Open idea: register each visible folder with `SHChangeNotifyRegister` (how Explorer
+    is believed to do it) instead of the library's notifier.
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
   the program window edge (probably JVCL drop-zone logic).
 - **CA-014 [bug] `layout.xml` holds about 2000 blank indentation-only lines** in the
