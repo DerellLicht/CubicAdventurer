@@ -53,12 +53,17 @@ type
         TNamespace; Verb: string; MenuItemID: Integer; var Handled: Boolean);
     procedure HandleContextMenuShow(Sender: TCustomVirtualExplorerTree; Namespace:
         TNamespace; Menu: hMenu; var Allow: Boolean);
+    procedure DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column:
+        TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var
+        ContentRect: TRect); override;
     function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink;
         override;
     procedure DoEnumFolder(const Namespace: TNamespace; var AllowAsChild: Boolean);
         override;
     function DoKeyAction(var CharCode: Word; var Shift: TShiftState): Boolean;
         override;
+    procedure DoPaintText(Node: PVirtualNode; const Canvas: TCanvas; Column:
+        TColumnIndex; TextType: TVSTTextType); override;
     procedure DoSelectedChange(Node: PVirtualNode);
     procedure DoShellNotify(ShellEvent: TVirtualShellEvent); override;
     procedure HandleEnumFolder(Sender: TCustomVirtualExplorerTree; Namespace:
@@ -103,7 +108,7 @@ type
 implementation
 
 uses
-  dCE_Actions, MPCommonUtilities;
+  dCE_Actions, MPCommonUtilities, CE_FileViewColors, CE_FontFallback;
 
 {*------------------------------------------------------------------------------
   Create an instance of TCEFolderTree
@@ -134,6 +139,87 @@ begin
   fSelectionTimer.Interval:= 500;
   fSelectionTimer.OnTimer:= SelectionTimer;
   Self.DefaultNodeHeight:= SmallShellIconSize + 1;
+end;
+
+{*------------------------------------------------------------------------------
+  Paints the attribute background color (System / Read-only / Hidden) behind a
+  folder's icon-less label, using the same colors as the file view (CA-053).
+  Only the main column is handled, and only when painting (not when VT is just
+  asking for the content margin). The background covers the label text plus the
+  tree's text margin on each side, like the selection rectangle does.
+-------------------------------------------------------------------------------}
+procedure TCEFolderTree.DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode;
+    Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var
+    ContentRect: TRect);
+var
+  NS: TNamespace;
+  clr: TColor;
+  oldColor: TColor;
+  txt: string;
+  r: TRect;
+  w: Integer;
+begin
+  inherited;
+  if (CellPaintMode <> cpmPaint) or (Column > 0) then
+  begin
+    Exit;
+  end;
+  if not ValidateNamespace(Node, NS) then
+  begin
+    Exit;
+  end;
+  if not CE_GetNamespaceAttrBackgroundColor(NS, clr) then
+  begin
+    Exit;
+  end;
+
+  // measure the label with the same font DoPaintText will choose
+  txt:= NS.NameInFolder;
+  Canvas.Font.Assign(Self.Font);
+  CE_ApplyFontFallback(Canvas, txt);
+  w:= Canvas.TextWidth(txt) + 2 * Integer(TextMargin);
+  Canvas.Font.Assign(Self.Font);
+
+  r:= ContentRect;
+  if r.Left + w < r.Right then
+  begin
+    r.Right:= r.Left + w;
+  end;
+  if IsRectEmpty(r) then
+  begin
+    Exit;
+  end;
+
+  oldColor:= Canvas.Brush.Color;
+  Canvas.Brush.Color:= clr;
+  Canvas.FillRect(r);
+  Canvas.Brush.Color:= oldColor;
+end;
+
+{*------------------------------------------------------------------------------
+  Sets the folder text color and the glyph fallback font for a node's label,
+  using the same settings as the file view (CA-053). Runs after the inherited
+  handler, so it wins over the VETColors folder color set in the constructor.
+-------------------------------------------------------------------------------}
+procedure TCEFolderTree.DoPaintText(Node: PVirtualNode; const Canvas: TCanvas;
+    Column: TColumnIndex; TextType: TVSTTextType);
+var
+  NS: TNamespace;
+  clr: TColor;
+begin
+  inherited;
+  if Column > 0 then
+  begin
+    Exit;
+  end;
+  if ValidateNamespace(Node, NS) then
+  begin
+    CE_ApplyFontFallback(Canvas, NS.NameInFolder);
+    if CE_GetNamespaceFolderTextColor(NS, clr) then
+    begin
+      Canvas.Font.Color:= clr;
+    end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------

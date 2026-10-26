@@ -38,16 +38,6 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
-- **CA-053 [feature] Folders tree: use the file view colors and glyph fallback.** The
-  file view shows folder text color, attribute backgrounds (System / Read-only / Hidden)
-  and the fallback font (`CE_FileViewColors.pas`, `CE_FontFallback.pas`); the Folders tree
-  (`CE_FolderTree.pas`) uses none of them, and other panels have not been checked. Derell
-  (2026-10-26) would like the tree to follow the same color scheme if it can be done.
-  Emoji names were tested on 2026-10-26 and display correctly in the file view.
-  On 2026-10-26 a Unicode folder name showed as boxes in the file view but
-  correctly in the tree (Derell's report; not reproduced here), so the tree's own text
-  drawing already differs from the file view's: check that first. A name switching font
-  as a whole is accepted behavior.
 - **CA-052 [feature] New-user document (Quick Start or Tips and Tricks).** Do not put
   usage hints in `README.md` (it is already long, and hints there are a slippery slope).
   Proposed instead: a short new-user document shipped with the program and linked from
@@ -70,6 +60,16 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
+- **CA-053 [task] Test the Folders tree colors.** The tree now uses the file view's folder
+  text color, System / Read-only / Hidden backgrounds and the glyph fallback font
+  (`CE_FolderTree.pas` `DoPaintText` / `DoBeforeCellPaint`; shared lookups in
+  `CE_FileViewColors.pas`). Not compiled yet. Check: colors and attribute backgrounds show
+  in the tree (including `ProgramData`), text stays readable on the tree's background
+  (the folder color was chosen for the file view), selected nodes look right, the
+  background bar fits the label, and the address-bar / breadcrumb folder popups still
+  draw. A color change in Options probably shows in the tree only after a repaint
+  (scroll or refresh). Also unexplained: on 2026-10-26 a Unicode folder name showed boxes
+  in the file view but correctly in the tree; not reproduced since.
 - **CA-054 [task] Test folder colors on selected items.** Select a mix of files and
   folders (focused and unfocused list): folders should keep the Folder text color like
   files keep their extension colors, not turn black. Not compiled yet. If the contrast on

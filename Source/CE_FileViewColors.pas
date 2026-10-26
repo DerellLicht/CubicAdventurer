@@ -114,6 +114,11 @@ function CE_GetFolderTextColor(Item: TEasyItem; out AColor: TColor): Boolean;
 // Hidden attribute and a matching background color is configured.
 function CE_GetAttrBackgroundColor(Item: TEasyItem; out AColor: TColor): Boolean;
 
+// Same two lookups for a bare namespace (used by the Folders tree, which has no
+// TEasyItem).
+function CE_GetNamespaceFolderTextColor(ns: TNamespace; out AColor: TColor): Boolean;
+function CE_GetNamespaceAttrBackgroundColor(ns: TNamespace; out AColor: TColor): Boolean;
+
 // Loads the extension background colors from the stored ExtensionColors string
 // (entries 'exts,color,bold,italic,underline,bgEnabled,bgColor' separated by
 // '|'; the last two fields are optional). AEnabled is the "Use extension
@@ -159,9 +164,7 @@ end;
   Folder text color. Uses the real directory attribute (cached WIN32_FIND_DATA
   of the namespace), so zip files and shortcuts are not treated as folders.
 -------------------------------------------------------------------------------}
-function CE_GetFolderTextColor(Item: TEasyItem; out AColor: TColor): Boolean;
-var
-  ns: TNamespace;
+function CE_GetNamespaceFolderTextColor(ns: TNamespace; out AColor: TColor): Boolean;
 begin
   Result:= false;
   AColor:= clDefault;
@@ -169,12 +172,16 @@ begin
   begin
     Exit;
   end;
-  ns:= ItemNamespace(Item);
   if Assigned(ns) and ns.Directory then
   begin
     AColor:= CEFileViewColors.FolderTextColor;
     Result:= true;
   end;
+end;
+
+function CE_GetFolderTextColor(Item: TEasyItem; out AColor: TColor): Boolean;
+begin
+  Result:= CE_GetNamespaceFolderTextColor(ItemNamespace(Item), AColor);
 end;
 
 {*------------------------------------------------------------------------------
@@ -184,15 +191,13 @@ end;
   One attribute set    -> that attribute's color.
   Two or three set     -> the combined color (nothing if it is "off").
 -------------------------------------------------------------------------------}
-function CE_GetAttrBackgroundColor(Item: TEasyItem; out AColor: TColor): Boolean;
+function CE_GetNamespaceAttrBackgroundColor(ns: TNamespace; out AColor: TColor): Boolean;
 var
-  ns: TNamespace;
   isSystem, isReadOnly, isHidden: Boolean;
   count: Integer;
 begin
   Result:= false;
   AColor:= clDefault;
-  ns:= ItemNamespace(Item);
   if (not Assigned(ns)) or (not ns.FileSystem) then
   begin
     Exit;
@@ -239,6 +244,11 @@ begin
   end;
 
   Result:= CE_IsColorSet(AColor);
+end;
+
+function CE_GetAttrBackgroundColor(Item: TEasyItem; out AColor: TColor): Boolean;
+begin
+  Result:= CE_GetNamespaceAttrBackgroundColor(ItemNamespace(Item), AColor);
 end;
 
 {*------------------------------------------------------------------------------

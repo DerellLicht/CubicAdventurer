@@ -10,6 +10,7 @@
 - Removed: the "And Launch Files" and "Launch Files Only" choices under Bookmarks > Open All in Tabs (which still opens every folder bookmark in tabs)
 - Fixed: `layout.xml` no longer collects thousands of blank lines (existing files are cleaned when loaded)
 - Fixed: selected folders now keep the folder text color instead of turning black
+- Added: the Folders tree now uses the folder text color, the System / Read-only / Hidden background colors and the Unicode fallback font, like the file view
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)
