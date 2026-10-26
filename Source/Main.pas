@@ -208,7 +208,6 @@ type
     SpTBXItem45: TSpTBXItem;
     SpTBXSeparatorItem11: TSpTBXSeparatorItem;
     SpTBXItem46: TSpTBXItem;
-    SpTBXItem80: TSpTBXItem;
     SpTBXItem96: TSpTBXItem;
     AutoUpdateTimer: TTimer;
     SpTBXSeparatorItem30: TSpTBXSeparatorItem;

@@ -277,10 +277,6 @@
             <Form>TCEOptionsPage_Hotkeys</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="fCE_OptionsPage_GlobalHotkeys.pas">
-            <Form>TCEOptionsPage_GlobalHotkeys</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="fCE_ColumnFormSpTBX.pas">
             <Form>CEFormColumnSettings</Form>
             <DesignClass>TForm</DesignClass>

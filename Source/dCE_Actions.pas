@@ -211,7 +211,6 @@ type
     act_filters_pattern: TCEToolbarAction;
     act_filters_clear: TAction;
     act_view_checkbox_selection: TAction;
-    act_view_archiver: TAction;
     act_gen_new_instance: TAction;
     act_edit_undo_delete: TCEToolbarAction;
     act_tools_emptytrash: TAction;

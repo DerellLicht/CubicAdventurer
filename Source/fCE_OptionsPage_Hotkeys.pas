@@ -115,6 +115,39 @@ uses
 
 {$R *.dfm}
 
+const
+  // Commands that are not offered in the hotkey list, by action Tag.  Pressing a key for
+  // them would do nothing, or they are leftovers, or Windows already provides the function.
+  HiddenFromHotkeys: array[0..8] of Integer = (
+    101,  // Show/Hide (Windows already minimizes and restores windows)
+    103,  // New Window (File menu and the taskbar icon do this)
+    104,  // Make Visible (same reason as Show/Hide)
+    504,  // Translate CubicAdventurer (no menu item, see CA-020)
+    670,  // Tabs (a tab bar dropdown button, not a command)
+    671,  // Copy Selected Here (used by dragging files onto a tab)
+    672,  // Move Selected Here (used by dragging files onto a tab)
+    921,  // Stack Open (button inside the Stack panel)
+    922   // Stack Save (button inside the Stack panel)
+  );
+
+{*------------------------------------------------------------------------------
+  True if the action should not appear in the hotkey list (see HiddenFromHotkeys).
+-------------------------------------------------------------------------------}
+function IsHiddenFromHotkeys(AAction: TAction): Boolean;
+var
+  i: Integer;
+begin
+  Result:= false;
+  for i:= Low(HiddenFromHotkeys) to High(HiddenFromHotkeys) do
+  begin
+    if AAction.Tag = HiddenFromHotkeys[i] then
+    begin
+      Result:= true;
+      Break;
+    end;
+  end;
+end;
+
 {*------------------------------------------------------------------------------
   Find Category by it's name.
 -------------------------------------------------------------------------------}
@@ -181,6 +214,10 @@ begin
     if act is TCEToolbarAction then
       if not TCEToolbarAction(act).CanExecute then
       Continue; // -->
+    if IsHiddenFromHotkeys(act) then
+    begin
+      Continue; // -->
+    end;
     // Add Action to list
     node:= GetCategory(act.Category, HotkeyList);
     chNode:= HotkeyList.AddChild(node);

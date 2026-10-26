@@ -226,9 +226,6 @@ object MainForm: TMainForm
           object SpTBXItem51: TSpTBXItem
             Action = CEActions.act_view_dropstack
           end
-          object SpTBXItem80: TSpTBXItem
-            Action = CEActions.act_view_archiver
-          end
           object SpTBXItem99: TSpTBXItem
             Action = CEActions.act_view_workspace
           end

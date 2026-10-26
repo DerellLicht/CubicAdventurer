@@ -641,13 +641,6 @@ object CEActions: TCEActions
       ImageIndex = 44
       OnExecute = ActionExecute
     end
-    object act_view_archiver: TAction
-      Tag = 306
-      Category = 'View'
-      Caption = 'Archiver'
-      Visible = False
-      OnExecute = ActionExecute
-    end
     object act_gen_new_instance: TAction
       Tag = 103
       Category = 'General'
@@ -711,7 +704,7 @@ object CEActions: TCEActions
     end
     object act_help_restore_layout: TAction
       Tag = 508
-      Category = 'Help'
+      Category = 'View'
       Caption = 'Restore Default Layout'
       OnExecute = ActionExecute
     end

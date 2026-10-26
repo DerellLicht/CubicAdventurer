@@ -3,7 +3,7 @@ object CEToolbarCustomizer: TCEToolbarCustomizer
   Top = 0
   BorderIcons = [biSystemMenu]
   Caption = 'Customize'
-  ClientHeight = 293
+  ClientHeight = 309
   ClientWidth = 390
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -24,7 +24,7 @@ object CEToolbarCustomizer: TCEToolbarCustomizer
     Left = 0
     Top = 251
     Width = 390
-    Height = 42
+    Height = 58
     Caption = 'SpTBXPanel1'
     Align = alBottom
     TabOrder = 1
@@ -32,7 +32,7 @@ object CEToolbarCustomizer: TCEToolbarCustomizer
     TBXStyleBackground = True
     DesignSize = (
       390
-      42)
+      58)
     object but_close: TSpTBXButton
       Left = 299
       Top = 6
@@ -49,16 +49,16 @@ object CEToolbarCustomizer: TCEToolbarCustomizer
       Left = 3
       Top = 0
       Width = 294
-      Height = 42
+      Height = 58
       Align = alCustom
       AutoSize = False
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Tahoma'
-      Font.Style = [fsItalic]
+      Font.Style = []
       ParentFont = False
+      Wrapping = twWrap
     end
   end
   object TabControl: TSpTBXTabControl

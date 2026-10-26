@@ -379,7 +379,8 @@ procedure TCEToolbarCustomizer.ActionTreeGetImageIndexEx(Sender:
 var
   data: PCEActTreeData;
 begin
-  if Column = 0 then
+  // Only the normal icon: the tree also asks for the state image, which drew every icon twice.
+  if (Column = 0) and (Kind in [ikNormal, ikSelected]) then
   begin
     data:= ActionTree.GetNodeData(Node);
     ImageIndex:= data.IconIndex;
@@ -566,7 +567,7 @@ begin
   end;
 
   if TabControl.ActiveTab = tab_buttons then
-  label_help.Caption:= _('Drag buttons to/from toolbars')
+  label_help.Caption:= _('To add a button, drag a command from the list onto a toolbar. To remove a button, drag it off the toolbar.')
   else
   label_help.Caption:= '';
 end;
