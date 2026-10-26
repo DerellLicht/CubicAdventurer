@@ -21,8 +21,14 @@ Last updated: 2026-10-26 (version 0.98 in progress).
   - Every view receives every shell event (5 tabs = 5 copies, each view filters by
     `IsRootNamespace`). Re-pointing the watch when a tab is selected changed nothing.
   - The library DOES report files created with `copy`, `ren`, or DbgView Save, in
-    Downloads and elsewhere. A browser download produces no event for the Downloads
-    folder at all (the browser is not identified; it is not simply create-then-rename).
+    Downloads and elsewhere, immediately. A Firefox download from a web site (temp name,
+    then rename) also showed up at once. Downloads saved from the Claude chat page with
+    the Zen browser (a Firefox clone) did NOT show up for the first 30 seconds or so
+    (logs that short showed no Downloads event); on 2026-10-26 08:00 several such files
+    appeared in the view by themselves one to two minutes later. So the event is late,
+    not necessarily missing. Next step: log event arrival times for such a download
+    (DbgView timestamps) to see what the delay depends on (browser holding the file
+    open, virus scanner, shell coalescing).
   - What worked, but was reverted (commit 5ddab61 has it): a per-view
     `FindFirstChangeNotificationW` watch polled by a 500 ms timer that calls
     `Rebuild(true)` (same as F5) after changes settle. Reverted because of possible side
