@@ -1415,8 +1415,9 @@ end;
   Chooses the folder that the kernel change notification (ReadDirectoryChanges
   style watch) observes for this view. Only local fixed drives are watched, so
   the real file system path of the folder is needed. Known folders such as
-  Downloads can have a parsing name of the form "::{GUID}", which is not a path
-  (CA-011); SHGetPathFromIDListW resolves those to the real directory.
+  Downloads can have a parsing name that starts with two colons followed by a
+  GUID, which is not a path (CA-011); SHGetPathFromIDListW resolves those to
+  the real directory.
   If no file system path can be resolved, nothing is watched (as before).
 -------------------------------------------------------------------------------}
 procedure TCEFileView.SetNotifyFolder(Namespace: TNamespace);
