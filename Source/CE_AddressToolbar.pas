@@ -49,6 +49,7 @@ type
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
   protected
     procedure CreateWnd; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Resize; override;
   public
@@ -249,6 +250,24 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
+  Handle Key Down. Enter is acted on here, not in KeyPress: with the AutoComplete
+  drop-down attached, the Enter character message never reaches KeyPress (DbgView
+  showed KeyDown vk=13 but no KeyPress char=13), while the key-down still arrives.
+-------------------------------------------------------------------------------}
+procedure TCE_AEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if Key = VK_RETURN then
+  begin
+    Key:= 0;
+    if Assigned(fOnValueChange) then
+    begin
+      fOnValueChange(Self);
+    end;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
   Handle Key Press
 -------------------------------------------------------------------------------}
 procedure TCE_AEdit.KeyPress(var Key: Char);
@@ -256,9 +275,8 @@ begin
   CE_AddrLog('KeyPress char=' + IntToStr(Ord(Key)));
   if (Key = Char(VK_RETURN)) then
   begin
+    // Navigation is done in KeyDown; only swallow the character (avoids the beep).
     Key:= #0;
-    if assigned(fOnValueChange) then
-    fOnValueChange(Self);
   end
   else if Ord(Key) = 1 then
   begin
