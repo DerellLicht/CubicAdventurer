@@ -45,8 +45,8 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   (2026-10-26) would like the tree to follow the same color scheme if it can be done. Also
   open from the old CA-015: the fallback still shows boxes for astral characters (some
   emoji) and a whole name switches font at once; selected items do not use the folder text
-  color (probably fine for contrast). On 2026-10-26 a Cyrillic folder name showed as boxes
-  in the file view but correctly in the tree, so the tree's own text drawing already
+  color (probably fine for contrast). On 2026-10-26 a Unicode folder name showed as boxes
+  in the file view but correctly in the tree (Derell's report; not reproduced here), so the tree's own text drawing already
   differs from the file view's: check that first.
 - **CA-052 [feature] New-user document (Quick Start or Tips and Tricks).** Do not put
   usage hints in `README.md` (it is already long, and hints there are a slippery slope).
