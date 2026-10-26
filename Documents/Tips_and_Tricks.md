@@ -131,11 +131,11 @@ you a dual-pane file manager, like XTree or Total Commander.
 **Set up a dual-pane layout**
 1. Turn it on with **View > Workspace** (or Ctrl+6).
 2. Make sure **View > Panels > Lock Panels** is not ticked.
-3. Drag the Workspace panel by its title bar toward the edge where you want it (for example the
-   right side). Unlike Windows, nothing happens when the panel's edge touches the window edge.
-   Keep dragging until the **middle** of the panel reaches that edge. At that point a shaded
-   block appears showing where the panel will land; release the mouse button and it snaps into
-   place.
+3. Drag the Workspace panel by its title bar (or its tab) toward the edge where you want it
+   (for example the right side). Watch the mouse pointer, not the panel: as soon as the
+   **pointer touches that edge** of the window, a shaded block appears showing where the panel
+   will land. Release the mouse button and it snaps into place. This works the same way for
+   every dockable panel.
 4. Browse each pane to a different folder, then drag files from one to the other as you would in
    Windows Explorer (hold Ctrl to copy, Shift to move).
 
