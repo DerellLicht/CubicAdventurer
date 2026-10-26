@@ -60,10 +60,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-054 [task] Test folder colors on selected items.** Select a mix of files and
-  folders (focused and unfocused list): folders should keep the Folder text color like
-  files keep their extension colors, not turn black. Not compiled yet. If the contrast on
-  the selection bar is poor, say so and the old rule (selection color) can come back.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
