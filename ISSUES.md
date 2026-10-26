@@ -34,6 +34,11 @@ Last updated: 2026-10-26 (version 0.98 in progress).
     `Rebuild(true)` (same as F5) after changes settle. Reverted because of possible side
     effects (lost multi-selection, constant refresh in busy folders, unverified locking
     of the watched folder, a second notification mechanism beside the library's).
+  - Possibly specific to files downloaded from Claude chat threads (Zen browser). The
+    maintainer will watch other downloads and revisit; do not treat this as a general
+    bug until it is seen elsewhere. Temporary `CA notify event:` log line is in
+    `DoShellNotify` (commit 59f1235) for timing the late update; remove it when the
+    ticket is settled.
   - Open idea: register each visible folder with `SHChangeNotifyRegister` (how Explorer
     is believed to do it) instead of the library's notifier.
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
