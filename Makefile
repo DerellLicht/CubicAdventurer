@@ -33,7 +33,7 @@ TAG       = $(TAG_PREFIX)$(VERSION)
 SETUP     = installer/output/$(APP)V$(VERSION).setup.exe
 SETUP_ZIP = installer/output/$(APP)V$(VERSION).setup.zip
 
-.PHONY: all version sync-version check check-exe installer install install_raw dist stop release update retag re-release check-clean sha256 clean help
+.PHONY: all version sync-version check check-exe installer install install_raw do_inst dist stop release update retag re-release check-clean sha256 clean help
 
 all: help
 
@@ -86,6 +86,8 @@ install: stop
 install_raw: stop
 	@test -f "$(SETUP)" || { echo "$(SETUP) not found -- run 'make installer' first."; exit 1; }
 	"$(SETUP)" 
+
+do_inst: installer install
 
 dist: installer
 	zip -j $(SETUP_ZIP) $(SETUP)
