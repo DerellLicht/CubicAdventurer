@@ -64,9 +64,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-014 [task] Test the `layout.xml` clean-up.** Start the program with the old
-  `layout.xml` (about 1800 blank lines), exit with File > Exit, and confirm the saved file
-  has no blank-line runs and the toolbars/panels look the same. Not compiled yet.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
