@@ -5,6 +5,8 @@ interface
 uses
   // SynEdit
   SynEdit,
+  // SpTBX
+  SpTBXControls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls,
@@ -97,17 +99,17 @@ type
     but_ok: TButton;
     sheet_display: TTabSheet;
     sheet_options: TTabSheet;
-    group_right_edge: TGroupBox;
+    group_right_edge: TSpTBXGroupBox;
     TntLabel2: TLabel;
     edit_right_edge: TEdit;
     TntLabel3: TLabel;
     color_right_edge: TColorBox;
-    group_spacing: TGroupBox;
+    group_spacing: TSpTBXGroupBox;
     TntLabel4: TLabel;
     edit_extra_lines: TEdit;
     edit_tab_width: TEdit;
     TntLabel5: TLabel;
-    TntGroupBox1: TGroupBox;
+    TntGroupBox1: TSpTBXGroupBox;
     but_font: TButton;
     sheet_gutter: TTabSheet;
     TntLabel1: TLabel;
@@ -116,10 +118,10 @@ type
     check_gutter_start_at_zero: TCheckBox;
     check_gutter_show_leading_zeros: TCheckBox;
     color_gutter: TColorBox;
-    group_gutter_font: TGroupBox;
+    group_gutter_font: TSpTBXGroupBox;
     check_gutter_font: TCheckBox;
     but_gutter_font: TButton;
-    group_caret: TGroupBox;
+    group_caret: TSpTBXGroupBox;
     TntLabel7: TLabel;
     combo_insert_caret: TComboBox;
     combo_override_caret: TComboBox;
@@ -142,7 +144,7 @@ type
     TntLabel9: TLabel;
     color_background: TColorBox;
     FontDlg: TFontDialog;
-    group_gutter_gradient: TGroupBox;
+    group_gutter_gradient: TSpTBXGroupBox;
     color_gutter_gradient_end_color: TColorBox;
     TntLabel10: TLabel;
     color_gutter_gradient_start_color: TColorBox;
@@ -150,7 +152,7 @@ type
     check_gutter_gradient: TCheckBox;
     TntLabel11: TLabel;
     edit_gutter_gradient_steps: TEdit;
-    group_border: TGroupBox;
+    group_border: TSpTBXGroupBox;
     TntLabel12: TLabel;
     color_gutter_border_color: TColorBox;
     TntLabel13: TLabel;

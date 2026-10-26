@@ -8,7 +8,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
     TabOrder = 0
     OnClick = HandleChange
   end
-  object group_startup: TGroupBox
+  object group_startup: TSpTBXGroupBox
     Left = 16
     Top = 12
     Width = 241
@@ -59,7 +59,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       OnChange = HandleChange
     end
   end
-  object TntGroupBox1: TGroupBox
+  object TntGroupBox1: TSpTBXGroupBox
     Left = 16
     Top = 152
     Width = 409
@@ -110,7 +110,7 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       OnClick = HandleChange
     end
   end
-  object TntGroupBox2: TGroupBox
+  object TntGroupBox2: TSpTBXGroupBox
     Left = 272
     Top = 12
     Width = 153

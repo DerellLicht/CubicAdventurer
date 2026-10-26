@@ -38,7 +38,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
         Height = 13
         Caption = 'Background Color:'
       end
-      object group_right_edge: TGroupBox
+      object group_right_edge: TSpTBXGroupBox
         Left = 16
         Top = 15
         Width = 159
@@ -81,7 +81,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
           TabOrder = 1
         end
       end
-      object group_spacing: TGroupBox
+      object group_spacing: TSpTBXGroupBox
         Left = 197
         Top = 15
         Width = 161
@@ -117,7 +117,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
           TabOrder = 1
         end
       end
-      object TntGroupBox1: TGroupBox
+      object TntGroupBox1: TSpTBXGroupBox
         Left = 16
         Top = 151
         Width = 159
@@ -170,7 +170,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
           TabOrder = 2
         end
       end
-      object group_caret: TGroupBox
+      object group_caret: TSpTBXGroupBox
         Left = 197
         Top = 151
         Width = 161
@@ -298,7 +298,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
         TabOrder = 4
         OnChange = color_gutter_fontChange
       end
-      object group_gutter_font: TGroupBox
+      object group_gutter_font: TSpTBXGroupBox
         Left = 16
         Top = 112
         Width = 159
@@ -357,7 +357,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
           TabOrder = 3
         end
       end
-      object group_gutter_gradient: TGroupBox
+      object group_gutter_gradient: TSpTBXGroupBox
         Left = 197
         Top = 143
         Width = 163
@@ -425,7 +425,7 @@ object CETextEditorOptionsForm: TCETextEditorOptionsForm
           TabOrder = 3
         end
       end
-      object group_border: TGroupBox
+      object group_border: TSpTBXGroupBox
         Left = 197
         Top = 9
         Width = 163

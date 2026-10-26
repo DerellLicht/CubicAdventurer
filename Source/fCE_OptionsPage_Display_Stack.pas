@@ -27,6 +27,8 @@ uses
   // CE Units
   fCE_OptionsDialog, fCE_OptionsCustomPage, fCE_FolderPanel,
   CE_LanguageEngine,
+  // SpTBX
+  SpTBXControls,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls;
@@ -36,7 +38,7 @@ type
     check_autoexpand: TCheckBox;
     check_autocollapse: TCheckBox;
     check_fullexpand: TCheckBox;
-    group_startup: TGroupBox;
+    group_startup: TSpTBXGroupBox;
     radio_empty: TRadioButton;
     radio_lastused: TRadioButton;
     radio_selected: TRadioButton;

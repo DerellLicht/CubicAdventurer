@@ -78,7 +78,7 @@ inherited TCEOptionsPage_GlobalHotkeys: TTCEOptionsPage_GlobalHotkeys
     TabOrder = 2
     OnClick = list_actionhotkeysClick
   end
-  object TntGroupBox1: TGroupBox
+  object TntGroupBox1: TSpTBXGroupBox
     Left = 249
     Top = 179
     Width = 176

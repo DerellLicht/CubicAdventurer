@@ -26,7 +26,7 @@ inherited CE_OptionsPage_Display_Stack: TCE_OptionsPage_Display_Stack
     TabOrder = 2
     OnClick = HandleChange
   end
-  object group_startup: TGroupBox
+  object group_startup: TSpTBXGroupBox
     Left = 16
     Top = 12
     Width = 409

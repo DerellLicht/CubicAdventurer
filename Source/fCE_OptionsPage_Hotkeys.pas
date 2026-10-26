@@ -50,7 +50,7 @@ type
     TntLabel1: TLabel;
     edit_hotkey: TEdit;
     TntBevel1: TBevel;
-    TntGroupBox1: TGroupBox;
+    TntGroupBox1: TSpTBXGroupBox;
     but_add: TButton;
     but_replace: TButton;
     but_delete: TButton;
