@@ -12,8 +12,6 @@ Last updated: 2026-10-26 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
-  the program window edge (probably JVCL drop-zone logic).
 - **CA-016 [feature] Text editor.** No highlighter-settings editor (highlighters use
   SynEdit default colors). Alt-drag column selection not re-checked (probably
   `eoAltSetsColumnMode` missing from Options). Combo box SkinType TODO in
