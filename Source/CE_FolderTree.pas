@@ -148,16 +148,42 @@ end;
   clDefault / clNone mean the system window color (same rule as the file view).
   Called from TCEFileViewSettings.SendChanges whenever the file view settings
   change; repaints the tree so the other color settings show up too.
+
+  The expand/collapse button draws its + / - sign in the tree's Font.Color (the
+  default is black) and fills the box with the background color. On a dark
+  background the sign would vanish, so a dark background uses the tree-line
+  color for the sign (the box border already uses it). VT only reads these
+  colors while preparing its button bitmaps, so a change of ButtonFillMode
+  (to the other value and back) forces them to be redrawn.
 -------------------------------------------------------------------------------}
 procedure TCEFolderTree.ApplyViewBackground(AColor: TColor);
+var
+  rgb: Integer;
+  glyph: TColor;
+  dark: Boolean;
 begin
   if (AColor = clDefault) or (AColor = clNone) then
   begin
     AColor:= clWindow;
   end;
-  if Self.Color <> AColor then
+
+  rgb:= ColorToRGB(AColor);
+  dark:= ((GetRValue(rgb) * 299 + GetGValue(rgb) * 587 + GetBValue(rgb) * 114) div 1000) < 128;
+  if dark then
+  begin
+    glyph:= Self.Colors.TreeLineColor;
+  end
+  else
+  begin
+    glyph:= clWindowText;
+  end;
+
+  if (Self.Color <> AColor) or (Self.Font.Color <> glyph) then
   begin
     Self.Color:= AColor;
+    Self.Font.Color:= glyph;
+    Self.ButtonFillMode:= fmWindowColor;
+    Self.ButtonFillMode:= fmTreeColor;
   end;
   Self.Invalidate;
 end;

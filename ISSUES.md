@@ -66,7 +66,8 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   (`CE_FolderTree.pas` `DoPaintText` / `DoBeforeCellPaint`; shared lookups in
   `CE_FileViewColors.pas`). Not compiled yet. Check: colors and attribute backgrounds show
   in the tree (including `ProgramData`), text stays readable on the tree's background
-  (the tree should now be the same black as the file view, at startup and after a
+  (the + / - expand buttons are visible on the black background (they use the tree-line
+  color when the background is dark); the tree should now be the same black as the file view, at startup and after a
   change of the file view Background color), selected nodes look right, the
   background bar fits the label, and the address-bar / breadcrumb folder popups still
   draw. A color change in Options probably shows in the tree only after a repaint
