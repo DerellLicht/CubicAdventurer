@@ -73,12 +73,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-059 [task] Test address bar breadcrumb toggle.** The address bar text box is now
-  a single-line edit with the Windows AutoComplete drop-down attached; folder
-  suggestions and Enter are confirmed working. Still to check: switch the address bar
-  to breadcrumbs (button at its right end) and back; the suggestion list should still
-  appear in text mode. (Ctrl+A in the address bar was waived.)
-
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
