@@ -67,6 +67,10 @@ type
     fSelectPreviousFolder: Boolean;
     fTranslateHeader: Boolean;
     fUseKernelNotification: Boolean;
+    fDirWatchHandle: THandle;
+    fDirWatchPath: WideString;
+    fDirWatchPending: Boolean;
+    fDirWatchTimer: TTimer;
     fCellWidth: Integer;
     fColumnIndex: Integer;
     fRightMouseButton_IsDown: Boolean;
@@ -119,6 +123,9 @@ type
     procedure OnCreateNewFile(Sender: TMenu; const NewMenuItem:
         TVirtualShellNewItem; var Path, FileName: string; var Allow: Boolean);
     procedure SetNotifyFolder(Namespace: TNamespace);
+    procedure StartDirWatch(const APath: WideString);
+    procedure StopDirWatch;
+    procedure DirWatchTimerTick(Sender: TObject);
     procedure SetPerFolderSettings(const Value: Boolean);
     procedure SetView(Value: TEasyListStyle); override;
     procedure UpdateBackgroundText;
@@ -381,6 +388,13 @@ begin
   UsePNGAlpha:= true;
   fUseKernelNotification:= true;
   ChangeNotifier.RegisterKernelChangeNotify(Self,AllKernelNotifiers);
+  // Own folder watch (CA-011), polled by a timer; see StartDirWatch.
+  fDirWatchHandle:= 0;
+  fDirWatchPending:= false;
+  fDirWatchTimer:= TTimer.Create(Self);
+  fDirWatchTimer.Enabled:= false;
+  fDirWatchTimer.Interval:= 500;
+  fDirWatchTimer.OnTimer:= DirWatchTimerTick;
   fSelectPreviousFolder:= true;
   fAutoSelectFirstItem:= true;
   fAutosizeListViewStyle:= true;
@@ -411,6 +425,7 @@ end;
 -------------------------------------------------------------------------------}
 destructor TCEFileView.Destroy;
 begin
+  StopDirWatch;
   if PerFolderSettings and Active then
   StoreFolderToPropertyBag(true, true);
 
@@ -1007,35 +1022,7 @@ end;
   Do ShellNotify
 -------------------------------------------------------------------------------}
 procedure TCEFileView.DoShellNotify(ShellEvent: TVirtualShellEvent);
-var
-  ns: TNamespace;
-  evName: string;
-  isRoot: Boolean;
 begin
-  // CA-011 diagnostic (temporary): shows which change events reach this view,
-  // and whether the event's folder is recognized as this view's root folder.
-  evName:= '';
-  isRoot:= false;
-  try
-    if Assigned(ShellEvent.PIDL1) then begin
-      ns:= TNamespace.Create(ShellEvent.PIDL1, nil);
-      ns.FreePIDLOnDestroy:= false;
-      try
-        evName:= ns.NameForParsing;
-      finally
-        ns.Free;
-      end;
-      isRoot:= IsRootNamespace(ShellEvent.PIDL1);
-    end;
-  except
-    evName:= '(error reading PIDL)';
-  end;
-  OutputDebugString(PChar('CA notify event: view=' + IntToHex(NativeInt(Self), 8) +
-    ' viewroot=' + RootFolderNamespace.NameForParsing +
-    ' active=' + BoolToStr(Active, true) + ' visible=' + BoolToStr(GetRealVisibility(Self), true) +
-    ' type=' + IntToStr(Ord(ShellEvent.ShellNotifyEvent)) +
-    ' pidl1=' + evName + ' root=' + BoolToStr(isRoot, true)));
-
   inherited;
   UpdateBackgroundText;
 end;
@@ -1482,11 +1469,91 @@ begin
 
       if useKernel then begin
         ChangeNotifier.NotifyWatchFolder(Self, watchPath);
+        StartDirWatch(watchPath);
       end
       else begin
         ChangeNotifier.NotifyWatchFolder(Self, '');
+        StopDirWatch;
       end;
     end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Start / Stop directory watch (CA-011)
+
+  The shell notification library does not reliably report files that appear in
+  a folder (a browser download is created under a temporary name and renamed),
+  so each view also watches its folder directly with the standard WinAPI
+  FindFirstChangeNotification (file and folder names only, not subfolders).
+  The handle is polled by a timer; see DirWatchTimerTick.
+-------------------------------------------------------------------------------}
+procedure TCEFileView.StartDirWatch(const APath: WideString);
+begin
+  if (APath = fDirWatchPath) and (fDirWatchHandle <> 0) then begin
+    Exit;
+  end;
+  StopDirWatch;
+  fDirWatchPending:= false;
+  fDirWatchHandle:= FindFirstChangeNotificationW(PWideChar(APath), False,
+    FILE_NOTIFY_CHANGE_FILE_NAME or FILE_NOTIFY_CHANGE_DIR_NAME);
+  if fDirWatchHandle = INVALID_HANDLE_VALUE then begin
+    fDirWatchHandle:= 0;
+  end
+  else begin
+    fDirWatchPath:= APath;
+    fDirWatchTimer.Enabled:= true;
+  end;
+end;
+
+procedure TCEFileView.StopDirWatch;
+begin
+  if Assigned(fDirWatchTimer) then begin
+    fDirWatchTimer.Enabled:= false;
+  end;
+  if fDirWatchHandle <> 0 then begin
+    FindCloseChangeNotification(fDirWatchHandle);
+    fDirWatchHandle:= 0;
+  end;
+  fDirWatchPath:= '';
+end;
+
+{-------------------------------------------------------------------------------
+  Directory watch timer (every 500 ms)
+
+  Drains the change signal. A change only marks a refresh as pending; the view
+  is rebuilt (same as F5) on the first tick with no new changes, so a burst of
+  changes causes one refresh. A hidden view keeps the pending flag until its
+  tab is shown. Nothing is rebuilt during a drag, an in-place rename, a
+  context menu or a mouse button press.
+-------------------------------------------------------------------------------}
+procedure TCEFileView.DirWatchTimerTick(Sender: TObject);
+var
+  signaled: Boolean;
+  guard: Integer;
+begin
+  if fDirWatchHandle = 0 then begin
+    Exit;
+  end;
+  signaled:= false;
+  guard:= 0;
+  while (guard < 100) and (WaitForSingleObject(fDirWatchHandle, 0) = WAIT_OBJECT_0) do begin
+    FindNextChangeNotification(fDirWatchHandle);
+    signaled:= true;
+    Inc(guard);
+  end;
+  if signaled then begin
+    fDirWatchPending:= true;
+    Exit;
+  end;
+  if fDirWatchPending and Active and GetRealVisibility(Self) and
+     not (csDestroying in ComponentState) and not DragInitiated and
+     not EditManager.Editing and not ContextMenuShowing and
+     not fLeftMouseButton_IsDown and not fRightMouseButton_IsDown then begin
+    fDirWatchPending:= false;
+    // CA-011 diagnostic (temporary): remove once file view auto-update is confirmed.
+    OutputDebugString(PChar('CA dirwatch: refresh ' + fDirWatchPath));
+    Rebuild(true);
   end;
 end;
 
