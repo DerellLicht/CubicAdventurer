@@ -12,6 +12,16 @@ Last updated: 2026-10-25 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
+- **CA-011 [bug] File view does not auto-update when files are added** (a download into
+  Downloads shows in Explorer but only appears in the view after F5). Not the path: the
+  2026-10-26 log shows the directory watch IS set (`CA notify: ... drive=3 watch=True`).
+  The `SHGetPathFromIDListW` change in `SetNotifyFolder` is harmless and stays. Next
+  suspects: events not reaching the view, or `WMShellNotify` (vendored
+  `VirtualExplorerEasyListview.pas`) ignoring them because `IsRootNamespace` is false for
+  the event's folder. Temporary `OutputDebugString` lines `CA notify:` (in
+  `SetNotifyFolder`) and `CA notify event:` (in `DoShellNotify`); remove both when fixed.
+  Test: open Downloads, download a file (also try `copy nul x.txt` in a typed-path
+  folder) and send the DbgView lines.
 - **CA-012 [bug] Docking a floating panel back** only triggers when its center reaches
   the program window edge (probably JVCL drop-zone logic).
 - **CA-014 [bug] `layout.xml` holds about 2000 blank indentation-only lines** in the
@@ -66,14 +76,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-011 [task] File view auto-update when files are added (test).** `SetNotifyFolder`
-  now resolves the real file system path with `SHGetPathFromIDListW` before the
-  fixed-drive check (known folders such as Downloads have a `::{GUID}` parsing name).
-  Not compiled. Tests: open Downloads (from the Folders tree and by typed path), download
-  a file, and confirm it appears without F5; `copy nul x.txt` in a typed-path folder.
-  A temporary `OutputDebugString` line (`CA notify: parse= path= drive= watch=`) is in
-  `SetNotifyFolder`; send the DbgView lines if it still fails, and remove the line once
-  confirmed.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
