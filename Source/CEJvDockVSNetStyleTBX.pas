@@ -96,6 +96,9 @@ Type
   end;
 
   TJvDockVSNETPanelTBX = class(TJvDockVSNETPanel)
+  protected
+    procedure CustomGetSiteInfo(Source: TJvDockDragDockObject; Client: TControl;
+        var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -1049,6 +1052,90 @@ begin
   inherited;
   ControlStyle := ControlStyle + [csOpaque];
   VSChannelClass := TJvDockVSChannelTBX;
+end;
+
+{*------------------------------------------------------------------------------
+  Edge docking zone of an empty dock panel (CA-012).
+
+  JVCL asks every dock site whether the mouse cursor is inside its "influence
+  rectangle". For an empty edge panel (zero size, on the window edge) that is a
+  strip only 10 pixels wide, so a floating panel grabbed by its title bar had
+  to be dragged until the CURSOR reached the edge, often far past the point
+  where the panel's own border crossed it.
+
+  Here the rectangle of the dragged panel is worked out the way JVCL positions
+  its drag outline (cursor minus the grab offset, size = UndockWidth/Height).
+  When the border facing this panel's edge touches or passes the edge (within
+  EdgeSlack pixels), the cursor is inside the parent window, and the dragged
+  rectangle overlaps this panel along the edge, the influence rectangle becomes
+  a small rectangle around the cursor, so the panel qualifies as drop target.
+  Panels that already hold docked forms keep JVCL's own behavior.
+-------------------------------------------------------------------------------}
+procedure TJvDockVSNETPanelTBX.CustomGetSiteInfo(Source: TJvDockDragDockObject;
+    Client: TControl; var InfluenceRect: TRect; MousePos: TPoint; var CanDock:
+    Boolean);
+const
+  EdgeSlack = 6;
+var
+  panelRect, parentRect, dragRect: TRect;
+  w, h: Integer;
+  touches: Boolean;
+begin
+  inherited CustomGetSiteInfo(Source, Client, InfluenceRect, MousePos, CanDock);
+  if (not CanDock) or (VisibleDockClientCount <> 0) then
+  begin
+    Exit;
+  end;
+  if (Source = nil) or (Source.Control = nil) or (Parent = nil) or
+      (not Parent.HandleAllocated) or (not HandleAllocated) then
+  begin
+    Exit;
+  end;
+  if not (Align in [alLeft, alRight, alTop, alBottom]) then
+  begin
+    Exit;
+  end;
+
+  // the cursor must be inside the window that holds this panel
+  GetWindowRect(Parent.Handle, parentRect);
+  if not PtInRect(parentRect, MousePos) then
+  begin
+    Exit;
+  end;
+
+  // rectangle of the dragged panel (same formula as CustomPositionDockRect)
+  w:= Source.Control.UndockWidth;
+  h:= Source.Control.UndockHeight;
+  dragRect.Left:= Round(MousePos.X - w * Source.MouseDeltaX);
+  dragRect.Top:= Round(MousePos.Y - h * Source.MouseDeltaY);
+  dragRect.Right:= dragRect.Left + w;
+  dragRect.Bottom:= dragRect.Top + h;
+
+  GetWindowRect(Handle, panelRect);
+  touches:= false;
+  case Align of
+    alLeft: begin
+      touches:= (dragRect.Left <= panelRect.Left + EdgeSlack) and
+          (dragRect.Top < panelRect.Bottom) and (dragRect.Bottom > panelRect.Top);
+    end;
+    alRight: begin
+      touches:= (dragRect.Right >= panelRect.Right - EdgeSlack) and
+          (dragRect.Top < panelRect.Bottom) and (dragRect.Bottom > panelRect.Top);
+    end;
+    alTop: begin
+      touches:= (dragRect.Top <= panelRect.Top + EdgeSlack) and
+          (dragRect.Left < panelRect.Right) and (dragRect.Right > panelRect.Left);
+    end;
+    alBottom: begin
+      touches:= (dragRect.Bottom >= panelRect.Bottom - EdgeSlack) and
+          (dragRect.Left < panelRect.Right) and (dragRect.Right > panelRect.Left);
+    end;
+  end;
+
+  if touches then
+  begin
+    InfluenceRect:= Rect(MousePos.X - 1, MousePos.Y - 1, MousePos.X + 1, MousePos.Y + 1);
+  end;
 end;
 
 { TJvDockVSChannelTBX }
