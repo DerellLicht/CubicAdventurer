@@ -12,10 +12,7 @@ Last updated: 2026-10-27 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-017 [bug] Dock layout hardening.** `DoUnAutoHideDockForm` bypasses the dock-chain
-  guard; only root-level floating hosts are pre-created. Optional proper fix: derive
-  `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
-  `CE_DockInfo.pas` stays until then). Wait for a user report before spending time here.
+(none at the moment)
 
 ## Checks still owed
 
@@ -50,6 +47,11 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 - **CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal).** Decided to do
   this in a new thread after the Delphi release is stable. Core code is portable; the hard
   parts are SpTBX/Toolbar2000, the Mustangpeak shell components and JVCL docking.
+- **CA-017 [bug] Dock layout hardening.** `DoUnAutoHideDockForm` bypasses the dock-chain
+  guard; only root-level floating hosts are pre-created. Optional proper fix: derive
+  `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
+  `CE_DockInfo.pas` stays until then). Deferred (2026-10-27): nothing has gone wrong in testing; take it up when
+  a user reports a layout hang.
 
 ## Misc tasks
 
