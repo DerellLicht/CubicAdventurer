@@ -251,11 +251,13 @@ type
     fSaveSettingsOnClose: Boolean;
     fSingleInstance: Boolean;
     fUpdatingCount: Integer;
+    fHiddenInTray: Boolean;
     procedure SetFullscreen(const Value: Boolean);
     procedure SetActiveLanguage(const Value: WideString);
     procedure SetLockToolbars(const Value: Boolean);
     procedure SetPathInTitle(const Value: Boolean);
     procedure SetSingleInstance(const Value: Boolean);
+    procedure HideToTray(AMinimizeFirst: Boolean);
   protected
     fIsReady: Boolean;
     procedure ForceIconCachRebuild;
@@ -803,9 +805,14 @@ begin
   finally
     GlobalFileViewSettings.EndUpdate(true);
   end;
-  Settings.ApplyPositionInfo(Settings.StartInTray);
-  if not Settings.StartInTray then
-  MainForm.Show;
+  // "Start minimized to tray" only applies while the tray icon is shown,
+  // otherwise there would be no way to bring the window back.
+  fHiddenInTray:= Settings.StartInTray and TrayIcon.Active;
+  Settings.ApplyPositionInfo(fHiddenInTray);
+  if not fHiddenInTray then
+  begin
+    MainForm.Show;
+  end;
 
   // TODO: remove this!!!!
   //ShowPluginLog;
@@ -890,8 +897,11 @@ begin
   if GlobalPathCtrl.ActivePage is TCEFileViewPage then
   TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.SetFocus;
 
-  if TrayIcon.Active and Settings.StartInTray then
-  TrayIcon.HideApplication;
+  if fHiddenInTray then
+  begin
+    // make sure nothing has shown the window during startup
+    HideToTray(false);
+  end;
 
   // Load Startup Stack
   CEStackPanel.LoadStartupStack;
@@ -1448,15 +1458,33 @@ end;
 
 {-------------------------------------------------------------------------------
   Make MainForm visible
+
+  Brings the window back from the tray or the taskbar and puts it in front.
+  The first show after "Start minimized to tray" goes through Visible, so the
+  form's OnShow handling runs as it would for a normal start.
 -------------------------------------------------------------------------------}
 procedure TMainForm.MakeVisible;
 begin
-  if TrayIcon.Active and not TrayIcon.ApplicationVisible then
-  TrayIcon.ShowApplication;
-  // restore if needed
-  if IsIconic(Handle) then
-  ShowWindow(Handle, SW_RESTORE);
-  // set foreground
+  if fHiddenInTray then
+  begin
+    fHiddenInTray:= false;
+    if not Visible then
+    begin
+      Visible:= true;
+    end
+    else if IsIconic(Handle) then
+    begin
+      ShowWindow(Handle, SW_RESTORE);
+    end
+    else
+    begin
+      ShowWindow(Handle, SW_SHOW);
+    end;
+  end
+  else if IsIconic(Handle) then
+  begin
+    ShowWindow(Handle, SW_RESTORE);
+  end;
   SetForegroundWindow(Handle);
 end;
 
@@ -1570,28 +1598,42 @@ begin
   case (Message.CmdType and $FFF0) of
     SC_MINIMIZE:
     begin
-      ShowWindow(Handle, SW_MINIMIZE);
       if TrayIcon.Active and Settings.MinimizeToTray then
-      TrayIcon.HideApplication;
+      begin
+        HideToTray(true);
+      end
+      else
+      begin
+        ShowWindow(Handle, SW_MINIMIZE);
+      end;
       Message.Result:= 0;
     end;
     SC_RESTORE:
     begin
-      if TrayIcon.Active and not TrayIcon.ApplicationVisible then
-      TrayIcon.ShowApplication;
-      ShowWindow(Handle, SW_RESTORE);
+      if fHiddenInTray then
+      begin
+        MakeVisible;
+      end
+      else
+      begin
+        ShowWindow(Handle, SW_RESTORE);
+      end;
       Message.Result:= 0;
     end;
     SC_CLOSE:
     begin
       if TrayIcon.Active and Settings.CloseToTray then
-      TrayIcon.HideApplication
+      begin
+        HideToTray(false);
+      end
       else
-      Self.Close;
+      begin
+        Self.Close;
+      end;
       Message.Result:= 0;
     end
   else
-    inherited;  
+    inherited;
   end;
 end;
 
@@ -1696,30 +1738,42 @@ end;
 
 {-------------------------------------------------------------------------------
   Toggle Visibility (Restore/Minimize)
+
+  Hidden in the tray or minimized to the taskbar: bring the window back.
+  Otherwise hide it to the tray (Minimize to tray) or minimize it.
 -------------------------------------------------------------------------------}
 procedure TMainForm.ToggleVisibility;
 begin
-  if IsIconic(Handle) then
+  if fHiddenInTray or IsIconic(Handle) then
   begin
-    if TrayIcon.Active and not TrayIcon.ApplicationVisible then
-    TrayIcon.ShowApplication;
-
-    ShowWindow(Handle, SW_RESTORE);
-
-    Application.BringToFront;
+    MakeVisible;
+  end
+  else if TrayIcon.Active and Settings.MinimizeToTray then
+  begin
+    HideToTray(true);
   end
   else
   begin
-    if TrayIcon.Active and Settings.MinimizeToTray then
-    begin
-      if not TrayIcon.ApplicationVisible then
-      TrayIcon.ShowApplication
-      else
-      TrayIcon.HideApplication;
-    end
-    else
     ShowWindow(Handle, SW_MINIMIZE);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  Hide MainForm to the tray
+
+  Plain Win32 calls. The main form owns the taskbar button
+  (Application.MainFormOnTaskbar), so hiding the form also removes its taskbar
+  button. With AMinimizeFirst the form is minimized before it is hidden, so
+  restoring it returns to the previous state (normal or maximized).
+-------------------------------------------------------------------------------}
+procedure TMainForm.HideToTray(AMinimizeFirst: Boolean);
+begin
+  if AMinimizeFirst then
+  begin
+    ShowWindow(Handle, SW_MINIMIZE);
+  end;
+  ShowWindow(Handle, SW_HIDE);
+  fHiddenInTray:= true;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1987,9 +2041,12 @@ begin
 end;
 procedure TMainFormSettings.SetShowTray(const Value: Boolean);
 begin
-  if not Value and not MainForm.TrayIcon.ApplicationVisible then
-  MainForm.TrayIcon.ShowApplication;
-  
+  // never leave the window hidden in the tray when the tray icon is turned off
+  if not Value and MainForm.fHiddenInTray then
+  begin
+    MainForm.MakeVisible;
+  end;
+
   MainForm.TrayIcon.Active:= Value;
 end;
 

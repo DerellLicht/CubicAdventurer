@@ -27,6 +27,14 @@ Last updated: 2026-10-27 (version 0.98 in progress).
 
 ## Checks still owed
 
+- **CA-054 [task] Tray icon options.** Fix for options that hid the window with no way
+  back (not compiled, untested). In Options > General Settings > Tray Icon, test one
+  option at a time. Minimize to tray: the minimize button hides the window and its taskbar
+  button; a left click on the tray icon restores it (also when it was maximized); a second
+  click hides it again. Close to tray: the close button hides it; a click restores it.
+  Start minimized to tray: after a relaunch the window starts hidden and a click restores
+  it. While hidden, starting the exe again brings the window back, and unchecking Show
+  restores it. With Show unchecked, Start minimized to tray no longer hides the window.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that

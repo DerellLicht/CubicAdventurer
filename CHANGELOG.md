@@ -16,6 +16,7 @@
 - Fixed: `layout.xml` no longer collects thousands of blank lines (existing files are cleaned when loaded)
 - Fixed: selected folders now keep the folder text color instead of turning black
 - Added: the Folders tree now uses the file view's background, folder text, System / Read-only / Hidden colors and Unicode fallback font
+- Fixed: the tray icon options (Minimize to tray, Close to tray, Start minimized to tray) could hide the window with no way to bring it back; clicking the tray icon now restores it
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)
