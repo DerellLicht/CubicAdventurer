@@ -42,6 +42,9 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   are removed. Take up when someone with another language asks. At that point also test
   loading and saving a shipped Locale `.po` in the PO translation editor (not reachable from
   the menus now; its UTF-8 handling was changed but never exercised).
+  The `BuildCE/Tools/dxgettext` binaries (Cygwin and gettext tools that rebuilt
+  `Locale/default.pot` with `ExtractPOT.bat`) were deleted on 2026-10-27; fetch dxgettext
+  again (or use GNU gettext) when this is taken up. Commit before the deletion: bf3816f.
 - **CA-021 [feature] Win64 build.**
 - **CA-022 [feature] DPI awareness** (users report it is missing).
 - **CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal).** Decided to do
@@ -72,16 +75,3 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   `git ls-remote` reached graphics32, sptbxlib, PngComponents and VirtualShellTools on
   2026-10-27 (cloning not tried). Toolbar2000 is not on GitHub. Pin the exact versions
   Derell builds with, not whatever is newest.
-- **CA-042 [task] `.gitattributes` / line endings: decision.** The repo has mixed line
-  endings (some files are mixed inside one file). Leaning towards leaving them alone, since
-  normalising would damage the mixed files and make blame noisy. Only option considered:
-  a `.gitattributes` with `* -text`, to be tested with git first.
-- **CA-057 [task] Stale `Components\fcl-xml` on Derell's disk.** Not in git (the live copy
-  is `Source/Components/fcl-xml`). If the folder exists in his working copy, he deletes it.
-- **CA-056 [task] Review `BuildCE/`.** What is left is the original author's SVN snapshot
-  flow: five batch files and `SnapshotExcludes.txt`, `ReleaseBuild/` (NSIS installer scripts and
-  images, replaced by Inno Setup), and `Tools/dxgettext` (about 8 MB of Cygwin and gettext
-  binaries, used only by `ExtractPOT.bat` to rebuild `Locale/default.pot`; not listed in
-  `THIRD-PARTY-NOTICES.txt`). None of it is used by the current build. The default XML files
-  moved to `Source/Defaults` on 2026-10-27. Open question: delete the dxgettext binaries (a note
-  in CA-020 would say to fetch them again) or keep them. Then delete the rest of the folder.
