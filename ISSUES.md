@@ -12,13 +12,6 @@ Last updated: 2026-10-27 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-016 [feature] Text editor: highlighter color settings.** There is no page for
-  editing highlighter colors; the highlighters use the SynEdit default colors. The Text
-  Editor options page (`fCE_TextEditorOptions.pas`) only has the multi-highlighter
-  background check box.
-- **CA-051 [bug] Text editor: Alt-drag column selection.** Not re-checked since the SynEdit
-  swap. `eoAltSetsColumnMode` is missing from the editor's `Options` in
-  `fCE_TextEditor.dfm`, which would explain it. Add the option, then test Alt-drag.
 - **CA-052 [bug] Tab strip gap.** Fixing it means changing `CE_SpTabBar.pas`. A `TODO` at
   `TCESpTabToolbar.RightAlignItems` notes that the custom `InternalDrawBackground`
   override was removed in favor of SpTBXLib's own drawing; revisit if tab borders look
@@ -40,6 +33,17 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Deferred (not started)
 
+- **CA-016 [feature] Text editor: highlighter color settings.** There is no page for
+  editing highlighter colors; the highlighters use the SynEdit default colors. The Text
+  Editor options page (`fCE_TextEditorOptions.pas`) only has the multi-highlighter
+  background check box.
+  Deferred by decision (2026-10-27): the built-in text editor stays basic. Programmers
+  have their own editors (drag and drop from the List view works), and making this a real
+  editor is too much effort for a file manager.
+- **CA-051 [bug] Text editor: Alt-drag column selection.** Not re-checked since the SynEdit
+  swap. `eoAltSetsColumnMode` is missing from the editor's `Options` in
+  `fCE_TextEditor.dfm`, which would explain it. Add the option, then test Alt-drag.
+  Deferred with CA-016 (no further text editor development).
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
   do not). The Translate action and PO editor code remain in the source; the menu items
   are removed. Take up when someone with another language asks.
