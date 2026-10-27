@@ -8,15 +8,25 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
 Numbers are never reused.
 
-Last updated: 2026-10-26 (version 0.98 in progress).
+Last updated: 2026-10-27 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-016 [feature] Text editor.** No highlighter-settings editor (highlighters use
-  SynEdit default colors). Alt-drag column selection not re-checked (probably
-  `eoAltSetsColumnMode` missing from Options). Combo box SkinType TODO in
-  `CE_ToolbarEditorItems.pas` (about line 1067), cosmetic. Tab strip gap would mean
-  changing `CE_SpTabBar.pas`.
+- **CA-016 [feature] Text editor: highlighter color settings.** There is no page for
+  editing highlighter colors; the highlighters use the SynEdit default colors. The Text
+  Editor options page (`fCE_TextEditorOptions.pas`) only has the multi-highlighter
+  background check box.
+- **CA-051 [bug] Text editor: Alt-drag column selection.** Not re-checked since the SynEdit
+  swap. `eoAltSetsColumnMode` is missing from the editor's `Options` in
+  `fCE_TextEditor.dfm`, which would explain it. Add the option, then test Alt-drag.
+- **CA-052 [bug] Tab strip gap.** Fixing it means changing `CE_SpTabBar.pas`. A `TODO` at
+  `TCESpTabToolbar.RightAlignItems` notes that the custom `InternalDrawBackground`
+  override was removed in favor of SpTBXLib's own drawing; revisit if tab borders look
+  wrong. Needs a description or screenshot of the gap before work starts.
+- **CA-053 [task] Toolbar combo box SkinType (cosmetic).** `TODO(revival)` in
+  `CE_ToolbarEditorItems.pas` (about line 1067): `TSpTBXComboBox` no longer has
+  `SkinType` in the current SpTBXLib, so the line is commented out. Check whether the
+  combo box looks wrong under any skin; if not, delete the TODO.
 - **CA-017 [bug] Dock layout hardening.** `DoUnAutoHideDockForm` bypasses the dock-chain
   guard; only root-level floating hosts are pre-created. Optional proper fix: derive
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
