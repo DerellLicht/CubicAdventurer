@@ -21,7 +21,7 @@ inherited CEFiltersPanel: TCEFiltersPanel
       PopupMenu = MainForm.ToolbarPopupMenu
       Stretch = True
       TabOrder = 0
-      Caption = 'Filters'
+      Caption = 'Filters (panel toolbar)'
     end
   end
   object Images: TBitmap32List

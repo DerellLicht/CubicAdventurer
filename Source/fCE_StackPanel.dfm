@@ -20,7 +20,7 @@ inherited CEStackPanel: TCEStackPanel
       Images = CE_Images.SmallIcons
       Stretch = True
       TabOrder = 0
-      Caption = 'Stacks'
+      Caption = 'Stacks (panel toolbar)'
     end
   end
   inherited BottomDock: TSpTBXDock

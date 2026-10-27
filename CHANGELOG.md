@@ -19,6 +19,7 @@
 - Fixed: the tray icon options (Minimize to tray, Close to tray, Start minimized to tray) could hide the window with no way to bring it back; clicking the tray icon now restores it
 - Changed: the tray icon menu now offers "Show main window" and Exit (the bookmarks list is gone)
 - Removed: the separate Breadcrumb Navigation toolbar (the Address Bar already shows breadcrumbs)
+- Changed: the Filters and Stacks entries in the Toolbars list are now labeled "(panel toolbar)", since they only show or hide the button strip inside those panels
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)
