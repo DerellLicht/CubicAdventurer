@@ -27,12 +27,6 @@ Last updated: 2026-10-27 (version 0.98 in progress).
 
 ## Checks still owed
 
-- **CA-054 [task] Tray icon options, remaining checks.** Minimize to tray, Close to tray
-  and Start minimized to tray were confirmed working on 2026-10-27. Still to check (not
-  compiled, untested): right-click on the tray icon shows "Show main window" (bold) and
-  Exit, and Show main window restores the window; restoring from the tray after the window
-  was maximized returns it maximized; starting the exe again while the window is hidden
-  brings it back; unchecking Show while hidden restores the window.
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
