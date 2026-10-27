@@ -86,6 +86,12 @@ Name: "{group}\Licenses"; Filename: "{app}\Documents\License.txt"
 Type: files; Name: "{group}\Readme.lnk"
 Type: files; Name: "{group}\Changelog.lnk"
 Type: files; Name: "{group}\Bookmarks and Sessions Guide.url"
+; Older installers put default layout.xml, bookmarks.xml and sessions.xml in the program folder.
+; They would shadow the defaults now built into the exe, so remove them on upgrade.
+; (Per-user copies live in %APPDATA%\CubicAdventurer and are not touched.)
+Type: files; Name: "{app}\layout.xml"
+Type: files; Name: "{app}\bookmarks.xml"
+Type: files; Name: "{app}\sessions.xml"
 
 ; Windows has no viewer for .md files (they open in Notepad), so the Readme, Changelog and
 ; Tips and Tricks shortcuts are web links that open the pages on GitHub, where Markdown is rendered.
