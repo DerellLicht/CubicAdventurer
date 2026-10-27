@@ -105,13 +105,6 @@ function IsEmptyFolder(ANamespace: TNamespace): Boolean;
 
 function GetRedirectedPath(APath: WideString): WideString;
 
-function RegisterDefaultFileManager(AName, ADescription: String; AFilePath:
-    WideString): Boolean;
-
-function UnRegisterDefaultFileManager(AName: String): Boolean;
-
-function IsDefaultFileManager(AName: String): Boolean;
-
 implementation
 
 uses
@@ -598,114 +591,5 @@ begin
   end;
 end;
 
-{-------------------------------------------------------------------------------
-  Register Default File Manager (Vista+ needs elevated privileges)
--------------------------------------------------------------------------------}
-function RegisterDefaultFileManager(AName, ADescription: String; AFilePath:
-    WideString): Boolean;
-var
-  reg: TRegistry;
-  cmd: WideString;
-  oldValue: String;
-begin
-  Result:= false;
-  reg:= TRegistry.Create;
-  try
-    reg.RootKey:= HKEY_CLASSES_ROOT;
-
-    // HKEY_CLASSES_ROOT\Folder\shell
-    if reg.OpenKey('\Folder\shell', false) then 
-    begin
-      oldValue:= reg.ReadString('');
-      if oldValue = AName then
-      oldValue:= '';
-
-      // HKEY_CLASSES_ROOT\Folder\shell\[AName]
-      if reg.OpenKey(AName, true) then 
-      begin
-        reg.WriteString('', ADescription);
-        reg.WriteString('OldDefaultValue', oldValue);
-
-        // HKEY_CLASSES_ROOT\Folder\shell\[AName]\command
-        if reg.OpenKey('command', true) then 
-        begin
-          if Win32MajorVersion = 5 then
-          cmd:= '"' + AFilePath + '" /idlist,%I,%L' // 2000, XP, 2003
-          else
-          cmd:= '"' + AFilePath + '" /shell "%1"';  // Vista and Win7
-          
-          reg.WriteExpandString('', cmd);
-          
-          // HKEY_CLASSES_ROOT\Folder\shell
-          if reg.OpenKey('\Folder\shell', false) then 
-          begin
-            reg.WriteString('', AName);
-            Result:= true;
-          end;
-        end;
-      end;
-    end;
-  finally
-    reg.Free;
-  end;
-end;
-
-{-------------------------------------------------------------------------------
-  UnRegister Default File Manager (Vista+ needs elevated privileges)
--------------------------------------------------------------------------------}
-function UnRegisterDefaultFileManager(AName: String): Boolean;
-var
-  reg: TRegistry;
-  oldValue: string;
-begin
-  Result:= false;
-  reg:= TRegistry.Create;
-  try
-    reg.RootKey:= HKEY_CLASSES_ROOT;
-
-    if not reg.KeyExists('\Folder\shell\' + AName) then
-    begin
-      Result:= true;
-      Exit; // -->
-    end;
-
-    // HKEY_CLASSES_ROOT\Folder\shell\[AName]
-    if reg.OpenKey('\Folder\shell\' + AName, false) then
-    begin
-      oldValue:= reg.ReadString('OldDefaultValue');
-      if oldValue = AName then
-      oldValue:= '';
-
-      // HKEY_CLASSES_ROOT\Folder\shell
-      if reg.OpenKey('\Folder\shell', false) then
-      begin
-        reg.WriteString('', oldValue);
-        Result:= reg.DeleteKey('\Folder\shell\' + AName);
-      end;
-    end;
-  finally
-    reg.Free;
-  end;
-end;
-
-{-------------------------------------------------------------------------------
-  Is Default File Manager? (Vista+ needs elevated privileges)
--------------------------------------------------------------------------------}
-function IsDefaultFileManager(AName: String): Boolean;
-var
-  reg: TRegistry;
-begin
-  Result:= false;
-  reg:= TRegistry.Create;
-  try
-    // HKEY_CLASSES_ROOT\Folder\shell
-    if reg.OpenKey('\Folder\shell', false) then
-    begin
-      Result:= reg.ReadString('') = AName;
-    end;
-  finally
-    reg.Free;
-  end;
-end;
 
 end.

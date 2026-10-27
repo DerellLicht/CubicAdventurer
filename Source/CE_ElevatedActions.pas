@@ -37,10 +37,6 @@ function Elevated_CreateJunction(ALink: WideString; ATarget: WideString;
 function RunElevatedCommand(AParentHWND: HWND; const AParams: WideString):
     Boolean;
 
-function Elevated_RegisterDefaultFileManager(AParentHWND: HWND): Boolean;
-
-function Elevated_UnRegisterDefaultFileManager(AParentHWND: HWND): Boolean;
-
 implementation
 
 uses
@@ -56,8 +52,6 @@ var
   doUpdate: Boolean;
   action: String;
   param1, param2: WideString;
-  paramI: Integer;
-  b: Boolean;
 begin
   Result:= false;
   doAdmin:= false;
@@ -82,41 +76,6 @@ begin
           index:= index + 2;
 
           CreateJunction(param1, param2);
-        end;
-      end
-      // Register
-      else if action = 'register' then
-      begin
-        b:= RegisterDefaultFileManager('cubicexplorer', 'Open in CubicExplorer', ParamStr(0));
-        if index + 1 <= count then
-        begin
-          param1:= ParamStr(index + 1);
-          paramI:= StrToIntDef(param1, 0);
-          if paramI > 0 then
-          begin
-            if b then
-            PostMessage(paramI, WM_AdminResult, 100, 0)
-            else
-            PostMessage(paramI, WM_AdminResult, 100, -1);
-            index:= index + 1;
-          end;
-        end;
-      end
-      else if action = 'unregister' then
-      begin
-        b:= UnRegisterDefaultFileManager('cubicexplorer');
-        if index + 1 <= count then
-        begin
-          param1:= ParamStr(index + 1);
-          paramI:= StrToIntDef(param1, 0);
-          if paramI > 0 then
-          begin
-            if b then
-            PostMessage(paramI, WM_AdminResult, 101, 0)
-            else
-            PostMessage(paramI, WM_AdminResult, 101, -1);
-            index:= index + 1;
-          end;
         end;
       end;
 
@@ -194,38 +153,5 @@ begin
   Result:= RunElevatedCommand(ParentHWND, ws);
 end;
 
-{-------------------------------------------------------------------------------
-  Register Default File Manager (Elevated)
--------------------------------------------------------------------------------}
-function Elevated_RegisterDefaultFileManager(AParentHWND: HWND): Boolean;
-begin
-  if (Win32MajorVersion > 5) or not IsWindowsAdmin then
-  Result:= RunElevatedCommand(AParentHWND, '/admin register ' + IntToStr(CEInput.MsgInput.Handle))
-  else
-  begin
-    Result:= RegisterDefaultFileManager('cubicexplorer', 'Open in CubicExplorer', ParamStr(0));
-    if Result then
-    PostMessage(CEInput.MsgInput.Handle, WM_AdminResult, 100, 0)
-    else
-    PostMessage(CEInput.MsgInput.Handle, WM_AdminResult, 100, -1);
-  end;
-end;
-
-{-------------------------------------------------------------------------------
-  UnRegister Default File Manager (Elevated)
--------------------------------------------------------------------------------}
-function Elevated_UnRegisterDefaultFileManager(AParentHWND: HWND): Boolean;
-begin
-  if (Win32MajorVersion > 5) or not IsWindowsAdmin then
-  Result:= RunElevatedCommand(AParentHWND, '/admin unregister ' + IntToStr(CEInput.MsgInput.Handle))
-  else
-  begin
-    Result:= UnRegisterDefaultFileManager('cubicexplorer');
-    if Result then
-    PostMessage(CEInput.MsgInput.Handle, WM_AdminResult, 101, 0)
-    else
-    PostMessage(CEInput.MsgInput.Handle, WM_AdminResult, 101, -1);
-  end;
-end;
 
 end.

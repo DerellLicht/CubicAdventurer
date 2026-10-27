@@ -68,21 +68,16 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   Options: drop the ticket and record exact versions in `Build_instructions.md`, or vendor
   only Toolbar2000 and SpTBXLib. Check each licence allows redistribution first. The old
   `Components/PngComponents` copy was removed on 2026-10-27 (it was not the Raabe fork).
-- **CA-042 [task] Housekeeping.** Findings from 2026-10-27, nothing done yet:
-  - The vendored `MPShellUtilities.pas`, `EasyListview.pas`, `VirtualExplorerEasyListview.pas`
-    and `VirtualExplorerTree.pas` under `Source/Components/Mustangpeak` are dead: the `.dpr`
-    compiles the installed library, and only `VirtualThumbnails.pas` is built from the repo.
-    Delete the four files and the `Options.inc` stubs and `CommonLibrary/Compilers.inc`
-    that only they include. Keep `Include/Addins.inc`; check `VSTools/Compilers.inc` first.
-  - Dead code: the `SingleInstance` property and settings key (`Main.pas` in `TMainForm` and
-    `TMainFormSettings`, `dCE_Settings.pas`), and the unused Register / Unregister /
-    IsDefaultFileManager routines (`CE_FileUtils.pas`), with the `Elevated_*` wrappers and the
-    `register` / `unregister` branches in `CE_ElevatedActions.pas`. Check where the
-    `WM_AdminResult` codes 100 and 101 are used before removing the branches.
-  - A stale `Components\fcl-xml` at the repo root is not in git (the live copy is
-    `Source/Components/fcl-xml`); if it exists on Derell's disk, he deletes it.
-  - `.gitattributes` / CRLF: leave the mixed line endings alone. Only option considered:
-    `* -text`, to be tested with git first. Decision still open.
+  If vendored, Mustangpeak VirtualShellTools (manual git clone) belongs on the list too.
+  `git ls-remote` reached graphics32, sptbxlib, PngComponents and VirtualShellTools on
+  2026-10-27 (cloning not tried). Toolbar2000 is not on GitHub. Pin the exact versions
+  Derell builds with, not whatever is newest.
+- **CA-042 [task] `.gitattributes` / line endings: decision.** The repo has mixed line
+  endings (some files are mixed inside one file). Leaning towards leaving them alone, since
+  normalising would damage the mixed files and make blame noisy. Only option considered:
+  a `.gitattributes` with `* -text`, to be tested with git first.
+- **CA-057 [task] Stale `Components\fcl-xml` on Derell's disk.** Not in git (the live copy
+  is `Source/Components/fcl-xml`). If the folder exists in his working copy, he deletes it.
 - **CA-056 [task] Review `BuildCE/`.** Old batch files, NSIS installer scripts and
   `dxgettext` tools from the original author's SVN snapshot flow, probably replaced by
   the Makefile and Inno Setup flow. Open them, check nothing uses them, then delete or keep.

@@ -249,14 +249,12 @@ type
     fPanels: TComponentList;
     fPathInTitle: Boolean;
     fSaveSettingsOnClose: Boolean;
-    fSingleInstance: Boolean;
     fUpdatingCount: Integer;
     fHiddenInTray: Boolean;
     procedure SetFullscreen(const Value: Boolean);
     procedure SetActiveLanguage(const Value: WideString);
     procedure SetLockToolbars(const Value: Boolean);
     procedure SetPathInTitle(const Value: Boolean);
-    procedure SetSingleInstance(const Value: Boolean);
     procedure HideToTray(AMinimizeFirst: Boolean);
   protected
     fIsReady: Boolean;
@@ -307,7 +305,6 @@ type
     property PathInTitle: Boolean read fPathInTitle write SetPathInTitle;
     property SaveSettingsOnClose: Boolean read fSaveSettingsOnClose write
         fSaveSettingsOnClose;
-    property SingleInstance: Boolean read fSingleInstance write SetSingleInstance;
   published
     property CEIsClosing: Boolean read fCEIsClosing;
     property IsReady: Boolean read fIsReady;
@@ -333,7 +330,6 @@ type
     function GetLanguage: WideString;
     function GetPathInTitle: Boolean;
     function GetShowHint: Boolean;
-    function GetSingleInstance: Boolean;
     function GetSkin: string;
     function GetAutoLoadSession: WideString;
     function GetChangeCurrentDirVar: Boolean;
@@ -349,7 +345,6 @@ type
     procedure SetLanguage(const Value: WideString);
     procedure SetPathInTitle(const Value: Boolean);
     procedure SetShowHint(const Value: Boolean);
-    procedure SetSingleInstance(const Value: Boolean);
     procedure SetSkin(const Value: string);
     procedure SetAutoLoadSession(const Value: WideString);
     procedure SetChangeCurrentDirVar(const Value: Boolean);
@@ -385,7 +380,6 @@ type
     property PathInTitle: Boolean read GetPathInTitle write SetPathInTitle;
     property ShowCmd: Integer read fShowCmd write fShowCmd;
     property ShowHint: Boolean read GetShowHint write SetShowHint;
-    property SingleInstance: Boolean read GetSingleInstance write SetSingleInstance;
     property Skin: string read GetSkin write SetSkin;
     property AutoLoadSession: WideString read GetAutoLoadSession write
         SetAutoLoadSession;
@@ -1498,14 +1492,6 @@ begin
   end;
 end;
 
-{-------------------------------------------------------------------------------
-  Set Single Instance
--------------------------------------------------------------------------------}
-procedure TMainForm.SetSingleInstance(const Value: Boolean);
-begin
-  fSingleInstance:= Value;
-end;
-
 {*------------------------------------------------------------------------------
   Handle WMShellNotify messages
 -------------------------------------------------------------------------------}
@@ -1981,18 +1967,6 @@ end;
 procedure TMainFormSettings.SetShowHint(const Value: Boolean);
 begin
   MainForm.ShowHint:= Value;
-end;
-
-{-------------------------------------------------------------------------------
-  Get/Set SingleInstance
--------------------------------------------------------------------------------}
-function TMainFormSettings.GetSingleInstance: Boolean;
-begin
-  Result:= MainForm.SingleInstance;
-end;
-procedure TMainFormSettings.SetSingleInstance(const Value: Boolean);
-begin
-  MainForm.SingleInstance:= Value;
 end;
 
 {-------------------------------------------------------------------------------

@@ -50,7 +50,6 @@ const
   WM_SingleInstance = WM_USER + 1;
   WM_MakeVisible = WM_USER + 100;
   WM_ExecuteAction = WM_USER + 101;
-  WM_AdminResult = WM_USER + 102;
 
 type
   TCustomVirtualExplorerEasyListviewHack = class(TCustomVirtualExplorerEasyListview);
@@ -1734,7 +1733,6 @@ end;
 procedure HandleInputMessage(var Msg : TMessage; var Handled: Boolean);
 var
   ws: WideString;
-  h: HWND;
 begin
   case msg.Msg of
     // Single instance question
@@ -1759,35 +1757,6 @@ begin
     // Execute Action
     WM_ExecuteAction: begin
       ExecuteCEAction(Msg.WParam);
-    end;
-    // Admin command result
-    WM_AdminResult: begin
-      case Msg.WParam of
-        // Register as Default File Manager
-        100: begin
-          if assigned(CEOptionsDialog) then
-          h:= CEOptionsDialog.Handle
-          else
-          h:= MainForm.Handle;
-
-          if Msg.LParam = 0 then
-          WideMessageBox(h, _('Default File Manager'), _('Registered successfully!'), MB_ICONINFORMATION or MB_OK)
-          else
-          WideMessageBox(h, _('Default File Manager'), _('Registration failed!'), MB_ICONERROR or MB_OK);
-        end;
-        // UnRegister as Default File Manager
-        101: begin
-          if assigned(CEOptionsDialog) then
-          h:= CEOptionsDialog.Handle
-          else
-          h:= MainForm.Handle;
-
-          if Msg.LParam = 0 then
-          WideMessageBox(h, _('Default File Manager'), _('Unregistered successfully!'), MB_ICONINFORMATION or MB_OK)
-          else
-          WideMessageBox(h, _('Default File Manager'), _('Unregistration failed!'), MB_ICONERROR or MB_OK);
-        end;
-      end;
     end;
   end;
 end;

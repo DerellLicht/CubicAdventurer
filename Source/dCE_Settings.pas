@@ -52,7 +52,6 @@ type
   TMainFormSettings = class(TComponent, IJvAppStorageHandler)
   private
     fRememberTabs: Boolean;
-    fSingleInstance: Boolean;
   public
     procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath:
         string);
@@ -61,7 +60,6 @@ type
     procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath:
         string);
     property RememberTabs: Boolean read fRememberTabs write fRememberTabs;
-    property SingleInstance: Boolean read fSingleInstance write fSingleInstance;
   end;
 
   TFileViewOptions = class(TComponent, IJvAppStorageHandler)
@@ -196,7 +194,6 @@ begin
     MainForm.AlphaBlendValue:= AppStorage.ReadInteger('Alpha',255);
     // Misc settings
     MainForm.ShowHint:= AppStorage.ReadBoolean('Hints', true);
-    fSingleInstance:= AppStorage.ReadBoolean('SingleInstance', false);
     fRememberTabs:= AppStorage.ReadBoolean('RememberTabs', false);
     Mainform.StatusBar.Visible:= AppStorage.ReadBoolean('StatusBar',true);
     //RestoreLastTabs(AppStorage, '');
@@ -233,7 +230,6 @@ begin
     AppStorage.WriteInteger('Alpha',MainForm.AlphaBlendValue);
     // Misc settings
     AppStorage.WriteBoolean('Hints',MainForm.ShowHint);
-    AppStorage.WriteBoolean('SingleInstance',fSingleInstance);
     AppStorage.WriteBoolean('RememberTabs',fRememberTabs);
     AppStorage.WriteBoolean('StatusBar', MainForm.StatusBar.Visible);
     // Language Settings
