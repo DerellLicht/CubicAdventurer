@@ -41,16 +41,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Checks still owed
 
-- **CA-054 [task] Check the 2026-10-26 Options/Customize cleanup.** Options > Hotkeys: no
-  Tabs / Stack Open / Stack Save / Translate / Show-Hide / Make Visible / New Window rows,
-  Restore Default Layout under View, no Global child page. View menu has no Archiver item.
-  Tools > Customize > Buttons: one icon per row, new hint readable (dialog is 16 px taller).
-  Options > Hotkeys: pressing a key combination shows who owns it (or "Not assigned") under
-  the Hotkeys list. Options > General: no Single Instance box and no Default File Manager
-  group; File menu has no New Window; starting the program twice brings the first window
-  forward (a `SingleInstance` value in an old `settings.xml` is ignored).
-  Tips and Tricks (`Documents/Tips_and_Tricks.md`): the Workspace docking steps and the Start
-  Menu "Tips and Tricks" link (upgrade removes the old "Bookmarks and Sessions Guide" link).
 - **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
