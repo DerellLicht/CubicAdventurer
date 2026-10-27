@@ -6,9 +6,16 @@ It explains the features that are easy to miss.
 - [Bookmarks and Sessions](#bookmarks-and-sessions): get back to where you were
 - [Panels at a glance](#panels-at-a-glance) (Ctrl+1 to Ctrl+6)
 - [Workspace: a second file list](#workspace-a-second-file-list) (dual-pane layout)
+- [The address bar: breadcrumbs or typing](#the-address-bar-breadcrumbs-or-typing)
+- [Tabs: options and Undo Tab Close](#tabs-options-and-undo-tab-close)
+- [File list options and colors](#file-list-options-and-colors)
+- [File Search](#file-search)
 - [Toolbars and the Customize dialog](#toolbars-and-the-customize-dialog)
 - [Hotkeys](#hotkeys)
 - [Commands with no menu item](#commands-with-no-menu-item)
+- [The tray icon](#the-tray-icon)
+- [Where your settings live](#where-your-settings-live)
+- [Starting from the command line](#starting-from-the-command-line)
 - [Small things worth knowing](#small-things-worth-knowing)
 
 ## Bookmarks and Sessions
@@ -149,6 +156,71 @@ to start from the same place.
 The layout is remembered when you close the program. To put everything back the way it was
 installed, use **View > Restore Default Layout**.
 
+## The address bar: breadcrumbs or typing
+
+The address bar has two modes. In **breadcrumb** mode it shows the path as a row of clickable
+parts (for example `This PC > Documents > Projects`): click any part to jump to that folder.
+In **typing** mode it is an ordinary text box.
+
+- **To type a path**, click the empty space to the right of the breadcrumbs, or use the toggle
+  button. The text is selected, so you can type or paste a path straight away. As you type, it
+  suggests matching folder names.
+- **Escape** puts the current folder's path back and returns to breadcrumbs.
+- When you click in the empty space to type, the bar goes back to breadcrumbs by itself when you
+  leave the box. The toggle button, on the other hand, stays in the mode you picked.
+- The bar has two small buttons at its right end. One is the toggle just mentioned; the other is
+  a **drop-down button** that opens a small folder tree, so you can jump to another folder
+  without typing.
+
+## Tabs: options and Undo Tab Close
+
+**Tools > Options > Tabs** controls how tabs behave. The ones people ask about:
+
+- **Open new tab as**: what a new tab shows (a copy of the active tab, the Desktop, or a folder you
+  choose with **Custom...**).
+- **Reuse already open tabs**: when you open a folder that is already open in a tab, that tab is
+  selected instead of opening a second one.
+- **Exit program when last tab is closed**: with this off, closing the last tab simply opens a new
+  one, so the window is never empty. With it on, closing the last tab exits the program.
+- **Fit tabs to labels**: ticked, each tab is only as wide as its name. Cleared, the tabs stretch
+  to fill the whole tab bar.
+- **Close tab on double click**.
+
+**Undo Tab Close** (Ctrl+Shift+T) reopens the tab you closed last, with its folder. Where the
+command appears with a small arrow beside it, the arrow lists the tabs you closed recently so you
+can choose one.
+
+## File list options and colors
+
+**Tools > Options > Display > Fileview** has the settings for the main file list. Three are easy
+to misread:
+
+- **Use per folder settings**: when ticked, the program remembers how each folder was shown (things
+  like its view style, sorting and columns) and restores that the next time you open the folder.
+  Cleared, one setting applies everywhere. The memory is kept in `perfolder.dat` in the settings
+  folder (see below).
+- **Browse Zip Files**: cleared (the default), a `.zip` file is an ordinary file and opening it
+  launches whatever program is registered for zip files. Ticked, you browse inside the zip like a
+  folder, and zip files also show up as folders in the Folders panel.
+- **Remember thumbnails**: saves thumbnails so they do not have to be redrawn every time.
+  **Refresh** (F5) rebuilds them.
+
+The **Colors** tab sets text colors for file types, and the **Attributes** tab sets a color for
+folder names and background colors for files with the System, Read-only or Hidden attribute.
+- **Extension colors:** type a comma separated list of extensions (for example `txt,doc,rtf`), pick
+  a color, and choose Bold, Italic or Underline if you want. Tick **Enable background color** to
+  give those files a background color as well.
+- **Attribute backgrounds win.** A file that is System, Read-only or Hidden always shows its
+  attribute color, even if its extension has a background color, so an attribute is never hidden.
+  A file with more than one of those attributes uses the **Combined** color.
+- Choose **Default** for any of these colors to turn it off.
+
+## File Search
+
+**File Search** (Ctrl+F) opens a search in a new tab. The
+location box starts out with the folder shown in the tab you were in, so searching "from here"
+needs no typing.
+
 ## Toolbars and the Customize dialog
 
 **Tools > Customize...** opens a small window with three tabs.
@@ -187,6 +259,65 @@ a toolbar as a button (see **Customize > Buttons**):
 - **Open Command Prompt** opens a command window in the folder shown in the current tab.
 - **Empty Recycle Bin** empties the Recycle Bin.
 
+## The tray icon
+
+**Tools > Options > General > Tray Icon** has four check boxes:
+
+- **Show** puts the CubicAdventurer icon in the notification area (the system tray, at the right
+  end of the taskbar). The next three work only while **Show** is on.
+- **Minimize to tray**: the Minimize button hides the window into the tray instead of the taskbar.
+- **Close to tray**: the Close button (X) hides the window into the tray instead of exiting. To
+  really exit, use **File > Exit** or the tray menu (below).
+- **Start minimized to tray**: the program starts hidden. Click the tray icon to show the window.
+
+**Left-click** the tray icon to bring the window back. **Right-click** it for
+a small menu: **Show main window** and **Exit**. Starting CubicAdventurer a second time while it
+is hidden in the tray also brings the window back.
+
+If the icon does not appear after a restart, Windows may be keeping it in the overflow area (the
+small arrow in the taskbar); you can drag it out from there.
+
+## Where your settings live
+
+Everything the program remembers is kept as small text files in one **settings folder**. With the
+installer that folder is `%APPDATA%\CubicAdventurer\` (type that into the address bar of any
+Explorer window to open it).
+
+| File | What it holds |
+|---|---|
+| `settings.xml` | Options pages, window and panel settings |
+| `layout.xml` | Where the toolbars and panels are |
+| `sessions.xml` | Saved sessions and History |
+| `bookmarks.xml` | The Bookmarks tree |
+| `perfolder.dat` | The per-folder view memory |
+
+- **When it is saved.** The options and layout are written when the program exits normally
+  (**File > Exit**, or the window's Close button when Close to tray is off). Sessions and
+  bookmarks are written as soon as you change them. If the program is ended from outside (the
+  Task Manager, a crash, a power cut), changes made since it started are lost.
+- **Starting fresh.** Close the program, rename a file (for example `layout.xml` to
+  `layout.xml.bak`), and start it again: it rebuilds that file from its defaults. This is also
+  the way to try a clean start without losing your old settings. **View > Restore Default
+  Layout** does the same for panel and toolbar positions without closing the program.
+- **Backing up or moving.** Copy the whole settings folder. Files from an older CubicExplorer
+  load too, and keys the program does not know are ignored.
+- **A portable copy.** Next to `CubicAdventurer.exe` is a small file named `settings.path`; its
+  first line names the settings folder. Delete it (or point it at a folder on a USB stick) and the
+  program keeps its settings beside the exe instead. Starting the line with `[READONLY]` makes
+  the program read the settings but never write them.
+
+## Starting from the command line
+
+You can start CubicAdventurer with a folder name and it opens that folder in a new tab (or, if
+the program is already running, hands it to the running window):
+
+- `CubicAdventurer.exe "C:\Some Folder"` opens one tab.
+- `CubicAdventurer.exe /n "C:\First" /n "D:\Second"` opens each folder in its own tab.
+- `/link "C:\Path\To\Shortcut.lnk"` opens the folder a shortcut points to.
+
+Paths may contain system variables such as `%USERPROFILE%` or `%TEMP%`. The complete list is in
+`Documents\CommandLine Switches.rtf`.
+
 ## Small things worth knowing
 
 - **Refresh** (F5) reloads the file list and also rebuilds its thumbnails. **Refresh Fileview**
@@ -195,3 +326,10 @@ a toolbar as a button (see **Customize > Buttons**):
 - **Only one window runs at a time.** Starting CubicAdventurer again (from the Start Menu, for
   example) brings the existing window forward instead of opening a second one. To work in
   several places at once, use tabs, sessions and the Workspace panel.
+- **Text files** are previewed (their first lines, with accented letters and other Unicode text
+  shown correctly) in the **Quickview** panel (Ctrl+3). The file list's Thumbnails view shows only
+  an icon for a text file.
+- **Unicode file names** (accented letters, Chinese, Japanese and so on) show correctly in the file
+  list, even in a font that lacks those characters; the program borrows glyphs from another font.
+  Emoji in file names are shown, but some other programs, such as the Windows `dir` command,
+  cannot display them.
