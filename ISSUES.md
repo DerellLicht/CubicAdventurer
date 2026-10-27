@@ -31,10 +31,11 @@ Last updated: 2026-10-27 (version 0.98 in progress).
   ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
   layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
   policy.
-- **CA-031 [task] Non-ASCII test of the UTF-8 changes.** Thumbnails of UTF-8 text
-  files; confirm `settings.xml` still saves what matters. (The PO translation editor can
-  no longer be reached from the menus; test loading and saving a shipped Locale `.po` in it
-  under CA-020, when language support is taken up.)
+- **CA-031 [task] Settings save check after the UTF-8 changes.** Change a few options
+  (ideally one with a Unicode value, such as a bookmark name), exit, relaunch, and confirm
+  they persisted. (The PO translation editor can no longer be reached from the menus; test
+  loading and saving a shipped Locale `.po` in it under CA-020, when language support is
+  taken up.)
 
 ## Wishlist
 
