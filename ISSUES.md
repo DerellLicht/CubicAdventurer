@@ -25,6 +25,17 @@ Last updated: 2026-10-27 (version 0.98 in progress).
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
   `CE_DockInfo.pas` stays until then). Wait for a user report before spending time here.
 
+## Checks still owed
+
+- **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
+  ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
+  layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
+  policy.
+- **CA-031 [task] Non-ASCII test of the UTF-8 changes.** Thumbnails of UTF-8 text
+  files; confirm `settings.xml` still saves what matters. (The PO translation editor can
+  no longer be reached from the menus; test loading and saving a shipped Locale `.po` in it
+  under CA-020, when language support is taken up.)
+
 ## Wishlist
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
@@ -52,17 +63,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 - **CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal).** Decided to do
   this in a new thread after the Delphi release is stable. Core code is portable; the hard
   parts are SpTBX/Toolbar2000, the Mustangpeak shell components and JVCL docking.
-
-## Checks still owed
-
-- **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
-  ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
-  layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
-  policy.
-- **CA-031 [task] Non-ASCII test of the UTF-8 changes.** Thumbnails of UTF-8 text
-  files; confirm `settings.xml` still saves what matters. (The PO translation editor can
-  no longer be reached from the menus; test loading and saving a shipped Locale `.po` in it
-  under CA-020, when language support is taken up.)
 
 ## Misc tasks
 
