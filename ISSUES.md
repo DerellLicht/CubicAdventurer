@@ -61,15 +61,28 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Maintenance (internal)
 
-- **CA-040 [task] Retire old packages.** Drop `CEToolbar.dpk` and `CE_Actions.dpk` (and
-  `Components/CEAction/CE_Actions.*`), keep `CE_Design.dpk/.dproj`. Check first that
-  nothing in the `.dpr` / `.dproj` references them.
 - **CA-041 [task] Vendor the hand-installed libraries** (Graphics32, PngComponents,
-  SpTBXLib, Toolbar2000) into the repo, as the original did.
-- **CA-042 [task] Housekeeping.** Remove unused edits in the vendored
-  `VirtualExplorerEasyListview.pas`; stale root-level `Components\fcl-xml` (needs OK);
-  `.gitattributes` / CRLF decision (the repo has mixed line endings); retire the
-  `Options.inc` / `Compilers.inc` stubs. Dead code left behind on 2026-10-26: the
-  `SingleInstance` property and settings key (`Main.pas`, `dCE_Settings.pas`) and the unused
-  Register / Unregister Default File Manager routines (`CE_ElevatedActions.pas`,
-  `CE_FileUtils.pas`).
+  SpTBXLib, Toolbar2000) into the repo, as the original did. Open decision (2026-10-27):
+  vendoring does not remove the need to build and install the design packages; its only
+  gain is pinned, known-good versions (mainly Toolbar2000 with the SpTBX patch applied).
+  Options: drop the ticket and record exact versions in `Build_instructions.md`, or vendor
+  only Toolbar2000 and SpTBXLib. Check each licence allows redistribution first. The old
+  `Components/PngComponents` copy was removed on 2026-10-27 (it was not the Raabe fork).
+- **CA-042 [task] Housekeeping.** Findings from 2026-10-27, nothing done yet:
+  - The vendored `MPShellUtilities.pas`, `EasyListview.pas`, `VirtualExplorerEasyListview.pas`
+    and `VirtualExplorerTree.pas` under `Source/Components/Mustangpeak` are dead: the `.dpr`
+    compiles the installed library, and only `VirtualThumbnails.pas` is built from the repo.
+    Delete the four files and the `Options.inc` stubs and `CommonLibrary/Compilers.inc`
+    that only they include. Keep `Include/Addins.inc`; check `VSTools/Compilers.inc` first.
+  - Dead code: the `SingleInstance` property and settings key (`Main.pas` in `TMainForm` and
+    `TMainFormSettings`, `dCE_Settings.pas`), and the unused Register / Unregister /
+    IsDefaultFileManager routines (`CE_FileUtils.pas`), with the `Elevated_*` wrappers and the
+    `register` / `unregister` branches in `CE_ElevatedActions.pas`. Check where the
+    `WM_AdminResult` codes 100 and 101 are used before removing the branches.
+  - A stale `Components\fcl-xml` at the repo root is not in git (the live copy is
+    `Source/Components/fcl-xml`); if it exists on Derell's disk, he deletes it.
+  - `.gitattributes` / CRLF: leave the mixed line endings alone. Only option considered:
+    `* -text`, to be tested with git first. Decision still open.
+- **CA-056 [task] Review `BuildCE/`.** Old batch files, NSIS installer scripts and
+  `dxgettext` tools from the original author's SVN snapshot flow, probably replaced by
+  the Makefile and Inno Setup flow. Open them, check nothing uses them, then delete or keep.
