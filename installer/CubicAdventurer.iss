@@ -57,11 +57,8 @@ Source: "{#RepoRoot}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#RepoRoot}\7z.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#RepoRoot}\Skins\*"; DestDir: "{app}\Skins"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#RepoRoot}\Locale\*"; DestDir: "{app}\Locale"; Flags: ignoreversion recursesubdirs createallsubdirs
-; Default layout, bookmarks and sessions.  CubicAdventurer reads these from the program folder
-; until it has written its own copies into the settings folder, so never overwrite them.
-Source: "{#RepoRoot}\BuildCE\Snapshot_configs\layout.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist
-Source: "{#RepoRoot}\BuildCE\Snapshot_configs\bookmarks.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist
-Source: "{#RepoRoot}\BuildCE\Snapshot_configs\sessions.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist
+; The default layout and settings are built into the exe (Source\Defaults), so no XML files
+; are installed here: a new user gets them until the program writes its own copies.
 ; Where settings live: %APPDATA%\CubicAdventurer (see the comments in the file).  Delete this
 ; file from the install folder to keep settings next to the exe instead.
 Source: "{#RepoRoot}\installer\settings.path"; DestDir: "{app}"; Flags: onlyifdoesntexist

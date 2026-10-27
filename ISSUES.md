@@ -78,6 +78,10 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   a `.gitattributes` with `* -text`, to be tested with git first.
 - **CA-057 [task] Stale `Components\fcl-xml` on Derell's disk.** Not in git (the live copy
   is `Source/Components/fcl-xml`). If the folder exists in his working copy, he deletes it.
-- **CA-056 [task] Review `BuildCE/`.** Old batch files, NSIS installer scripts and
-  `dxgettext` tools from the original author's SVN snapshot flow, probably replaced by
-  the Makefile and Inno Setup flow. Open them, check nothing uses them, then delete or keep.
+- **CA-056 [task] Review `BuildCE/`.** What is left is the original author's SVN snapshot
+  flow: five batch files and `SnapshotExcludes.txt`, `ReleaseBuild/` (NSIS installer scripts and
+  images, replaced by Inno Setup), and `Tools/dxgettext` (about 8 MB of Cygwin and gettext
+  binaries, used only by `ExtractPOT.bat` to rebuild `Locale/default.pot`; not listed in
+  `THIRD-PARTY-NOTICES.txt`). None of it is used by the current build. The default XML files
+  moved to `Source/Defaults` on 2026-10-27. Open question: delete the dxgettext binaries (a note
+  in CA-020 would say to fetch them again) or keep them. Then delete the rest of the folder.

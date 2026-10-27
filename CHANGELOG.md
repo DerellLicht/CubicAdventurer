@@ -20,6 +20,7 @@
 - Changed: the tray icon menu now offers "Show main window" and Exit (the bookmarks list is gone)
 - Removed: the separate Breadcrumb Navigation toolbar (the Address Bar already shows breadcrumbs)
 - Changed: the Filters and Stacks entries in the Toolbars list are now labeled "(panel toolbar)", since they only show or hide the button strip inside those panels
+- Changed: new installations start with a simple Explorer-style layout (the Folders panel on the left, the file list on the right); the other panels can be opened from the View menu
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)

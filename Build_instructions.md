@@ -166,6 +166,18 @@ Notes:
 - The installed program reads its settings from `%APPDATA%\CubicAdventurer\`, controlled by
   `settings.path` in its folder (see `installer\settings.path`).
 
+## Default layout and settings
+
+A new user (no settings folder yet) starts with the layout and settings built into the exe: the
+Folders panel on the left and the file list on the right, with the other panels closed. The
+source files are `Source\Defaults\layout.xml` and `Source\Defaults\settings.xml`; the exe embeds
+them through `Source\CE_Resources.rc` and the compiled `Source\CE_Resources.res`.
+
+To change the defaults, replace those two files (for example with ones the program wrote after a
+clean start and the layout you want), then run `python tools\make_default_res.py` and rebuild the
+program. `python tools\make_default_res.py --check` reports whether the `.res` is up to date.
+Python 3 is enough; the Delphi resource compiler (`BRCC32`) is not needed.
+
 ## Troubleshooting
 
 - **A library unit is "not found" (F1026 or F2613):** its source folder is missing from the
