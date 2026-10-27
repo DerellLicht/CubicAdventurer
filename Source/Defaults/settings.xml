@@ -57,6 +57,17 @@
       <ThumbPos>2</ThumbPos>
       <ThumbSize>120</ThumbSize>
     </Filmstrip>
+    <Font>
+      <Charset>1</Charset>
+      <Color>-16777208</Color>
+      <Height>-12</Height>
+      <Name>Arial</Name>
+      <Orientation>0</Orientation>
+      <Pitch>0</Pitch>
+      <Size>9</Size>
+      <Style>0</Style>
+      <Quality>0</Quality>
+    </Font>
     <FullRowSelect>False</FullRowSelect>
     <GroupBy>
       <ControlPanel>0,False</ControlPanel>
