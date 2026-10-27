@@ -18,6 +18,7 @@
 - Added: the Folders tree now uses the file view's background, folder text, System / Read-only / Hidden colors and Unicode fallback font
 - Fixed: the tray icon options (Minimize to tray, Close to tray, Start minimized to tray) could hide the window with no way to bring it back; clicking the tray icon now restores it
 - Changed: the tray icon menu now offers "Show main window" and Exit (the bookmarks list is gone)
+- Removed: the separate Breadcrumb Navigation toolbar (the Address Bar already shows breadcrumbs)
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)

@@ -282,7 +282,6 @@ type
     Layouts: TCELayoutController;
     TabSet: TCESpTabSet;
     AddressBarToolbar: TCEAddressBarToolbar;
-    BreadcrumbBar: TCEBreadcrumbBar;
     DriveToolbar: TCEDriveToolbar;
     BookmarkToolbar: TCEBookmarkToolbar;
     SessionsToolbar: TCESessionsToolbar;
@@ -633,16 +632,6 @@ begin
   SessionsToolbar.CurrentDock:= TopToolDock;
   SessionsToolbar.PopupMenu:= ToolbarPopupMenu;
   SessionsToolbar.Tag:= 1;
-  // Create BreadcrumbBar
-  BreadcrumbBar:= TCEBreadcrumbBar.Create(self);
-  BreadcrumbBar.Name:= 'BreadcrumbBar';
-  BreadcrumbBar.Caption:= _('Breadcrumb Navigation');
-  BreadcrumbBar.Stretch:= true;
-  BreadcrumbBar.Visible:= false;
-  BreadcrumbBar.DockableTo:= [TB2Dock.dpTop, TB2Dock.dpBottom];
-  BreadcrumbBar.CurrentDock:= TopToolDock;
-  BreadcrumbBar.PopupMenu:= ToolbarPopupMenu;
-  BreadcrumbBar.Tag:= 1;
   // Create Status bar
   StatusBar:= TCEStatusBar.Create(Self);
   StatusBar.Name:= 'StatusBar';
@@ -660,7 +649,6 @@ begin
   CELayoutItems.Add(BookmarkToolbar);
   CELayoutItems.Add(SessionsToolbar);
   CELayoutItems.Add(EditToolbar);
-  CELayoutItems.Add(BreadcrumbBar);
   CELayoutItems.Add(TabSet);
   CELayoutItems.Add(StatusBar);
   // Add Toolbar Docks
