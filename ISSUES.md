@@ -17,10 +17,6 @@ Last updated: 2026-10-27 (version 0.98 in progress).
   create a button even when `FindAction` returns nil (a `layout.xml` from another version, or
   an edited file), so the toolbar likely shows an empty button. Skip the item when the action
   is missing, except for plain separators and spacers. Not reproduced; low priority.
-- **CA-052 [bug] Tab strip gap.** Fixing it means changing `CE_SpTabBar.pas`. A `TODO` at
-  `TCESpTabToolbar.RightAlignItems` notes that the custom `InternalDrawBackground`
-  override was removed in favor of SpTBXLib's own drawing; revisit if tab borders look
-  wrong. Needs a description or screenshot of the gap before work starts.
 - **CA-053 [task] Toolbar combo box SkinType (cosmetic).** `TODO(revival)` in
   `CE_ToolbarEditorItems.pas` (about line 1067): `TSpTBXComboBox` no longer has
   `SkinType` in the current SpTBXLib, so the line is commented out. Check whether the
