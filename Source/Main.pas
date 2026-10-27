@@ -266,6 +266,7 @@ type
     procedure ConvertCustomActions(Root: TTBCustomItem; Recursive: Boolean = true);
     procedure InitLanguage;
     procedure LanguageItemClick(Sender: TObject);
+    procedure TrayShowClick(Sender: TObject);
     procedure WMDeviceChange(var Message: TMessage); message WM_DEVICECHANGE;
     procedure WMPowerBroadcast(var Message: TMessage); message WM_POWERBROADCAST;
     procedure WMShellNotify(var Msg: TMessage); message WM_SHELLNOTIFY;
@@ -1835,18 +1836,34 @@ end;
 
 {-------------------------------------------------------------------------------
   On TrayPopupMenu.Popup
+
+  Rebuilt on every popup: Show main window (default item), separator, Exit.
 -------------------------------------------------------------------------------}
 procedure TMainForm.TrayPopupMenuPopup(Sender: TObject);
 var
   item: TSpTBXItem;
 begin
-  PopulateBookmarkItem(TrayPopupMenu.Items, CEBookmarkPanel.BookmarkTree);
+  TrayPopupMenu.Items.Clear;
+  // show main window
+  item:= TSpTBXItem.Create(TrayPopupMenu);
+  item.Caption:= _('Show main window');
+  item.Options:= [tboDefault];
+  item.OnClick:= TrayShowClick;
+  TrayPopupMenu.Items.Add(item);
   // separator
   TrayPopupMenu.Items.Add(TSpTBXSeparatorItem.Create(TrayPopupMenu));
   // exit
   item:= TSpTBXItem.Create(TrayPopupMenu);
   item.Action:= CEActions.act_gen_exit;
   TrayPopupMenu.Items.Add(item);
+end;
+
+{-------------------------------------------------------------------------------
+  On "Show main window" in the tray menu
+-------------------------------------------------------------------------------}
+procedure TMainForm.TrayShowClick(Sender: TObject);
+begin
+  MakeVisible;
 end;
 
 {-------------------------------------------------------------------------------
