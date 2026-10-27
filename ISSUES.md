@@ -12,6 +12,11 @@ Last updated: 2026-10-27 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
+- **CA-055 [bug] Toolbar button for a missing action.** Found while reviewing the loaders
+  (CA-030). `LoadNormalToolbar` and its twin in `CE_Layout.pas` (about lines 1464 and 1548)
+  create a button even when `FindAction` returns nil (a `layout.xml` from another version, or
+  an edited file), so the toolbar likely shows an empty button. Skip the item when the action
+  is missing, except for plain separators and spacers. Not reproduced; low priority.
 - **CA-052 [bug] Tab strip gap.** Fixing it means changing `CE_SpTabBar.pas`. A `TODO` at
   `TCESpTabToolbar.RightAlignItems` notes that the custom `InternalDrawBackground`
   override was removed in favor of SpTBXLib's own drawing; revisit if tab borders look
@@ -27,15 +32,7 @@ Last updated: 2026-10-27 (version 0.98 in progress).
 
 ## Checks still owed
 
-- **CA-030 [task] Settings loaders and old files.** `TCEAppSettings` is verified to
-  ignore unknown keys and default missing ones. The other loaders (toolbar buttons, dock
-  layout, sessions, `TCECustomSettingStorage` descendants) have not been reviewed for that
-  policy.
-- **CA-031 [task] Settings save check after the UTF-8 changes.** Change a few options
-  (ideally one with a Unicode value, such as a bookmark name), exit, relaunch, and confirm
-  they persisted. (The PO translation editor can no longer be reached from the menus; test
-  loading and saving a shipped Locale `.po` in it under CA-020, when language support is
-  taken up.)
+(none at the moment)
 
 ## Wishlist
 
@@ -58,7 +55,9 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   Deferred with CA-016 (no further text editor development).
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
   do not). The Translate action and PO editor code remain in the source; the menu items
-  are removed. Take up when someone with another language asks.
+  are removed. Take up when someone with another language asks. At that point also test
+  loading and saving a shipped Locale `.po` in the PO translation editor (not reachable from
+  the menus now; its UTF-8 handling was changed but never exercised).
 - **CA-021 [feature] Win64 build.**
 - **CA-022 [feature] DPI awareness** (users report it is missing).
 - **CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal).** Decided to do
