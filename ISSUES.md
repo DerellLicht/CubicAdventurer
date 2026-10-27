@@ -17,10 +17,6 @@ Last updated: 2026-10-27 (version 0.98 in progress).
   create a button even when `FindAction` returns nil (a `layout.xml` from another version, or
   an edited file), so the toolbar likely shows an empty button. Skip the item when the action
   is missing, except for plain separators and spacers. Not reproduced; low priority.
-- **CA-053 [task] Toolbar combo box SkinType (cosmetic).** `TODO(revival)` in
-  `CE_ToolbarEditorItems.pas` (about line 1067): `TSpTBXComboBox` no longer has
-  `SkinType` in the current SpTBXLib, so the line is commented out. Check whether the
-  combo box looks wrong under any skin; if not, delete the TODO.
 - **CA-017 [bug] Dock layout hardening.** `DoUnAutoHideDockForm` bypasses the dock-chain
   guard; only root-level floating hosts are pre-created. Optional proper fix: derive
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
