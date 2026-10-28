@@ -1,6 +1,6 @@
 # CubicAdventurer Changelog
 
-## [0.98] - 2026-10-25
+## [0.98] - 2026-10-26
 - History now keeps the last 30 entries by default (was 10).
 - Made various improvements to the Sessions engine
 - Changed: only one CubicAdventurer window runs at a time; starting it again brings the existing window forward (the Single Instance option and File > New Window are gone)

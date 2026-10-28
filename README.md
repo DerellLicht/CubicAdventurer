@@ -1,9 +1,14 @@
 # CubicAdventurer
 CubicAdventurer is a revival of the long-abandoned `CubicExplorer` (version 0.96.0.1582), an extremely customizable Windows file manager created by Marko Savolainen.
-
 CubicAdventurer is a file manager aimed for basic and advanced users.  
-Its key features are tabs, bookmarks, sessions, and color schemes for file extensions.  
-It also has filtering, file previews, search and many more features.
+
+### Summary of features:
+- Customizable color settings for extensions, folders, special (S/H/R) files 
+- Tabs - Have multiple folders open at the same time 
+- Bookmarks - Open previous folder(s) in tabs without having to navigate to them<br>
+- Sessions - collections of tabs 
+- Filtering, file previews, search and many more features 
+
 
 ![CubicAdventurer showing a file list with color settings and a floating Quickview panel](Documents/CA.display.example.jpg)
 
