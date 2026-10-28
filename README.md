@@ -5,7 +5,7 @@ CubicAdventurer is a file manager aimed for basic and advanced users.
 Its key features are tabs, bookmarks, sessions, and color schemes for file extensions.  
 It also has filtering, file previews, search and many more features.
 
-![CubicAdventurer showing a file list with color settings and a floating Quickview panel](https://github.com/DerellLicht/CubicAdventurer/blob/master/Documents/CA.display.example.jpg)
+![CubicAdventurer showing a file list with color settings and a floating Quickview panel](Documents/CA.display.example.jpg)
 
 Copyright 2026 Derell Licht  
 Copyright 2006-2012 Marko Savolainen
