@@ -64,14 +64,4 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Maintenance (internal)
 
-- **CA-041 [task] Vendor the hand-installed libraries** (Graphics32, PngComponents,
-  SpTBXLib, Toolbar2000) into the repo, as the original did. Open decision (2026-10-27):
-  vendoring does not remove the need to build and install the design packages; its only
-  gain is pinned, known-good versions (mainly Toolbar2000 with the SpTBX patch applied).
-  Options: drop the ticket and record exact versions in `Build_instructions.md`, or vendor
-  only Toolbar2000 and SpTBXLib. Check each licence allows redistribution first. The old
-  `Components/PngComponents` copy was removed on 2026-10-27 (it was not the Raabe fork).
-  If vendored, Mustangpeak VirtualShellTools (manual git clone) belongs on the list too.
-  `git ls-remote` reached graphics32, sptbxlib, PngComponents and VirtualShellTools on
-  2026-10-27 (cloning not tried). Toolbar2000 is not on GitHub. Pin the exact versions
-  Derell builds with, not whatever is newest.
+(none at the moment)
