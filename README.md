@@ -91,9 +91,7 @@ Some elements of the original are either removed from this program, or simply ar
 [Derell Licht](https://github.com/DerellLicht)
  did the design specification, testing, and guidance on the revisions in this project.
 
-However: [Claude AI](https://claude.ai/new) did *all* of the coding and interpretation of the existing code, 
-location of libraries that were compatible with modern Delphi, etc.  
-Claude is truly amazing; he implements complex designs in seconds, and they generally 
-do exactly what was requested... but debugging and analysis still require a human.
-The two of us together, can do almost *anything* !!
+[Claude AI](https://claude.ai/new) 
+handled key elements of this porting operation, including determining required libraries
+for modern Delphi, converting existing code to modern Unicode support, and reorganizing interface components under my guidance.
 
