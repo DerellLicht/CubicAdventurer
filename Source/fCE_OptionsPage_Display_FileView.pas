@@ -479,6 +479,19 @@ end;
   Refresh Settings
 -------------------------------------------------------------------------------}
 procedure TCE_OptionsPage_Display_FileView.RefreshSettings;
+var
+  tq0, tq, tfreq: Int64;
+  tlog: string;
+
+  // TEMPORARY timing code (not compiled): log ms since previous mark
+  procedure TMark(const AName: string);
+  var
+    now: Int64;
+  begin
+    QueryPerformanceCounter(now);
+    tlog:= tlog + ' ' + AName + '=' + IntToStr((now - tq) * 10000 div tfreq) + 'e-1ms;';
+    tq:= now;
+  end;
 
   procedure ReadExtensionColors;
   var
@@ -520,6 +533,10 @@ procedure TCE_OptionsPage_Display_FileView.RefreshSettings;
   end;
 
 begin
+  QueryPerformanceFrequency(tfreq);
+  QueryPerformanceCounter(tq0);
+  tq:= tq0;
+  tlog:= '';
   // options
   check_fullrowselect.Checked:= GlobalFileViewSettings.FullRowSelect;
   check_selectprev.Checked:= GlobalFileViewSettings.SelectPreviousFolder;
@@ -536,14 +553,20 @@ begin
   check_hiddenfiles.Checked:= GlobalFileViewSettings.HiddenFiles;
   check_showext.Checked:= GlobalFileViewSettings.ShowExtensions;
 
+  TMark('options');
   // display
   color_background.Handle; // <-- hack around bug in TColorBox (http://qc.embarcadero.com/wc/qcmain.aspx?d=85895).
+  TMark('bg.handle');
   color_background.Selected:= GlobalFileViewSettings.BackgroundColor;
+  TMark('bg.selected');
   panel_font.Color:= GlobalFileViewSettings.BackgroundColor;
   panel_font.Font.Assign(GlobalFileViewSettings.Font);
   panel_font.Caption:= GlobalFileViewSettings.Font.Name + ' ' + IntToStr(GlobalFileViewSettings.Font.Size) + 'pt';
+  TMark('font+panel');
   color_font.Handle;
+  TMark('font.handle');
   color_font.Selected:= panel_font.Font.Color;
+  TMark('font.selected');
   color_extension.DefaultColorColor:= color_font.Selected;
   if color_background.Selected = clDefault then
   begin
@@ -556,20 +579,33 @@ begin
 
   // colors
   check_extension_colors.Checked:= GlobalFileViewSettings.ExtensionColorsEnabled;
+  TMark('ext-check');
   ReadExtensionColors;
+  TMark('ReadExtColors');
 
   // folder text color and attribute background colors
   // (the .Handle lines work around the TColorBox bug mentioned above)
   color_folder.Handle;
+  TMark('folder.handle');
   color_folder.Selected:= GlobalFileViewSettings.FolderTextColor;
+  TMark('folder.selected');
   color_attr_system.Handle;
+  TMark('system.handle');
   color_attr_system.Selected:= GlobalFileViewSettings.SystemBgColor;
+  TMark('system.selected');
   color_attr_readonly.Handle;
+  TMark('readonly.handle');
   color_attr_readonly.Selected:= GlobalFileViewSettings.ReadOnlyBgColor;
+  TMark('readonly.selected');
   color_attr_hidden.Handle;
+  TMark('hidden.handle');
   color_attr_hidden.Selected:= GlobalFileViewSettings.HiddenBgColor;
+  TMark('hidden.selected');
   color_attr_combined.Handle;
+  TMark('combined.handle');
   color_attr_combined.Selected:= GlobalFileViewSettings.CombinedBgColor;
+  TMark('combined.selected');
+  OutputDebugString(PChar('CA options: Fileview refresh total=' + IntToStr((tq - tq0) * 10000 div tfreq) + 'e-1ms;' + tlog));
 end;
 
 {##############################################################################}
