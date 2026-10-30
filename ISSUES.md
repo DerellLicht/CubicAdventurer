@@ -16,6 +16,13 @@ Last updated: 2026-10-30 (version 0.99 in progress).
 
 ## Checks still owed
 
+- **CA-059 Folders tree font size.** Implemented 2026-10-30 (not compiled yet): folder names in the
+  Folders panel should be the same size as the names in the file list. Test: with the default
+  Arial 9 pt, compare the two; then change the font in Options > Display > Fileview (a larger and a
+  smaller size) and check that the tree follows at once and after a restart. Only the size is shared;
+  the typeface of the tree is still the Windows desktop icon font. The old hand-edited
+  `FolderPanel` `FontSize` in `settings.xml` (-1 = follow the file view) still overrides when set to a
+  positive number. Row height is not changed, so a very large font may look cramped.
 - **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed

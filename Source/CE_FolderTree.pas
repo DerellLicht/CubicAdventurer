@@ -45,6 +45,7 @@ type
     fHiddenFiles: Boolean;
     fOnSelectedChange: TCEFolderTreeSelectedChangeEvent;
     fSelectionTimer: TTimer;
+    fViewFontSize: Integer;
     procedure SetBrowseZipFolders(const Value: Boolean);
     procedure SetHiddenFiles(const Value: Boolean);
     procedure WMKeyDown(var Message: TWMKeyDown); message WM_KEYDOWN;
@@ -77,6 +78,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure ApplyViewBackground(AColor: TColor);
+    procedure ApplyViewFontSize(ASize: Integer);
     function PasteShortcutFromClipboard: Boolean;
     function Refresh: Boolean;
     procedure ScrollToView(ANode: PVirtualNode; AVertical: Boolean = true;
@@ -88,6 +90,7 @@ type
     property BrowseZipFolders: Boolean read fBrowseZipFolders write
         SetBrowseZipFolders;
     property HiddenFiles: Boolean read fHiddenFiles write SetHiddenFiles;
+    property ViewFontSize: Integer read fViewFontSize;
   published
     property CenterOnBrowse: Boolean read fCenterOnBrowse write fCenterOnBrowse;
     property CenterOnExpand: Boolean read fCenterOnExpand write fCenterOnExpand;
@@ -186,6 +189,30 @@ begin
     Self.ButtonFillMode:= fmTreeColor;
   end;
   Self.Invalidate;
+end;
+
+{*------------------------------------------------------------------------------
+  Gives the tree the file view's font size (CA-059), so folder names in the
+  Folders panel are the same size as the names in the file list. Only the size
+  is taken over: the face and the color are left alone (the color is managed
+  by ApplyViewBackground).
+
+  The size is remembered in fViewFontSize (ViewFontSize), because setting
+  TCEFolderPanelSettings.FontSize to -1 puts the desktop icon font back on the
+  tree and has to ask for this size again. A size of 0 or less is ignored.
+  Called from TCEFileViewSettings (first view at startup and every settings
+  change).
+-------------------------------------------------------------------------------}
+procedure TCEFolderTree.ApplyViewFontSize(ASize: Integer);
+begin
+  if ASize > 0 then
+  begin
+    fViewFontSize:= ASize;
+    if Self.Font.Size <> ASize then
+    begin
+      Self.Font.Size:= ASize;
+    end;
+  end;
 end;
 
 {*------------------------------------------------------------------------------

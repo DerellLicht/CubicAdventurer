@@ -355,7 +355,11 @@ begin
   if fFontSize > 0 then
   FolderPanel.FolderTree.Font.Size:= fFontSize
   else
-  SetDesktopIconFonts(FolderPanel.FolderTree.Font);
+  begin
+    SetDesktopIconFonts(FolderPanel.FolderTree.Font);
+    // CA-059: the desktop font replaced the tree's size; take the file view size again
+    FolderPanel.FolderTree.ApplyViewFontSize(FolderPanel.FolderTree.ViewFontSize);
+  end;
 end;
 
 {-------------------------------------------------------------------------------
