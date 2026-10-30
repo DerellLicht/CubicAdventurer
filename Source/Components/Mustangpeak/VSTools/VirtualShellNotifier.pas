@@ -1,6 +1,7 @@
-// TEMPORARY traced copy of upstream VirtualShellNotifier.pas (commit 6712997) for CA-058.
-// Only the implementation section was changed (CATrace lines). Delete this file and its
-// line in CubicAdventurer.dpr when the cause is known.
+// LOCAL COPY of upstream VirtualShellNotifier.pas (TurboPack/MustangpeakVirtualShellTools,
+// commit 6712997) with ONE change, marked "CA-058 fix" in RebuildWatchNotify. It is listed in
+// CubicAdventurer.dpr so it is compiled instead of the library's own copy. Drop this file
+// when upstream clears the Controls array itself.
 unit VirtualShellNotifier;
 
 // Version 2.4.0
@@ -499,52 +500,6 @@ uses
   MPShellTypes,
   MPShellUtilities,
   MPShellFunc;
-
-var
-  CATraceLastVeto: TWinControl = nil;
-
-procedure CATrace(const S: string);
-// CA-058 trace: one OutputDebugString line per call, stamped with the wall clock time
-// (same clock and format as Process Monitor's Time of Day column) and the thread id.
-begin
-  OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) +
-    ' T' + IntToStr(GetCurrentThreadId) + ': ' + S));
-end;
-
-function CATracePidlName(PIDL: PItemIDList): string;
-var
-  NS: TNamespace;
-begin
-  Result := '(nil)';
-  if Assigned(PIDL) then
-  begin
-    try
-      NS := TNamespace.Create(PIDL, nil);
-      try
-        NS.FreePIDLOnDestroy := False;
-        Result := NS.NameForParsing;
-      finally
-        NS.Free;
-      end;
-    except
-      Result := '(error)';
-    end;
-  end;
-end;
-
-function CATraceCtl(Control: TWinControl): string;
-// Class name, name and address of a control. The address tells the file views
-// (one per tab) apart; the view-side log in CE_FileView.pas prints the same address.
-begin
-  if Assigned(Control) then
-  begin
-    Result := Control.ClassName + '/' + Control.Name + '@' + IntToHex(Int64(NativeInt(Control)), 8);
-  end
-  else
-  begin
-    Result := 'nil';
-  end;
-end;
 
 type
   TShellILIsEqual = function(PIDL1: PItemIDList; PIDL2: PItemIDList): LongBool; stdcall;
@@ -1109,14 +1064,9 @@ begin
         try
           lTempList.ID := IDCounter;
           Inc(lTempList.FRefCount, lList.Count);
-          CATrace('listener BATCH id=' + IntToStr(Int64(lTempList.ID)) +
-            ' controls=' + IntToStr(lList.Count));
           for lCount := 0 to lList.Count - 1 do
           begin
             lControl := TVirtualChangeControl(lList[lCount]);
-            CATrace('listener -> ' + CATraceCtl(lControl.Control) +
-              ' shellReg=' + BoolToStr(lControl.ShellChangeRegistered, True) +
-              ' handle=' + BoolToStr(lControl.Control.HandleAllocated, True));
             // Send Message only to controls registered for Shell changes
             if lControl.ShellChangeRegistered and lControl.Control.HandleAllocated then
             begin
@@ -1682,21 +1632,12 @@ type
         for iNative := 0 to List.Count - 1 do
         begin
           ChangeControl := TVirtualChangeControl( List[iNative]);
-          CATrace('rebuild ctl ' + CATraceCtl(ChangeControl.Control) +
-            ' kernelReg=' + BoolToStr(ChangeControl.KernelChangeRegistered, True) +
-            ' shellReg=' + BoolToStr(ChangeControl.ShellChangeRegistered, True) +
-            ' folder=[' + ChangeControl.WatchFolder + ']');
           if (ChangeControl.KernelChangeRegistered) then
           begin
             if (ChangeControl.WatchFolder <> '') then
             begin
               Result.Handles[HandleIndex] := FindFirstChangeNotification(PWideChar(ChangeControl.WatchFolder),
                 False, ChangeControl.MapNotifyEvents);
-              CATrace('rebuild idx=' + IntToStr(HandleIndex) +
-                ' handleOk=' + BoolToStr(Result.Handles[HandleIndex] <> INVALID_HANDLE_VALUE, True) +
-                ' lastErr=' + IntToStr(GetLastError) +
-                ' direct=' + BoolToStr(not ChangeControl.ShellChangeRegistered, True) +
-                ' ' + CATraceCtl(ChangeControl.Control));
               if Result.Handles[HandleIndex] <> INVALID_HANDLE_VALUE then
               begin
                 PIDL := PathToPIDL(ChangeControl.WatchFolder);
@@ -1754,29 +1695,7 @@ begin
       RunLoop := True;
       ResetEvent(KernelChangeEvent);
 
-      CATrace('rebuild BEGIN');
       WatchArray := RebuildWatchNotify(RegisteredCount, LocalPIDLMgr);
-      CATrace('rebuild DONE handles=' + IntToStr(Length(WatchArray.Handles)) +
-        ' registeredCount=' + IntToStr(RegisteredCount));
-      // Every non-nil Controls entry, with the folder of the handle slot it sits in.
-      // A slot at or beyond the handle count, or a control whose own folder differs from
-      // the slot folder, is a stale entry.
-      for i := 0 to Length(WatchArray.Controls) - 1 do
-      begin
-        if Assigned(WatchArray.Controls[i]) then
-        begin
-          if (i > 0) and (i < Length(WatchArray.NSs)) and Assigned(WatchArray.NSs[i]) then
-          begin
-            CATrace('rebuild CONTROLS[' + IntToStr(i) + ']=' + CATraceCtl(WatchArray.Controls[i]) +
-              ' slotFolder=' + CATracePidlName(WatchArray.NSs[i].AbsolutePIDL));
-          end
-          else
-          begin
-            CATrace('rebuild CONTROLS[' + IntToStr(i) + ']=' + CATraceCtl(WatchArray.Controls[i]) +
-              ' slotFolder=(no handle in this slot)');
-          end;
-        end;
-      end;
 
       if RegisteredCount > 0 then
       begin
@@ -1790,10 +1709,6 @@ begin
             // As long as it is not the Event trigging the Wait keep looping waiting for change notifications
             if WaitIndex - WAIT_OBJECT_0 > 0 then
             begin
-              CATrace('SIGNAL idx=' + IntToStr(WaitIndex) +
-                ' direct=' + BoolToStr(Assigned(WatchArray.Controls[WaitIndex]), True) +
-                ' folder=' + CATracePidlName(WatchArray.NSs[WaitIndex].AbsolutePIDL) +
-                ' ctl=' + CATraceCtl(WatchArray.Controls[WaitIndex]));
               if Assigned(WatchArray.Controls[WaitIndex]) then
               begin
                 // The control has not registered for Shell notifications (see RebuildWatchNotify).
@@ -1836,8 +1751,6 @@ begin
             RunLoop := False
         end;
 
-        CATrace('watch loop exit, closing handles=' + IntToStr(Length(WatchArray.Handles) - 1) +
-          ' terminated=' + BoolToStr(Terminated, True));
         // Free all the notification handles
         for i := 1 to Length(WatchArray.Handles) - 1 do
         begin
@@ -2241,7 +2154,6 @@ procedure TVirtualChangeDispatchThread.AddEvent(
 var
   Handled: Boolean;
 begin
-  CATrace('dispatch ADD type=' + IntToStr(Ord(ShellNotifyEvent)));
   if FilterEvents then
   begin
     // Any Rename or Create/Delete event of an object will get stripped back to
@@ -2353,7 +2265,6 @@ begin
           // Reset ourselves, by doing this in the locked list we ensure we don't
           // miss an event since no more can be added while the list is locked
           ResetEvent(WorkerChangeEvent);
-          CATrace('dispatch BATCH events=' + IntToStr(WList.Count));
 
           TempList := TVirtualShellEventList.Create;
           List := TempList.LockList;
@@ -2756,21 +2667,11 @@ begin
         Result := False;
       if not Result then
       begin
-        if CATraceLastVeto <> ExplorerWnd then
-        begin
-          CATraceLastVeto := ExplorerWnd;
-          CATrace('GATE CLOSED, vetoed by ' + CATraceCtl(ExplorerWnd));
-        end;
         Break
       end
     end
   finally
     ExplorerWndList.UnLockList
-  end;
-  if Result and (CATraceLastVeto <> nil) then
-  begin
-    CATraceLastVeto := nil;
-    CATrace('GATE OPEN again');
   end
 end;
 
@@ -2789,7 +2690,6 @@ var
   Duplicate: Boolean;
   i: NativeInt;
 begin
-  CATrace('REDISPATCH: batch held by the gate, id=' + IntToStr(Int64(Event.ID)));
   StartTimer;
   Duplicate := False;
   List := EventList.LockList;
@@ -2840,7 +2740,6 @@ begin
   if OKToDispatch then
   begin
     EndTimer;
-    CATrace('gate timer: delivering held batches');
     NotifyMsg.Msg := WM_SHELLNOTIFY;
     NotifyMsg.lParam := 0;
     VList := ExplorerWndList.LockList;

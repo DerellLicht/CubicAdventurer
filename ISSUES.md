@@ -12,53 +12,14 @@ Last updated: 2026-10-30 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-- **CA-058 [bug] File view sometimes misses added or renamed files** (formerly CA-011, reopened
-  2026-10-30). Explorer and Explorer++ show a download at once; CA sometimes shows nothing until
-  F5, or shows the temporary download name and never the final name (Helium; earlier Waterfox).
-  Explorer++ also leaves the temporary file behind with Helium, so part of this is how Chromium
-  finishes a download. Firefox downloads worked after navigating away and back.
-  From the library source (2026-10-30): a view hears about changes through a global shell
-  registration (blind to programs that write silently) and a per-view
-  `FindFirstChangeNotification` that one library thread waits on. That thread closes and
-  reopens ALL handles on every rebuild (changes inside that gap are lost); a global gate
-  (`OkToDispatch`) holds every batch while any control is dragging, editing or showing a menu;
-  and a view that is not `Active` drops a batch with no requeue. Which of these loses the event
-  is NOT known yet.
-  TEMPORARY trace build (not compiled): `Source/Components/Mustangpeak/VSTools/VirtualShellNotifier.pas`
-  is a traced copy of upstream commit 6712997 (listed in `CubicAdventurer.dpr`), plus `CA trace`
-  lines in `CE_FileView.pas` (`WndProc`, `SetNotifyFolder`). Test: run DbgView and Process Monitor
-  (filter on the Downloads path), download a file with Helium, send both logs. When the cause is
-  known, delete the copy, its `.dpr` line and the `CA trace` lines.
-  Trace build 1 result (Helium, 2026-10-30 09:00): the shell notices for the download DID reach
-  the Downloads view (batches of 6 and 7 events, view active, valid root, gate open, no rebuild),
-  and the view still kept the temp name. Every kernel-watch signal was `direct=True`, so the
-  per-view watch is a dead end for that tab. Trace build 2 adds, per notification, its type,
-  folder, `IsRootNamespace` result and `Handled` flag, begin/end markers (with item counts) around
-  `RereadAndRefresh`, and the folder name on each `SIGNAL`. Run it WITHOUT clearing DbgView after
-  startup so the rebuild lines are kept.
-  Trace build 2 result: the final Helium rename arrived as ONE Update Directory event for
-  Downloads whose PIDL did not match the view root (`isRoot=False`), so no re-read ran; the
-  per-view kernel watch, which would supply a matching event, was misrouted by a stale entry
-  in the library's Controls array (slot 3 still pointed at the D:\notes view after the
-  Workspace panel's hidden file view took slot 1 late in startup). Trace build 3 dumps the
-  event and root PIDLs, the Controls array after each rebuild, and the Active/handle state
-  of each view at `SetNotifyFolder`.
-  Trace build 3 result: confirmed. After startup the Controls array held stale entries (slots 2, 4,
-  5, 7 pointed at other tabs) and a probe file written in C:\home produced `SIGNAL idx=2
-  direct=True ... ctl=<Downloads tab>`. In a run where slot 3 was clean, both Helium downloads
-  updated, because the kernel watch is the only source that reliably produces an Update Directory
-  event matching the view root (the shell's Downloads events arrive in the This PC\Downloads
-  known-folder form). FIX APPLIED (verification pending): `RebuildWatchNotify` now clears the
-  Controls array on every rebuild. Traces stay in until the fix is verified.
-  VERIFIED 2026-10-30 10:11 (trace build 3 + fix): Controls dump held only the Desktop slot; the
-  C:\home probe signalled `direct=False` and the view re-read; Helium download updated.
-  SECOND CHANGE (verification pending): the Workspace panel's file view (closed, no window)
-  no longer holds a kernel watch until the panel is first shown
-  (`UseKernelNotification` off at creation, on in `WMActivateWorkspace`, off again on hide).
+(none at the moment)
 
 ## Checks still owed
 
-(none at the moment)
+- **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
+  use, especially downloads into the Downloads tab. If a view ever stops updating again, the
+  diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed
+  the watch list (`rebuild CONTROLS`) and every notification each view received.
 
 ## Wishlist
 

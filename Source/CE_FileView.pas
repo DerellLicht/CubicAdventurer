@@ -108,7 +108,6 @@ type
         Allow: Boolean); override;
     procedure DoRootRebuild; override;
     procedure DoShellNotify(ShellEvent: TVirtualShellEvent); override;
-    function RereadAndRefresh(DoSort: Boolean): TEasyItem; override;
     procedure DoViewChange; override;
     procedure HandleDblClick(Button: TCommonMouseButton; Msg: TWMMouse); override;
     procedure HandleMouseDown(Button: TCommonMouseButton; Msg: TWMMouse); override;
@@ -125,7 +124,6 @@ type
     procedure UpdateBackgroundText;
     procedure WMKillFocus(var Message: TWMKillFocus); message WM_KillFocus;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    procedure WndProc(var Message: TMessage); override;
     property ColumnIndex: Integer read fColumnIndex write fColumnIndex;
   public
     History: TVirtualShellHistory;
@@ -1005,120 +1003,12 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  CA-058 trace helpers (temporary)
--------------------------------------------------------------------------------}
-procedure CATraceLine(const S: string);
-begin
-  OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) +
-    ' T' + IntToStr(GetCurrentThreadId) + ': ' + S));
-end;
-
-function CATraceViewId(View: TCEFileView): string;
-begin
-  Result:= View.ClassName + '/' + View.Name + '@' + IntToHex(Int64(NativeInt(View)), 8);
-end;
-
-function CATracePidlHex(PIDL: PItemIDList): string;
-var
-  p: PByte;
-  total, i: Integer;
-begin
-  Result:= '(nil)';
-  if Assigned(PIDL) then begin
-    total:= 0;
-    p:= PByte(PIDL);
-    while (PWord(p)^ <> 0) and (total < 400) do begin
-      Inc(total, PWord(p)^);
-      Inc(p, PWord(p)^);
-    end;
-    Inc(total, 2);
-    if total > 200 then begin
-      total:= 200;
-    end;
-    Result:= 'ids=' + IntToStr(PIDLMgr.IDCount(PIDL)) + ' len=' + IntToStr(total) + ' ';
-    p:= PByte(PIDL);
-    for i:= 0 to total - 1 do begin
-      Result:= Result + IntToHex(p^, 2);
-      Inc(p);
-    end;
-  end;
-end;
-
-function CATracePidlName(PIDL: PItemIDList): string;
-var
-  NS: TNamespace;
-begin
-  Result:= '(nil)';
-  if Assigned(PIDL) then begin
-    try
-      NS:= TNamespace.Create(PIDL, nil);
-      try
-        NS.FreePIDLOnDestroy:= False;
-        Result:= NS.NameForParsing;
-      finally
-        NS.Free;
-      end;
-    except
-      Result:= '(error)';
-    end;
-  end;
-end;
-
-{-------------------------------------------------------------------------------
   Do ShellNotify
 -------------------------------------------------------------------------------}
 procedure TCEFileView.DoShellNotify(ShellEvent: TVirtualShellEvent);
-var
-  isRoot: string;
-  p1, p2: string;
 begin
-  // CA-058 trace (temporary): what each notification is and whether the library will
-  // treat it as this view's folder
-  isRoot:= '?';
-  try
-    if Assigned(ShellEvent.PIDL1) then begin
-      isRoot:= BoolToStr(IsRootNamespace(ShellEvent.PIDL1), true);
-    end;
-  except
-    isRoot:= 'error';
-  end;
-  p1:= CATracePidlName(ShellEvent.PIDL1);
-  p2:= CATracePidlName(ShellEvent.PIDL2);
-  CATraceLine('view ' + CATraceViewId(Self) + ' EVENT ' + SHELL_NOTIFY_EVENTS[ShellEvent.ShellNotifyEvent] +
-    ' pidl1=[' + p1 + '] pidl2=[' + p2 + '] invalidNS=' + BoolToStr(ShellEvent.InvalidNamespace, true) +
-    ' isRoot(pidl1)=' + isRoot + ' active=' + BoolToStr(Active, true));
-  // For an Update Directory event naming this view's own folder, dump both PIDLs so the
-  // two forms can be compared byte by byte
-  if (ShellEvent.ShellNotifyEvent = vsneUpdateDir) and ValidRootNamespace then begin
-    try
-      if p1 = RootFolderNamespace.NameForParsing then begin
-        CATraceLine('view ' + CATraceViewId(Self) + ' PIDLDUMP event: ' + CATracePidlHex(ShellEvent.PIDL1));
-        CATraceLine('view ' + CATraceViewId(Self) + ' PIDLDUMP root : ' + CATracePidlHex(RootFolderNamespace.AbsolutePIDL) +
-          ' compare=' + IntToStr(RootFolderNamespace.ComparePIDL(ShellEvent.PIDL1, True)));
-      end;
-    except
-      CATraceLine('view ' + CATraceViewId(Self) + ' PIDLDUMP error');
-    end;
-  end;
   inherited;
-  CATraceLine('view ' + CATraceViewId(Self) + ' EVENT done handled=' + BoolToStr(ShellEvent.Handled, true));
   UpdateBackgroundText;
-end;
-
-{-------------------------------------------------------------------------------
-  RereadAndRefresh (temporary CA-058 trace)
-  Marks every time the library re-reads this view's folder, with the item count
-  before and after.
--------------------------------------------------------------------------------}
-function TCEFileView.RereadAndRefresh(DoSort: Boolean): TEasyItem;
-var
-  itemsBefore: Integer;
-begin
-  itemsBefore:= Groups.ItemCount;
-  CATraceLine('view ' + CATraceViewId(Self) + ' RereadAndRefresh BEGIN items=' + IntToStr(itemsBefore) +
-    ' active=' + BoolToStr(Active, true) + ' validRoot=' + BoolToStr(ValidRootNamespace, true));
-  Result:= inherited RereadAndRefresh(DoSort);
-  CATraceLine('view ' + CATraceViewId(Self) + ' RereadAndRefresh END items=' + IntToStr(Groups.ItemCount));
 end;
 
 {-------------------------------------------------------------------------------
@@ -1520,43 +1410,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  WndProc (temporary CA-058 trace)
-  Logs every WM_SHELLNOTIFY batch as this view receives it, BEFORE the library
-  handler decides what to do with it. The library handler silently releases
-  (drops) a batch when the view is not Active or has no valid root namespace,
-  and nothing else logs that.
--------------------------------------------------------------------------------}
-procedure TCEFileView.WndProc(var Message: TMessage);
-var
-  evList: TVirtualShellEventList;
-  evCount: Integer;
-  rootName: string;
-begin
-  if Message.Msg = WM_SHELLNOTIFY then begin
-    evCount:= -1;
-    evList:= TVirtualShellEventList(Message.WParam);
-    if Assigned(evList) then begin
-      evCount:= evList.LockList.Count;
-      evList.UnlockList;
-    end;
-    rootName:= '(invalid root)';
-    try
-      if ValidRootNamespace then begin
-        rootName:= RootFolderNamespace.NameForParsing;
-      end;
-    except
-      rootName:= '(error reading root)';
-    end;
-    OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) +
-      ' T' + IntToStr(GetCurrentThreadId) + ': view ' + ClassName + '/' + Name +
-      '@' + IntToHex(Int64(NativeInt(Self)), 8) + ' got WM_SHELLNOTIFY events=' + IntToStr(evCount) +
-      ' active=' + BoolToStr(Active, true) + ' validRoot=' + BoolToStr(ValidRootNamespace, true) +
-      ' root=' + rootName));
-  end;
-  inherited WndProc(Message);
-end;
-
-{-------------------------------------------------------------------------------
   Set Notify Folder
 -------------------------------------------------------------------------------}
 procedure TCEFileView.SetNotifyFolder(Namespace: TNamespace);
@@ -1570,12 +1423,6 @@ begin
       useKernel:= not Namespace.IsNetworkNeighborhoodChild;
       if useKernel then
       useKernel:= WideGetDriveType(IncludeTrailingBackslash(Namespace.NameForParsing)) = DRIVE_FIXED;
-      // CA-058 trace (temporary): which view watches which folder
-      OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) + ': view ' + ClassName + '/' + Name +
-        '@' + IntToHex(Int64(NativeInt(Self)), 8) + ' SetNotifyFolder parse=' + Namespace.NameForParsing +
-        ' useKernel=' + BoolToStr(useKernel, true) + ' active=' + BoolToStr(Active, true) +
-        ' handleAllocated=' + BoolToStr(HandleAllocated, true) + ' visible=' + BoolToStr(Visible, true) +
-        ' showing=' + BoolToStr(Showing, true)));
 
       if useKernel then
       ChangeNotifier.NotifyWatchFolder(Self, Namespace.NameForParsing)
