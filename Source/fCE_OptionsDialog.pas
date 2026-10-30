@@ -270,7 +270,7 @@ end;
   selected: create, translate, parent, then refresh from the current settings.
   Heavy pages (Hotkeys, Advanced) cost nothing until someone opens them.
   Building a page must not leave the dialog marked as modified, so the flag
-  is restored afterwards. The build time is logged for DbgView.
+  is restored afterwards.
 -------------------------------------------------------------------------------}
 function TCEOptionsDialog.EnsurePage(ANode: PVirtualNode): TCEOptionsCustomPage;
 var
@@ -278,7 +278,6 @@ var
   page: TCEOptionsCustomPage;
   oldCursor: TCursor;
   wasModified: Boolean;
-  t0, t1, t2, t3, t4: Cardinal;
 begin
   Result:= nil;
   if ANode = nil then
@@ -292,32 +291,23 @@ begin
   end;
   if not assigned(data.Page) and assigned(data.PageClass) then
   begin
-    t0:= GetTickCount;
     wasModified:= fModified;
     oldCursor:= Screen.Cursor;
     Screen.Cursor:= crHourGlass;
     try
       page:= data.PageClass.Create(nil);
       page.Visible:= false;
-      t1:= GetTickCount;
       CEGlobalTranslator.TranslateComponent(page);
-      t2:= GetTickCount;
       page.OptionsDialog:= Self;
       page.Parent:= PageContainer;
       page.Align:= alClient;
       data.Page:= page;
       PageList.Add(page);
-      t3:= GetTickCount;
       page.RefreshSettings;
-      t4:= GetTickCount;
     finally
       Screen.Cursor:= oldCursor;
       Modified:= wasModified;
     end;
-    OutputDebugString(PChar(Format(
-        'CA options: page %s built in %d ms (create %d, translate %d, parent %d, refresh %d)',
-        [string(data.PagePath), Integer(t4 - t0), Integer(t1 - t0), Integer(t2 - t1),
-         Integer(t3 - t2), Integer(t4 - t3)])));
   end;
   Result:= data.Page;
 end;
@@ -760,18 +750,13 @@ end;
   flag is cleared, and the active page is told it is showing again.
 -------------------------------------------------------------------------------}
 procedure TCEOptionsDialog.PrepareToShow;
-var
-  t0: Cardinal;
 begin
-  t0:= GetTickCount;
   RefreshAll;
   Modified:= false;
   if assigned(fActivePage) then
   begin
     fActivePage.HandleShow;
   end;
-  OutputDebugString(PChar(Format('CA options: reopened, pages refreshed in %d ms',
-      [Integer(GetTickCount - t0)])));
 end;
 
 {##############################################################################}

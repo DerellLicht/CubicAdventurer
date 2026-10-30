@@ -16,18 +16,6 @@ Last updated: 2026-10-30 (version 0.99 in progress).
 
 ## Checks still owed
 
-- **CA-064 Options pages are built when first selected.** Implemented 2026-10-30, not compiled
-  (`TCEOptionsDialog.EnsurePage`, `GetPageInfo` on every page class). Test: open Options (it should
-  open much faster), click through every page and check each one looks and works as before (values
-  shown, OK / Apply / Cancel, the Advanced page, Hotkeys). Each page build writes a DbgView line
-  `CA options: page <path> built in <n> ms`; send the lines if any page still feels slow. Remove
-  that line once the timings are known.
-  Also (2026-10-30): the dialog is now hidden, not freed, when closed, so pages already built are
-  ready next time (log line `CA options: reopened, pages refreshed in <n> ms`). Test: open Options,
-  change a value, Cancel, reopen (the change must be gone); change a value, OK, reopen (it must be
-  kept); close with the Hotkeys page showing and check that keyboard shortcuts work in the main
-  window; View > Restore Default Layout with the dialog closed (the question box must appear in
-  front of the main window); exit the program with the dialog open and with it closed.
 - **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed
