@@ -847,7 +847,7 @@ begin
       form.Show;
     end;
     508: begin
-      if assigned(CEOptionsDialog) then
+      if assigned(CEOptionsDialog) and CEOptionsDialog.Visible then
       h:= CEOptionsDialog.Handle
       else
       h:= MainForm.Handle;

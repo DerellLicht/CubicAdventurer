@@ -92,6 +92,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ApplyAll;
+    procedure PrepareToShow;
     procedure RefreshAll;
     property ActivePage: TCEOptionsCustomPage read fActivePage write SetActivePage;
     property Modified: Boolean read fModified write SetModified;
@@ -149,8 +150,14 @@ end;
 procedure ShowOptionsDialog;
 begin
   if not assigned(CEOptionsDialog) then
-  CEOptionsDialog:= TCEOptionsDialog.Create(nil);
-
+  begin
+    CEOptionsDialog:= TCEOptionsDialog.Create(nil);
+  end
+  else if not CEOptionsDialog.Visible then
+  begin
+    // Closed earlier and kept: reload the values and wake the active page
+    CEOptionsDialog.PrepareToShow;
+  end;
   CEOptionsDialog.Show;
 end;
 
@@ -271,7 +278,7 @@ var
   page: TCEOptionsCustomPage;
   oldCursor: TCursor;
   wasModified: Boolean;
-  t0: Cardinal;
+  t0, t1, t2, t3, t4: Cardinal;
 begin
   Result:= nil;
   if ANode = nil then
@@ -292,19 +299,25 @@ begin
     try
       page:= data.PageClass.Create(nil);
       page.Visible:= false;
+      t1:= GetTickCount;
       CEGlobalTranslator.TranslateComponent(page);
+      t2:= GetTickCount;
       page.OptionsDialog:= Self;
       page.Parent:= PageContainer;
       page.Align:= alClient;
       data.Page:= page;
       PageList.Add(page);
+      t3:= GetTickCount;
       page.RefreshSettings;
+      t4:= GetTickCount;
     finally
       Screen.Cursor:= oldCursor;
       Modified:= wasModified;
     end;
-    OutputDebugString(PChar(Format('CA options: page %s built in %d ms',
-        [string(data.PagePath), Integer(GetTickCount - t0)])));
+    OutputDebugString(PChar(Format(
+        'CA options: page %s built in %d ms (create %d, translate %d, parent %d, refresh %d)',
+        [string(data.PagePath), Integer(t4 - t0), Integer(t1 - t0), Integer(t2 - t1),
+         Integer(t3 - t2), Integer(t4 - t3)])));
   end;
   Result:= data.Page;
 end;
@@ -395,12 +408,18 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  On Form Close (free form on close)
+  On Form Close (hide the form; it is freed at exit)
 -------------------------------------------------------------------------------}
 procedure TCEOptionsDialog.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  Action:= caFree;
-  CEOptionsDialog:= nil;
+  // Hide, do not free: the pages already built stay ready for the next time
+  // (see ShowOptionsDialog). The active page is told it is hidden, because the
+  // Hotkeys page suspends all shortcuts while it is showing.
+  Action:= caHide;
+  if assigned(fActivePage) then
+  begin
+    fActivePage.HandleHide;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -730,6 +749,29 @@ procedure TCEOptionsDialog.SetModified(const Value: Boolean);
 begin
   fModified:= Value;
   but_Apply.Enabled:= fModified;
+end;
+
+{*------------------------------------------------------------------------------
+  Prepare To Show
+
+  Called when the dialog, kept alive after an earlier use, is about to be shown
+  again. Every page that was built reloads its values (this drops changes left
+  from a Cancel and picks up settings changed elsewhere meanwhile), the modified
+  flag is cleared, and the active page is told it is showing again.
+-------------------------------------------------------------------------------}
+procedure TCEOptionsDialog.PrepareToShow;
+var
+  t0: Cardinal;
+begin
+  t0:= GetTickCount;
+  RefreshAll;
+  Modified:= false;
+  if assigned(fActivePage) then
+  begin
+    fActivePage.HandleShow;
+  end;
+  OutputDebugString(PChar(Format('CA options: reopened, pages refreshed in %d ms',
+      [Integer(GetTickCount - t0)])));
 end;
 
 {##############################################################################}
