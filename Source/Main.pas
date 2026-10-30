@@ -248,6 +248,7 @@ type
     fOldWindowState: TWindowState;
     fPanels: TComponentList;
     fPathInTitle: Boolean;
+    fPosSaveTimer: TTimer;
     fSaveSettingsOnClose: Boolean;
     fUpdatingCount: Integer;
     fHiddenInTray: Boolean;
@@ -269,6 +270,9 @@ type
     procedure WMPowerBroadcast(var Message: TMessage); message WM_POWERBROADCAST;
     procedure WMShellNotify(var Msg: TMessage); message WM_SHELLNOTIFY;
     procedure WMSyscommand(var Message: TWmSysCommand); message WM_SYSCOMMAND;
+    procedure WMExitSizeMove(var Message: TMessage); message WM_EXITSIZEMOVE;
+    procedure PosSaveTimerTick(Sender: TObject);
+    procedure SchedulePositionSave;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure HandleTabSetOleDrop(ASender: TCESpTabSet; ADropTab: TCESpTabItem;
         const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint; var dwEffect:
@@ -500,6 +504,11 @@ begin
   // settings calls SetPathInTitle only when the option is turned on.
   Caption:= GetAppTitleStr;
   Application.Title:= Caption;
+  // Delayed save of the window position and size (see SchedulePositionSave)
+  fPosSaveTimer:= TTimer.Create(Self);
+  fPosSaveTimer.Enabled:= false;
+  fPosSaveTimer.Interval:= 1000;
+  fPosSaveTimer.OnTimer:= PosSaveTimerTick;
   fSaveSettingsOnClose:= true;
   StackDirPath:= SettingsDirPath + 'Stacks\';
 
@@ -947,6 +956,46 @@ begin
     Settings.UpdatePositionInfo;
     GlobalAppSettings.SaveToFile(SettingsDirPath + 'settings.xml');
   end;
+end;
+
+{*------------------------------------------------------------------------------
+  Restart the countdown for saving the window position and size.
+  Moving or resizing a window produces a stream of events; the one-second
+  timer fires only after the last one, so a drag causes a single write.
+  Ignored while starting up or closing (Shutdown saves everything then).
+-------------------------------------------------------------------------------}
+procedure TMainForm.SchedulePositionSave;
+begin
+  if not fIsReady or fCEIsClosing then
+  begin
+    Exit;
+  end;
+  fPosSaveTimer.Enabled:= false;
+  fPosSaveTimer.Enabled:= true;
+end;
+
+{*------------------------------------------------------------------------------
+  Position save timer. The window position is written to settings.xml only when
+  the window is in an ordinary state: not minimized, not hidden in the tray and
+  not full screen (the saved position must be the one to restore at the next start).
+-------------------------------------------------------------------------------}
+procedure TMainForm.PosSaveTimerTick(Sender: TObject);
+begin
+  fPosSaveTimer.Enabled:= false;
+  if not fIsReady or fCEIsClosing or fHiddenInTray or fFullscreen or IsIconic(Handle) then
+  begin
+    Exit;
+  end;
+  SaveSettingsNow;
+end;
+
+{*------------------------------------------------------------------------------
+  Windows sends WM_EXITSIZEMOVE once when a drag-move or drag-resize ends.
+-------------------------------------------------------------------------------}
+procedure TMainForm.WMExitSizeMove(var Message: TMessage);
+begin
+  inherited;
+  SchedulePositionSave;
 end;
 
 {*------------------------------------------------------------------------------
@@ -1829,6 +1878,7 @@ begin
   // resize curtain
   if assigned(panel_curtain) then
   panel_curtain.BoundsRect:= ClientRect;
+  SchedulePositionSave;
 end;
 
 {-------------------------------------------------------------------------------
