@@ -1,5 +1,9 @@
 # CubicAdventurer Changelog
 
+## [0.99] - 2026-10-30
+- Fixed: a folder view sometimes stopped showing new or renamed files until you pressed F5 (mostly the Downloads folder; the browser's temporary name stayed on screen). The library mixed up which view a folder-change signal belonged to; each signal now reaches its own view
+- Fixed: the closed Workspace panel no longer watches the Desktop folder in the background until you open it
+
 ## [0.98] - 2026-10-26
 - History now keeps the last 30 entries by default (was 10).
 - Made various improvements to the Sessions engine
@@ -21,8 +25,6 @@
 - Removed: the separate Breadcrumb Navigation toolbar (the Address Bar already shows breadcrumbs)
 - Changed: the Filters and Stacks entries in the Toolbars list are now labeled "(panel toolbar)", since they only show or hide the button strip inside those panels
 - Changed: new installations start with a simple Explorer-style layout (the Folders panel on the left, the file list on the right); the other panels can be opened from the View menu
-- Fixed: a folder view sometimes stopped showing new or renamed files until you pressed F5 (mostly the Downloads folder; the browser's temporary name stayed on screen). The library mixed up which view a folder-change signal belonged to; each signal now reaches its own view
-- Fixed: the closed Workspace panel no longer watches the Desktop folder in the background until you open it
 
 ## [0.97] - 2026-10-24
 - Initial release (beta)
