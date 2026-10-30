@@ -19,10 +19,12 @@ Last updated: 2026-10-30 (version 0.99 in progress).
 - **CA-060 Folders tree top-level label color.** Implemented 2026-10-30 (not compiled yet): Desktop,
   This PC, Network and the other top-level labels are not real file system directories, so they ignored
   the Folder text color and stayed in the Windows text color (dark on a dark background). They now use
-  the Folder text color (Options > Display > Fileview > Attributes). Test: set a light Folder text color
-  on a dark background and check the top-level labels; with Folder text color at Default nothing changes.
-  Not verified: that these labels really are the non-directory case (the library unit that decides this
-  was not readable here). If they stay dim, send a screenshot with your color settings.
+  the Folder text color (Options > Display > Fileview > Attributes). The first attempt (7d4867f) fixed
+  This PC, Libraries, Network, Control Panel and Recycle Bin but not the root Desktop and the drives
+  (C: to G:), which the shell reports as file system items; the second attempt covers every node in the
+  tree. Test: set a light Folder text color on a dark background and check Desktop and the drive
+  labels; with Folder text color at Default nothing changes. Why those nodes are not `Directory` is
+  unverified (the library unit that decides this was not readable here); if any stay dim, send a screenshot.
 - **CA-059 Folders tree font size.** Implemented 2026-10-30 (not compiled yet): folder names in the
   Folders panel should be the same size as the names in the file list. Test: with the default
   Arial 9 pt, compare the two; then change the font in Options > Display > Fileview (a larger and a
