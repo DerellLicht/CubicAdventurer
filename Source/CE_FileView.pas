@@ -1609,6 +1609,12 @@ begin
     if fUseKernelNotification then
     begin
       ChangeNotifier.RegisterKernelChangeNotify(Self,AllKernelNotifiers);
+      // CA-058: when switched on after the root was already set, watch the current folder
+      // now; SetNotifyFolder only runs on a root change and would otherwise never run
+      if ValidRootNamespace then
+      begin
+        SetNotifyFolder(RootFolderNamespace);
+      end;
     end
     else
     begin

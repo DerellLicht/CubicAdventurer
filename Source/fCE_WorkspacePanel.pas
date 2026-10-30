@@ -198,6 +198,7 @@ procedure TCEWorkspacePanel.DoFormHide;
 begin
   inherited;
   FileView.Active:= false;
+  FileView.UseKernelNotification:= false;
 end;
 
 {*------------------------------------------------------------------------------
@@ -217,6 +218,10 @@ end;
 procedure TCEWorkspacePanel.FormCreate(Sender: TObject);
 begin
   FileView:= TCEFileView.Create(Self);
+  // CA-058: the panel starts closed. A closed panel's view must not hold a kernel watch
+  // (it has no window, so it can never receive shell notices, and its watch slot shifted
+  // every tab's slot). The watch is switched on in WMActivateWorkspace when the panel is shown.
+  FileView.UseKernelNotification:= false;
   FileView.Parent:= self;
   FileView.Align:= alClient;
   FileView.Themed:= false;
@@ -282,6 +287,8 @@ procedure TCEWorkspacePanel.WMActivateWorkspace(var Message: TMessage);
 begin
   inherited;
   FileView.Active:= Message.WParam = 1;
+  // CA-058: watch the folder only while the panel is shown
+  FileView.UseKernelNotification:= FileView.Active;
   if FileView.PerFolderSettings and FileView.Active then
   FileView.LoadFolderFromPropertyBag(true);
   combo_path.Active:= FileView.Active;

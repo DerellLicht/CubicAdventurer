@@ -50,6 +50,11 @@ Last updated: 2026-10-30 (version 0.98 in progress).
   event matching the view root (the shell's Downloads events arrive in the This PC\Downloads
   known-folder form). FIX APPLIED (verification pending): `RebuildWatchNotify` now clears the
   Controls array on every rebuild. Traces stay in until the fix is verified.
+  VERIFIED 2026-10-30 10:11 (trace build 3 + fix): Controls dump held only the Desktop slot; the
+  C:\home probe signalled `direct=False` and the view re-read; Helium download updated.
+  SECOND CHANGE (verification pending): the Workspace panel's file view (closed, no window)
+  no longer holds a kernel watch until the panel is first shown
+  (`UseKernelNotification` off at creation, on in `WMActivateWorkspace`, off again on hide).
 
 ## Checks still owed
 
