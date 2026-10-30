@@ -495,6 +495,10 @@ begin
   fUpdatingCount:= 0;
   fCEIsClosing:= false;
   fPathInTitle:= false;
+  // Option off (the default) shows the program name and version; loading the
+  // settings calls SetPathInTitle only when the option is turned on.
+  Caption:= GetAppTitleStr;
+  Application.Title:= Caption;
   fSaveSettingsOnClose:= true;
   StackDirPath:= SettingsDirPath + 'Stacks\';
 
@@ -1486,7 +1490,7 @@ begin
     end
     else
     begin
-      Caption:= 'CubicExplorer';
+      Caption:= GetAppTitleStr;
       Application.Title:= Caption;
     end;
   end;

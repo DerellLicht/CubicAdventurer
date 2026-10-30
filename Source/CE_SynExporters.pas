@@ -282,7 +282,7 @@ const
                       '<head>'#13#10;
 
   HTMLAsTextHeader2 = '<meta http-equiv="Content-Type" content="text/html; charset=%s" />'#13#10 +
-                      '<meta name="generator" content="CubicExplorer HTML exporter" />'#13#10;
+                      '<meta name="generator" content="CubicAdventurer HTML exporter" />'#13#10;
 
   HTMLAsTextHeader3 = '<style type="text/css">'#13#10 +
                       '<!--'#13#10 +

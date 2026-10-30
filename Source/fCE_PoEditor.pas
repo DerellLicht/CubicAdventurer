@@ -294,7 +294,7 @@ begin
       if not DirectoryExists(path) then
       ForceDirectories(path);
       // Default data
-      list.Add('# Translation for CubicExplorer');
+      list.Add('# Translation for CubicAdventurer');
       list.Add('#');
       list.Add('msgid ""');
       list.Add('msgstr ""');

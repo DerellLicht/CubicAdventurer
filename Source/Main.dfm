@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'CubicExplorer'
+  Caption = 'CubicAdventurer'
   ClientHeight = 441
   ClientWidth = 628
   Color = clBtnFace
@@ -30,7 +30,7 @@ object MainForm: TMainForm
     Width = 628
     Height = 441
     BevelOuter = bvNone
-    Caption = 'Starting CubicExplorer...'
+    Caption = 'Starting CubicAdventurer...'
     Color = clWindow
     ParentBackground = False
     TabOrder = 5
@@ -584,7 +584,7 @@ object MainForm: TMainForm
   end
   object TrayIcon: TJvTrayIcon
     IconIndex = 0
-    Hint = 'CubicExplorer'
+    Hint = 'CubicAdventurer'
     PopupMenu = TrayPopupMenu
     Visibility = [tvVisibleTaskBar, tvVisibleTaskList]
     OnClick = TrayIconClick

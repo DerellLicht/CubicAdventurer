@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 `CHANGELOG.md`; git history keeps the rest.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-060).
+Numbers are never reused (highest used so far: CA-061).
 
 Last updated: 2026-10-30 (version 0.99 in progress).
 
@@ -16,6 +16,11 @@ Last updated: 2026-10-30 (version 0.99 in progress).
 
 ## Checks still owed
 
+- **CA-061 title bar shows name and version.** Implemented 2026-10-30, not compiled. With Options > General
+  > "Show Path in Title bar" off, the main window title bar and the taskbar button should read
+  `CubicAdventurer v0.99` (the version of the running exe, from `GetAppTitleStr` in `CE_Utils.pas`).
+  With the option on they show the path as before. The tray icon tooltip starts with
+  `CubicAdventurer:` and the startup text says `Starting CubicAdventurer...`.
 - **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed

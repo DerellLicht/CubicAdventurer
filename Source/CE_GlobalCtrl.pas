@@ -322,7 +322,7 @@ begin
     Application.Title:= fGlobalPathCaption;
   end;
 
-  MainForm.TrayIcon.Hint:= 'CubicExplorer: ' +  fGlobalPathCaption;
+  MainForm.TrayIcon.Hint:= 'CubicAdventurer: ' +  fGlobalPathCaption;
 end;
 
 {##############################################################################}

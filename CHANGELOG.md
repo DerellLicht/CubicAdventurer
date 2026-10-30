@@ -5,6 +5,7 @@
 - Fixed: the closed Workspace panel no longer watches the Desktop folder in the background until you open it
 - Changed: folder names in the Folders panel now use the same font size as the file list, and the rows grow with the font so letters like g and y are no longer cut off
 - Fixed: top-level labels in the Folders panel (Desktop, This PC, ...) now use the Folder text color instead of staying dark on a dark background
+- Changed: with Options > General > "Show Path in Title bar" off, the title bar and taskbar now show "CubicAdventurer v0.99" (the running version) instead of "CubicExplorer"; the tray icon tooltip and the startup text also say CubicAdventurer
 
 ## [0.98] - 2026-10-26
 - History now keeps the last 30 entries by default (was 10).

@@ -207,6 +207,7 @@ type
   function GetSettingsFolderPath(var IsReadOnly: Boolean; ACreate: Boolean):
       WideString;
   function GetAppVersionStr: string;
+  function GetAppTitleStr: string;
   function GetShiftState: TShiftState;
   function GetSystemProxyServer(Protocol: String = 'http'): String;
   function ExtractUrlPort(Address: String; var Port: Integer): String;
@@ -1064,6 +1065,31 @@ begin
     Result:= ver.FileVersion;
   finally
     ver.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Get AppTitleStr
+
+  The text shown in the main window title bar and on the taskbar button when
+  "Show Path in Title bar" is off: the program name followed by the version of
+  the running exe, for example "CubicAdventurer v0.99". The version comes from
+  the exe's version resource (same source as the About box). If the exe has no
+  usable version resource, only the program name is returned.
+-------------------------------------------------------------------------------}
+function GetAppTitleStr: string;
+var
+  ver: string;
+begin
+  Result:= 'CubicAdventurer';
+  try
+    ver:= GetAppVersionStr;
+  except
+    ver:= '';
+  end;
+  if ver <> '' then
+  begin
+    Result:= Result + ' v' + ver;
   end;
 end;
 
