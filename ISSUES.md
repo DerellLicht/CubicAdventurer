@@ -29,6 +29,13 @@ Last updated: 2026-10-30 (version 0.98 in progress).
   lines in `CE_FileView.pas` (`WndProc`, `SetNotifyFolder`). Test: run DbgView and Process Monitor
   (filter on the Downloads path), download a file with Helium, send both logs. When the cause is
   known, delete the copy, its `.dpr` line and the `CA trace` lines.
+  Trace build 1 result (Helium, 2026-10-30 09:00): the shell notices for the download DID reach
+  the Downloads view (batches of 6 and 7 events, view active, valid root, gate open, no rebuild),
+  and the view still kept the temp name. Every kernel-watch signal was `direct=True`, so the
+  per-view watch is a dead end for that tab. Trace build 2 adds, per notification, its type,
+  folder, `IsRootNamespace` result and `Handled` flag, begin/end markers (with item counts) around
+  `RereadAndRefresh`, and the folder name on each `SIGNAL`. Run it WITHOUT clearing DbgView after
+  startup so the rebuild lines are kept.
 
 ## Checks still owed
 

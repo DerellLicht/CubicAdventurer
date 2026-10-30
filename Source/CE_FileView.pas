@@ -108,6 +108,7 @@ type
         Allow: Boolean); override;
     procedure DoRootRebuild; override;
     procedure DoShellNotify(ShellEvent: TVirtualShellEvent); override;
+    function RereadAndRefresh(DoSort: Boolean): TEasyItem; override;
     procedure DoViewChange; override;
     procedure HandleDblClick(Button: TCommonMouseButton; Msg: TWMMouse); override;
     procedure HandleMouseDown(Button: TCommonMouseButton; Msg: TWMMouse); override;
@@ -1004,12 +1005,81 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  CA-058 trace helpers (temporary)
+-------------------------------------------------------------------------------}
+procedure CATraceLine(const S: string);
+begin
+  OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) +
+    ' T' + IntToStr(GetCurrentThreadId) + ': ' + S));
+end;
+
+function CATraceViewId(View: TCEFileView): string;
+begin
+  Result:= View.ClassName + '/' + View.Name + '@' + IntToHex(Int64(NativeInt(View)), 8);
+end;
+
+function CATracePidlName(PIDL: PItemIDList): string;
+var
+  NS: TNamespace;
+begin
+  Result:= '(nil)';
+  if Assigned(PIDL) then begin
+    try
+      NS:= TNamespace.Create(PIDL, nil);
+      try
+        NS.FreePIDLOnDestroy:= False;
+        Result:= NS.NameForParsing;
+      finally
+        NS.Free;
+      end;
+    except
+      Result:= '(error)';
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Do ShellNotify
 -------------------------------------------------------------------------------}
 procedure TCEFileView.DoShellNotify(ShellEvent: TVirtualShellEvent);
+var
+  isRoot: string;
+  p1, p2: string;
 begin
+  // CA-058 trace (temporary): what each notification is and whether the library will
+  // treat it as this view's folder
+  isRoot:= '?';
+  try
+    if Assigned(ShellEvent.PIDL1) then begin
+      isRoot:= BoolToStr(IsRootNamespace(ShellEvent.PIDL1), true);
+    end;
+  except
+    isRoot:= 'error';
+  end;
+  p1:= CATracePidlName(ShellEvent.PIDL1);
+  p2:= CATracePidlName(ShellEvent.PIDL2);
+  CATraceLine('view ' + CATraceViewId(Self) + ' EVENT ' + SHELL_NOTIFY_EVENTS[ShellEvent.ShellNotifyEvent] +
+    ' pidl1=[' + p1 + '] pidl2=[' + p2 + '] invalidNS=' + BoolToStr(ShellEvent.InvalidNamespace, true) +
+    ' isRoot(pidl1)=' + isRoot + ' active=' + BoolToStr(Active, true));
   inherited;
+  CATraceLine('view ' + CATraceViewId(Self) + ' EVENT done handled=' + BoolToStr(ShellEvent.Handled, true));
   UpdateBackgroundText;
+end;
+
+{-------------------------------------------------------------------------------
+  RereadAndRefresh (temporary CA-058 trace)
+  Marks every time the library re-reads this view's folder, with the item count
+  before and after.
+-------------------------------------------------------------------------------}
+function TCEFileView.RereadAndRefresh(DoSort: Boolean): TEasyItem;
+var
+  itemsBefore: Integer;
+begin
+  itemsBefore:= Groups.ItemCount;
+  CATraceLine('view ' + CATraceViewId(Self) + ' RereadAndRefresh BEGIN items=' + IntToStr(itemsBefore) +
+    ' active=' + BoolToStr(Active, true) + ' validRoot=' + BoolToStr(ValidRootNamespace, true));
+  Result:= inherited RereadAndRefresh(DoSort);
+  CATraceLine('view ' + CATraceViewId(Self) + ' RereadAndRefresh END items=' + IntToStr(Groups.ItemCount));
 end;
 
 {-------------------------------------------------------------------------------

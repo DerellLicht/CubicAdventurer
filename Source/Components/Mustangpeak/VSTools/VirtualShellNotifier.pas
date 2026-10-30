@@ -511,6 +511,27 @@ begin
     ' T' + IntToStr(GetCurrentThreadId) + ': ' + S));
 end;
 
+function CATracePidlName(PIDL: PItemIDList): string;
+var
+  NS: TNamespace;
+begin
+  Result := '(nil)';
+  if Assigned(PIDL) then
+  begin
+    try
+      NS := TNamespace.Create(PIDL, nil);
+      try
+        NS.FreePIDLOnDestroy := False;
+        Result := NS.NameForParsing;
+      finally
+        NS.Free;
+      end;
+    except
+      Result := '(error)';
+    end;
+  end;
+end;
+
 function CATraceCtl(Control: TWinControl): string;
 // Class name, name and address of a control. The address tells the file views
 // (one per tab) apart; the view-side log in CE_FileView.pas prints the same address.
@@ -1742,7 +1763,9 @@ begin
             if WaitIndex - WAIT_OBJECT_0 > 0 then
             begin
               CATrace('SIGNAL idx=' + IntToStr(WaitIndex) +
-                ' direct=' + BoolToStr(Assigned(WatchArray.Controls[WaitIndex]), True));
+                ' direct=' + BoolToStr(Assigned(WatchArray.Controls[WaitIndex]), True) +
+                ' folder=' + CATracePidlName(WatchArray.NSs[WaitIndex].AbsolutePIDL) +
+                ' ctl=' + CATraceCtl(WatchArray.Controls[WaitIndex]));
               if Assigned(WatchArray.Controls[WaitIndex]) then
               begin
                 // The control has not registered for Shell notifications (see RebuildWatchNotify).
