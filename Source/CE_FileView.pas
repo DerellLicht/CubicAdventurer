@@ -124,6 +124,7 @@ type
     procedure UpdateBackgroundText;
     procedure WMKillFocus(var Message: TWMKillFocus); message WM_KillFocus;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
+    procedure WndProc(var Message: TMessage); override;
     property ColumnIndex: Integer read fColumnIndex write fColumnIndex;
   public
     History: TVirtualShellHistory;
@@ -1410,6 +1411,43 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  WndProc (temporary CA-058 trace)
+  Logs every WM_SHELLNOTIFY batch as this view receives it, BEFORE the library
+  handler decides what to do with it. The library handler silently releases
+  (drops) a batch when the view is not Active or has no valid root namespace,
+  and nothing else logs that.
+-------------------------------------------------------------------------------}
+procedure TCEFileView.WndProc(var Message: TMessage);
+var
+  evList: TVirtualShellEventList;
+  evCount: Integer;
+  rootName: string;
+begin
+  if Message.Msg = WM_SHELLNOTIFY then begin
+    evCount:= -1;
+    evList:= TVirtualShellEventList(Message.WParam);
+    if Assigned(evList) then begin
+      evCount:= evList.LockList.Count;
+      evList.UnlockList;
+    end;
+    rootName:= '(invalid root)';
+    try
+      if ValidRootNamespace then begin
+        rootName:= RootFolderNamespace.NameForParsing;
+      end;
+    except
+      rootName:= '(error reading root)';
+    end;
+    OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) +
+      ' T' + IntToStr(GetCurrentThreadId) + ': view ' + ClassName + '/' + Name +
+      '@' + IntToHex(Int64(NativeInt(Self)), 8) + ' got WM_SHELLNOTIFY events=' + IntToStr(evCount) +
+      ' active=' + BoolToStr(Active, true) + ' validRoot=' + BoolToStr(ValidRootNamespace, true) +
+      ' root=' + rootName));
+  end;
+  inherited WndProc(Message);
+end;
+
+{-------------------------------------------------------------------------------
   Set Notify Folder
 -------------------------------------------------------------------------------}
 procedure TCEFileView.SetNotifyFolder(Namespace: TNamespace);
@@ -1423,6 +1461,10 @@ begin
       useKernel:= not Namespace.IsNetworkNeighborhoodChild;
       if useKernel then
       useKernel:= WideGetDriveType(IncludeTrailingBackslash(Namespace.NameForParsing)) = DRIVE_FIXED;
+      // CA-058 trace (temporary): which view watches which folder
+      OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) + ': view ' + ClassName + '/' + Name +
+        '@' + IntToHex(Int64(NativeInt(Self)), 8) + ' SetNotifyFolder parse=' + Namespace.NameForParsing +
+        ' useKernel=' + BoolToStr(useKernel, true)));
 
       if useKernel then
       ChangeNotifier.NotifyWatchFolder(Self, Namespace.NameForParsing)

@@ -8,11 +8,27 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
 Numbers are never reused.
 
-Last updated: 2026-10-27 (version 0.98 in progress).
+Last updated: 2026-10-30 (version 0.98 in progress).
 
 ## Open bugs and gaps
 
-(none at the moment)
+- **CA-058 [bug] File view sometimes misses added or renamed files** (formerly CA-011, reopened
+  2026-10-30). Explorer and Explorer++ show a download at once; CA sometimes shows nothing until
+  F5, or shows the temporary download name and never the final name (Helium; earlier Waterfox).
+  Explorer++ also leaves the temporary file behind with Helium, so part of this is how Chromium
+  finishes a download. Firefox downloads worked after navigating away and back.
+  From the library source (2026-10-30): a view hears about changes through a global shell
+  registration (blind to programs that write silently) and a per-view
+  `FindFirstChangeNotification` that one library thread waits on. That thread closes and
+  reopens ALL handles on every rebuild (changes inside that gap are lost); a global gate
+  (`OkToDispatch`) holds every batch while any control is dragging, editing or showing a menu;
+  and a view that is not `Active` drops a batch with no requeue. Which of these loses the event
+  is NOT known yet.
+  TEMPORARY trace build (not compiled): `Source/Components/Mustangpeak/VSTools/VirtualShellNotifier.pas`
+  is a traced copy of upstream commit 6712997 (listed in `CubicAdventurer.dpr`), plus `CA trace`
+  lines in `CE_FileView.pas` (`WndProc`, `SetNotifyFolder`). Test: run DbgView and Process Monitor
+  (filter on the Downloads path), download a file with Helium, send both logs. When the cause is
+  known, delete the copy, its `.dpr` line and the `CA trace` lines.
 
 ## Checks still owed
 
