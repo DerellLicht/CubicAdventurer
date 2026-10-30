@@ -1649,6 +1649,15 @@ type
         SetLength(Result.Handles, MAXIMUM_WAIT_OBJECTS);
         SetLength(Result.NSs, MAXIMUM_WAIT_OBJECTS);
         SetLength(Result.Controls, MAXIMUM_WAIT_OBJECTS);
+        // CA-058 fix: clear the Controls array explicitly. Entries are only ever written for
+        // "direct" controls, never cleared, and the array was observed to keep entries from
+        // earlier rebuilds. A stale entry made a signal for one folder's handle slot get
+        // posted to a different view as WM_FOLDERCHANGENOTIFY (which nothing handles), so the
+        // real view never heard about changes in its folder.
+        for i := 0 to MAXIMUM_WAIT_OBJECTS - 1 do
+        begin
+          Result.Controls[i] := nil;
+        end;
         // Our safefy valve to release the WaitForMultipleObject
         Result.Handles[0] := KernelChangeEvent;
         Result.NSs[0] := nil;

@@ -43,6 +43,13 @@ Last updated: 2026-10-30 (version 0.98 in progress).
   Workspace panel's hidden file view took slot 1 late in startup). Trace build 3 dumps the
   event and root PIDLs, the Controls array after each rebuild, and the Active/handle state
   of each view at `SetNotifyFolder`.
+  Trace build 3 result: confirmed. After startup the Controls array held stale entries (slots 2, 4,
+  5, 7 pointed at other tabs) and a probe file written in C:\home produced `SIGNAL idx=2
+  direct=True ... ctl=<Downloads tab>`. In a run where slot 3 was clean, both Helium downloads
+  updated, because the kernel watch is the only source that reliably produces an Update Directory
+  event matching the view root (the shell's Downloads events arrive in the This PC\Downloads
+  known-folder form). FIX APPLIED (verification pending): `RebuildWatchNotify` now clears the
+  Controls array on every rebuild. Traces stay in until the fix is verified.
 
 ## Checks still owed
 
