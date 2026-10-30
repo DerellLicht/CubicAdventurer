@@ -1018,6 +1018,32 @@ begin
   Result:= View.ClassName + '/' + View.Name + '@' + IntToHex(Int64(NativeInt(View)), 8);
 end;
 
+function CATracePidlHex(PIDL: PItemIDList): string;
+var
+  p: PByte;
+  total, i: Integer;
+begin
+  Result:= '(nil)';
+  if Assigned(PIDL) then begin
+    total:= 0;
+    p:= PByte(PIDL);
+    while (PWord(p)^ <> 0) and (total < 400) do begin
+      Inc(total, PWord(p)^);
+      Inc(p, PWord(p)^);
+    end;
+    Inc(total, 2);
+    if total > 200 then begin
+      total:= 200;
+    end;
+    Result:= 'ids=' + IntToStr(PIDLMgr.IDCount(PIDL)) + ' len=' + IntToStr(total) + ' ';
+    p:= PByte(PIDL);
+    for i:= 0 to total - 1 do begin
+      Result:= Result + IntToHex(p^, 2);
+      Inc(p);
+    end;
+  end;
+end;
+
 function CATracePidlName(PIDL: PItemIDList): string;
 var
   NS: TNamespace;
@@ -1061,6 +1087,19 @@ begin
   CATraceLine('view ' + CATraceViewId(Self) + ' EVENT ' + SHELL_NOTIFY_EVENTS[ShellEvent.ShellNotifyEvent] +
     ' pidl1=[' + p1 + '] pidl2=[' + p2 + '] invalidNS=' + BoolToStr(ShellEvent.InvalidNamespace, true) +
     ' isRoot(pidl1)=' + isRoot + ' active=' + BoolToStr(Active, true));
+  // For an Update Directory event naming this view's own folder, dump both PIDLs so the
+  // two forms can be compared byte by byte
+  if (ShellEvent.ShellNotifyEvent = vsneUpdateDir) and ValidRootNamespace then begin
+    try
+      if p1 = RootFolderNamespace.NameForParsing then begin
+        CATraceLine('view ' + CATraceViewId(Self) + ' PIDLDUMP event: ' + CATracePidlHex(ShellEvent.PIDL1));
+        CATraceLine('view ' + CATraceViewId(Self) + ' PIDLDUMP root : ' + CATracePidlHex(RootFolderNamespace.AbsolutePIDL) +
+          ' compare=' + IntToStr(RootFolderNamespace.ComparePIDL(ShellEvent.PIDL1, True)));
+      end;
+    except
+      CATraceLine('view ' + CATraceViewId(Self) + ' PIDLDUMP error');
+    end;
+  end;
   inherited;
   CATraceLine('view ' + CATraceViewId(Self) + ' EVENT done handled=' + BoolToStr(ShellEvent.Handled, true));
   UpdateBackgroundText;
@@ -1534,7 +1573,9 @@ begin
       // CA-058 trace (temporary): which view watches which folder
       OutputDebugString(PChar('CA trace ' + FormatDateTime('hh:nn:ss.zzz', Now) + ': view ' + ClassName + '/' + Name +
         '@' + IntToHex(Int64(NativeInt(Self)), 8) + ' SetNotifyFolder parse=' + Namespace.NameForParsing +
-        ' useKernel=' + BoolToStr(useKernel, true)));
+        ' useKernel=' + BoolToStr(useKernel, true) + ' active=' + BoolToStr(Active, true) +
+        ' handleAllocated=' + BoolToStr(HandleAllocated, true) + ' visible=' + BoolToStr(Visible, true) +
+        ' showing=' + BoolToStr(Showing, true)));
 
       if useKernel then
       ChangeNotifier.NotifyWatchFolder(Self, Namespace.NameForParsing)

@@ -1749,6 +1749,25 @@ begin
       WatchArray := RebuildWatchNotify(RegisteredCount, LocalPIDLMgr);
       CATrace('rebuild DONE handles=' + IntToStr(Length(WatchArray.Handles)) +
         ' registeredCount=' + IntToStr(RegisteredCount));
+      // Every non-nil Controls entry, with the folder of the handle slot it sits in.
+      // A slot at or beyond the handle count, or a control whose own folder differs from
+      // the slot folder, is a stale entry.
+      for i := 0 to Length(WatchArray.Controls) - 1 do
+      begin
+        if Assigned(WatchArray.Controls[i]) then
+        begin
+          if (i > 0) and (i < Length(WatchArray.NSs)) and Assigned(WatchArray.NSs[i]) then
+          begin
+            CATrace('rebuild CONTROLS[' + IntToStr(i) + ']=' + CATraceCtl(WatchArray.Controls[i]) +
+              ' slotFolder=' + CATracePidlName(WatchArray.NSs[i].AbsolutePIDL));
+          end
+          else
+          begin
+            CATrace('rebuild CONTROLS[' + IntToStr(i) + ']=' + CATraceCtl(WatchArray.Controls[i]) +
+              ' slotFolder=(no handle in this slot)');
+          end;
+        end;
+      end;
 
       if RegisteredCount > 0 then
       begin

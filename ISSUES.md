@@ -36,6 +36,13 @@ Last updated: 2026-10-30 (version 0.98 in progress).
   folder, `IsRootNamespace` result and `Handled` flag, begin/end markers (with item counts) around
   `RereadAndRefresh`, and the folder name on each `SIGNAL`. Run it WITHOUT clearing DbgView after
   startup so the rebuild lines are kept.
+  Trace build 2 result: the final Helium rename arrived as ONE Update Directory event for
+  Downloads whose PIDL did not match the view root (`isRoot=False`), so no re-read ran; the
+  per-view kernel watch, which would supply a matching event, was misrouted by a stale entry
+  in the library's Controls array (slot 3 still pointed at the D:\notes view after the
+  Workspace panel's hidden file view took slot 1 late in startup). Trace build 3 dumps the
+  event and root PIDLs, the Controls array after each rebuild, and the Active/handle state
+  of each view at `SetNotifyFolder`.
 
 ## Checks still owed
 
