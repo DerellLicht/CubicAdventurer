@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 `CHANGELOG.md`; git history keeps the rest.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-061).
+Numbers are never reused (highest used so far: CA-062).
 
 Last updated: 2026-10-30 (version 0.99 in progress).
 
@@ -21,6 +21,11 @@ Last updated: 2026-10-30 (version 0.99 in progress).
   `CubicAdventurer v0.99` (the version of the running exe, from `GetAppTitleStr` in `CE_Utils.pas`).
   With the option on they show the path as before. The tray icon tooltip starts with
   `CubicAdventurer:` and the startup text says `Starting CubicAdventurer...`.
+- **CA-062 Options OK / Apply save settings.xml at once.** Implemented 2026-10-30, not compiled
+  (`TMainForm.SaveSettingsNow`). Test: change an option, press OK (or Apply), stop the program
+  hard (`make stop`), start it again; the change should still be there. Tabs, panel layout and
+  toolbar changes are NOT covered (they are still saved only at a normal exit, apart from the
+  Sessions auto-save).
 - **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed

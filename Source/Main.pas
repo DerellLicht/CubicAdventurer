@@ -293,6 +293,7 @@ type
     procedure MakeVisible;
     procedure MenuItemTranslateHandler(Obj:TObject; var IsIgnored: Boolean);
     procedure OpenSkin;
+    procedure SaveSettingsNow;
     procedure Shutdown;
     procedure StartUp;
     procedure ToggleVisibility;
@@ -927,6 +928,24 @@ begin
 
     Layouts.SaveSettingsForToolbars;
     Layouts.SaveToFile(SettingsDirPath + 'layout.xml');
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Save settings.xml right now, without waiting for the program to exit.
+  Called after Options OK / Apply, so a changed option survives a hard kill
+  (make stop, Task Manager, crash). Honors the same guards as Shutdown: nothing
+  is written when the settings folder is read-only or when saving is switched
+  off. The window position is refreshed first, as Shutdown does.
+  Sessions, layout.xml and bookmarks are not touched here; they have their own
+  save paths.
+-------------------------------------------------------------------------------}
+procedure TMainForm.SaveSettingsNow;
+begin
+  if not ReadOnlySettings and SaveSettingsOnClose then
+  begin
+    Settings.UpdatePositionInfo;
+    GlobalAppSettings.SaveToFile(SettingsDirPath + 'settings.xml');
   end;
 end;
 

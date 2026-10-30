@@ -107,7 +107,7 @@ implementation
 
 uses
   System.Types,
-  fCE_OptionsPage_Advanced, MPCommonUtilities, CE_WideCompat;
+  fCE_OptionsPage_Advanced, MPCommonUtilities, CE_WideCompat, Main;
 
 {$R *.dfm}
 
@@ -197,6 +197,8 @@ begin
   else
   ActivePage.ApplySettings;
   Modified:= false;
+  // Write settings.xml now so the changes survive a hard kill of the program
+  MainForm.SaveSettingsNow;
 end;
 
 {-------------------------------------------------------------------------------
@@ -215,6 +217,8 @@ begin
   if not (ActivePage is TCEOptionsPage_Advanced) then
   ApplyAll;
   Modified:= false;
+  // Write settings.xml now so the changes survive a hard kill of the program
+  MainForm.SaveSettingsNow;
   Self.Close;
 end;
 
