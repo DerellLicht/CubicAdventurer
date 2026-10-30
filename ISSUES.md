@@ -16,21 +16,6 @@ Last updated: 2026-10-30 (version 0.99 in progress).
 
 ## Checks still owed
 
-- **CA-061 title bar shows name and version.** Implemented 2026-10-30, not compiled. With Options > General
-  > "Show Path in Title bar" off, the main window title bar and the taskbar button should read
-  `CubicAdventurer v0.99` (the version of the running exe, from `GetAppTitleStr` in `CE_Utils.pas`).
-  With the option on they show the path as before. The tray icon tooltip starts with
-  `CubicAdventurer:` and the startup text says `Starting CubicAdventurer...`.
-- **CA-062 Options OK / Apply save settings.xml at once.** Implemented 2026-10-30, not compiled
-  (`TMainForm.SaveSettingsNow`). Test: change an option, press OK (or Apply), stop the program
-  hard (`make stop`), start it again; the change should still be there. Tabs, panel layout and
-  toolbar changes are NOT covered (they are still saved only at a normal exit, apart from the
-  Sessions auto-save).
-- **CA-063 Window position and size saved after a move or resize.** Implemented 2026-10-30, not
-  compiled (`SchedulePositionSave`, one-second delay, writes `settings.xml`). Test: move or resize the
-  window, wait two seconds, stop the program hard (`make stop`), start it again; the window should
-  come back where you left it. Also try maximize and restore. Nothing is saved while the window is
-  minimized, hidden in the tray or full screen.
 - **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed
