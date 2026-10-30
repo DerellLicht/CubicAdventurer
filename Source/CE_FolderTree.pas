@@ -364,6 +364,13 @@ begin
     if CE_GetNamespaceFolderTextColor(NS, clr) then
     begin
       Canvas.Font.Color:= clr;
+    end
+    else if (not NS.FileSystem) and NS.Folder and CE_IsColorSet(CEFileViewColors.FolderTextColor) then
+    begin
+      // CA-060: the top-level labels (Desktop, This PC, Network, ...) are not
+      // file system directories, so they kept the system text color, which is
+      // hard to read on a dark background. They use the folder text color too.
+      Canvas.Font.Color:= CEFileViewColors.FolderTextColor;
     end;
   end;
 end;
