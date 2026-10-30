@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 `CHANGELOG.md`; git history keeps the rest.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused.
+Numbers are never reused (highest used so far: CA-060).
 
 Last updated: 2026-10-30 (version 0.99 in progress).
 
