@@ -3,7 +3,7 @@
 ## [0.99] - 2026-10-30
 - Fixed: a folder view sometimes stopped showing new or renamed files until you pressed F5 (mostly the Downloads folder; the browser's temporary name stayed on screen). The library mixed up which view a folder-change signal belonged to; each signal now reaches its own view
 - Fixed: the closed Workspace panel no longer watches the Desktop folder in the background until you open it
-- Changed: folder names in the Folders panel now use the same font size as the file list
+- Changed: folder names in the Folders panel now use the same font size as the file list, and the rows grow with the font so letters like g and y are no longer cut off
 
 ## [0.98] - 2026-10-26
 - History now keeps the last 30 entries by default (was 10).

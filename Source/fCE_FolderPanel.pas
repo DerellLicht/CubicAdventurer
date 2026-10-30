@@ -353,7 +353,10 @@ procedure TCEFolderPanelSettings.SetFontSize(const Value: Integer);
 begin
   fFontSize:= Value;
   if fFontSize > 0 then
-  FolderPanel.FolderTree.Font.Size:= fFontSize
+  begin
+    FolderPanel.FolderTree.Font.Size:= fFontSize;
+    FolderPanel.FolderTree.UpdateAutoRowHeight;
+  end
   else
   begin
     SetDesktopIconFonts(FolderPanel.FolderTree.Font);
@@ -366,31 +369,17 @@ end;
   Set Line Height
 -------------------------------------------------------------------------------}
 procedure TCEFolderPanelSettings.SetLineHeight(const Value: Integer);
-var
-  c: Integer; // same type as VT's DefaultNodeHeight (avoids signed/unsigned W1023)
-  node: PVirtualNode;
 begin
   fLineHeight:= Value;
-  c:= FolderPanel.FolderTree.DefaultNodeHeight;
+  // CA-059: a positive value fixes the row height; otherwise it fits the font
+  FolderPanel.FolderTree.FixedLineHeight:= fLineHeight > 0;
   if fLineHeight > 0 then
-  FolderPanel.FolderTree.DefaultNodeHeight:= fLineHeight
-  else
-  FolderPanel.FolderTree.DefaultNodeHeight:= SmallShellIconSize + 1;
-
-  // resize nodes
-  if c <> FolderPanel.FolderTree.DefaultNodeHeight then
   begin
-    FolderPanel.FolderTree.BeginUpdate;
-    try
-      node:= FolderPanel.FolderTree.GetFirstInitialized;
-      while assigned(node) do
-      begin
-        FolderPanel.FolderTree.NodeHeight[node]:= FolderPanel.FolderTree.DefaultNodeHeight;
-        node:= FolderPanel.FolderTree.GetNextInitialized(node);
-      end;
-    finally
-      FolderPanel.FolderTree.EndUpdate;
-    end;
+    FolderPanel.FolderTree.ApplyRowHeight(fLineHeight);
+  end
+  else
+  begin
+    FolderPanel.FolderTree.UpdateAutoRowHeight;
   end;
 end;
 

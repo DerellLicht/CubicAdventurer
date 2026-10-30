@@ -22,7 +22,9 @@ Last updated: 2026-10-30 (version 0.99 in progress).
   smaller size) and check that the tree follows at once and after a restart. Only the size is shared;
   the typeface of the tree is still the Windows desktop icon font. The old hand-edited
   `FolderPanel` `FontSize` in `settings.xml` (-1 = follow the file view) still overrides when set to a
-  positive number. Row height is not changed, so a very large font may look cramped.
+  positive number. The row height now follows the font (text height plus 2 pixels, never below the
+  old 17 pixels), so descenders such as g, j, p and y are no longer overwritten by the next row; check
+  that with a large font too. A positive `FolderPanel` `LineHeight` in `settings.xml` still fixes it.
 - **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed

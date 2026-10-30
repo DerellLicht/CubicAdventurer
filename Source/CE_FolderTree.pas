@@ -44,6 +44,7 @@ type
     fCenterOnExpand: Boolean;
     fHiddenFiles: Boolean;
     fOnSelectedChange: TCEFolderTreeSelectedChangeEvent;
+    fFixedLineHeight: Boolean;
     fSelectionTimer: TTimer;
     fViewFontSize: Integer;
     procedure SetBrowseZipFolders(const Value: Boolean);
@@ -78,7 +79,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure ApplyViewBackground(AColor: TColor);
+    procedure ApplyRowHeight(AHeight: Integer);
     procedure ApplyViewFontSize(ASize: Integer);
+    function AutoRowHeight: Integer;
+    procedure UpdateAutoRowHeight;
     function PasteShortcutFromClipboard: Boolean;
     function Refresh: Boolean;
     procedure ScrollToView(ANode: PVirtualNode; AVertical: Boolean = true;
@@ -89,6 +93,7 @@ type
     property AutoExpand: Boolean read fAutoExpand write fAutoExpand;
     property BrowseZipFolders: Boolean read fBrowseZipFolders write
         SetBrowseZipFolders;
+    property FixedLineHeight: Boolean read fFixedLineHeight write fFixedLineHeight;
     property HiddenFiles: Boolean read fHiddenFiles write SetHiddenFiles;
     property ViewFontSize: Integer read fViewFontSize;
   published
@@ -212,6 +217,73 @@ begin
     begin
       Self.Font.Size:= ASize;
     end;
+  end;
+  // the row height depends on the font (descenders were cut off by the next row)
+  UpdateAutoRowHeight;
+end;
+
+{*------------------------------------------------------------------------------
+  Row height that fits the tree's current font (CA-059): the text height of a
+  string with ascenders and descenders plus 2 pixels, but never less than the
+  small shell icon plus 1 pixel (the old fixed row height). The text is
+  measured on a temporary bitmap so no window handle has to exist yet.
+-------------------------------------------------------------------------------}
+function TCEFolderTree.AutoRowHeight: Integer;
+var
+  bmp: TBitmap;
+  textHeight: Integer;
+begin
+  bmp:= TBitmap.Create;
+  try
+    bmp.Canvas.Font.Assign(Self.Font);
+    textHeight:= bmp.Canvas.TextHeight('Ag|jpqy') + 2;
+  finally
+    bmp.Free;
+  end;
+  Result:= SmallShellIconSize + 1;
+  if textHeight > Result then
+  begin
+    Result:= textHeight;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Sets the row height and resizes the nodes that already exist (VT keeps a
+  height per initialized node, so changing DefaultNodeHeight alone would only
+  affect nodes created later). Does nothing when the height is unchanged.
+-------------------------------------------------------------------------------}
+procedure TCEFolderTree.ApplyRowHeight(AHeight: Integer);
+var
+  c: Integer; // same type as VT's DefaultNodeHeight (avoids signed/unsigned W1023)
+  node: PVirtualNode;
+begin
+  c:= Self.DefaultNodeHeight;
+  Self.DefaultNodeHeight:= AHeight;
+  if c <> Self.DefaultNodeHeight then
+  begin
+    Self.BeginUpdate;
+    try
+      node:= Self.GetFirstInitialized;
+      while assigned(node) do
+      begin
+        Self.NodeHeight[node]:= Self.DefaultNodeHeight;
+        node:= Self.GetNextInitialized(node);
+      end;
+    finally
+      Self.EndUpdate;
+    end;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Fits the row height to the font, unless the user fixed the row height with
+  FolderPanel LineHeight in settings.xml (FixedLineHeight).
+-------------------------------------------------------------------------------}
+procedure TCEFolderTree.UpdateAutoRowHeight;
+begin
+  if not fFixedLineHeight then
+  begin
+    ApplyRowHeight(AutoRowHeight);
   end;
 end;
 
