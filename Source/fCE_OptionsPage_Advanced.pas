@@ -51,6 +51,8 @@ type
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure AddComponents;
     procedure ApplySettings; override;
     { Public declarations }
@@ -72,13 +74,23 @@ begin
   Painter:= TCEInspector_Painter.Create(self);
   Inspector.Painter:= Painter;
   Inspector.Style:= isItemPainter;
-  PageName:= _('Advanced');
-  PageTitle:= _('Advanced Settings');
-  PagePath:= 'Advanced';
-  ImageIndex:= 3;
-  PageListPosition:= 5;
+  LoadPageInfo;
   AddComponents;
   Inspector.Root.ExpandItems(false);
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCEOptionsPage_Advanced.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Advanced');
+  ATitle:= _('Advanced Settings');
+  APath:= 'Advanced';
+  AImageIndex:= 3;
+  APosition:= 5;
 end;
 
 {-------------------------------------------------------------------------------

@@ -40,7 +40,9 @@ type
     PageName: WideString;
     PagePath: WideString;
     Page: TCEOptionsCustomPage;
+    PageClass: TCEOptionsCustomPageClass;
     ImageIndex: Integer;
+    Position: Integer;
   end;
 
   TCEOptionsDialog = class(TForm)
@@ -82,6 +84,7 @@ type
   protected
     function CreatePageNode(PagePath: String): PVirtualNode;
     procedure CreatePages;
+    function EnsurePage(ANode: PVirtualNode): TCEOptionsCustomPage;
     procedure CreateParams(var Params: TCreateParams); override;
     function FindPageNode(PagePath: String): PVirtualNode;
     procedure SelectActivePageFromTree;
@@ -165,7 +168,7 @@ begin
   PageTree.NodeDataSize:= SizeOf(APageData);
   PageList := TObjectList.Create(true);
   CreatePages;
-  RefreshAll;
+  // Pages are built and refreshed when first selected (see EnsurePage)
   Modified:= false;
   node:= FindPageNode('General');
   if assigned(node) then
@@ -228,31 +231,82 @@ end;
 procedure TCEOptionsDialog.CreatePages;
 var
   i: Integer;
-  page: TCEOptionsCustomPage;
+  pageClass: TCEOptionsCustomPageClass;
   data: PPageData;
   node: PVirtualNode;
+  wsName, wsTitle, wsPath: WideString;
+  iImage, iPosition: Integer;
 begin
   for i:= 0 to GetOptionsPageClassList.Count - 1 do
   begin
-    page:= TCEOptionsCustomPageClass(GetOptionsPageClassList.Items[i]).Create(nil);
-    CEGlobalTranslator.TranslateComponent(page);
-    page.OptionsDialog:= Self;
-    page.Parent:= PageContainer;
-    page.Align:= alClient;
-    node:= CreatePageNode(page.PagePath);
+    pageClass:= TCEOptionsCustomPageClass(GetOptionsPageClassList.Items[i]);
+    pageClass.GetPageInfo(wsName, wsTitle, wsPath, iImage, iPosition);
+    node:= CreatePageNode(wsPath);
     if node <> nil then
     begin
       data:= PageTree.GetNodeData(node);
-      data.PageName:= page.PageName;
-      data.PagePath:= page.PagePath;
-      data.ImageIndex:= page.ImageIndex;
-      data.Page:= page;
-      PageList.Add(page);
-    end
-    else
-    page.Free;
+      data.PageName:= wsName;
+      data.PagePath:= wsPath;
+      data.ImageIndex:= iImage;
+      data.Position:= iPosition;
+      data.PageClass:= pageClass;
+      data.Page:= nil;
+    end;
   end;
   PageTree.Sort(nil,0,sdAscending, false);
+end;
+
+{*------------------------------------------------------------------------------
+  Ensure Page
+
+  Returns the page for a tree node, building it the first time the node is
+  selected: create, translate, parent, then refresh from the current settings.
+  Heavy pages (Hotkeys, Advanced) cost nothing until someone opens them.
+  Building a page must not leave the dialog marked as modified, so the flag
+  is restored afterwards. The build time is logged for DbgView.
+-------------------------------------------------------------------------------}
+function TCEOptionsDialog.EnsurePage(ANode: PVirtualNode): TCEOptionsCustomPage;
+var
+  data: PPageData;
+  page: TCEOptionsCustomPage;
+  oldCursor: TCursor;
+  wasModified: Boolean;
+  t0: Cardinal;
+begin
+  Result:= nil;
+  if ANode = nil then
+  begin
+    Exit;
+  end;
+  data:= PageTree.GetNodeData(ANode);
+  if not assigned(data) then
+  begin
+    Exit;
+  end;
+  if not assigned(data.Page) and assigned(data.PageClass) then
+  begin
+    t0:= GetTickCount;
+    wasModified:= fModified;
+    oldCursor:= Screen.Cursor;
+    Screen.Cursor:= crHourGlass;
+    try
+      page:= data.PageClass.Create(nil);
+      page.Visible:= false;
+      CEGlobalTranslator.TranslateComponent(page);
+      page.OptionsDialog:= Self;
+      page.Parent:= PageContainer;
+      page.Align:= alClient;
+      data.Page:= page;
+      PageList.Add(page);
+      page.RefreshSettings;
+    finally
+      Screen.Cursor:= oldCursor;
+      Modified:= wasModified;
+    end;
+    OutputDebugString(PChar(Format('CA options: page %s built in %d ms',
+        [string(data.PagePath), Integer(GetTickCount - t0)])));
+  end;
+  Result:= data.Page;
 end;
 
 {*------------------------------------------------------------------------------
@@ -435,7 +489,7 @@ var
 begin
   data:= Sender.GetNodeData(Node);
   if assigned(data) then
-  ActivePage:= data.Page;
+  ActivePage:= EnsurePage(Node);
 
   //if  then
   but_ok.Default:= not (ActivePage is TCEOptionsPage_Advanced);
@@ -629,7 +683,7 @@ var
 begin
   data1:= Sender.GetNodeData(Node1);
   data2:= Sender.GetNodeData(Node2);
-  Result:= data1.Page.PageListPosition - data2.Page.PageListPosition;
+  Result:= data1.Position - data2.Position;
 end;
 
 {-------------------------------------------------------------------------------

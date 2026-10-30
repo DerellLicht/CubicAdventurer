@@ -40,6 +40,8 @@ type
   protected
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
     { Public declarations }
@@ -58,10 +60,21 @@ implementation
 constructor TCE_OptionsPage_Display_Bookmarks.Create(AOwner: TComponent);
 begin
   inherited;
-  PageName:= _('Bookmarks');
-  PageTitle:= _('Bookmarks Panel Settings');
-  PagePath:= 'Display/Bookmarks';
-  ImageIndex:= 3;
+  LoadPageInfo;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCE_OptionsPage_Display_Bookmarks.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Bookmarks');
+  ATitle:= _('Bookmarks Panel Settings');
+  APath:= 'Display/Bookmarks';
+  AImageIndex:= 3;
+  APosition:= 0;
 end;
 
 {-------------------------------------------------------------------------------

@@ -96,6 +96,8 @@ type
         SetselectedAction;
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     destructor Destroy; override;
     procedure ApplySettings; override;
     procedure HandleHide; override;
@@ -196,11 +198,7 @@ var
   data: PCEActTreeData;
 begin
   inherited;
-  PageName:= _('Hotkeys');
-  PageTitle:= _('Hotkey Settings');
-  PagePath:= 'Hotkeys';
-  ImageIndex:= 4;
-  PageListPosition:= 3;
+  LoadPageInfo;
 
   HotkeyList.NodeDataSize:= SizeOf(ACEActTreeData);
   label_action_name.Images:= CE_Images.SmallIcons;
@@ -228,6 +226,20 @@ begin
     data.IsCategory:= false;
   end;
   HotkeyList.FullExpand;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TTCEOptionsPage_Hotkeys.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Hotkeys');
+  ATitle:= _('Hotkey Settings');
+  APath:= 'Hotkeys';
+  AImageIndex:= 4;
+  APosition:= 3;
 end;
 
 {-------------------------------------------------------------------------------

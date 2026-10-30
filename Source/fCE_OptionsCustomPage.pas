@@ -43,9 +43,12 @@ type
     fPagePath: WideString;
     fPageTitle: WideString;
   public
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); virtual;
     procedure ApplySettings; virtual;
     procedure HandleHide; virtual;
     procedure HandleShow; virtual;
+    procedure LoadPageInfo;
     procedure RefreshSettings; virtual;
     procedure SetModified;
     property ImageIndex: Integer read fImageIndex write fImageIndex;
@@ -112,6 +115,38 @@ procedure TCEOptionsCustomPage.SetModified;
 begin
   if assigned(fOptionsDialog) then
   TCEOptionsDialog(fOptionsDialog).Modified:= true;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: descendants override this to give the name, title, path, icon and
+  sort position of the page. It is a class procedure so the Options dialog can read
+  it without creating the page (pages are built when first selected).
+-------------------------------------------------------------------------------}
+class procedure TCEOptionsCustomPage.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= '';
+  ATitle:= '';
+  APath:= '';
+  AImageIndex:= -1;
+  APosition:= 0;
+end;
+
+{-------------------------------------------------------------------------------
+  Load PageInfo: copy the values from GetPageInfo into this page's properties.
+  Descendant constructors call this instead of assigning each value by hand.
+-------------------------------------------------------------------------------}
+procedure TCEOptionsCustomPage.LoadPageInfo;
+var
+  wsName, wsTitle, wsPath: WideString;
+  iImage, iPosition: Integer;
+begin
+  GetPageInfo(wsName, wsTitle, wsPath, iImage, iPosition);
+  fPageName:= wsName;
+  fPageTitle:= wsTitle;
+  fPagePath:= wsPath;
+  fImageIndex:= iImage;
+  fPageListPosition:= iPosition;
 end;
 
 end.

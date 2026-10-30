@@ -42,6 +42,8 @@ type
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
     { Public declarations }
@@ -66,11 +68,7 @@ var
   skins: TStringList;
 begin
   inherited;
-  PageName:= _('Display');
-  PageTitle:= _('Display Settings');
-  PagePath:= 'Display';
-  ImageIndex:= 2;
-  PageListPosition:= 2;
+  LoadPageInfo;
   // Fill themes combo
   skins:= TStringList.Create;
   try
@@ -85,6 +83,20 @@ begin
   finally
     skins.Free;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCEOptionsPage_Display.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Display');
+  ATitle:= _('Display Settings');
+  APath:= 'Display';
+  AImageIndex:= 2;
+  APosition:= 2;
 end;
 
 {-------------------------------------------------------------------------------

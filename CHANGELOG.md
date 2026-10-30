@@ -8,6 +8,7 @@
 - Changed: with Options > General > "Show Path in Title bar" off, the title bar and taskbar now show "CubicAdventurer v0.99" (the running version) instead of "CubicExplorer"; the tray icon tooltip and the startup text also say CubicAdventurer
 - Changed: Options > OK and Apply now save your settings right away, so they are no longer lost if the program is stopped or crashes before a normal exit
 - Changed: the window position and size are now saved shortly after you move or resize the window, not only when the program exits
+- Changed: Options now opens much faster; each page is built the first time you open it
 
 ## [0.98] - 2026-10-26
 - History now keeps the last 30 entries by default (was 10).

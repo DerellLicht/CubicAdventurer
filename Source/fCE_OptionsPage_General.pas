@@ -48,6 +48,8 @@ type
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
     { Public declarations }
@@ -66,11 +68,21 @@ uses
 constructor TCEOptionsPage_General.Create(AOwner: TComponent);
 begin
   inherited;
-  PageName:= _('General');
-  PageTitle:= _('General Settings');
-  PagePath:= 'General';
-  ImageIndex:= 0;
-  PageListPosition:= 0;
+  LoadPageInfo;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCEOptionsPage_General.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('General');
+  ATitle:= _('General Settings');
+  APath:= 'General';
+  AImageIndex:= 0;
+  APosition:= 0;
 end;
 
 {-------------------------------------------------------------------------------

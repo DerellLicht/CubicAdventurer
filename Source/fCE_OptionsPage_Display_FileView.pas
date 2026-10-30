@@ -125,6 +125,8 @@ type
     fExtValuesChanging: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
     { Public declarations }
@@ -147,10 +149,7 @@ uses
 constructor TCE_OptionsPage_Display_FileView.Create(AOwner: TComponent);
 begin
   inherited;
-  PageName:= _('Fileview');
-  PageTitle:= _('Fileview Settings');
-  PagePath:= 'Display/Fileview';
-  ImageIndex:= 5;
+  LoadPageInfo;
   combo_sizeformat.Items.Add(_('Default'));
   combo_sizeformat.Items.Add(_('Explorer'));
   combo_sizeformat.Items.Add(_('Actual'));
@@ -160,6 +159,20 @@ begin
   list_exts.NodeDataSize:= SizeOf(AExtListData);
 
   fExtValuesChanging:= false;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCE_OptionsPage_Display_FileView.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Fileview');
+  ATitle:= _('Fileview Settings');
+  APath:= 'Display/Fileview';
+  AImageIndex:= 5;
+  APosition:= 0;
 end;
 
 {-------------------------------------------------------------------------------

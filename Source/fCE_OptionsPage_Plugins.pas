@@ -55,6 +55,8 @@ type
     procedure PopulatePluginsTree;
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
     { Public declarations }
@@ -71,15 +73,25 @@ constructor TCEOptionsPage_Plugins.Create(AOwner: TComponent);
 begin
   inherited;
   // init options page
-  PageName:= _('Plugins');
-  PageTitle:= _('Plugins');
-  PagePath:= 'Plugins';
-  ImageIndex:= 5;
-  PageListPosition:= 4;
+  LoadPageInfo;
 
   // init values
   tree_libraries.NodeDataSize:= SizeOf(APlugData);
   tree_plugins.NodeDataSize:= SizeOf(APlugData);
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCEOptionsPage_Plugins.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Plugins');
+  ATitle:= _('Plugins');
+  APath:= 'Plugins';
+  AImageIndex:= 5;
+  APosition:= 4;
 end;
 
 {-------------------------------------------------------------------------------

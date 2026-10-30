@@ -57,6 +57,8 @@ type
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     destructor Destroy; override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
@@ -76,11 +78,21 @@ uses
 constructor TCEOptionsPage_Tabs.Create(AOwner: TComponent);
 begin
   inherited;
-  PageName:= _('Tabs');
-  PageTitle:= _('Tabs Settings');
-  PagePath:= 'Tabs';
-  ImageIndex:= 1;
-  PageListPosition:= 1;
+  LoadPageInfo;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCEOptionsPage_Tabs.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Tabs');
+  ATitle:= _('Tabs Settings');
+  APath:= 'Tabs';
+  AImageIndex:= 1;
+  APosition:= 1;
 end;
 
 {-------------------------------------------------------------------------------

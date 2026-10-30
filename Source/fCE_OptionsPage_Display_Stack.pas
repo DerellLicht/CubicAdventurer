@@ -48,6 +48,8 @@ type
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
     { Public declarations }
@@ -69,10 +71,21 @@ uses
 constructor TCE_OptionsPage_Display_Stack.Create(AOwner: TComponent);
 begin
   inherited;
-  PageName:= _('Stack');
-  PageTitle:= _('Stack Settings');
-  PagePath:= 'Display/Stack';
-  ImageIndex:= 7;
+  LoadPageInfo;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCE_OptionsPage_Display_Stack.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Stack');
+  ATitle:= _('Stack Settings');
+  APath:= 'Display/Stack';
+  AImageIndex:= 7;
+  APosition:= 0;
 end;
 
 {-------------------------------------------------------------------------------

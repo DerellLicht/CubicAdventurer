@@ -41,6 +41,8 @@ type
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
+    class procedure GetPageInfo(out AName, ATitle, APath: WideString;
+        out AImageIndex, APosition: Integer); override;
     procedure ApplySettings; override;
     procedure RefreshSettings; override;
     { Public declarations }
@@ -59,10 +61,21 @@ implementation
 constructor TCE_OptionsPage_Display_FolderTree.Create(AOwner: TComponent);
 begin
   inherited;
-  PageName:= _('Folders');
-  PageTitle:= _('Folders Panel Settings');
-  PagePath:= 'Display/Folders';
-  ImageIndex:= 4;
+  LoadPageInfo;
+end;
+
+{-------------------------------------------------------------------------------
+  Get PageInfo: name, title, path, icon and sort position of this page. The Options
+  dialog calls this to build its page tree without creating the page.
+-------------------------------------------------------------------------------}
+class procedure TCE_OptionsPage_Display_FolderTree.GetPageInfo(out AName, ATitle, APath: WideString;
+    out AImageIndex, APosition: Integer);
+begin
+  AName:= _('Folders');
+  ATitle:= _('Folders Panel Settings');
+  APath:= 'Display/Folders';
+  AImageIndex:= 4;
+  APosition:= 0;
 end;
 
 {-------------------------------------------------------------------------------
