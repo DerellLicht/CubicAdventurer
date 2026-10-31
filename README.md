@@ -73,10 +73,6 @@ Another, more complete repository was found in the
 archive, which is where I found the sources for version 1582.
 We ultimately merged the two versions together to create `CubicAdventurer`.
 
-## SignPath digital signing
-
-This program uses [SignPath](https://signpath.io/solutions/open-source-community) for digital signing
-
 ##  Missing or changed elements
 Some elements of the original are either removed from this program, or simply are not tested yet.
 
