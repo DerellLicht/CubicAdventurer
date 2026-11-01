@@ -1503,11 +1503,9 @@ begin
       if assigned(CEFolderPanel) and assigned(CEFolderPanel.FolderTree) then
       begin
         CEFolderPanel.FolderTree.ApplyViewBackground(fBackgroundColor);
-        // CA-059: same for the font size, unless FolderPanel FontSize in settings.xml overrides it
-        if CEFolderPanel.Settings.FontSize <= 0 then
-        begin
-          CEFolderPanel.FolderTree.ApplyViewFontSize(fFont.Size);
-        end;
+        // CA-059, CA-065: same for the font (face, character set and size; the size unless
+        // FolderPanel FontSize in settings.xml overrides it)
+        CEFolderPanel.FolderTree.ApplyViewFont(fFont);
       end;
       fileView.Font.Assign(fFont);
       // colors
@@ -1812,12 +1810,9 @@ begin
 
   end;
   CEFolderPanel.FolderTree.HiddenFiles:= fHiddenFiles;
-  // CA-053, CA-059: the Folders tree follows the file view background color and font size
+  // CA-053, CA-059, CA-065: the Folders tree follows the file view background color and font
   CEFolderPanel.FolderTree.ApplyViewBackground(fBackgroundColor);
-  if CEFolderPanel.Settings.FontSize <= 0 then
-  begin
-    CEFolderPanel.FolderTree.ApplyViewFontSize(fFont.Size);
-  end;
+  CEFolderPanel.FolderTree.ApplyViewFont(fFont);
 end;
 
 {*------------------------------------------------------------------------------

@@ -352,6 +352,8 @@ end;
 procedure TCEFolderPanelSettings.SetFontSize(const Value: Integer);
 begin
   fFontSize:= Value;
+  // a positive size is fixed here; otherwise the tree follows the file view font
+  FolderPanel.FolderTree.FixedFontSize:= fFontSize > 0;
   if fFontSize > 0 then
   begin
     FolderPanel.FolderTree.Font.Size:= fFontSize;
@@ -360,8 +362,8 @@ begin
   else
   begin
     SetDesktopIconFonts(FolderPanel.FolderTree.Font);
-    // CA-059: the desktop font replaced the tree's size; take the file view size again
-    FolderPanel.FolderTree.ApplyViewFontSize(FolderPanel.FolderTree.ViewFontSize);
+    // CA-059, CA-065: the desktop font replaced the tree's font; take the file view font again
+    FolderPanel.FolderTree.ReapplyViewFont;
   end;
 end;
 

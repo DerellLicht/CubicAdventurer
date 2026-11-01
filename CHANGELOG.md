@@ -3,7 +3,7 @@
 ## [0.99] - 2026-10-30
 - Fixed: a folder view sometimes stopped showing new or renamed files until you pressed F5 (mostly the Downloads folder; the browser's temporary name stayed on screen). The library mixed up which view a folder-change signal belonged to; each signal now reaches its own view
 - Fixed: the closed Workspace panel no longer watches the Desktop folder in the background until you open it
-- Changed: folder names in the Folders panel now use the same font size as the file list, and the rows grow with the font so letters like g and y are no longer cut off
+- Changed: folder names in the Folders panel now use the same font and size as the file list, and the rows grow with the font so letters like g and y are no longer cut off
 - Fixed: top-level labels in the Folders panel (Desktop, This PC, ...) now use the Folder text color instead of staying dark on a dark background
 - Changed: with Options > General > "Show Path in Title bar" off, the title bar and taskbar now show "CubicAdventurer v0.99" (the running version) instead of "CubicExplorer"; the tray icon tooltip and the startup text also say CubicAdventurer
 - Changed: Options > OK and Apply now save your settings right away, so they are no longer lost if the program is stopped or crashes before a normal exit

@@ -44,8 +44,11 @@ type
     fCenterOnExpand: Boolean;
     fHiddenFiles: Boolean;
     fOnSelectedChange: TCEFolderTreeSelectedChangeEvent;
+    fFixedFontSize: Boolean;
     fFixedLineHeight: Boolean;
     fSelectionTimer: TTimer;
+    fViewFontCharset: TFontCharset;
+    fViewFontName: string;
     fViewFontSize: Integer;
     procedure SetBrowseZipFolders(const Value: Boolean);
     procedure SetHiddenFiles(const Value: Boolean);
@@ -80,11 +83,12 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure ApplyViewBackground(AColor: TColor);
     procedure ApplyRowHeight(AHeight: Integer);
-    procedure ApplyViewFontSize(ASize: Integer);
+    procedure ApplyViewFont(AFont: TFont);
     function AutoRowHeight: Integer;
     procedure UpdateAutoRowHeight;
     function PasteShortcutFromClipboard: Boolean;
     function Refresh: Boolean;
+    procedure ReapplyViewFont;
     procedure ScrollToView(ANode: PVirtualNode; AVertical: Boolean = true;
         AHorizontal: Boolean = true);
     procedure SelectedFilesDelete(ShiftKeyState: TExecuteVerbShift = evsCurrent);
@@ -93,9 +97,9 @@ type
     property AutoExpand: Boolean read fAutoExpand write fAutoExpand;
     property BrowseZipFolders: Boolean read fBrowseZipFolders write
         SetBrowseZipFolders;
+    property FixedFontSize: Boolean read fFixedFontSize write fFixedFontSize;
     property FixedLineHeight: Boolean read fFixedLineHeight write fFixedLineHeight;
     property HiddenFiles: Boolean read fHiddenFiles write SetHiddenFiles;
-    property ViewFontSize: Integer read fViewFontSize;
   published
     property CenterOnBrowse: Boolean read fCenterOnBrowse write fCenterOnBrowse;
     property CenterOnExpand: Boolean read fCenterOnExpand write fCenterOnExpand;
@@ -197,28 +201,64 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Gives the tree the file view's font size (CA-059), so folder names in the
-  Folders panel are the same size as the names in the file list. Only the size
-  is taken over: the face and the color are left alone (the color is managed
-  by ApplyViewBackground).
+  Gives the tree the file view's font (CA-059, CA-065), so folder names in the
+  Folders panel look the same as the names in the file list. The face and the
+  character set always follow the file view; the size does too, unless
+  FixedFontSize is set (FolderPanel FontSize in settings.xml). The style and
+  the color are left alone (the color is managed by ApplyViewBackground).
 
-  The size is remembered in fViewFontSize (ViewFontSize), because setting
-  TCEFolderPanelSettings.FontSize to -1 puts the desktop icon font back on the
-  tree and has to ask for this size again. A size of 0 or less is ignored.
+  Before CA-065 the face came from the Windows desktop icon font, so the two
+  panels only matched when that font happened to be the same as the file
+  view's.
+
+  The values are remembered in fViewFontName, fViewFontCharset and
+  fViewFontSize, because setting TCEFolderPanelSettings.FontSize to -1 puts the
+  desktop icon font back on the tree and has to ask for them again
+  (ReapplyViewFont). An empty face name or a size of 0 or less is ignored.
   Called from TCEFileViewSettings (first view at startup and every settings
   change).
 -------------------------------------------------------------------------------}
-procedure TCEFolderTree.ApplyViewFontSize(ASize: Integer);
+procedure TCEFolderTree.ApplyViewFont(AFont: TFont);
 begin
-  if ASize > 0 then
+  if AFont.Name <> '' then
   begin
-    fViewFontSize:= ASize;
-    if Self.Font.Size <> ASize then
+    fViewFontName:= AFont.Name;
+    fViewFontCharset:= AFont.Charset;
+  end;
+  if AFont.Size > 0 then
+  begin
+    fViewFontSize:= AFont.Size;
+  end;
+  ReapplyViewFont;
+end;
+
+{*------------------------------------------------------------------------------
+  Puts the remembered file view font on the tree (see ApplyViewFont). Does
+  nothing to the face while no file view font has been received yet, so the
+  tree keeps the desktop icon font until then. The size is skipped while
+  FixedFontSize is set. The row height is updated in every case, because it
+  depends on the font (descenders were cut off by the next row).
+-------------------------------------------------------------------------------}
+procedure TCEFolderTree.ReapplyViewFont;
+begin
+  if fViewFontName <> '' then
+  begin
+    if not SameText(Self.Font.Name, fViewFontName) then
     begin
-      Self.Font.Size:= ASize;
+      Self.Font.Name:= fViewFontName;
+    end;
+    if Self.Font.Charset <> fViewFontCharset then
+    begin
+      Self.Font.Charset:= fViewFontCharset;
     end;
   end;
-  // the row height depends on the font (descenders were cut off by the next row)
+  if (fViewFontSize > 0) and (not fFixedFontSize) then
+  begin
+    if Self.Font.Size <> fViewFontSize then
+    begin
+      Self.Font.Size:= fViewFontSize;
+    end;
+  end;
   UpdateAutoRowHeight;
 end;
 

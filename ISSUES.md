@@ -6,9 +6,9 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 `CHANGELOG.md`; git history keeps the rest.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-064).
+Numbers are never reused (highest used so far: CA-065).
 
-Last updated: 2026-10-30 (version 0.99 in progress).
+Last updated: 2026-11-01 (version 0.99 in progress).
 
 ## Open bugs and gaps
 
@@ -20,6 +20,12 @@ Last updated: 2026-10-30 (version 0.99 in progress).
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed
   the watch list (`rebuild CONTROLS`) and every notification each view received.
+- **CA-065 Folders panel uses the file list font (face, character set, size).** Changed
+  2026-11-01 (see `CHANGELOG.md`). Reported on a Windows 11 laptop: the Folders panel showed
+  the Windows icon font while the file list used another installed font (the panel took its
+  face from the Windows icon font and only the size from the file list). Test: start the
+  program and check that folder names in the Folders panel use the same font as the file
+  list; change the file list font in Options and check that the Folders panel follows it.
 
 ## Wishlist
 
