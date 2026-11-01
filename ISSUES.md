@@ -20,12 +20,6 @@ Last updated: 2026-11-01 (version 1.00 in progress).
   use, especially downloads into the Downloads tab. If a view ever stops updating again, the
   diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed
   the watch list (`rebuild CONTROLS`) and every notification each view received.
-- **CA-065 Folders panel uses the file list font (face, character set, size).** Changed
-  2026-11-01 (see `CHANGELOG.md`). Reported on a Windows 11 laptop: the Folders panel showed
-  the Windows icon font while the file list used another installed font (the panel took its
-  face from the Windows icon font and only the size from the file list). Test: start the
-  program and check that folder names in the Folders panel use the same font as the file
-  list; change the file list font in Options and check that the Folders panel follows it.
 
 ## Wishlist
 
