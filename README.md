@@ -41,11 +41,6 @@ folder and writes nothing to `%APPDATA%`, so the whole folder can be copied or m
 To bring the settings of an installed copy along, close both programs and copy the files from
 `%APPDATA%\CubicAdventurer\` into the portable folder.
 
-Tabs saved in sessions record the full folder path, including the drive letter. If the drive letter
-changes (common with USB sticks), tabs on that drive point at the old letter. Bookmarks behave the
-same way unless "Relative" is ticked in the bookmark's properties, which stores the path relative to
-the program's folder.
-
 ## License
 
 CubicAdventurer is licensed under the Mozilla Public License 1.1 (MPL 1.1); the original author is Marko Savolainen.  
