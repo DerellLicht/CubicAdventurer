@@ -79,8 +79,13 @@ installer: check stop clean
 # Silent: no wizard and no questions (Setup closes a running CubicAdventurer itself).
 install: stop
 	@test -f "$(SETUP)" || { echo "$(SETUP) not found -- run 'make installer' first."; exit 1; }
-	"$(SETUP)" /SILENT /SUPPRESSMSGBOXES /NORESTART
-
+	@if reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{6D3B8624-167A-4CCE-8A31-A0CFF8A41FAE}_is1" >/dev/null 2>&1; then \
+		"$(SETUP)" /SILENT /SUPPRESSMSGBOXES /NORESTART; \
+	else \
+		echo "Not installed: running the interactive setup so you can choose the folder."; \
+		"$(SETUP)"; \
+	fi
+	
 # Only runs the setup program that "make installer" already built; it does not build anything.
 # *Not* Silent: let me set destination folder, etc.
 install_raw: stop
