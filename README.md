@@ -17,7 +17,7 @@ Copyright 2006-2012 Marko Savolainen
 
 ---
 
-Download the latest installer (a zip file) from [Releases](https://github.com/DerellLicht/CubicAdventurer/releases/latest).  
+Download the latest installer (a zip file) from [Releases](https://github.com/DerellLicht/CubicAdventurer/releases/latest); a portable edition is available there too (see below).  
 CubicAdventurer is a 32-bit Windows program; it runs on both 32-bit and 64-bit Windows.
 
 See [Changelog](https://github.com/DerellLicht/CubicAdventurer/blob/master/CHANGELOG.md) for the current version and the full revision history.  
@@ -31,6 +31,20 @@ To uninstall, use Windows Settings > Apps.
 
 If you used CubicExplorer before, you can bring your settings along: close CubicAdventurer,
 then copy your old `settings.xml`, `layout.xml` and `sessions.xml` into the settings folder.
+
+## Portable edition
+
+The release page also offers a portable edition, `CubicAdventurerV<version>.portable.zip`. It needs no
+installation: unzip it into any folder, including one on a USB stick, and run `CubicAdventurer.exe`.
+It keeps its settings (`settings.xml`, `layout.xml`, `sessions.xml` and so on) in the program's own
+folder and writes nothing to `%APPDATA%`, so the whole folder can be copied or moved as one.
+To bring the settings of an installed copy along, close both programs and copy the files from
+`%APPDATA%\CubicAdventurer\` into the portable folder.
+
+Tabs saved in sessions record the full folder path, including the drive letter. If the drive letter
+changes (common with USB sticks), tabs on that drive point at the old letter. Bookmarks behave the
+same way unless "Relative" is ticked in the bookmark's properties, which stores the path relative to
+the program's folder.
 
 ## License
 

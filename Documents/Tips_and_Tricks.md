@@ -301,10 +301,11 @@ Explorer window to open it).
   Layout** does the same for panel and toolbar positions without closing the program.
 - **Backing up or moving.** Copy the whole settings folder. Files from an older CubicExplorer
   load too, and keys the program does not know are ignored.
-- **A portable copy.** Next to `CubicAdventurer.exe` is a small file named `settings.path`; its
-  first line names the settings folder. Delete it (or point it at a folder on a USB stick) and the
-  program keeps its settings beside the exe instead. Starting the line with `[READONLY]` makes
-  the program read the settings but never write them.
+- **A portable copy.** The Releases page offers a portable edition that is already set up this way
+  (see the README). To make your own from an installed copy, copy the program folder and edit its
+  `settings.path`. The first line names the settings folder, and `.\` means the folder the program
+  is in. Deleting the file has the same effect. Starting the line with `[READONLY]` makes the
+  program read the settings but never write them.
 
 ## Starting from the command line
 
