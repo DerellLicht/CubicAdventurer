@@ -10,6 +10,7 @@
 #   make installer      build the Inno Setup installer from the existing exe
 #   make install        install silently with the setup that "make installer" built (builds nothing)
 #   make dist           installer, zipped for upload
+#   make portable       portable edition (no installer), zipped for upload; see Build_instructions.md
 #   make release        first release of this version: tag, push, create the GitHub release
 #   make update         refresh the release notes and uploaded zip of an existing release
 #   make retag          move the tag to HEAD (solo repo only);  make re-release = retag + update
@@ -32,8 +33,11 @@ endif
 TAG       = $(TAG_PREFIX)$(VERSION)
 SETUP     = installer/output/$(APP)V$(VERSION).setup.exe
 SETUP_ZIP = installer/output/$(APP)V$(VERSION).setup.zip
+# The portable edition is zipped from the (untracked) portable/ folder, see "portable" below.
+PORTABLE_DIR = portable
+PORTABLE_ZIP = installer/output/$(APP)V$(VERSION).portable.zip
 
-.PHONY: all version sync-version check check-exe installer install install_raw do_inst dist stop release update retag re-release check-clean sha256 clean help
+.PHONY: all version sync-version check check-exe installer install install_raw do_inst dist portable stop release update retag re-release check-clean sha256 clean help
 
 all: help
 
@@ -45,6 +49,7 @@ help:
 	@echo "make install        install the built setup silently (builds nothing)"
 	@echo "make install_raw    install the built setup interactively"
 	@echo "make dist           the installer, zipped for upload"
+	@echo "make portable       the portable edition ($(PORTABLE_ZIP)), zipped for upload"
 	@echo "make release        first release of $(TAG): tag, push, GitHub release"
 	@echo "make update         refresh the notes and zip of an existing release"
 	@echo "make retag          move $(TAG) to HEAD;  make re-release = retag + update"
@@ -97,6 +102,19 @@ do_inst: installer install
 dist: installer
 	zip -j $(SETUP_ZIP) $(SETUP)
 
+# The portable edition: the contents of the portable/ folder, zipped.  portable/ is a copy of a
+# clean installed program folder (without unins000.*) whose settings.path holds just ".\"; it is
+# not in git, and Build_instructions.md says how to make it.  Only the files that change with
+# every version (the exe, README and CHANGELOG) are refreshed here.  Settings files that a
+# test run inside portable/ may have written are left out of the zip.  Not part of "dist":
+# "installer" empties installer/output, so run this after "make dist" (release and update do).
+portable: check
+	@test -d $(PORTABLE_DIR) || { echo "$(PORTABLE_DIR)/ not found -- see 'Building the portable edition' in Build_instructions.md."; exit 1; }
+	cp $(EXE) README.md CHANGELOG.md $(PORTABLE_DIR)/
+	mkdir -p installer/output
+	rm -f $(PORTABLE_ZIP)
+	cd $(PORTABLE_DIR) && zip -r ../$(PORTABLE_ZIP) . -x 'unins*' settings.xml layout.xml sessions.xml bookmarks.xml perfolder.dat '*.zip'
+
 sha256:
 	certutil -hashfile $(subst /,\,$(SETUP_ZIP)) SHA256
 
@@ -111,18 +129,18 @@ check-clean:
 # First release of a version: tag HEAD, push the tag, create the GitHub release with the notes
 # from CHANGELOG.md and the zipped installer.  Fails at "git tag" if the tag already exists;
 # use "make update" for that.  Needs the gh CLI, signed in.
-release: check-clean dist stop
+release: check-clean dist portable stop
 	@echo Preparing GitHub release $(TAG)...
 	$(PYTHON) tools/release_notes.py $(VERSION) > temp_notes.md
 	git tag $(TAG)
 	git push origin $(TAG)
-	gh release create $(TAG) $(SETUP_ZIP) --title "$(TAG)" --notes-file temp_notes.md -R $(GH_REPO)
+	gh release create $(TAG) $(SETUP_ZIP) $(PORTABLE_ZIP) --title "$(TAG)" --notes-file temp_notes.md -R $(GH_REPO)
 	rm temp_notes.md
 	@echo Release $(TAG) uploaded to GitHub!
 
 # Refreshes an existing release: replaces the notes and (with --clobber) the uploaded zip; creates
 # the release if it does not exist yet.  Does not move the tag; see "retag".
-update: check-clean dist stop
+update: check-clean dist portable stop
 	@echo Updating release $(TAG)...
 	$(PYTHON) tools/release_notes.py $(VERSION) > temp_notes.md
 	@if gh release view $(TAG) -R $(GH_REPO) >/dev/null 2>&1; then \
@@ -133,7 +151,7 @@ update: check-clean dist stop
 		gh release create $(TAG) --title "$(TAG)" --notes-file temp_notes.md -R $(GH_REPO); \
 	fi
 	rm temp_notes.md
-	gh release upload $(TAG) $(SETUP_ZIP) --clobber -R $(GH_REPO)
+	gh release upload $(TAG) $(SETUP_ZIP) $(PORTABLE_ZIP) --clobber -R $(GH_REPO)
 	@echo Release $(TAG) assets and notes updated on GitHub!
 
 # Recovery for "released, then committed more": force-moves the tag to HEAD and re-pushes.

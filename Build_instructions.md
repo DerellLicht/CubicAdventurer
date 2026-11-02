@@ -199,7 +199,42 @@ The program itself is built in the IDE. A `Makefile` handles the rest (GNU make 
 
 Run `make help` for the other targets.
 
-## Building the portable distribution
-Run `build_portable.cmd` in program's root folder.
-This will create a file named `CubicAdventurer.portable.zip` in the `portable` folder.
+## Building the portable edition
+
+The portable edition is a zip file that runs from any folder (a USB stick, for example) and keeps
+its settings next to the exe. It is the installed program folder with one change: `settings.path`
+holds only `.\`, which means "the folder the exe is in". It is not built from scratch. It is made
+from a copy of a clean installed program folder that lives in `portable\` in the repo root. That
+folder is not in git (`.gitignore` lists it), so each developer makes it once.
+
+### Making the `portable` folder (once, and again when the installer's file list changes)
+
+1. Build the installer (`make installer`) so it matches the current `installer\CubicAdventurer.iss`.
+2. Uninstall CubicAdventurer. An upgrade install never removes files that a newer installer no
+   longer ships, so only a fresh install gives the true file list. Check that the old install
+   folder is gone.
+3. `make install`. Because the program is no longer installed, this opens the setup wizard so you
+   can pick a folder (it is silent when the program is already installed).
+4. Copy the whole install folder to `portable\` in the repo root.
+5. Delete `unins000.exe` and `unins000.dat` from `portable\`.
+6. Replace `portable\settings.path` with a file whose only line is `.\`.
+7. Do not run the program from `portable\`. It would write its settings files there. (If that
+   happens, `make portable` leaves those files out of the zip, but delete them anyway.)
+
+The files that rarely change (`7z.dll`, `Skins`, `Locale`, `Documents`) are taken from this copy,
+so repeat steps 1 to 6 when one of them changes.
+
+### Building the zip for a new version
+
+After the version is built and checked (steps 1 to 3 of "Packaging a release"):
+
+    make portable
+
+This refreshes `CubicAdventurer.exe`, `README.md` and `CHANGELOG.md` in `portable\` and writes
+`installer\output\CubicAdventurerV<version>.portable.zip`. `make installer` (and so `make dist`)
+empties `installer\output`, so run `make portable` after `make dist`. `make release` and
+`make update` do both, in that order, and upload both zip files.
+
+To test a build, unzip it into a new folder, run it, and check that nothing is created in
+`%APPDATA%\CubicAdventurer`.
 

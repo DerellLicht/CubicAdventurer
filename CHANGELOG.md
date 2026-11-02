@@ -2,7 +2,7 @@
 
 ## [1.00] - 2026-11-02
 - Changed: folder names in the Folders panel now use the same font as the file list, not just the same size (before, the font came from the Windows icon font, so the two could differ)
-- Build portable distribution of application
+- Added a portable edition (a zip file) that runs from any folder and keeps its settings next to the exe
 
 ## [0.99] - 2026-10-30
 - Fixed: a folder view sometimes stopped showing new or renamed files until you pressed F5 (mostly the Downloads folder; the browser's temporary name stayed on screen). The library mixed up which view a folder-change signal belonged to; each signal now reaches its own view
