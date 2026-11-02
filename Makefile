@@ -11,6 +11,7 @@
 #   make install        install silently with the setup that "make installer" built (builds nothing)
 #   make dist           installer, zipped for upload
 #   make portable       portable edition (no installer), zipped for upload; see Build_instructions.md
+#   make check-portable check that the committed portable/ folder matches Skins, Locale and Documents
 #   make release        first release of this version: tag, push, create the GitHub release
 #   make update         refresh the release notes and uploaded zip of an existing release
 #   make retag          move the tag to HEAD (solo repo only);  make re-release = retag + update
@@ -37,7 +38,7 @@ SETUP_ZIP = installer/output/$(APP)V$(VERSION).setup.zip
 PORTABLE_DIR = portable
 PORTABLE_ZIP = $(PORTABLE_DIR)/$(APP)V$(VERSION).portable.zip
 
-.PHONY: all version sync-version check check-exe installer install install_raw do_inst dist portable stop release update retag re-release check-clean sha256 clean help
+.PHONY: all version sync-version check check-exe installer install install_raw do_inst dist portable check-portable stop release update retag re-release check-clean sha256 clean help
 
 all: help
 
@@ -50,6 +51,7 @@ help:
 	@echo "make install_raw    install the built setup interactively"
 	@echo "make dist           the installer, zipped for upload"
 	@echo "make portable       the portable edition ($(PORTABLE_ZIP)), zipped for upload"
+	@echo "make check-portable check portable/ matches Skins, Locale and Documents (make portable does it)"
 	@echo "make release        first release of $(TAG): tag, push, GitHub release"
 	@echo "make update         refresh the notes and zip of an existing release"
 	@echo "make retag          move $(TAG) to HEAD;  make re-release = retag + update"
@@ -103,17 +105,34 @@ dist: installer
 	zip -j $(SETUP_ZIP) $(SETUP)
 
 # The portable edition: the contents of the portable/ folder, zipped.  portable/ is in git: a
-# clean installed program folder without the files that change with every version, and with a
-# settings.path that holds just ".\".  Only those files (the exe, README and CHANGELOG) are
-# copied in here, and .gitignore keeps them out of git.  Settings files that a
+# clean installed program folder without the files that change with every version (and
+# without 7z.dll, which is large), and with a settings.path that holds just ".\".  The exe,
+# 7z.dll, README and CHANGELOG are copied in here, and .gitignore keeps them out of git.
+# check-portable first makes sure the committed copies have not fallen behind the repo.
+# Settings files that a
 # test run inside portable/ may have written are left out of the zip.  The zip is left in
 # portable/ too; each run first deletes the zip files already there (and never packs them).
 # Independent of "dist": it reads nothing from installer/output and writes nothing there.
-portable: check
-	@test -d $(PORTABLE_DIR) || { echo "$(PORTABLE_DIR)/ not found -- see 'Building the portable edition' in Build_instructions.md."; exit 1; }
-	cp $(EXE) README.md CHANGELOG.md $(PORTABLE_DIR)/
+portable: check check-portable
+	cp $(EXE) 7z.dll README.md CHANGELOG.md $(PORTABLE_DIR)/
 	rm -f $(PORTABLE_DIR)/*.zip
 	cd $(PORTABLE_DIR) && zip -r $(notdir $(PORTABLE_ZIP)) . -x 'unins*' settings.xml layout.xml sessions.xml bookmarks.xml perfolder.dat '*.zip'
+
+# portable/ holds copies of repo files, so it can fall behind.  Skins and Locale are shipped whole,
+# so they are compared as folders.  The installer ships only some of Documents, so each file in
+# portable/Documents is compared with its twin in Documents; the README's image must be there.
+# Prints every difference, then fails.  Nothing is changed.
+check-portable:
+	@test -d $(PORTABLE_DIR) || { echo "$(PORTABLE_DIR)/ not found -- see 'Building the portable edition' in Build_instructions.md."; exit 1; }
+	@ok=1; \
+	for d in Skins Locale; do \
+		diff -rq $$d $(PORTABLE_DIR)/$$d || ok=0; \
+	done; \
+	for f in $(PORTABLE_DIR)/Documents/*; do \
+		cmp -s "$$f" "Documents/$$(basename "$$f")" || { echo "$$f differs from Documents/$$(basename "$$f")"; ok=0; }; \
+	done; \
+	test -f $(PORTABLE_DIR)/Documents/CA.display.example.jpg || { echo "$(PORTABLE_DIR)/Documents/CA.display.example.jpg is missing (README.md shows it)"; ok=0; }; \
+	test $$ok = 1 || { echo "$(PORTABLE_DIR)/ is out of step with the repo: see 'Keeping portable in step' in Build_instructions.md."; exit 1; }
 
 sha256:
 	certutil -hashfile $(subst /,\,$(SETUP_ZIP)) SHA256

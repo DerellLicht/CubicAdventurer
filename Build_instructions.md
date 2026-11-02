@@ -205,10 +205,11 @@ The portable edition is a zip file that runs from any folder (a USB stick, for e
 its settings next to the exe. It is the installed program folder with one change: `settings.path`
 holds only `.\`, which means "the folder the exe is in".
 
-The `portable\` folder in the repo root is its skeleton. It holds what rarely changes: `7z.dll`,
-`Skins`, `Locale`, `Documents\License.txt` and the portable `settings.path`. It does not hold the
-files that change with every version (`CubicAdventurer.exe`, `README.md`, `CHANGELOG.md`), which
-`.gitignore` keeps out of git.
+The `portable\` folder in the repo root is its skeleton. It holds what rarely changes: `Skins`,
+`Locale`, `Documents\License.txt`, `Documents\CA.display.example.jpg` (the image the README
+shows) and the portable `settings.path`. It does not hold the files that `make portable` copies
+in (`CubicAdventurer.exe`, `7z.dll`, `README.md`, `CHANGELOG.md`), which `.gitignore` keeps out
+of git.
 
 ### Building the zip for a new version
 
@@ -216,7 +217,8 @@ After the version is built and checked (steps 1 to 3 of "Packaging a release"):
 
     make portable
 
-This copies `CubicAdventurer.exe`, `README.md` and `CHANGELOG.md` into `portable\` and writes
+This first checks that `portable\` has not fallen behind the repo (see below), then copies
+`CubicAdventurer.exe`, `7z.dll`, `README.md` and `CHANGELOG.md` into `portable\` and writes
 `portable\CubicAdventurerV<version>.portable.zip`. Each run first deletes the zip files already in
 `portable\`, so only the newest one is there. `make portable` does not depend on `make dist`, and
 the order does not matter. `make release` and `make update` run both and upload both zip files.
@@ -228,10 +230,12 @@ delete them anyway).
 
 ### Keeping `portable\` in step with the installer
 
-The skeleton is a copy, so it can fall behind. When `Skins`, `Locale`, `7z.dll` or `License.txt`
-change in the repo root, or the file list in `installer\CubicAdventurer.iss` changes, update
-`portable\` to match. To see exactly what the installer ships: `make installer`, uninstall the
+The skeleton is a copy, so it can fall behind. `make portable` (or `make check-portable`) compares
+`Skins` and `Locale` with the repo root, and each file in `portable\Documents` with its twin in
+`Documents`, prints every difference and stops. Update `portable\` to match. The check cannot
+see a change to the file list in `installer\CubicAdventurer.iss`, so when that list changes,
+update `portable\` by hand. To see exactly what the installer ships: `make installer`, uninstall the
 program (an upgrade install never removes files that a newer installer no longer ships, so only a
 fresh install shows the true list), `make install` (it opens the setup wizard when the program is
 not installed), then compare the install folder with `portable\`. The only differences should be
-the files `make portable` adds, `unins000.*`, and `settings.path`.
+the files `make portable` adds (including `7z.dll`), `unins000.*`, and `settings.path`.
