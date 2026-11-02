@@ -22,7 +22,15 @@ unicode.font.list.md
 ce.wiki
 dev_notes/
 test/
-portable/
+# portable/ IS committed: 7z.dll, Skins, Locale, Documents and settings.path.  What `make portable`
+# adds or a test run writes there stays out of git:
+portable/CubicAdventurer.exe
+portable/README.md
+portable/CHANGELOG.md
+portable/*.zip
+portable/unins*
+portable/*.xml
+portable/perfolder.dat
 portable_backup/
 build_portable.out
 

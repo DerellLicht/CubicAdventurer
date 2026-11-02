@@ -33,7 +33,7 @@ endif
 TAG       = $(TAG_PREFIX)$(VERSION)
 SETUP     = installer/output/$(APP)V$(VERSION).setup.exe
 SETUP_ZIP = installer/output/$(APP)V$(VERSION).setup.zip
-# The portable edition is zipped from the (untracked) portable/ folder, see "portable" below.
+# The portable edition is zipped from the portable/ folder, see "portable" below.
 PORTABLE_DIR = portable
 PORTABLE_ZIP = $(PORTABLE_DIR)/$(APP)V$(VERSION).portable.zip
 
@@ -102,10 +102,10 @@ do_inst: installer install
 dist: installer
 	zip -j $(SETUP_ZIP) $(SETUP)
 
-# The portable edition: the contents of the portable/ folder, zipped.  portable/ is a copy of a
-# clean installed program folder (without unins000.*) whose settings.path holds just ".\"; it is
-# not in git, and Build_instructions.md says how to make it.  Only the files that change with
-# every version (the exe, README and CHANGELOG) are refreshed here.  Settings files that a
+# The portable edition: the contents of the portable/ folder, zipped.  portable/ is in git: a
+# clean installed program folder without the files that change with every version, and with a
+# settings.path that holds just ".\".  Only those files (the exe, README and CHANGELOG) are
+# copied in here, and .gitignore keeps them out of git.  Settings files that a
 # test run inside portable/ may have written are left out of the zip.  The zip is left in
 # portable/ too; each run first deletes the zip files already there (and never packs them).
 # Independent of "dist": it reads nothing from installer/output and writes nothing there.

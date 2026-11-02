@@ -203,26 +203,12 @@ Run `make help` for the other targets.
 
 The portable edition is a zip file that runs from any folder (a USB stick, for example) and keeps
 its settings next to the exe. It is the installed program folder with one change: `settings.path`
-holds only `.\`, which means "the folder the exe is in". It is not built from scratch. It is made
-from a copy of a clean installed program folder that lives in `portable\` in the repo root. That
-folder is not in git (`.gitignore` lists it), so each developer makes it once.
+holds only `.\`, which means "the folder the exe is in".
 
-### Making the `portable` folder (once, and again when the installer's file list changes)
-
-1. Build the installer (`make installer`) so it matches the current `installer\CubicAdventurer.iss`.
-2. Uninstall CubicAdventurer. An upgrade install never removes files that a newer installer no
-   longer ships, so only a fresh install gives the true file list. Check that the old install
-   folder is gone.
-3. `make install`. Because the program is no longer installed, this opens the setup wizard so you
-   can pick a folder (it is silent when the program is already installed).
-4. Copy the whole install folder to `portable\` in the repo root.
-5. Delete `unins000.exe` and `unins000.dat` from `portable\`.
-6. Replace `portable\settings.path` with a file whose only line is `.\`.
-7. Do not run the program from `portable\`. It would write its settings files there. (If that
-   happens, `make portable` leaves those files out of the zip, but delete them anyway.)
-
-The files that rarely change (`7z.dll`, `Skins`, `Locale`, `Documents`) are taken from this copy,
-so repeat steps 1 to 6 when one of them changes.
+The `portable\` folder in the repo root is its skeleton. It holds what rarely changes: `7z.dll`,
+`Skins`, `Locale`, `Documents\License.txt` and the portable `settings.path`. It does not hold the
+files that change with every version (`CubicAdventurer.exe`, `README.md`, `CHANGELOG.md`), which
+`.gitignore` keeps out of git.
 
 ### Building the zip for a new version
 
@@ -230,12 +216,22 @@ After the version is built and checked (steps 1 to 3 of "Packaging a release"):
 
     make portable
 
-This refreshes `CubicAdventurer.exe`, `README.md` and `CHANGELOG.md` in `portable\` and writes
-`portable\CubicAdventurerV<version>.portable.zip`. Each run first deletes the zip files already
-in `portable\`, so only the newest one is there. `make portable` does not depend on `make dist`,
-and the order does not matter. `make release` and `make update` run both and upload both zip
-files.
+This copies `CubicAdventurer.exe`, `README.md` and `CHANGELOG.md` into `portable\` and writes
+`portable\CubicAdventurerV<version>.portable.zip`. Each run first deletes the zip files already in
+`portable\`, so only the newest one is there. `make portable` does not depend on `make dist`, and
+the order does not matter. `make release` and `make update` run both and upload both zip files.
 
 To test a build, unzip it into a new folder, run it, and check that nothing is created in
-`%APPDATA%\CubicAdventurer`.
+`%APPDATA%\CubicAdventurer`. Do not run the program from `portable\` itself: it would write its
+settings files there (`.gitignore` ignores them and `make portable` leaves them out of the zip, but
+delete them anyway).
 
+### Keeping `portable\` in step with the installer
+
+The skeleton is a copy, so it can fall behind. When `Skins`, `Locale`, `7z.dll` or `License.txt`
+change in the repo root, or the file list in `installer\CubicAdventurer.iss` changes, update
+`portable\` to match. To see exactly what the installer ships: `make installer`, uninstall the
+program (an upgrade install never removes files that a newer installer no longer ships, so only a
+fresh install shows the true list), `make install` (it opens the setup wizard when the program is
+not installed), then compare the install folder with `portable\`. The only differences should be
+the files `make portable` adds, `unins000.*`, and `settings.path`.
