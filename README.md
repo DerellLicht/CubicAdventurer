@@ -70,7 +70,7 @@ Sadly, it eventually turned out that this version is incomplete, missing all of 
 
 Another, more complete repository was found in the 
 [Google Code](https://code.google.com/archive/p/cubicexplorer/source/default/source) 
-archive, which is where I found the sources for version 1582.
+archive, which is where the sources for version 1582 were located.
 We ultimately merged the two versions together to create `CubicAdventurer`.
 
 ##  Missing or changed elements
@@ -93,5 +93,5 @@ Some elements of the original are either removed from this program, or simply ar
 
 [Claude AI](https://claude.ai/new) 
 handled key elements of this porting operation, including determining required libraries
-for modern Delphi, converting existing code to modern Unicode support, and reorganizing interface components under my guidance.
+for modern Delphi, converting existing code to modern Unicode support, and reorganizing interface components under Derell's guidance.
 

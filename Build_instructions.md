@@ -198,3 +198,8 @@ The program itself is built in the IDE. A `Makefile` handles the rest (GNU make 
 5. `make release` tags the release, pushes the tag and creates the GitHub release.
 
 Run `make help` for the other targets.
+
+## Building the portable distribution
+Run `build_portable.cmd` in program's root folder.
+This will create a file named `CubicAdventurer.portable.zip` in the `portable` folder.
+

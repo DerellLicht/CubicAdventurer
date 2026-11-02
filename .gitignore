@@ -22,6 +22,9 @@ unicode.font.list.md
 ce.wiki
 dev_notes/
 test/
+portable/
+portable_backup/
+build_portable.out
 
 # CubicAdventurer runtime settings written next to the exe (repo root)
 /settings.xml
