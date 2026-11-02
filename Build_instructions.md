@@ -231,9 +231,10 @@ After the version is built and checked (steps 1 to 3 of "Packaging a release"):
     make portable
 
 This refreshes `CubicAdventurer.exe`, `README.md` and `CHANGELOG.md` in `portable\` and writes
-`installer\output\CubicAdventurerV<version>.portable.zip`. `make installer` (and so `make dist`)
-empties `installer\output`, so run `make portable` after `make dist`. `make release` and
-`make update` do both, in that order, and upload both zip files.
+`portable\CubicAdventurerV<version>.portable.zip`. Each run first deletes the zip files already
+in `portable\`, so only the newest one is there. `make portable` does not depend on `make dist`,
+and the order does not matter. `make release` and `make update` run both and upload both zip
+files.
 
 To test a build, unzip it into a new folder, run it, and check that nothing is created in
 `%APPDATA%\CubicAdventurer`.

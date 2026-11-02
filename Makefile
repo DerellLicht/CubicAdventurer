@@ -35,7 +35,7 @@ SETUP     = installer/output/$(APP)V$(VERSION).setup.exe
 SETUP_ZIP = installer/output/$(APP)V$(VERSION).setup.zip
 # The portable edition is zipped from the (untracked) portable/ folder, see "portable" below.
 PORTABLE_DIR = portable
-PORTABLE_ZIP = installer/output/$(APP)V$(VERSION).portable.zip
+PORTABLE_ZIP = $(PORTABLE_DIR)/$(APP)V$(VERSION).portable.zip
 
 .PHONY: all version sync-version check check-exe installer install install_raw do_inst dist portable stop release update retag re-release check-clean sha256 clean help
 
@@ -106,14 +106,14 @@ dist: installer
 # clean installed program folder (without unins000.*) whose settings.path holds just ".\"; it is
 # not in git, and Build_instructions.md says how to make it.  Only the files that change with
 # every version (the exe, README and CHANGELOG) are refreshed here.  Settings files that a
-# test run inside portable/ may have written are left out of the zip.  Not part of "dist":
-# "installer" empties installer/output, so run this after "make dist" (release and update do).
+# test run inside portable/ may have written are left out of the zip.  The zip is left in
+# portable/ too; each run first deletes the zip files already there (and never packs them).
+# Independent of "dist": it reads nothing from installer/output and writes nothing there.
 portable: check
 	@test -d $(PORTABLE_DIR) || { echo "$(PORTABLE_DIR)/ not found -- see 'Building the portable edition' in Build_instructions.md."; exit 1; }
 	cp $(EXE) README.md CHANGELOG.md $(PORTABLE_DIR)/
-	mkdir -p installer/output
-	rm -f $(PORTABLE_ZIP)
-	cd $(PORTABLE_DIR) && zip -r ../$(PORTABLE_ZIP) . -x 'unins*' settings.xml layout.xml sessions.xml bookmarks.xml perfolder.dat '*.zip'
+	rm -f $(PORTABLE_DIR)/*.zip
+	cd $(PORTABLE_DIR) && zip -r $(notdir $(PORTABLE_ZIP)) . -x 'unins*' settings.xml layout.xml sessions.xml bookmarks.xml perfolder.dat '*.zip'
 
 sha256:
 	certutil -hashfile $(subst /,\,$(SETUP_ZIP)) SHA256
