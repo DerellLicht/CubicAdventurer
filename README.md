@@ -86,11 +86,11 @@ We ultimately merged the two versions together to create `CubicAdventurer`.
 Some elements of the original are either removed from this program, or simply are not tested yet.
 
 - Language support is only partial. The Language menu lists many languages and most menu items get translated, but the Options dialog and some other text stay in English. 
+- No support for high-DPI displays
 - The built-in text editor is very rudimentary; there is no built-in support for 
   configuring syntax-highlighting settings, and other aspects are minimal.  
   It remains available (via F7 key, after clicking on a filename), but most users are
   better off dragging a file to their own program editors.
-- No support for high-DPI displays
 - not tested: treat zip (etc) archives as folders
 - not tested: File search, plugins, the media player and the image viewer.
 - not tested: non-English (non-ASCII) text in saved settings and in thumbnails of text files.
