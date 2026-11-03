@@ -22,6 +22,8 @@ unicode.font.list.md
 ce.wiki
 dev_notes/
 test/
+show_hn.md
+
 # portable/ IS committed: Skins, Locale, Documents and settings.path.  What `make portable`
 # copies in (the exe, 7z.dll, README, CHANGELOG) or a test run writes there stays out of git:
 portable/CubicAdventurer.exe

@@ -74,7 +74,7 @@ what you were doing when it appeared, and your version of Windows.
 
 One version of the source code is hosted at [vatterspun](https://github.com/vatterspun)'s 
 [CubicExplorer](https://github.com/vatterspun/cubicexplorer) repository on GitHub;  
-Sadly, it eventually turned out that this version is incomplete, missing all of the tabs from the  
+Sadly, it eventually turned out that this version is incomplete, missing all of the tabs from the 
 **Tools -> Options -> Display -> Fileview** dialog, among other elements.   
 
 Another, more complete repository was found in the 
@@ -85,7 +85,7 @@ We ultimately merged the two versions together to create `CubicAdventurer`.
 ##  Missing or changed elements
 Some elements of the original are either removed from this program, or simply are not tested yet.
 
-- English only for now: the original program's language support is not re-enabled yet, and is untested
+- Language support is only partial. The Language menu lists many languages and most menu items get translated, but the Options dialog and some other text stay in English. 
 - The built-in text editor is very rudimentary; there is no built-in support for 
   configuring syntax-highlighting settings, and other aspects are minimal.  
   It remains available (via F7 key, after clicking on a filename), but most users are
