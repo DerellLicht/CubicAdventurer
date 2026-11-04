@@ -8,7 +8,7 @@ once confirmed. When an item is fixed, delete it from this file and describe the
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
 Numbers are never reused (highest used so far: CA-065).
 
-Last updated: 2026-11-01 (version 1.00 in progress).
+Last updated: 2026-11-03 (version 1.00 in progress).
 
 ## Open bugs and gaps
 
@@ -49,7 +49,25 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   `Locale/default.pot` with `ExtractPOT.bat`) were deleted on 2026-10-27; fetch dxgettext
   again (or use GNU gettext) when this is taken up. Commit before the deletion: bf3816f.
 - **CA-021 [feature] Win64 build.**
-- **CA-022 [feature] DPI awareness** (users report it is missing).
+- **CA-022 [feature] High-DPI support** (users report it is missing; the README says it
+  is not supported). Findings of 2026-11-03, from reading the repo only (nothing was run at
+  a scaled display). The chat is saved as `Documents/High-DPI support plan.md`; its remark
+  that the skins are bitmaps is wrong, see below.
+  - The exe is already Per-Monitor (v2) aware (checked in Task Manager), so Windows does
+    not stretch it. At 125% or more, any problem is the program's own drawing.
+  - Skins (`Skins/*.skn`) are plain text files of colors, drawn live by SpTBXLib, whose
+    draw calls in our code already pass `CurrentPPI`. No new art is needed; only the
+    1-pixel borders and the fixed `TitleBarBorderSize` might look thin.
+  - Main cost is icons: the five `TPngImageList`s in `dCE_Images.dfm` (`SmallIcons`,
+    `MediumIcons`, `BookmarkImages`, `MiscImages`, `QuickViewImages`) are fixed at 16 or
+    24 px. Options: stretch the existing art (soft, no new art), a vector icon set under a
+    suitable license (check each one), or larger icons only at high scaling.
+  - Unknown, and decides how far we get: DPI support in the patched Toolbar2000, the
+    Mustangpeak list view and tree, and JVCL docking (vendoring is dropped).
+  - Also to check: pixel values saved in `layout.xml`, column widths and window position
+    when settings are used at a different scale; pixel sizes hard-coded in the code.
+  - First step when taken up: screenshots at 150% (main window with a few panels open, and
+    the Options dialog) from the Windows 11 laptop or a user; not from the desktop.
 - **CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal).** Decided to do
   this in a new thread after the Delphi release is stable. Core code is portable; the hard
   parts are SpTBX/Toolbar2000, the Mustangpeak shell components and JVCL docking.
