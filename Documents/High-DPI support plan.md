@@ -1,14 +1,14 @@
 ---
-title: "High-DPI support plan"
+title: "High-DPI support scope"
 source: claude.ai
 url: "https://claude.ai/chat/1ed80f24-6d69-4789-b556-f8941f5af89a"
 created: 2026-11-03T21:52:33.973Z
-updated: 2026-11-03T22:00:27.907Z
-exported: 2026-11-03T22:01:21.314Z
+updated: 2026-11-04T00:57:55.280Z
+exported: 2026-11-04T00:58:04.439Z
 model: "claude-sonnet-5-5"
 ---
 
-# High-DPI support plan
+# High-DPI support scope
 
 ## You
 
@@ -74,3 +74,70 @@ On the images, you wouldn't need artistic skills. The realistic options, cheapes
 - **Offer larger icons only at high scaling.** Do the cheap scaling for most people and make the hand-picked artwork a later refinement.
 
 If you ever want to pick this up, the first step is still just that 150% screenshot, from the laptop or from a user who reported the problem. Until then I'll leave it alone.
+
+## You
+
+Let me ask one more question about high-DPI support... no, don't write any code!!
+You previously mentioned issues related to resizing icons...
+What will have to be done with themes??  
+As an example, I use the `DeviantDark` theme, which looks like the attached image... 
+I don't know how the themes are actually generated... if they are drawn live, we are probably fine... if they are fixed images, though... that may be another headache...
+
+## Claude
+
+I can answer that from the skin files themselves, so let me look at one.
+
+Good news, and I need to correct something I told you earlier. I said the ten `.skn` skins were bitmaps drawn at one size. That was wrong: I hadn't opened one when I wrote it. I have now, and I looked at `Deviant Dark.skn`.
+
+A skin is a plain text file of about 6 KB with no images in it. It lists a color or a two-color gradient for the body and borders of each kind of control: menu bar, toolbar, tab, panel title bar, header, edit frame and so on. SpTBXLib draws the shapes live from those colors, and the draw calls we have in our code already pass the current scale to it. So the themes should not need any new artwork. All ten skins are the same kind of file.
+
+Two small things could still look off at 150% or 200%, and I can't tell without seeing it:
+
+- **Thin lines.** The skin's borders are one pixel wide, so they could look finer than the rest of the interface. The title bar border is a fixed 4 pixels.
+- **Anything in the screenshot that isn't a theme.** The folder icons on the tabs, the blue download arrow, the drive icons in the Folders panel, and the tab close marks are not part of the skin. They come from the image lists, so they are the same icon problem as before, not a theme problem.
+
+The text in your screenshot is a font, and fonts scale with their point size, so it should be fine.
+
+So the only artwork cost is still the icons, not the themes.
+
+## You
+
+Thank you!!!  
+I'm really not looking forward to dealing with this issue, but I follow other software groups, and high-DPI support is a commonly-discussed issue, so I suspect that it is a little land-mine that will go off at some point...
+
+## Claude
+
+That's a reasonable instinct. High-DPI screens are getting more common, especially on laptops, and a lot of Delphi programs from this era have had the same problem. Today's findings do give us a head start. The exe is already per-monitor aware, the themes are drawn live, and the real cost is concentrated in the icons, so it is a contained problem and not a rewrite.
+
+If a user does report it, the most useful things they can send are a screenshot and their Windows scaling percentage. With those we can skip the guessing stage.
+
+Do you want me to add a few lines to CA-022 in `ISSUES.md` with what we found today? That would save re-deriving it later. I'll leave the ticket alone unless you say yes.
+
+## You
+
+YES!!!  Excellent idea !!  I keep forgetting about that resource, it has been invaluable!!
+Yes, add what we now know to a ticket number...
+
+## Claude
+
+The pull brought in a new file, `Documents/High-DPI support plan.md`, that wasn't there when I looked earlier. I'll read it before touching the ticket.
+
+CA-022 now holds what we found today, and it's pushed to `master` (commit 26379a0, docs only). It's still in Deferred, and the "Last updated" date in the header is bumped.
+
+The entry covers:
+- the exe being Per-Monitor (v2) aware
+- the skins being live-drawn color files
+- the five fixed-size icon lists as the main cost
+- the unknowns in Toolbar2000, the Mustangpeak list view and tree, and JVCL docking
+- the settings saved in pixels
+- the first step when it's taken up: 150% screenshots from the laptop or a user, not from your desktop
+
+The `Documents/High-DPI support plan.md` file you committed is an export from before my skin correction, so it still says the skins are bitmaps. I left it alone, and the ticket notes that this one remark in it is wrong. If you re-export this chat later, the export will have the corrected version.
+
+## You
+
+Excellent - that will work beautifully, because I intend to click that "Claude as Markdown" icon as soon as I send this!!!
+
+## Claude
+
+Then the export will carry the corrected skin answer, and the ticket and the document will agree. Enjoy the rest of your afternoon.
