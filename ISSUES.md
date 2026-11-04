@@ -27,17 +27,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Deferred (not started)
 
-- **CA-016 [feature] Text editor: highlighter color settings.** There is no page for
-  editing highlighter colors; the highlighters use the SynEdit default colors. The Text
-  Editor options page (`fCE_TextEditorOptions.pas`) only has the multi-highlighter
-  background check box.
-  Deferred by decision (2026-10-27): the built-in text editor stays basic. Programmers
-  have their own editors (drag and drop from the List view works), and making this a real
-  editor is too much effort for a file manager.
-- **CA-051 [bug] Text editor: Alt-drag column selection.** Not re-checked since the SynEdit
-  swap. `eoAltSetsColumnMode` is missing from the editor's `Options` in
-  `fCE_TextEditor.dfm`, which would explain it. Add the option, then test Alt-drag.
-  Deferred with CA-016 (no further text editor development).
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
   do not). The Translate action and PO editor code remain in the source; the menu items
   are removed. Take up when someone with another language asks. At that point also test
@@ -46,7 +35,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   The `BuildCE/Tools/dxgettext` binaries (Cygwin and gettext tools that rebuilt
   `Locale/default.pot` with `ExtractPOT.bat`) were deleted on 2026-10-27; fetch dxgettext
   again (or use GNU gettext) when this is taken up. Commit before the deletion: bf3816f.
-- **CA-021 [feature] Win64 build.**
 - **CA-022 [feature] High-DPI support** (users report it is missing; the README says it
   is not supported). Findings of 2026-11-03, from reading the repo only (nothing was run at
   a scaled display). The chat is saved as `Documents/High-DPI support plan.md`; its remark
@@ -66,6 +54,18 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
     when settings are used at a different scale; pixel sizes hard-coded in the code.
   - First step when taken up: screenshots at 150% (main window with a few panels open, and
     the Options dialog) from the Windows 11 laptop or a user; not from the desktop.
+- **CA-016 [feature] Text editor: highlighter color settings.** There is no page for
+  editing highlighter colors; the highlighters use the SynEdit default colors. The Text
+  Editor options page (`fCE_TextEditorOptions.pas`) only has the multi-highlighter
+  background check box.
+  Deferred by decision (2026-10-27): the built-in text editor stays basic. Programmers
+  have their own editors (drag and drop from the List view works), and making this a real
+  editor is too much effort for a file manager.
+- **CA-051 [bug] Text editor: Alt-drag column selection.** Not re-checked since the SynEdit
+  swap. `eoAltSetsColumnMode` is missing from the editor's `Options` in
+  `fCE_TextEditor.dfm`, which would explain it. Add the option, then test Alt-drag.
+  Deferred with CA-016 (no further text editor development).
+- **CA-021 [feature] Win64 build.**
 - **CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal).** Decided to do
   this in a new thread after the Delphi release is stable. Core code is portable; the hard
   parts are SpTBX/Toolbar2000, the Mustangpeak shell components and JVCL docking.
