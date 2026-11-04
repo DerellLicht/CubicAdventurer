@@ -37,11 +37,7 @@ then copy your old `settings.xml`, `layout.xml` and `sessions.xml` into the sett
 
 ## Portable edition
 
-The release page also offers a portable edition, `CubicAdventurerV<version>.portable.zip`. It needs no
-installation: unzip it into any folder, including one on a USB stick, and run `CubicAdventurer.exe`.
-It keeps its settings (`settings.xml`, `layout.xml`, `sessions.xml` and so on) in the program's own
-folder and writes nothing to `%APPDATA%`, so the whole folder can be copied or moved as one.
-To bring the settings of an installed copy along, close both programs and copy the files from
+The release page also offers a portable edition, `CubicAdventurerV<version>.portable.zip`. It needs no installation: unzip it into any folder, including one on a USB stick, and run `CubicAdventurer.exe`.  It keeps its settings (`settings.xml`, `layout.xml`, `sessions.xml` and so on) in the program's own folder and writes nothing to `%APPDATA%`, so the whole folder can be copied or moved as one.  To bring the settings of an installed copy along, close both programs and copy the files from
 `%APPDATA%\CubicAdventurer\` into the portable folder.
 
 ## License
