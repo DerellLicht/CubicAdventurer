@@ -1,6 +1,6 @@
 # CubicAdventurer
 
-## The Dragon Rises From The Dead
+### The Dragon Rises From The Dead
 
 CubicAdventurer is a revival of the long-abandoned `CubicExplorer` (version 0.96.0.1582), an extremely customizable Windows file manager created by Marko Savolainen.
 CubicAdventurer is a file manager aimed for basic and advanced users.  
