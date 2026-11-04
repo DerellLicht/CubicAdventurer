@@ -2,11 +2,12 @@
 
 This is the maintainer's working list. Reports from users arrive on the GitHub
 [Issues](https://github.com/DerellLicht/CubicAdventurer/issues) page and are copied here
-once confirmed. When an item is fixed, delete it from this file and describe the fix in
-`CHANGELOG.md`; git history keeps the rest.
+once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md` (newest
+first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-065).
+Numbers are never reused (highest used so far: CA-065). The exception is CA-051 to CA-059,
+which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-03 (version 1.00 in progress).
 
