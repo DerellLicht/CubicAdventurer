@@ -22,6 +22,24 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-04
+
+### CA-058 (2nd use) [bug] File view sometimes misses added or renamed files
+Opened 2026-10-30 (formerly CA-011), closed 2026-11-04 (1.00). Fixed 2026-10-30 (0.99); confirmed by
+Derell on 2026-11-04 after several days of heavy downloading: the view updated every time, whether or
+not Downloads was the folder being viewed.
+Symptom: a folder view, mostly the Downloads tab, stopped showing new or renamed files until F5, while
+Windows Explorer always updated. Chromium-based browsers download as `.tmp`, rename to `.crdownload`, then
+to the final name; CubicAdventurer kept showing the temporary name.
+Cause, found with trace builds, DbgView logs and probe files written from a console: in the Mustangpeak
+library's `RebuildWatchNotify` (`VirtualShellNotifier.pas`) the array that maps watch slots to views was
+written but never cleared, so stale entries survived every rebuild. The Workspace panel (closed, and never
+opened by Derell) built a file view at startup that registered a folder watch; it took a slot about two
+seconds after launch, every later tab's slot shifted, and change signals went to the wrong view.
+Fix: the array is cleared on each rebuild (a vendored copy of upstream `VirtualShellNotifier.pas` with one
+marked change), and the Workspace panel's view only watches while the panel is shown. Verified in logs.
+The trace builds are in git history (commits 98703df to abc896b) if it ever returns. See also CA-011.
+
 ## 2026-11-01
 
 ### CA-065 [bug] Folders panel used a different font from the file list
@@ -69,21 +87,6 @@ Opened 2026-10-30, closed 2026-10-30 (0.99). Done, confirmed by Derell.
 Folder names in the Folders panel now use the file list's font size, and the row height follows the font,
 so descenders (g, j, p, y) are no longer cut off by the next row. Only the size was shared; the font face
 was fixed later under CA-065.
-
-### CA-058 (2nd use) [bug] File view sometimes misses added or renamed files
-Opened 2026-10-30 (formerly CA-011), fixed 2026-10-30 (0.99). **Still listed in `ISSUES.md` under "Checks
-still owed" until Derell has used it enough to call it fixed.**
-Symptom: a folder view, mostly the Downloads tab, stopped showing new or renamed files until F5, while
-Windows Explorer always updated. Chromium-based browsers download as `.tmp`, rename to `.crdownload`, then
-to the final name; CubicAdventurer kept showing the temporary name.
-Cause, found with trace builds, DbgView logs and probe files written from a console: in the Mustangpeak
-library's `RebuildWatchNotify` (`VirtualShellNotifier.pas`) the array that maps watch slots to views was
-written but never cleared, so stale entries survived every rebuild. The Workspace panel (closed, and never
-opened by Derell) built a file view at startup that registered a folder watch; it took a slot about two
-seconds after launch, every later tab's slot shifted, and change signals went to the wrong view.
-Fix: the array is cleared on each rebuild (a vendored copy of upstream `VirtualShellNotifier.pas` with one
-marked change), and the Workspace panel's view only watches while the panel is shown. Verified in logs.
-The trace builds are in git history (commits 98703df to abc896b) if it ever returns. See also CA-011.
 
 ## 2026-10-27
 

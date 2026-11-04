@@ -9,7 +9,7 @@ Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of det
 Numbers are never reused (highest used so far: CA-065). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-03 (version 1.00 in progress).
+Last updated: 2026-11-04 (version 1.00 in progress).
 
 ## Open bugs and gaps
 
@@ -17,10 +17,7 @@ Last updated: 2026-11-03 (version 1.00 in progress).
 
 ## Checks still owed
 
-- **CA-058 file view auto-update.** Fixed 2026-10-30 (see `CHANGELOG.md`). Keep an eye on it in daily
-  use, especially downloads into the Downloads tab. If a view ever stops updating again, the
-  diagnostic trace build is in git history (commits 98703df to abc896b); the trace logs showed
-  the watch list (`rebuild CONTROLS`) and every notification each view received.
+(none at the moment)
 
 ## Wishlist
 

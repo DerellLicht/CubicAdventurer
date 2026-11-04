@@ -3,9 +3,9 @@
 How to assemble the tools and libraries and build CubicAdventurer from source with
 **Embarcadero Delphi 13 Florence, Community Edition**. Win32 only for now.
 
-> **DRAFT.** Items marked **[CONFIRM]** were written from notes and need checking against a
-> machine that has actually built the project. Library versions are those used for the first
-> release.
+> **DRAFT.** Written from notes and the project files. Items marked **[CONFIRM]** have not been
+> checked on a machine that has actually built the project. Library versions are those used for
+> the first release.
 
 ## What you need
 
@@ -36,8 +36,8 @@ Work on the `master` branch. The project file is `Source\CubicAdventurer.dproj`
 | JCL | GetIt (source only) | **Manual build**, see below |
 | JVCL | GetIt (source only) | **Manual build**, see below |
 | Toolbar2000 (TB2K) and SpTBXLib | GitHub (SilverpointDev/sptbxlib for SpTBX) | **Manual**, see below |
-| Graphics32 | GitHub (graphics32/graphics32) | **Manual**; source folder added to the Library path. **[CONFIRM packages]** |
-| PngComponents | GitHub (UweRaabe/PngComponents) | **Manual**; source folder added to the Library path. **[CONFIRM packages]** |
+| Graphics32 | GitHub (graphics32/graphics32) | **Manual**; source folder added to the Library path; packages in `Source\Packages\D11 and later` |
+| PngComponents | GitHub (UweRaabe/PngComponents) | **Manual**; source folder added to the Library path; packages in `Packages` |
 
 Components that ship inside the repo (CEAction, fcl-xml, DirectX headers, CubicCore, and the
 patched Mustangpeak copies under `Source\Components`) need no installation.
@@ -85,6 +85,15 @@ Both were installed by hand from their GitHub sources. Add the `Source` folder o
 Win32 Library path (see the list below). Build and install their design packages (*Graphics32
 Design Time Package* and *Png Components Designtime* in the IDE's list).
 
+Where the packages are (from the two repositories as of 2026-11-04; the exact files used for
+the first release were not recorded):
+
+- Graphics32: `Source\Packages\D11 and later` holds the runtime package (`GR32_R`) and the
+  design-time package (`GR32_D`). Build the runtime package first.
+- PngComponents: `Packages\PngComponents.groupproj` builds `PngComponents` (runtime) and
+  `PngComponentsDesign` (design-time). This is the fork by Uwe Raabe, not the original
+  library.
+
 ### VirtualShellTools
 
 ```
@@ -110,7 +119,10 @@ After the libraries are built, these design packages should be installed in the 
 - **This project's own package:** *CubicAdventurer design-time components (TCEToolbar,
   TCEToolbarAction, ...)*. Open `Source\CE_Design.dproj`, build it and install it **last**, after
   the libraries above. Without it the forms that use these components cannot be opened in the
-  form designer. **[CONFIRM whether the program also fails to compile without it]**
+  form designer. The package is design-time only: `CubicAdventurer.dproj` does not refer to
+  it, and the exe compiles the toolbar units (`CE_Toolbar`, `CE_SpTBXItems`, `CE_TBActions`)
+  from source, so building the exe should not need it. **[CONFIRM: not yet tried on a machine
+  without the package]**
 
 ## The Library path
 
@@ -177,6 +189,16 @@ To change the defaults, replace those two files (for example with ones the progr
 clean start and the layout you want), then run `python tools\make_default_res.py` and rebuild the
 program. `python tools\make_default_res.py --check` reports whether the `.res` is up to date.
 Python 3 is enough; the Delphi resource compiler (`BRCC32`) is not needed.
+
+## Other compilers (Lazarus)
+
+CubicAdventurer builds with Delphi only. It cannot be built with Lazarus (the free Pascal
+environment based on the Free Pascal Compiler), because three libraries it depends on have no
+Lazarus version: SpTBXLib with Toolbar2000 (toolbars and menus), the Mustangpeak shell tools
+(the file list and folder tree, which are built on Windows shell items) and the JVCL docking
+components (the dockable panels). A Lazarus version would have to replace all three, which
+makes it a separate program, not a different way to build this one. Forks are welcome under
+the project's license.
 
 ## Troubleshooting
 
