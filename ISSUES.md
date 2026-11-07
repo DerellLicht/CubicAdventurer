@@ -17,14 +17,7 @@ Last updated: 2026-11-07 (version 1.01 in progress).
 
 ## Checks still owed
 
-- **CA-066 [task] Check the theme preview on Options > Display.** Implemented, not compiled.
-  Options > Display now shows a picture of the selected theme to the right of the Theme
-  box, when a picture named like the skin file (`Blue_Line_v5.skn` -> `Blue_Line_v5.png`)
-  is in the same folder. Check: with such a pair in the `Skins` folder of the installed
-  program, picking that theme shows the picture (scaled down to fit); picking one without a
-  picture, or Default, leaves the area empty; the Restore Default Layout button and the
-  Show Path in Title bar check box now fit beside the picture; Cancel after browsing
-  themes still leaves the old theme in place.
+(none at the moment)
 
 ## Wishlist
 
@@ -84,14 +77,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Misc tasks
 
-- **CA-067 [task] Make preview pictures for the shipped themes.** `tools/SkinPreview/` is
-  a small Delphi program (not compiled yet) that applies each `Skins\*.skn` to a sample
-  window and saves `<skin>.png` next to it, skipping skins that already have one. With
-  `/export` it first writes a `.skn` for each skin built into the libraries (Dream, Aluminum,
-  Office XP, Chrome ...), which have no file. To do:
-  build and run it, look at the pictures, then commit them with the skins. Note that
-  `make check-portable` compares `Skins` with `portable/Skins`, so new .png files show up
-  there as differences until the portable folder is brought in step.
 - **CA-005a [task] Spread the word further.** The first announcement reached fewer places
   than hoped. Brain-storm other options: Windows file-manager discussion sites on Reddit
   and similar communities, software directories, and forums for other Delphi-era tools.

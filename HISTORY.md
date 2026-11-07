@@ -22,6 +22,28 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-07
+
+### CA-067 [task] Make preview pictures for the shipped themes
+Opened 2026-11-07, closed 2026-11-07 (1.01). Done.
+`tools/SkinPreview/SkinPreview.dpr` applies each skin to a sample window and saves `<skin>.png` next to
+it (client area only, existing pictures kept, `/force` replaces them). Wrong turns: `CAPTUREBLT` is not
+declared in Delphi's Windows unit; the tab strip at a fixed top covered the second toolbar row (now
+aligned); the first pictures included the outer frame and, with WindowBlinds running, its colors on
+the controls, so they were regenerated under a stock Windows theme. `/export` writes a `.skn` for the
+13 skins that are built into SpTBXLib and CA (Aluminum, Athen, Dream, Eos, Human, Leopard, Xito, the
+Office skins, Chrome), which have no file; the program keeps using its built-in copy. Default has no
+picture. The pictures were committed with the skins.
+
+### CA-066 [task] Check the theme preview on Options > Display
+Opened 2026-11-07, closed 2026-11-07 (1.01). Done; confirmed by Derell in the installed program.
+Options > Display shows `<skin file>.png` to the right of the Theme box and updates as the selection
+changes, including when arrowing through the open list (the theme applies only at OK or Apply). The
+skin name is not the file name, so `Main.pas` remembers which file each skin came from. Wrong turn:
+the page was clipped at 441 pixels by the width cap every Options page inherits, although the dialog's
+page area is 521 wide; the Display page now lifts the cap. The Restore Default Layout button was
+narrowed to the Theme box's width.
+
 ## 2026-11-04
 
 ### CA-058 (2nd use) [bug] File view sometimes misses added or renamed files
