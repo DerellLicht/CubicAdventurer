@@ -86,7 +86,9 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 - **CA-067 [task] Make preview pictures for the shipped themes.** `tools/SkinPreview/` is
   a small Delphi program (not compiled yet) that applies each `Skins\*.skn` to a sample
-  window and saves `<skin>.png` next to it, skipping skins that already have one. To do:
+  window and saves `<skin>.png` next to it, skipping skins that already have one. With
+  `/export` it first writes a `.skn` for each skin built into the libraries (Dream, Aluminum,
+  Office XP, Chrome ...), which have no file. To do:
   build and run it, look at the pictures, then commit them with the skins. Note that
   `make check-portable` compares `Skins` with `portable/Skins`, so new .png files show up
   there as differences until the portable folder is brought in step.
