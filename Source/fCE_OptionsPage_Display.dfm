@@ -34,9 +34,9 @@ inherited CEOptionsPage_Display: TCEOptionsPage_Display
   end
   object image_preview: TImage
     Left = 176
-    Top = 16
-    Width = 257
-    Height = 279
+    Top = 3
+    Width = 335
+    Height = 330
     Center = True
   end
 end
