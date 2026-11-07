@@ -30,6 +30,10 @@ uses
   TB2Dock, TB2Item, TB2Toolbar,
   SpTBXSkins, SpTBXItem, SpTBXControls, SpTBXEditors, SpTBXTabs;
 
+const
+  // BitBlt flag to include layered windows; not declared in Delphi's Windows unit
+  CAPTUREBLT = $40000000;
+
 type
   TPreviewForm = class(TForm)
   private
