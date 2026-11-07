@@ -26,7 +26,7 @@ program SkinPreview;
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  ExtCtrls, ComCtrls, pngimage, DwmApi,
+  ExtCtrls, ComCtrls, pngimage,
   TB2Dock, TB2Item, TB2Toolbar,
   SpTBXSkins, SpTBXItem, SpTBXControls, SpTBXEditors, SpTBXTabs;
 
@@ -56,7 +56,7 @@ begin
   Caption:= 'Skin Preview';
   Position:= poScreenCenter;
   ClientWidth:= 340;
-  ClientHeight:= 400;
+  ClientHeight:= 372;
   fTitleBar:= TSpTBXTitleBar.Create(Self);
   fTitleBar.Parent:= Self;
   fTitleBar.Align:= alClient;
@@ -235,25 +235,22 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
-  Copy the window from the screen into ABitmap. The extended frame bounds from
-  the desktop window manager leave out the invisible resize border and shadow,
-  GetWindowRect is the fallback.
+  Copy the client area of AForm from the screen into ABitmap. The skinned title
+  bar fills the whole client area, so this is the skinned window without the frame
+  Windows (or a desktop theme program such as WindowBlinds) draws around it.
 -------------------------------------------------------------------------------}
-function CaptureWindow(AWnd: HWND; ABitmap: TBitmap): Boolean;
+function CaptureClient(AForm: TForm; ABitmap: TBitmap): Boolean;
 var
-  r: TRect;
+  topLeft: TPoint;
   screenDC: HDC;
 begin
-  if DwmGetWindowAttribute(AWnd, DWMWA_EXTENDED_FRAME_BOUNDS, @r, SizeOf(r)) <> S_OK then
-  begin
-    GetWindowRect(AWnd, r);
-  end;
+  topLeft:= AForm.ClientToScreen(Point(0, 0));
   ABitmap.PixelFormat:= pf24bit;
-  ABitmap.SetSize(r.Right - r.Left, r.Bottom - r.Top);
+  ABitmap.SetSize(AForm.ClientWidth, AForm.ClientHeight);
   screenDC:= GetDC(0);
   try
     Result:= BitBlt(ABitmap.Canvas.Handle, 0, 0, ABitmap.Width, ABitmap.Height,
-        screenDC, r.Left, r.Top, SRCCOPY or CAPTUREBLT);
+        screenDC, topLeft.X, topLeft.Y, SRCCOPY or CAPTUREBLT);
   finally
     ReleaseDC(0, screenDC);
   end;
@@ -323,7 +320,7 @@ begin
       bmp:= TBitmap.Create;
       png:= TPngImage.Create;
       try
-        if CaptureWindow(AForm.Handle, bmp) then
+        if CaptureClient(AForm, bmp) then
         begin
           png.Assign(bmp);
           png.SaveToFile(pngFile);
