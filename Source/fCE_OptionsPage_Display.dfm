@@ -1,4 +1,6 @@
 inherited CEOptionsPage_Display: TCEOptionsPage_Display
+  Width = 521
+  Constraints.MaxWidth = 0
   object TntLabel1: TLabel
     Left = 16
     Top = 16
