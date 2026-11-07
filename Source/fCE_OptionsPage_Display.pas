@@ -30,7 +30,7 @@ uses
   SpTBXSkins,
   // System Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+  Dialogs, StdCtrls, ExtCtrls, pngimage;
 
 type
   TCEOptionsPage_Display = class(TCEOptionsCustomPage)
@@ -38,7 +38,10 @@ type
     combo_theme: TComboBox;
     check_path_in_title: TCheckBox;
     TntButton1: TButton;
+    image_preview: TImage;
+    procedure combo_themeChange(Sender: TObject);
   private
+    procedure UpdateThemePreview;
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
@@ -86,6 +89,80 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Theme combo changed: mark the page modified and show the theme's preview.
+-------------------------------------------------------------------------------}
+procedure TCEOptionsPage_Display.combo_themeChange(Sender: TObject);
+begin
+  HandleChange(Sender);
+  UpdateThemePreview;
+end;
+
+{-------------------------------------------------------------------------------
+  Show the preview picture of the theme selected in the combo box.
+  The picture is optional: it is the skin file's name with a .png extension, in the
+  same folder. If it does not exist (or cannot be loaded) the preview stays empty.
+  The picture is scaled down (never up) to fit the image area, using HALFTONE
+  stretching, because the default TImage stretching looks coarse for small text.
+-------------------------------------------------------------------------------}
+procedure TCEOptionsPage_Display.UpdateThemePreview;
+var
+  skinFile, picFile: string;
+  png: TPngImage;
+  src, dst: TBitmap;
+  scale: Double;
+  w, h: Integer;
+begin
+  image_preview.Picture.Assign(nil);
+  skinFile:= MainForm.GetSkinFileName(combo_theme.Text);
+  if skinFile = '' then
+  begin
+    Exit;
+  end;
+  picFile:= ChangeFileExt(skinFile, '.png');
+  if not FileExists(picFile) then
+  begin
+    Exit;
+  end;
+  png:= TPngImage.Create;
+  src:= TBitmap.Create;
+  dst:= TBitmap.Create;
+  try
+    try
+      png.LoadFromFile(picFile);
+      src.Assign(png);
+      scale:= 1.0;
+      if src.Width * image_preview.Height > src.Height * image_preview.Width then
+      begin
+        scale:= image_preview.Width / src.Width;
+      end
+      else begin
+        scale:= image_preview.Height / src.Height;
+      end;
+      if scale > 1.0 then
+      begin
+        scale:= 1.0;
+      end;
+      w:= Round(src.Width * scale);
+      h:= Round(src.Height * scale);
+      dst.PixelFormat:= pf24bit;
+      dst.SetSize(w, h);
+      SetStretchBltMode(dst.Canvas.Handle, HALFTONE);
+      SetBrushOrgEx(dst.Canvas.Handle, 0, 0, nil);
+      StretchBlt(dst.Canvas.Handle, 0, 0, w, h, src.Canvas.Handle, 0, 0,
+          src.Width, src.Height, SRCCOPY);
+      image_preview.Picture.Bitmap.Assign(dst);
+    except
+      // a bad picture is not worth an error message; leave the preview empty
+      image_preview.Picture.Assign(nil);
+    end;
+  finally
+    dst.Free;
+    src.Free;
+    png.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Get PageInfo: name, title, path, icon and sort position of this page. The Options
   dialog calls this to build its page tree without creating the page.
 -------------------------------------------------------------------------------}
@@ -120,6 +197,7 @@ begin
   // Skin
   ws:= MainForm.Settings.Skin;
   combo_theme.ItemIndex:= combo_theme.Items.IndexOf(ws);
+  UpdateThemePreview;
   check_path_in_title.Checked:= MainForm.Settings.PathInTitle;
 end;
 

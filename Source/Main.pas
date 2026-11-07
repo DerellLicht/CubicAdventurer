@@ -249,6 +249,7 @@ type
     fPanels: TComponentList;
     fPathInTitle: Boolean;
     fPosSaveTimer: TTimer;
+    fSkinFiles: TStringList;
     fSaveSettingsOnClose: Boolean;
     fUpdatingCount: Integer;
     fHiddenInTray: Boolean;
@@ -262,6 +263,7 @@ type
     procedure ForceIconCachRebuild;
     procedure GetLanguageList;
     procedure GetSkinsFromFolder(AFolderPath: WideString);
+    function AddSkinFile(const AFileName: string): string;
     procedure ConvertCustomActions(Root: TTBCustomItem; Recursive: Boolean = true);
     procedure InitLanguage;
     procedure LanguageItemClick(Sender: TObject);
@@ -297,6 +299,7 @@ type
     procedure MakeVisible;
     procedure MenuItemTranslateHandler(Obj:TObject; var IsIgnored: Boolean);
     procedure OpenSkin;
+    function GetSkinFileName(const ASkinName: string): string;
     procedure SaveSettingsNow;
     procedure Shutdown;
     procedure StartUp;
@@ -552,6 +555,7 @@ begin
 
   // free instances
   fLanguageList.Free;
+  fSkinFiles.Free;
   Settings.Free;
   fPanels.Free;
 end;
@@ -1203,6 +1207,41 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
+  Add a skin file to the SkinManager and remember which file the skin came from.
+  Returns the skin name (the Name= value inside the file, which is not always the
+  file name). The Display options page uses the file name to find the optional
+  preview picture that sits next to the skin (same name, .png extension).
+-------------------------------------------------------------------------------}
+function TMainForm.AddSkinFile(const AFileName: string): string;
+begin
+  Result:= SkinManager.AddSkinFromFile(AFileName);
+  if Result <> '' then
+  begin
+    if fSkinFiles = nil then
+    begin
+      fSkinFiles:= TStringList.Create;
+      // skin names can contain spaces and dots; '|' cannot be part of a file path
+      fSkinFiles.NameValueSeparator:= '|';
+      fSkinFiles.CaseSensitive:= false;
+    end;
+    fSkinFiles.Values[Result]:= AFileName;
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Get the file name a skin was loaded from. Returns an empty string for skins that
+  have no file (Default) or if the name is unknown.
+-------------------------------------------------------------------------------}
+function TMainForm.GetSkinFileName(const ASkinName: string): string;
+begin
+  Result:= '';
+  if fSkinFiles <> nil then
+  begin
+    Result:= fSkinFiles.Values[ASkinName];
+  end;
+end;
+
+{*------------------------------------------------------------------------------
   Get Skins From folder
 -------------------------------------------------------------------------------}
 procedure TMainForm.GetSkinsFromFolder(AFolderPath: WideString);
@@ -1233,7 +1272,7 @@ begin
       begin
         path:= AFolderPath + list.Strings[i];
         if FileExists(path) then
-        SkinManager.AddSkinFromFile(path);
+        AddSkinFile(path);
       end;
     finally
       list.Free;
@@ -1420,7 +1459,7 @@ begin
   try
     if open.Execute then
     begin
-      skinName:= SkinManager.AddSkinFromFile(open.FileName);
+      skinName:= AddSkinFile(open.FileName);
       if skinName <> '' then
       begin
         SkinManager.SetSkin(skinName);

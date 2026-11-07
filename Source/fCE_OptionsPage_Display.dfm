@@ -13,12 +13,12 @@ inherited CEOptionsPage_Display: TCEOptionsPage_Display
     Height = 21
     ItemHeight = 13
     TabOrder = 0
-    OnChange = HandleChange
+    OnChange = combo_themeChange
   end
   object check_path_in_title: TCheckBox
     Left = 16
     Top = 71
-    Width = 409
+    Width = 153
     Height = 17
     Caption = 'Show Path in Title bar'
     TabOrder = 1
@@ -27,9 +27,16 @@ inherited CEOptionsPage_Display: TCEOptionsPage_Display
   object TntButton1: TButton
     Left = 16
     Top = 288
-    Width = 177
+    Width = 145
     Height = 33
     Action = CEActions.act_help_restore_layout
     TabOrder = 2
+  end
+  object image_preview: TImage
+    Left = 176
+    Top = 16
+    Width = 257
+    Height = 279
+    Center = True
   end
 end
