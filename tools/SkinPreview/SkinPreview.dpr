@@ -56,7 +56,7 @@ begin
   Caption:= 'Skin Preview';
   Position:= poScreenCenter;
   ClientWidth:= 340;
-  ClientHeight:= 372;
+  ClientHeight:= 400;
   fTitleBar:= TSpTBXTitleBar.Create(Self);
   fTitleBar.Parent:= Self;
   fTitleBar.Align:= alClient;
@@ -180,14 +180,16 @@ var
 begin
   tabs:= TSpTBXTabSet.Create(Self);
   tabs.Parent:= fTitleBar;
-  tabs.SetBounds(8, 62, 324, 24);
+  // aligned, so the tabs always sit below the toolbars whatever their height is
+  tabs.Align:= alTop;
+  tabs.Height:= 24;
   tabs.Add('Controls');
   tabs.Add('Panels');
   tabs.ActiveTabIndex:= 0;
 
   panel:= TSpTBXPanel.Create(Self);
   panel.Parent:= fTitleBar;
-  panel.SetBounds(8, 88, 324, 244);
+  panel.Align:= alClient;
 
   buttons:= TSpTBXGroupBox.Create(Self);
   buttons.Parent:= panel;
