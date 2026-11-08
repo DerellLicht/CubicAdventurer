@@ -1,0 +1,336 @@
+[Skin]
+Name=Xito
+Author=
+ColorBtnFace=clBtnFace
+FloatingWindowBorderSize=4
+OfficeIcons=0
+OfficeMenu=0
+OfficeStatusBar=0
+
+[Dock]
+Normal.Body=0, $00E0E0E0, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[DockablePanel]
+Normal.Body=0, clWhite, clNone, clNone, clNone
+Normal.Borders=0, $00E0E0E0, $00E0E0E0, clWhite, clWhite
+Normal.TextColor=clNone
+
+[DockablePanelTitleBar]
+Normal.Body=5, clWhite, $00F2F2F2, $00EAEAEA, $00EFEFEF
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[Gutter]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[MenuBar]
+Normal.Body=5, clWhite, $00F2F2F2, $00EAEAEA, $00EFEFEF
+Normal.Borders=2, clWhite, $00B0B0B0, clNone, clNone
+Normal.TextColor=clNone
+
+[OpenToolbarItem]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[Panel]
+Normal.Body=0, $00D8D8D8, clNone, clNone, clNone
+Normal.Borders=2, $00909090, $00909090, $00D0D0D0, $00D0D0D0
+Normal.TextColor=clNone
+
+[Popup]
+Normal.Body=0, clWhite, clNone, clNone, clNone
+Normal.Borders=0, clSilver, clSilver, clNone, clNone
+Normal.TextColor=clNone
+
+[Separator]
+Normal.Body=0, $00D0D0D0, clWhite, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[Splitter]
+Normal.Body=5, clWhite, $00F2F2F2, $00EAEAEA, $00EFEFEF
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[StatusBar]
+Normal.Body=5, clWhite, $00F2F2F2, $00EAEAEA, $00EFEFEF
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[StatusBarGrip]
+Normal.Body=0, $00B0B0B0, clWhite, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[TabBackground]
+Normal.Body=0, $00D8D8D8, clNone, clNone, clNone
+Normal.Borders=2, $00B8B8B8, $00F8F8F8, clNone, clNone
+Normal.TextColor=clNone
+
+[TabToolbar]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[Toolbar]
+Normal.Body=5, clWhite, $00F2F2F2, $00EAEAEA, $00EFEFEF
+Normal.Borders=2, clWhite, $00B0B0B0, clNone, clNone
+Normal.TextColor=clNone
+
+[ToolbarGrip]
+Normal.Body=0, $00B0B0B0, clWhite, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[Window]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clGray, clGray, clSilver, $00DDD9D2
+Normal.TextColor=clNone
+
+[WindowTitleBar]
+Normal.Body=1, clSilver, clWhite, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+
+[MenuBarItem]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=0, clNone, clNone, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=0, $00E0E0E0, clNone, clNone, clNone
+HotTrack.Borders=2, $00A0A0A0, $00A0A0A0, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=0, clSilver, clNone, clNone, clNone
+Pushed.Borders=2, $00909090, $00909090, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=0, $00D8D8D8, clNone, clNone, clNone
+Checked.Borders=2, $00B8B8B8, $00F8F8F8, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=0, $00D0D0D0, clNone, clNone, clNone
+CheckedAndHotTrack.Borders=2, clGray, clGray, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[MenuItem]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=0, clNone, clNone, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=0, $00E0E0E0, clNone, clNone, clNone
+HotTrack.Borders=2, $00A0A0A0, $00A0A0A0, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=0, clSilver, clNone, clNone, clNone
+Pushed.Borders=2, $00909090, $00909090, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=0, $00D8D8D8, clNone, clNone, clNone
+Checked.Borders=2, $00B8B8B8, $00F8F8F8, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=0, $00D0D0D0, clNone, clNone, clNone
+CheckedAndHotTrack.Borders=2, clGray, clGray, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[ToolbarItem]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=0, clNone, clNone, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=0, $00E0E0E0, clNone, clNone, clNone
+HotTrack.Borders=2, $00A0A0A0, $00A0A0A0, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=0, clSilver, clNone, clNone, clNone
+Pushed.Borders=2, $00909090, $00909090, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=0, $00D8D8D8, clNone, clNone, clNone
+Checked.Borders=2, $00B8B8B8, $00F8F8F8, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=0, $00D0D0D0, clNone, clNone, clNone
+CheckedAndHotTrack.Borders=2, clGray, clGray, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[Button]
+Normal.Body=5, clWhite, $00DADADA, $00D0D0D0, $00E0E0E0
+Normal.Borders=2, clSilver, clSilver, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=5, clWhite, $00DADADA, $00D0D0D0, $00E0E0E0
+Disabled.Borders=2, clSilver, clSilver, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=5, clWhite, $00DADADA, $00DFDFDF, $00E0E0E0
+HotTrack.Borders=2, clSilver, clSilver, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=1, $00D0D0D0, clWhite, clNone, clNone
+Pushed.Borders=2, clSilver, clSilver, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=1, $00D0D0D0, clWhite, clNone, clNone
+Checked.Borders=2, clSilver, clSilver, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=1, $00EFEFEF, clWhite, clNone, clNone
+CheckedAndHotTrack.Borders=2, clSilver, clSilver, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[CheckBox]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=2, clSilver, clSilver, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=2, clSilver, clSilver, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=5, clWhite, $00DADADA, $00DFDFDF, $00E0E0E0
+HotTrack.Borders=2, clSilver, clSilver, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=1, $00D0D0D0, clWhite, clNone, clNone
+Pushed.Borders=2, clSilver, clSilver, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=5, clWhite, $00DADADA, $00D0D0D0, $00E0E0E0
+Checked.Borders=2, clSilver, clSilver, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=1, $00EFEFEF, clWhite, clNone, clNone
+CheckedAndHotTrack.Borders=2, clSilver, clSilver, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[EditButton]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=5, clWhite, $00DADADA, $00D0D0D0, $00E0E0E0
+Disabled.Borders=0, clSilver, clSilver, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=5, clWhite, $00DADADA, $00DFDFDF, $00E0E0E0
+HotTrack.Borders=0, clSilver, clSilver, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=1, $00D0D0D0, clWhite, clNone, clNone
+Pushed.Borders=0, clSilver, clSilver, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=1, $00D0D0D0, clWhite, clNone, clNone
+Checked.Borders=0, clSilver, clSilver, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=1, $00EFEFEF, clWhite, clNone, clNone
+CheckedAndHotTrack.Borders=0, clSilver, clSilver, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[EditFrame]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=1, clNone, clNone, $00E0E0E0, $00E0E0E0
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=1, clNone, clNone, $0099A8AC, $0099A8AC
+Disabled.TextColor=clNone
+HotTrack.Body=0, clNone, clNone, clNone, clNone
+HotTrack.Borders=1, clNone, clNone, clSilver, clSilver
+HotTrack.TextColor=clNone
+
+[Header]
+Normal.Body=5, clWhite, $00DADADA, $00D0D0D0, $00E0E0E0
+Normal.Borders=0, $00E7E7E7, clSilver, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=0, clNone, clNone, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=5, clWhite, $00DADADA, $00DFDFDF, $00E0E0E0
+HotTrack.Borders=0, $00E7E7E7, clSilver, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=0, clNone, clNone, clNone, clNone
+Pushed.Borders=0, clNone, clNone, clNone, clNone
+Pushed.TextColor=clNone
+
+[Label]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=0, clNone, clNone, clNone, clNone
+Disabled.TextColor=clNone
+
+[ListItem]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=0, clNone, clNone, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=5, clWhite, $00EEEEEE, $00F3F3F3, $00F4F4F4
+HotTrack.Borders=2, $00D4D4D4, $00D4D4D4, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=0, clNone, clNone, clNone, clNone
+Pushed.Borders=0, clNone, clNone, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=5, clWhite, $00DADADA, $00DFDFDF, $00E0E0E0
+Checked.Borders=2, clSilver, clSilver, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=5, $00EBEBEB, $00C6C6C6, $00CBCBCB, $00CCCCCC
+CheckedAndHotTrack.Borders=2, $00ACACAC, $00ACACAC, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[ProgressBar]
+Normal.Body=0, clSilver, clNone, clNone, clNone
+Normal.Borders=2, $00909090, $00909090, clNone, clNone
+Normal.TextColor=clNone
+HotTrack.Body=0, $00E0E0E0, clNone, clNone, clNone
+HotTrack.Borders=2, $00909090, $00909090, clNone, clNone
+HotTrack.TextColor=clNone
+
+[RadioButton]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=2, clSilver, clSilver, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=2, clSilver, clSilver, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=5, clWhite, $00DADADA, $00DFDFDF, $00E0E0E0
+HotTrack.Borders=2, clSilver, clSilver, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=1, $00D0D0D0, clWhite, clNone, clNone
+Pushed.Borders=2, clSilver, clSilver, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=5, clWhite, $00DADADA, $00D0D0D0, $00E0E0E0
+Checked.Borders=2, clSilver, clSilver, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=1, $00EFEFEF, clWhite, clNone, clNone
+CheckedAndHotTrack.Borders=2, clSilver, clSilver, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[Tab]
+Normal.Body=0, clNone, clNone, clNone, clNone
+Normal.Borders=0, clNone, clNone, clNone, clNone
+Normal.TextColor=clNone
+Disabled.Body=0, clNone, clNone, clNone, clNone
+Disabled.Borders=0, clNone, clNone, clNone, clNone
+Disabled.TextColor=clNone
+HotTrack.Body=0, $00E0E0E0, clNone, clNone, clNone
+HotTrack.Borders=2, $00A0A0A0, $00A0A0A0, clNone, clNone
+HotTrack.TextColor=clNone
+Pushed.Body=0, clSilver, clNone, clNone, clNone
+Pushed.Borders=2, $00909090, $00909090, clNone, clNone
+Pushed.TextColor=clNone
+Checked.Body=0, $00D8D8D8, clNone, clNone, clNone
+Checked.Borders=2, $00B8B8B8, $00F8F8F8, clNone, clNone
+Checked.TextColor=clNone
+CheckedAndHotTrack.Body=0, $00D0D0D0, clNone, clNone, clNone
+CheckedAndHotTrack.Borders=2, $00B8B8B8, $00F8F8F8, clNone, clNone
+CheckedAndHotTrack.TextColor=clNone
+
+[TrackBar]
+Normal.Body=0, clSilver, clNone, clNone, clNone
+Normal.Borders=2, $00909090, $00909090, clNone, clNone
+Normal.TextColor=clNone
+HotTrack.Body=0, $00E0E0E0, clNone, clNone, clNone
+HotTrack.Borders=2, $00909090, $00909090, clNone, clNone
+HotTrack.TextColor=clNone
+
+[TrackBarButton]
+Normal.Body=0, $00E0E0E0, clNone, clNone, clNone
+Normal.Borders=2, $00909090, $00909090, clNone, clNone
+Normal.TextColor=clNone
+Pushed.Body=0, $00F0F0F0, clNone, clNone, clNone
+Pushed.Borders=2, $00909090, $00909090, clNone, clNone
+Pushed.TextColor=clNone
+
