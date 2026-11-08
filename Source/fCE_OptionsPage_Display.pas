@@ -42,6 +42,7 @@ type
     procedure combo_themeChange(Sender: TObject);
   private
     procedure UpdateThemePreview;
+    procedure CreateMissingPreviews;
     { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
@@ -58,9 +59,14 @@ var
 implementation
 
 uses
-  Main;
+  Main, CE_SkinPreview;
 
 {$R *.dfm}
+
+var
+  // themes that were offered a preview picture during this run (made, cancelled
+  // or failed), so the question is not repeated each time the page is shown
+  gTriedSkins: TStringList = nil;
 
 {-------------------------------------------------------------------------------
   Create an instance of TCEOptionsPage_Display
@@ -95,6 +101,53 @@ procedure TCEOptionsPage_Display.combo_themeChange(Sender: TObject);
 begin
   HandleChange(Sender);
   UpdateThemePreview;
+end;
+
+{-------------------------------------------------------------------------------
+  Make the preview pictures that are missing. A theme has a picture when a .png
+  with the skin file's name sits next to the skin file. For each theme that has a
+  skin file but no picture, CreateSkinPreviews (CE_SkinPreview.pas) shows a
+  window explaining what is going on and makes the pictures. Nothing is shown
+  when no picture is missing, which is the normal case.
+-------------------------------------------------------------------------------}
+procedure TCEOptionsPage_Display.CreateMissingPreviews;
+var
+  i: Integer;
+  names, files: TStringList;
+  skinName, skinFile, picFile: string;
+begin
+  if gTriedSkins = nil then
+  begin
+    gTriedSkins:= TStringList.Create;
+    gTriedSkins.CaseSensitive:= false;
+  end;
+  names:= TStringList.Create;
+  files:= TStringList.Create;
+  try
+    for i:= 0 to combo_theme.Items.Count - 1 do
+    begin
+      skinName:= combo_theme.Items[i];
+      skinFile:= MainForm.GetSkinFileName(skinName);
+      if (skinFile <> '') and FileExists(skinFile) and
+          (gTriedSkins.IndexOf(skinName) < 0) then
+      begin
+        picFile:= ChangeFileExt(skinFile, '.png');
+        if not FileExists(picFile) then
+        begin
+          gTriedSkins.Add(skinName);
+          names.Add(skinName);
+          files.Add(picFile);
+        end;
+      end;
+    end;
+    if names.Count > 0 then
+    begin
+      CreateSkinPreviews(names, files);
+    end;
+  finally
+    files.Free;
+    names.Free;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -197,6 +250,7 @@ begin
   // Skin
   ws:= MainForm.Settings.Skin;
   combo_theme.ItemIndex:= combo_theme.Items.IndexOf(ws);
+  CreateMissingPreviews;
   UpdateThemePreview;
   check_path_in_title.Checked:= MainForm.Settings.PathInTitle;
 end;
@@ -207,5 +261,6 @@ initialization
   RegisterOptionsPageClass(TCEOptionsPage_Display);
 
 finalization
+  gTriedSkins.Free;
 
 end.

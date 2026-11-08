@@ -273,6 +273,7 @@
             <Form>CreateSymlinkDlg</Form>
         </DCCReference>
         <DCCReference Include="Components\SpSkins\SpTBXChromeSkin.pas"/>
+        <DCCReference Include="CE_SkinPreview.pas"/>
         <DCCReference Include="fCE_OptionsPage_Hotkeys.pas">
             <Form>TCEOptionsPage_Hotkeys</Form>
             <DesignClass>TFrame</DesignClass>

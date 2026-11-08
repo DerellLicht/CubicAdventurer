@@ -117,6 +117,7 @@ uses
   CE_FileViewColors in 'CE_FileViewColors.pas',
   fCE_CreateSymlink in 'fCE_CreateSymlink.pas' {CreateSymlinkDlg},
   SpTBXChromeSkin in 'Components\SpSkins\SpTBXChromeSkin.pas',
+  CE_SkinPreview in 'CE_SkinPreview.pas',
   fCE_OptionsPage_Hotkeys in 'fCE_OptionsPage_Hotkeys.pas' {TCEOptionsPage_Hotkeys: TFrame},
   fCE_ColumnFormSpTBX in 'fCE_ColumnFormSpTBX.pas' {CEFormColumnSettings: TForm},
   CE_Stacks in 'CE_Stacks.pas',

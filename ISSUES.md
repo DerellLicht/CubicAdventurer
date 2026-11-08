@@ -6,10 +6,10 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-067). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-068). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-07 (version 1.01 in progress).
+Last updated: 2026-11-08 (version 1.01 in progress).
 
 ## Open bugs and gaps
 
@@ -17,7 +17,17 @@ Last updated: 2026-11-07 (version 1.01 in progress).
 
 ## Checks still owed
 
-(none at the moment)
+- **CA-068 [task] Check the automatic theme preview pictures.** Implemented, not compiled.
+  When Options > Display is built (or Options is reopened) and a theme has a skin file
+  but no `.png` next to it, a window explains that preview pictures are being made, shows
+  a sample window beside it, applies each such theme in turn, saves `<skin>.png` and
+  restores the current theme; the Cancel button becomes Okay when done. Code is the new
+  unit `Source/CE_SkinPreview.pas` (shared with `tools/SkinPreview`). Check: copy a `.skn`
+  without its `.png` into the `Skins` folder of the installed program, restart, open
+  Options > Display: the window appears, the picture is made and shown when the theme is
+  selected; no window appears the next time. Also look at: Cancel part-way; the mouse
+  pointer jumps onto the button; how disturbing the flicker is (Derell to judge; fallback
+  idea: one Okay button per picture); pictures come out 340 x 372 like the batch ones.
 
 ## Wishlist
 
