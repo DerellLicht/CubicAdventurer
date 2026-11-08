@@ -79,6 +79,8 @@ type
     fCancelled: Boolean;
     fDone: Boolean;
     procedure PositionWindows;
+    procedure LayoutControls;
+    function WrappedTextHeight(const AText: string; AWidth: Integer): Integer;
     procedure ShowStatus;
     procedure Finish;
     procedure ButtonClick(Sender: TObject);
@@ -374,9 +376,9 @@ begin
 
   fInfo:= TLabel.Create(Self);
   fInfo.Parent:= Self;
-  fInfo.SetBounds(16, 14, 408, 80);
   fInfo.AutoSize:= false;
   fInfo.WordWrap:= true;
+  fInfo.ShowAccelChar:= false;
   fInfo.Caption:= 'Some themes do not have a preview picture yet. CubicAdventurer ' +
       'is making one for each of them, so Options > Display can show it. The ' +
       'window next to this one is only a sample that is photographed, and the ' +
@@ -385,17 +387,18 @@ begin
 
   fStatus:= TLabel.Create(Self);
   fStatus.Parent:= Self;
-  fStatus.SetBounds(16, 100, 408, 17);
   fStatus.AutoSize:= false;
+  fStatus.WordWrap:= true;
+  fStatus.ShowAccelChar:= false;
+  // one line is reserved until the first real status text
+  fStatus.Caption:= ' ';
 
   fProgress:= TProgressBar.Create(Self);
   fProgress.Parent:= Self;
-  fProgress.SetBounds(16, 122, 408, 16);
   fProgress.Max:= fNames.Count;
 
   fButton:= TButton.Create(Self);
   fButton.Parent:= Self;
-  fButton.SetBounds(344, 150, 80, 26);
   fButton.Caption:= 'Cancel';
   fButton.OnClick:= ButtonClick;
 
@@ -411,7 +414,71 @@ begin
   fSample.PopupParent:= Self;
   fSample.FormStyle:= fsStayOnTop;
   fSample.Position:= poDesigned;
+  LayoutControls;
   PositionWindows;
+end;
+
+{*------------------------------------------------------------------------------
+  Height in pixels that AText needs when it is word wrapped to AWidth pixels, in
+  the window's font (which comes from the Windows message font, so it can be large).
+-------------------------------------------------------------------------------}
+function TCESkinPreviewNotice.WrappedTextHeight(const AText: string;
+    AWidth: Integer): Integer;
+var
+  r: TRect;
+begin
+  Canvas.Font.Assign(Font);
+  r:= Rect(0, 0, AWidth, 0);
+  DrawText(Canvas.Handle, PChar(AText), Length(AText), r,
+      DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX);
+  Result:= r.Bottom - r.Top;
+  if Result < Canvas.TextHeight('Wg') then
+  begin
+    Result:= Canvas.TextHeight('Wg');
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Place the controls one below the other, sized from the text they hold, and make
+  the window as high as needed. Called again when the status text changes, since
+  it can wrap to more lines (a long theme name, or the final report).
+-------------------------------------------------------------------------------}
+procedure TCESkinPreviewNotice.LayoutControls;
+const
+  MARGIN = 16;
+  SPACE = 10;
+var
+  y, h, w, bw, bh: Integer;
+begin
+  Canvas.Font.Assign(Font);
+  w:= ClientWidth - 2 * MARGIN;
+  y:= MARGIN;
+  h:= WrappedTextHeight(fInfo.Caption, w);
+  fInfo.SetBounds(MARGIN, y, w, h);
+  Inc(y, h + SPACE);
+  h:= WrappedTextHeight(fStatus.Caption, w);
+  fStatus.SetBounds(MARGIN, y, w, h);
+  Inc(y, h + SPACE);
+  fProgress.SetBounds(MARGIN, y, w, 16);
+  Inc(y, 16 + SPACE + SPACE);
+  // button wide and high enough for either caption in this font
+  bw:= Canvas.TextWidth('Cancel');
+  if Canvas.TextWidth('Okay') > bw then
+  begin
+    bw:= Canvas.TextWidth('Okay');
+  end;
+  bw:= bw + 32;
+  if bw < 80 then
+  begin
+    bw:= 80;
+  end;
+  bh:= Canvas.TextHeight('Wg') + 12;
+  if bh < 26 then
+  begin
+    bh:= 26;
+  end;
+  fButton.SetBounds(ClientWidth - MARGIN - bw, y, bw, bh);
+  ClientHeight:= y + bh + MARGIN;
 end;
 
 {*------------------------------------------------------------------------------
@@ -467,6 +534,7 @@ begin
   begin
     fStatus.Caption:= Format('Creating picture %d of %d: %s',
         [fIndex + 1, fNames.Count, fNames[fIndex]]);
+    LayoutControls;
   end;
 end;
 
@@ -536,6 +604,7 @@ begin
         [fFailed]);
   end;
   fStatus.Caption:= text;
+  LayoutControls;
   fProgress.Position:= fProgress.Max;
   fButton.Caption:= 'Okay';
   fButton.Enabled:= true;
