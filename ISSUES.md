@@ -17,17 +17,7 @@ Last updated: 2026-11-08 (version 1.02 in progress).
 
 ## Checks still owed
 
-- **CA-068 [task] Check the automatic theme preview pictures.** Implemented, not compiled.
-  When Options > Display is built (or Options is reopened) and a theme has a skin file
-  but no `.png` next to it, a window explains that preview pictures are being made, shows
-  a sample window beside it, applies each such theme in turn, saves `<skin>.png` and
-  restores the current theme; the Cancel button becomes Okay when done. Code is the new
-  unit `Source/CE_SkinPreview.pas` (shared with `tools/SkinPreview`). Check: copy a `.skn`
-  without its `.png` into the `Skins` folder of the installed program, restart, open
-  Options > Display: the window appears, the picture is made and shown when the theme is
-  selected; no window appears the next time. Also look at: Cancel part-way; the mouse
-  pointer jumps onto the button; how disturbing the flicker is (Derell to judge; fallback
-  idea: one Okay button per picture); pictures come out 340 x 372 like the batch ones.
+(none at the moment)
 
 ## Wishlist
 

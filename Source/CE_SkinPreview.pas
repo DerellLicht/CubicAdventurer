@@ -21,7 +21,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  ComCtrls, pngimage,
+  ComCtrls, pngimage, System.Types,
   TB2Dock, TB2Item, TB2Toolbar,
   SpTBXSkins, SpTBXItem, SpTBXControls, SpTBXEditors, SpTBXTabs;
 

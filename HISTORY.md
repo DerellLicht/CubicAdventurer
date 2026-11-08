@@ -22,6 +22,22 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-08
+
+### CA-068 [task] Check the automatic theme preview pictures
+Opened 2026-11-08, closed 2026-11-08 (1.02). Done; Derell tried it in the installed program and
+called it done.
+Idea from Derell the morning after the preview feature shipped: the SkinPreview generator is short,
+so build it into the program, so a user who adds a skin file never has to make its picture. New unit
+CE_SkinPreview.pas (shared with tools/SkinPreview); when Options > Display is built or reopened and a
+theme has a skin file but no .png, a window explains what is going on, shows the sample window beside
+it, applies each theme in turn, saves the picture and restores the current theme; Cancel becomes
+Okay when done. Wrong turn: the window's labels and height were fixed pixel sizes, so a large
+Windows message font clipped the text (fixed by laying the controls out from the measured text).
+Known and accepted: the whole program shows each theme for a moment while its picture is made; rare
+in practice, so left as it is (a button per picture was kept in mind as a fallback). Window text is
+English only.
+
 ## 2026-11-07
 
 ### CA-005a [task] Spread the word further

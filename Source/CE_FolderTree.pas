@@ -30,7 +30,8 @@ uses
   VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree, VirtualTrees.EditLink, VirtualExplorerTree, MPShellUtilities, VirtualShellNotifier,
   MPCommonObjects, MPThreadManager,
   // System Units
-  Classes, Windows, Messages, SysUtils, Graphics, Forms, Controls, ExtCtrls;
+  Classes, Windows, Messages, SysUtils, Graphics, Forms, Controls, ExtCtrls,
+  System.UITypes;
 
 type
   TCEFolderTreeSelectedChangeEvent = procedure(Node: PVirtualNode) of object;

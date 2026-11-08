@@ -43,7 +43,7 @@ uses
   VirtualTrees, VirtualTrees.Types, VirtualTrees.BaseTree,
   // System Units
   Windows, Messages, SysUtils, Classes, Controls, ExtCtrls, Forms,
-  Graphics, Menus, ShellAPI, Math, ShlObj, ActiveX, CommCtrl;
+  Graphics, Menus, ShellAPI, Math, ShlObj, ActiveX, CommCtrl, System.Types;
 
 type
   TNamespaceHack = class(TNamespace);
