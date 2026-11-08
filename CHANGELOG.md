@@ -1,7 +1,10 @@
 # CubicAdventurer Changelog
 
+## [1.02] - 2026-11-08
+- Added: a theme that has no preview picture gets one made automatically when Options > Display is opened (a window explains what is happening)
+
 ## [1.01] - 2026-11-07
-- Added: Options > Display shows a preview picture of the selected theme, for themes that have one; a missing picture is made automatically (a window explains what is happening)
+- Added: Options > Display shows a preview picture of the selected theme, for themes that have one
 
 ## [1.00] - 2026-11-02
 - Changed: folder names in the Folders panel now use the same font as the file list, not just the same size (before, the font came from the Windows icon font, so the two could differ)

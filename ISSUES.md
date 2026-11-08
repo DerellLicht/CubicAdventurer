@@ -9,7 +9,7 @@ Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of det
 Numbers are never reused (highest used so far: CA-068). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-08 (version 1.01 in progress).
+Last updated: 2026-11-08 (version 1.02 in progress).
 
 ## Open bugs and gaps
 
