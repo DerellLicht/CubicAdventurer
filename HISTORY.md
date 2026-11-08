@@ -24,6 +24,20 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-07
 
+### CA-005a [task] Spread the word further
+Opened 2026-10-24, closed 2026-11-07 (1.01). Closed with no further action.
+Wrap-up of the announcement effort. Done: r/Delphi, r/pascal and r/TrueOpenSource (a few other
+groups refused the post); AlternativeTo (listed after the paid fast track; a request to link it to
+CubicExplorer as its port is pending); his own Scoop bucket; portablefreeware.com, which gave the only
+concrete response so far (user sl23, whose skins are now shipped). Blocked or not worth it: Hacker News
+(new account, Show HN restricted), Neowin (permanently banned, no reason given), Softpedia (AI
+involvement), SoftTonic (needs code signing), MajorGeeks (still in their queue). Considered and
+dropped on 2026-11-07: winget (his earlier submission of another program sat in the queue for weeks
+and was rejected over a changed version requirement), awesome lists (judged no longer useful). Not done,
+optional: GitHub repository topics (delphi, object-pascal, file-manager, windows, cubicexplorer) and a
+Website link to the Releases page, about two minutes in the repo's About box. Chocolatey was mentioned
+and not pursued.
+
 ### CA-067 [task] Make preview pictures for the shipped themes
 Opened 2026-11-07, closed 2026-11-07 (1.01). Done.
 `tools/SkinPreview/SkinPreview.dpr` applies each skin to a sample window and saves `<skin>.png` next to

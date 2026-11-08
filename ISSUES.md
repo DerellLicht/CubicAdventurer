@@ -77,9 +77,7 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Misc tasks
 
-- **CA-005a [task] Spread the word further.** The first announcement reached fewer places
-  than hoped. Brain-storm other options: Windows file-manager discussion sites on Reddit
-  and similar communities, software directories, and forums for other Delphi-era tools.
+(none at the moment)
 
 ## Maintenance (internal)
 
