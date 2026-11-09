@@ -330,6 +330,11 @@ Paths may contain system variables such as `%USERPROFILE%` or `%TEMP%`. The comp
   the program again. All windows share the same settings files, so the window you close last
   writes them last and its settings win. Tabs, sessions and the Workspace panel are often an
   easier way to work in several places at once.
+- **Default file manager (experimental).** CubicAdventurer can ask Windows to open folders with it
+  instead of Windows Explorer. Open **Options > General**, tick **Show Default File Manager**, and
+  use **Register**. **Unregister** puts back what was there before, and uninstalling the program
+  removes the entry too. Only your own Windows account is changed. This is lightly tested, and
+  Windows 11 may still use Explorer for some ways of opening a folder (the Win+E key, for example).
 - **Text files** are previewed (their first lines, with accented letters and other Unicode text
   shown correctly) in the **Quickview** panel (Ctrl+3). The file list's Thumbnails view shows only
   an icon for a text file.
