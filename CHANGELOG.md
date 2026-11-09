@@ -1,7 +1,7 @@
 # CubicAdventurer Changelog
 
 ## [1.04] - 2026-11-09
-- Fixed: the check boxes shown by Advanced > FileView > CheckBoxSelection now use the colors of the selected theme
+- Fixed: the check boxes shown by Advanced > FileView > CheckBoxSelection now use the colors of the selected theme, and so do the check box and caption of the group headers shown by Group By
 
 ## [1.03] - 2026-11-09
 - Added: Options > General > Single Instance Only (on by default) and File > New Window are back; with the option off, every start opens its own window

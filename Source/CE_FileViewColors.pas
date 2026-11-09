@@ -107,6 +107,14 @@ type
         TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
+  // Group header band (Group By): themed check box and caption color.
+  TCEViewGroup = class(TEasyViewGroup)
+  public
+    procedure LoadTextFont(Group: TEasyGroup; ACanvas: TCanvas); override;
+    procedure PaintCheckBox(Group: TEasyGroup; ACanvas: TCanvas; RectArray:
+        TEasyRectArrayObject); override;
+  end;
+
 var
   // Current colors. Written by TCEFileViewSettings.AssignSettingsTo, read while
   // painting. (The settings are global, so one set serves every file view.)
@@ -148,6 +156,9 @@ function CE_GetExtBackgroundColor(Item: TEasyItem; out AColor: TColor): Boolean;
 procedure CE_ColorizeItemView(ViewStyle: TEasyListStyle; var View:
     TEasyViewItemClass);
 
+// Replaces the standard group view with the themed one (see TCEViewGroup).
+procedure CE_ColorizeGroupView(var View: TEasyViewGroupClass);
+
 implementation
 
 uses
@@ -156,6 +167,34 @@ uses
 type
   // Gives this unit access to the protected check-box properties of TEasyItem.
   TCEItemCracker = class(TEasyItem);
+  TCEGroupCracker = class(TEasyGroup);
+
+// True when the active theme comes from a skin file or a Delphi style, i.e. when
+// the library would draw plain Windows controls on it.
+function ThemeNeedsOwnDrawing(AListview: TControl): Boolean;
+begin
+  Result:= SkinManager.GetSkinType(AListview) in [sknSkin, sknDelphiStyle];
+end;
+
+// Draws one themed check box glyph (the same routine SpTBXLib uses for its own
+// check boxes).
+procedure DrawThemedCheckGlyph(AListview: TControl; ACanvas: TCanvas; ARect:
+    TRect; AEnabled, AChecked, AHovering, APending: Boolean);
+var
+  state: TCheckBoxState;
+begin
+  if AChecked then
+  begin
+    state:= cbChecked;
+  end
+  else
+  begin
+    state:= cbUnchecked;
+  end;
+  InflateRect(ARect, -1, -1);
+  SpDrawXPCheckBoxGlyph(AListview, ACanvas, ARect, AEnabled, state, AHovering,
+      APending, AListview.CurrentPPI);
+end;
 
 {*------------------------------------------------------------------------------
   Draws the item check box with the active SpTBX theme.
@@ -168,12 +207,10 @@ type
 function PaintThemedCheckBox(AListview: TControl; Item: TEasyItem; Column:
     TEasyColumn; const RectArray: TEasyRectArrayObject; ACanvas: TCanvas): Boolean;
 var
-  r: TRect;
-  state: TCheckBoxState;
   crack: TCEItemCracker;
 begin
   Result:= false;
-  if not (SkinManager.GetSkinType(AListview) in [sknSkin, sknDelphiStyle]) then
+  if not ThemeNeedsOwnDrawing(AListview) then
   begin
     Exit;
   end;
@@ -186,18 +223,8 @@ begin
   begin
     Exit;
   end;
-  if crack.Checked then
-  begin
-    state:= cbChecked;
-  end
-  else
-  begin
-    state:= cbUnchecked;
-  end;
-  r:= RectArray.CheckRect;
-  InflateRect(r, -1, -1);
-  SpDrawXPCheckBoxGlyph(AListview, ACanvas, r, crack.Enabled, state,
-      crack.CheckHovering, crack.CheckPending, AListview.CurrentPPI);
+  DrawThemedCheckGlyph(AListview, ACanvas, RectArray.CheckRect, crack.Enabled,
+      crack.Checked, crack.CheckHovering, crack.CheckPending);
   Result:= true;
 end;
 
@@ -576,6 +603,56 @@ procedure TCEViewTileItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn;
 begin
   inherited PaintBefore(Item, Column, Caption, ACanvas, RectArray, Handled);
   PaintAttrBackground(Item, ACanvas, RectArray, true);
+end;
+
+{ TCEViewGroup }
+
+{*------------------------------------------------------------------------------
+  Caption of a group header band. The library takes the group font color from
+  the system colors, which is unreadable on a dark theme. With a skin-file or
+  Delphi-style theme the caption uses the theme's list item text color.
+  A focused group keeps the library's highlight text color.
+-------------------------------------------------------------------------------}
+procedure TCEViewGroup.LoadTextFont(Group: TEasyGroup; ACanvas: TCanvas);
+begin
+  inherited LoadTextFont(Group, ACanvas);
+  if Assigned(ACanvas) and ThemeNeedsOwnDrawing(OwnerListview) and
+      not TCEGroupCracker(Group).Focused then
+  begin
+    ACanvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(OwnerListview,
+        skncListItem, sknsNormal);
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Check box of a group header band (shown when CheckBoxSelection is on).
+-------------------------------------------------------------------------------}
+procedure TCEViewGroup.PaintCheckBox(Group: TEasyGroup; ACanvas: TCanvas;
+    RectArray: TEasyRectArrayObject);
+var
+  crack: TCEGroupCracker;
+begin
+  crack:= TCEGroupCracker(Group);
+  if ThemeNeedsOwnDrawing(OwnerListview) and (crack.CheckType = ectBox) then
+  begin
+    DrawThemedCheckGlyph(OwnerListview, ACanvas, RectArray.CheckRect,
+        crack.Enabled, crack.Checked, crack.CheckHovering, crack.CheckPending);
+  end
+  else
+  begin
+    inherited PaintCheckBox(Group, ACanvas, RectArray);
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  Swap the library's standard group view for the themed one.
+-------------------------------------------------------------------------------}
+procedure CE_ColorizeGroupView(var View: TEasyViewGroupClass);
+begin
+  if (View = nil) or (View = TEasyViewGroup) then
+  begin
+    View:= TCEViewGroup;
+  end;
 end;
 
 {*------------------------------------------------------------------------------

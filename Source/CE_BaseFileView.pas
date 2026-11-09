@@ -113,6 +113,8 @@ type
         TEasyItem; Item2: TEasyItem): Integer; override;
     procedure DoItemContextMenu(HitInfo: TEasyHitInfoItem; WindowPoint: TPoint; var
         Menu: TPopupMenu; var Handled: Boolean); override;
+    procedure DoGroupCustomView(Group: TEasyGroup; ViewStyle: TEasyListStyle;
+        var View: TEasyViewGroupClass); override;
     procedure DoItemCustomView(Item: TEasyItem; ViewStyle: TEasyListStyle; var
         View: TEasyViewItemClass); override;
     procedure DoItemCreateEditor(Item: TEasyItem; var Editor: IEasyCellEditor);
@@ -922,6 +924,17 @@ begin
       ACanvas.Font.Color:= folderColor;
     end;
   end;
+end;
+
+{*------------------------------------------------------------------------------
+  Get's called when the group view class is chosen.
+  Swaps in the group view that follows the active theme.
+-------------------------------------------------------------------------------}
+procedure TCECustomFileView.DoGroupCustomView(Group: TEasyGroup; ViewStyle:
+    TEasyListStyle; var View: TEasyViewGroupClass);
+begin
+  inherited;
+  CE_ColorizeGroupView(View);
 end;
 
 {*------------------------------------------------------------------------------
