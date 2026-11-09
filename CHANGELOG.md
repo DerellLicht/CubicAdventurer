@@ -1,5 +1,8 @@
 # CubicAdventurer Changelog
 
+## [1.04] - 2026-11-09
+- Fixed: the check boxes shown by Advanced > FileView > CheckBoxSelection now use the colors of the selected theme
+
 ## [1.03] - 2026-11-09
 - Added: Options > General > Single Instance Only (on by default) and File > New Window are back; with the option off, every start opens its own window
 - Added: Help > Download Latest Version opens the releases page, where the installer and the portable zip can be downloaded

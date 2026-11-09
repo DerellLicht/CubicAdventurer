@@ -9,7 +9,7 @@ Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of det
 Numbers are never reused (highest used so far: CA-073). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-09 (version 1.03 in progress).
+Last updated: 2026-11-09 (version 1.04 in progress).
 
 ## Open bugs and gaps
 
@@ -18,7 +18,7 @@ Last updated: 2026-11-09 (version 1.03 in progress).
 ## Checks still owed
 
 Requested by the Portable Freeware forum user sl23. CA-069, CA-071 and CA-072 were confirmed on
-2026-11-09 (see `HISTORY.md`). CA-070 waits for the 1.03 release and sl23's test.
+2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out).
 
 - **CA-073 [task] Test: file check boxes follow the theme.** Reported by sl23. Options > Advanced >
   FileView > CheckBoxSelection = True puts a check box in front of every item. CubicExplorer drew
