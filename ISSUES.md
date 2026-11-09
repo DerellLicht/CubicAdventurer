@@ -17,21 +17,8 @@ Last updated: 2026-11-09 (version 1.04 in progress).
 
 ## Checks still owed
 
-Requested by the Portable Freeware forum user sl23. CA-069, CA-071 and CA-072 were confirmed on
-2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out).
-
-- **CA-073 [task] Test: file check boxes follow the theme.** Reported by sl23. Options > Advanced >
-  FileView > CheckBoxSelection = True puts a check box in front of every item. CubicExplorer drew
-  them in the theme colors; CubicAdventurer drew plain white Windows boxes. Cause: EasyListview
-  paints themed check boxes only when it is compiled with its `SpTBX` switch, which the installed
-  library is not (and its SpTBX code calls an older SpTBXLib routine, so the switch cannot simply
-  be turned on). Fix: the item view classes in `CE_FileViewColors.pas` override `PaintCheckBox`
-  and call SpTBXLib's own check box routine for themes from a skin file or a Delphi style; the
-  Windows and "Default" themes still use the library's drawing. The same applies to the group
-  header bands of Group By (check box, plus/minus box, and caption in the list's own text color,
-  class `TCEViewGroup`). Test: switch the option on, try a
-  dark theme (for example Paint It Black), look at Report, List, Icon and Thumbnail views: normal,
-  hover, ticked, and a disabled item if any.
+Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
+on 2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out).
 
 - **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
   "Show Default File Manager" check box starts unticked every time Options is shown; ticking it

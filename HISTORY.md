@@ -24,6 +24,22 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-09
 
+### CA-073 [bug] File check boxes and Group By headers ignored the theme
+Opened 2026-11-09, closed 2026-11-09 (1.04). Fixed; Derell built it and confirmed it in a dark theme.
+Reported by sl23: with Advanced > FileView > CheckBoxSelection on, the check boxes were plain white
+Windows boxes, while CubicExplorer drew them in the theme colors. Cause: the installed EasyListview
+draws themed controls only when compiled with its `SpTBX` switch, which is off (and that code calls an
+older SpTBXLib routine, so the switch cannot just be turned on). Fix in `CE_FileViewColors.pas`: the item
+view classes draw the check box with SpTBXLib's own routine, and a new group view class (`TCEViewGroup`,
+via `DoGroupCustomView`) does the same for the Group By headers, plus the plus/minus box (drawn like the
+Folders tree draws its boxes) and the caption.
+Wrong turns: the caption first took the theme's list item text color, which is dark on Derell's list
+background; it now uses the Display > Font color, the one file names use. CubicExplorer had the same
+unreadable caption, so that part is new behavior, not a restore. Checked and left alone: grid lines
+(already follow the theme), selection (the gray fill when the list loses focus is the library's own
+inactive-selection color), hover (off in CA; the pop-up is the info tip) and Tiles view (text uses the
+file extension colors the user sets). Group By is only really useful in Details view.
+
 ### CA-072 [task] Plugins page removed
 Opened 2026-11-09, closed 2026-11-09 (1.03). Done; Derell built it and confirmed Options opens and
 nothing mentions plugins.
