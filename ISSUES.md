@@ -17,16 +17,9 @@ Last updated: 2026-11-09 (version 1.03 in progress).
 
 ## Checks still owed
 
-Requested by the Portable Freeware forum user sl23. All four were written on 2026-11-09 and not
-compiled; build first (Shift-F9), then test.
+Requested by the Portable Freeware forum user sl23. CA-069, CA-071 and CA-072 were confirmed on
+2026-11-09 (see `HISTORY.md`). CA-070 waits for the 1.03 release and sl23's test.
 
-- **CA-069 [task] Test: Single Instance Only and File > New Window.** Options > General has a
-  Single Instance Only check box, on by default. On: File > New Window is greyed out and starting
-  the program again brings the running window forward (as in 0.98 to 1.02). Off, then OK: New Window
-  opens a second window, and so does starting the program again. The windows share one set of
-  settings files; the last one closed writes them last, so Options changes made with several windows
-  open can be lost (the Tips guide says so). Old `settings.xml` files from before 0.98 may
-  carry a stored `SingleInstance` value, which is now read again.
 - **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
   "Show Default File Manager" check box starts unticked every time Options is shown; ticking it
   reveals the group with the two buttons. The warning text stays visible. Both buttons ask first and
@@ -37,14 +30,6 @@ compiled; build first (Shift-F9), then test.
   verb (Win+E and some other "open folder" paths may still use Explorer). sl23 was asked to test it;
   if it does not work for him, the fallback is the old machine-wide key (`HKCR`, needs elevation),
   or removing the feature again.
-- **CA-071 [task] Test: Help > Download Latest Version.** Opens
-  `https://github.com/DerellLicht/CubicAdventurer/releases/latest` in the default browser (it
-  replaces the Updater idea; both zips are listed there).
-- **CA-072 [task] Test: Plugins page removed.** Options no longer has a Plugins page, and the plugin
-  engine, its two forms and the sample plugin (`Source/Plugins`) are deleted, because nothing used
-  them. The program no longer loads DLLs from a `Plugins` folder. (SumatraPDF.exe is still looked for
-  there by the PDF viewer; that is unrelated.) Check that it builds, Options opens, and nothing
-  mentions plugins any more. Last commit before the removal: eb5d8b3.
 
 ## Wishlist
 

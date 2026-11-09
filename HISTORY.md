@@ -22,6 +22,26 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-09
+
+### CA-072 [task] Plugins page removed
+Opened 2026-11-09, closed 2026-11-09 (1.03). Done; Derell built it and confirmed Options opens and
+nothing mentions plugins.
+Requested by sl23 and agreed by Derell. The Options Plugins page, the plugin engine, its two forms and
+the sample plugin (`Source/Plugins`) were deleted because nothing used them. Last commit before the
+removal: eb5d8b3.
+
+### CA-071 [task] Help > Download Latest Version
+Opened 2026-11-09, closed 2026-11-09 (1.03). Done; confirmed by Derell.
+Replaces sl23's Updater idea: the menu item opens the Releases "latest" page in the browser.
+
+### CA-069 [task] Single Instance Only and File > New Window
+Opened 2026-11-09, closed 2026-11-09 (1.03). Done; confirmed by Derell.
+Requested by sl23. Restored the Single Instance Only check box (Options > General, on by default) and
+File > New Window above Exit, greyed out while single instance is on. Windows share one set of settings
+files, so Options changes made with several windows open can be lost; the Tips guide warns about it
+and Derell chose a plain "do not" warning rather than disabling Options in other windows.
+
 ## 2026-11-08
 
 ### CA-068 [task] Check the automatic theme preview pictures
