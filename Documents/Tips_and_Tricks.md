@@ -329,9 +329,8 @@ Paths may contain system variables such as `%USERPROFILE%` or `%TEMP%`. The comp
   untick **Options > General > Single Instance Only**, then use **File > New Window** or start
   the program again. All windows share the same settings files, so the window you close last
   writes them last and its settings win. **Do not change Options while more than one window is
-  open:** the change will probably be lost when another window saves over it. Make Options
-  changes with a single window open. Tabs, sessions and the Workspace panel are often an easier
-  way to work in several places at once.
+  open.** Tabs, sessions and the Workspace panel are often an easier way to work in several
+  places at once.
 - **Default file manager (experimental).** CubicAdventurer can ask Windows to open folders with it
   instead of Windows Explorer. Open **Options > General**, tick **Show Default File Manager**, and
   use **Register**. **Unregister** puts back what was there before, and uninstalling the program
