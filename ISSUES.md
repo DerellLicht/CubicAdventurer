@@ -24,7 +24,8 @@ compiled; build first (Shift-F9), then test.
   Single Instance Only check box, on by default. On: File > New Window is greyed out and starting
   the program again brings the running window forward (as in 0.98 to 1.02). Off, then OK: New Window
   opens a second window, and so does starting the program again. The windows share one set of
-  settings files; the last one closed writes them last. Old `settings.xml` files from before 0.98 may
+  settings files; the last one closed writes them last, so Options changes made with several windows
+  open can be lost (the Tips guide says so). Old `settings.xml` files from before 0.98 may
   carry a stored `SingleInstance` value, which is now read again.
 - **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
   "Show Default File Manager" check box starts unticked every time Options is shown; ticking it
