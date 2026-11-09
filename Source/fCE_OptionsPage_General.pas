@@ -42,11 +42,20 @@ type
     check_tray_close: TCheckBox;
     check_tray_start: TCheckBox;
     check_single: TCheckBox;
+    group_dfm: TSpTBXGroupBox;
+    but_dfm_register: TButton;
+    but_dfm_unregister: TButton;
+    check_dfm: TCheckBox;
+    label_dfm_warning: TSpTBXLabel;
     TntGroupBox1: TSpTBXGroupBox;
     procedure HandleChange(Sender: TObject);
     procedure radioClick(Sender: TObject);
+    procedure check_dfmClick(Sender: TObject);
+    procedure but_dfm_registerClick(Sender: TObject);
+    procedure but_dfm_unregisterClick(Sender: TObject);
   private
     { Private declarations }
+    function OwnerWindow: HWND;
   public
     constructor Create(AOwner: TComponent); override;
     class procedure GetPageInfo(out AName, ATitle, APath: WideString;
@@ -61,7 +70,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Main, CE_Sessions, MPCommonUtilities;
+  Main, CE_Sessions, MPCommonUtilities, CE_FileUtils, CE_WideCompat;
 
 {-------------------------------------------------------------------------------
   Create an instance of TCEOptionsPage_General
@@ -155,6 +164,11 @@ begin
   // Single Instance Only
   check_single.Checked:= MainForm.Settings.SingleInstance;
 
+  // Default File Manager: the group is hidden every time the page is shown (this check box
+  // is not a setting; it only guards the Register and Unregister buttons).
+  check_dfm.Checked:= false;
+  group_dfm.Visible:= false;
+
   check_tray_minimize.Enabled:= check_tray_enable.Checked;
   check_tray_close.Enabled:= check_tray_enable.Checked;
   check_tray_start.Enabled:= check_tray_enable.Checked;  
@@ -167,6 +181,77 @@ procedure TCEOptionsPage_General.radioClick(Sender: TObject);
 begin
   HandleChange(Sender);
   combo_sessions.Enabled:= radio_session.Checked;
+end;
+
+{-------------------------------------------------------------------------------
+  Window that owns the message boxes
+-------------------------------------------------------------------------------}
+function TCEOptionsPage_General.OwnerWindow: HWND;
+var
+  f: TCustomForm;
+begin
+  f:= GetParentForm(Self);
+  if assigned(f) then
+  begin
+    Result:= f.Handle;
+  end
+  else
+  begin
+    Result:= Application.Handle;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Show or hide the Default File Manager group.  Not a setting: the check box is never
+  saved and does not enable Apply.
+-------------------------------------------------------------------------------}
+procedure TCEOptionsPage_General.check_dfmClick(Sender: TObject);
+begin
+  group_dfm.Visible:= check_dfm.Checked;
+end;
+
+{-------------------------------------------------------------------------------
+  Register as Default File Manager (asks first, then reports the result)
+-------------------------------------------------------------------------------}
+procedure TCEOptionsPage_General.but_dfm_registerClick(Sender: TObject);
+begin
+  if WideMessageBox(OwnerWindow, _('Default File Manager'),
+                    _('Make CubicAdventurer the default file manager? Windows will open folders with it. Only your own Windows account is changed, and Unregister restores the previous setting.'),
+                    MB_ICONQUESTION or MB_YESNO) <> idYes then
+  begin
+    Exit; // -->
+  end;
+
+  if RegisterDefaultFileManager(CE_DefaultFileManagerName, 'Open in CubicAdventurer', ParamStr(0)) then
+  begin
+    WideMessageBox(OwnerWindow, _('Default File Manager'), _('Registered successfully!'), MB_ICONINFORMATION or MB_OK);
+  end
+  else
+  begin
+    WideMessageBox(OwnerWindow, _('Default File Manager'), _('Registration failed!'), MB_ICONERROR or MB_OK);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Unregister as Default File Manager (asks first, then reports the result)
+-------------------------------------------------------------------------------}
+procedure TCEOptionsPage_General.but_dfm_unregisterClick(Sender: TObject);
+begin
+  if WideMessageBox(OwnerWindow, _('Default File Manager'),
+                    _('Stop using CubicAdventurer as the default file manager and restore the previous setting?'),
+                    MB_ICONQUESTION or MB_YESNO) <> idYes then
+  begin
+    Exit; // -->
+  end;
+
+  if UnRegisterDefaultFileManager(CE_DefaultFileManagerName) then
+  begin
+    WideMessageBox(OwnerWindow, _('Default File Manager'), _('Unregistered successfully!'), MB_ICONINFORMATION or MB_OK);
+  end
+  else
+  begin
+    WideMessageBox(OwnerWindow, _('Default File Manager'), _('Unregistration failed!'), MB_ICONERROR or MB_OK);
+  end;
 end;
 
 {##############################################################################}

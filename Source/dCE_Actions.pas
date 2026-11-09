@@ -360,7 +360,7 @@ implementation
 {$R *.dfm}
 
 uses
-  System.Actions,
+  System.Actions, CE_FileUtils,
   Main, fCE_FolderPanel, fCE_QuickViewPanel, fCE_BookmarkPanel,
   fCE_FileView, CE_FileView, 
   CE_Bookmarks, CE_BookmarkTree, fCE_AboutBox,
@@ -1957,6 +1957,18 @@ var
   index, count: Integer;
 begin
   Result:= false;
+  // "/unregister" (run by the uninstaller): remove the Default File Manager entry and
+  // exit without starting the program.
+  for index:= 1 to ParamCount do
+  begin
+    if SameText(ParamStr(index), '/unregister') then
+    begin
+      UnRegisterDefaultFileManager(CE_DefaultFileManagerName);
+      Result:= true;
+      Exit; // -->
+    end;
+  end;
+
   if IsWindowsVista then // NOTICE: at the moment there's nothing to do prior to vista.
   begin
     doShell:= false;

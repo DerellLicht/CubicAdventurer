@@ -105,6 +105,15 @@ function IsEmptyFolder(ANamespace: TNamespace): Boolean;
 
 function GetRedirectedPath(APath: WideString): WideString;
 
+
+const
+  // Name of the Folder\shell verb written by RegisterDefaultFileManager
+  CE_DefaultFileManagerName = 'cubicadventurer';
+
+function RegisterDefaultFileManager(AName, ADescription: String; AFilePath:
+    WideString): Boolean;
+
+function UnRegisterDefaultFileManager(AName: String): Boolean;
 implementation
 
 uses
@@ -588,6 +597,161 @@ begin
       if FileExists(vstore) then
       Result:= vstore;
     end;
+  end;
+end;
+
+
+{-------------------------------------------------------------------------------
+  Default File Manager (current user only, so no administrator rights are needed)
+
+  Register writes HKEY_CURRENT_USER\Software\Classes\Folder\shell\<AName> (a verb
+  and its command) and makes that verb the default of the user's Folder\shell key,
+  so Windows opens folders with it.  The default the user's own Folder\shell key
+  had before (if any) is saved in the verb key; UnRegister puts it back.
+-------------------------------------------------------------------------------}
+const
+  CE_FolderShellKey = 'Software\Classes\Folder\shell';
+
+function RegisterDefaultFileManager(AName, ADescription: String; AFilePath:
+    WideString): Boolean;
+var
+  reg: TRegistry;
+  oldValue: String;
+  hadValue: Boolean;
+  alreadyOurs: Boolean;
+begin
+  Result:= false;
+  reg:= TRegistry.Create;
+  try
+    try
+      reg.RootKey:= HKEY_CURRENT_USER;
+
+      // What is the default verb of this user's Folder\shell key right now?
+      hadValue:= false;
+      oldValue:= '';
+      if not reg.OpenKey(CE_FolderShellKey, true) then
+      begin
+        Exit; // -->
+      end;
+      hadValue:= reg.ValueExists('');
+      if hadValue then
+      begin
+        oldValue:= reg.ReadString('');
+      end;
+      reg.CloseKey;
+      // Registering twice must not save our own entry as the "previous" default
+      alreadyOurs:= SameText(oldValue, AName);
+
+      // The verb: description and the saved previous default
+      if not reg.OpenKey(CE_FolderShellKey + '\' + AName, true) then
+      begin
+        Exit; // -->
+      end;
+      reg.WriteString('', ADescription);
+      if not alreadyOurs then
+      begin
+        reg.WriteString('OldDefaultValue', oldValue);
+        reg.WriteInteger('HadDefaultValue', Ord(hadValue));
+      end;
+      reg.CloseKey;
+
+      // The command Windows runs.  "/shell" is ignored by the command line handler
+      // and the folder follows it (same form the old CubicExplorer used on Vista and later).
+      if not reg.OpenKey(CE_FolderShellKey + '\' + AName + '\command', true) then
+      begin
+        Exit; // -->
+      end;
+      reg.WriteString('', '"' + AFilePath + '" /shell "%1"');
+      reg.CloseKey;
+
+      // Make the verb the default one
+      if reg.OpenKey(CE_FolderShellKey, false) then
+      begin
+        reg.WriteString('', AName);
+        reg.CloseKey;
+        Result:= true;
+      end;
+    except
+      Result:= false;
+    end;
+  finally
+    reg.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  UnRegister Default File Manager: restore the previous default verb (only if the
+  default still is ours) and delete our verb key.  Returns true when nothing is left.
+-------------------------------------------------------------------------------}
+function UnRegisterDefaultFileManager(AName: String): Boolean;
+var
+  reg: TRegistry;
+  oldValue: String;
+  hadValue: Boolean;
+  verbKey: String;
+begin
+  Result:= false;
+  reg:= TRegistry.Create;
+  try
+    try
+      reg.RootKey:= HKEY_CURRENT_USER;
+      verbKey:= CE_FolderShellKey + '\' + AName;
+
+      // What was the default before we registered?
+      oldValue:= '';
+      hadValue:= false;
+      if reg.OpenKeyReadOnly(verbKey) then
+      begin
+        if reg.ValueExists('OldDefaultValue') then
+        begin
+          oldValue:= reg.ReadString('OldDefaultValue');
+        end;
+        if reg.ValueExists('HadDefaultValue') then
+        begin
+          hadValue:= reg.ReadInteger('HadDefaultValue') <> 0;
+        end;
+        reg.CloseKey;
+      end;
+      // never "restore" ourselves
+      if SameText(oldValue, AName) then
+      begin
+        oldValue:= '';
+        hadValue:= false;
+      end;
+
+      // Put the previous default back, but only when the default still is ours:
+      // if something else changed it since, leave it alone.
+      if reg.OpenKey(CE_FolderShellKey, false) then
+      begin
+        if reg.ValueExists('') and SameText(reg.ReadString(''), AName) then
+        begin
+          if hadValue then
+          begin
+            reg.WriteString('', oldValue);
+          end
+          else
+          begin
+            reg.DeleteValue('');
+          end;
+        end;
+        reg.CloseKey;
+      end;
+
+      // Delete the verb.  RegDeleteKey fails while a key has subkeys, so the command first.
+      if reg.KeyExists(verbKey) then
+      begin
+        reg.DeleteKey(verbKey + '\command');
+        Result:= reg.DeleteKey(verbKey);
+      end
+      else
+      begin
+        Result:= true;
+      end;
+    except
+      Result:= false;
+    end;
+  finally
+    reg.Free;
   end;
 end;
 

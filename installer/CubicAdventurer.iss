@@ -105,5 +105,10 @@ Filename: "{group}\Changelog.url"; Section: "InternetShortcut"; Key: "URL"; Stri
 [UninstallDelete]
 Type: files; Name: "{group}\*.url"
 
+[UninstallRun]
+; Remove the Default File Manager entry (Options > General) in case the user registered it.
+; The program does this and exits without opening a window.
+Filename: "{app}\{#MyAppExeName}"; Parameters: "/unregister"; RunOnceId: "UnregisterDefaultFileManager"; Flags: runhidden skipifdoesntexist
+
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#DoubleAmp(MyAppName)}}"; Flags: nowait postinstall skipifsilent
