@@ -171,7 +171,7 @@ type
   // Gives this unit access to the protected check-box properties of TEasyItem.
   TCEItemCracker = class(TEasyItem);
   TCEGroupCracker = class(TEasyGroup);
-  // Font is a protected property of TControl.
+  // Font and Color are protected properties of TControl.
   TCEControlCracker = class(TControl);
 
 // True when the active theme comes from a skin file or a Delphi style, i.e. when
@@ -650,15 +650,19 @@ end;
 {*------------------------------------------------------------------------------
   The small plus / minus box left of a group caption. The library draws it with
   the Windows tree view theme (black on white). For skin-file and Delphi-style
-  themes it is drawn here as a hollow box in the list's text color on the list
-  background, so it is readable on any list color.
+  themes it is drawn here the way the Folders tree draws its boxes (see
+  TCEFolderTree.ApplyViewBackground): border in the system button shadow gray,
+  which is the tree's default tree-line color; the sign in the same gray on a
+  dark list background, otherwise in the window text color; the box filled with
+  the list background.
 -------------------------------------------------------------------------------}
 procedure TCEViewGroup.PaintExpandButton(Group: TEasyGroup; ACanvas: TCanvas;
     MarginEdge: TEasyGroupMarginEdge; ObjRect: TRect; RectArray:
     TEasyRectArrayObject);
 var
   r: TRect;
-  side, cx, cy: Integer;
+  side, cx, cy, rgb: Integer;
+  signColor: TColor;
 begin
   if not ThemeNeedsOwnDrawing(OwnerListview) or (MarginEdge <> egmeTop) or
       IsRectEmpty(RectArray.ExpandButtonRect) then
@@ -678,10 +682,20 @@ begin
       cy - side div 2 + side);
   ACanvas.Pen.Style:= psSolid;
   ACanvas.Pen.Width:= 1;
-  ACanvas.Pen.Color:= TCEControlCracker(OwnerListview).Font.Color;
+  rgb:= ColorToRGB(TCEControlCracker(OwnerListview).Color);
+  if ((GetRValue(rgb) * 299 + GetGValue(rgb) * 587 + GetBValue(rgb) * 114) div 1000) < 128 then
+  begin
+    signColor:= clBtnShadow;
+  end
+  else
+  begin
+    signColor:= clWindowText;
+  end;
+  ACanvas.Pen.Color:= clBtnShadow;
   ACanvas.Brush.Style:= bsSolid;
-  ACanvas.Brush.Color:= OwnerListview.Color;
+  ACanvas.Brush.Color:= TCEControlCracker(OwnerListview).Color;
   ACanvas.Rectangle(r);
+  ACanvas.Pen.Color:= signColor;
   // minus line (always) and the vertical line that makes it a plus
   ACanvas.MoveTo(r.Left + 2, cy);
   ACanvas.LineTo(r.Right - 2, cy);
