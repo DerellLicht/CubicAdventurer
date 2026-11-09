@@ -419,6 +419,9 @@ object MainForm: TMainForm
       end
       object helpMenuItem: TSpTBXSubmenuItem
         Caption = 'Help'
+        object SpTBXItemDownload: TSpTBXItem
+          Action = CEActions.act_help_download
+        end
         object SpTBXItem1: TSpTBXItem
           Action = CEActions.act_help_about
         end

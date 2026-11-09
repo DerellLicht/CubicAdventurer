@@ -127,6 +127,7 @@ type
     act_edit_properties: TAction;
     act_edit_rename: TAction;
     act_help_about: TAction;
+    act_help_download: TAction;
     act_view_quickview: TAction;
     act_edit_duplicate: TAction;
     act_navi_texteditor: TAction;
@@ -845,6 +846,12 @@ var
   h: HWND;
 begin
   case ActionID of
+    509: begin
+      // Download Latest Version: open the releases page (installer and portable zip) in the
+      // default browser.
+      ShellExecuteW(0, 'open', 'https://github.com/DerellLicht/CubicAdventurer/releases/latest',
+                    nil, nil, SW_SHOWNORMAL);
+    end;
     503: ShowAboutBox;
     504: begin
       form:= TCEPoEditorForm.CreateNew(MainForm,0);

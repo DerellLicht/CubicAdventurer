@@ -278,6 +278,12 @@ object CEActions: TCEActions
       ShortCut = 113
       OnExecute = ActionExecute
     end
+    object act_help_download: TAction
+      Tag = 509
+      Category = 'Help'
+      Caption = 'Download Latest Version'
+      OnExecute = ActionExecute
+    end
     object act_help_about: TAction
       Tag = 503
       Category = 'Help'

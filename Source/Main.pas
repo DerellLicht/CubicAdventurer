@@ -75,6 +75,7 @@ type
     ViewToolbar: TCEToolbar;
     SpTBXItem3: TSpTBXItem;
     SpTBXItemNewWindow: TSpTBXItem;
+    SpTBXItemDownload: TSpTBXItem;
     SpTBXSubmenuItem6: TSpTBXSubmenuItem;
     SpTBXItem4: TSpTBXItem;
     SpTBXSeparatorItem1: TSpTBXSeparatorItem;
