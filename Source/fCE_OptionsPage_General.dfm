@@ -101,4 +101,13 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
       OnClick = HandleChange
     end
   end
+  object check_single: TCheckBox
+    Left = 16
+    Top = 285
+    Width = 409
+    Height = 17
+    Caption = 'Single Instance Only'
+    TabOrder = 3
+    OnClick = HandleChange
+  end
 end

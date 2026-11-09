@@ -105,6 +105,7 @@ type
   TCEActions = class(TDataModule)
     ActionList: TActionList;
     act_gen_exit: TAction;
+    act_gen_newwindow: TAction;
     UpdateTimer: TTimer;
     act_navi_folderup: TAction;
     act_navi_refresh: TAction;
@@ -514,6 +515,12 @@ begin
         Application.MainForm.Close;
       end;
     end;
+    103: begin
+      // New Window: start another copy of the program.  The action is enabled only while
+      // Single Instance Only is off (see UpdateGeneralCategory), so the new process is
+      // not sent to this window.
+      ExecShellEx(ParamStr(0), '', '', SW_SHOWNORMAL, false, false, true);
+    end;
     104: MainForm.MakeVisible;
   end;
 end;
@@ -524,6 +531,10 @@ end;
 procedure UpdateGeneralCategory(ActionID: Integer; TargetAction: TAction);
 begin
   TargetAction.Enabled:= true;
+  case ActionID of
+    // New Window only makes sense when more than one window is allowed
+    103: TargetAction.Enabled:= not IsSingleInstance;
+  end;
 end;
 
 {##############################################################################}
@@ -1521,10 +1532,15 @@ end;
 -------------------------------------------------------------------------------}
 function IsSingleInstance: Boolean;
 begin
-  // Only one window runs at a time: a second start brings the first one forward.  Several
-  // windows would overwrite each other's settings, sessions and layout files.  The old
-  // Single Instance option is gone, so a SingleInstance value in settings.xml is ignored.
+  // Options > General > Single Instance Only (on by default): a second start brings the
+  // running window forward.  When it is off, every start opens its own window.  The windows
+  // share one set of settings files, so the last window closed writes them last.
+  // Before the main form and its settings exist the default (single) applies.
   Result:= true;
+  if assigned(MainForm) and assigned(MainForm.Settings) then
+  begin
+    Result:= MainForm.Settings.SingleInstance;
+  end;
 end;
 
 {##############################################################################}

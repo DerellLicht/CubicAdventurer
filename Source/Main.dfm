@@ -127,6 +127,9 @@ object MainForm: TMainForm
         end
         object SpTBXSeparatorItem1: TSpTBXSeparatorItem
         end
+        object SpTBXItemNewWindow: TSpTBXItem
+          Action = CEActions.act_gen_newwindow
+        end
         object SpTBXItem3: TSpTBXItem
           Action = CEActions.act_gen_exit
         end

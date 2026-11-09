@@ -324,9 +324,12 @@ Paths may contain system variables such as `%USERPROFILE%` or `%TEMP%`. The comp
 - **Refresh** (F5) reloads the file list and also rebuilds its thumbnails. **Refresh Fileview**
   (Shift+F5) reloads the list without touching the thumbnail cache.
 - **Scroll Left** and **Scroll Right** move the tab bar when you have more tabs than fit.
-- **Only one window runs at a time.** Starting CubicAdventurer again (from the Start Menu, for
-  example) brings the existing window forward instead of opening a second one. To work in
-  several places at once, use tabs, sessions and the Workspace panel.
+- **One window, or several.** By default only one window runs: starting CubicAdventurer again
+  (from the Start Menu, for example) brings the existing window forward. To allow more than one,
+  untick **Options > General > Single Instance Only**, then use **File > New Window** or start
+  the program again. All windows share the same settings files, so the window you close last
+  writes them last and its settings win. Tabs, sessions and the Workspace panel are often an
+  easier way to work in several places at once.
 - **Text files** are previewed (their first lines, with accented letters and other Unicode text
   shown correctly) in the **Quickview** panel (Ctrl+3). The file list's Thumbnails view shows only
   an icon for a text file.

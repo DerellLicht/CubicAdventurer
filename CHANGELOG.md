@@ -1,5 +1,8 @@
 # CubicAdventurer Changelog
 
+## [1.03] - 2026-11-09
+- Added: Options > General > Single Instance Only (on by default) and File > New Window are back; with the option off, every start opens its own window
+
 ## [1.02] - 2026-11-08
 - Added: a theme that has no preview picture gets one made automatically when Options > Display is opened (a window explains what is happening)
 

@@ -74,6 +74,7 @@ type
     helpMenuItem: TSpTBXSubmenuItem;
     ViewToolbar: TCEToolbar;
     SpTBXItem3: TSpTBXItem;
+    SpTBXItemNewWindow: TSpTBXItem;
     SpTBXSubmenuItem6: TSpTBXSubmenuItem;
     SpTBXItem4: TSpTBXItem;
     SpTBXSeparatorItem1: TSpTBXSeparatorItem;
@@ -329,6 +330,7 @@ type
     fLeft: Integer;
     fMinimizeToTray: Boolean;
     fShowCmd: Integer;
+    fSingleInstance: Boolean;
     fStartInTray: Boolean;
     fStartupType: TCEStartupType;
     fTop: Integer;
@@ -405,6 +407,7 @@ type
     property ProxyUsername: String read GetProxyUsername write SetProxyUsername;
     property ShowTray: Boolean read GetShowTray write SetShowTray;
     property StartInTray: Boolean read fStartInTray write fStartInTray;
+    property SingleInstance: Boolean read fSingleInstance write fSingleInstance;
     property StartupType: TCEStartupType read fStartupType write fStartupType;
     property UseProxy: Boolean read GetUseProxy write SetUseProxy;
     property UseSystemProxy: Boolean read GetUseSystemProxy write SetUseSystemProxy;
@@ -1987,6 +1990,7 @@ begin
   fMinimizeToTray:= false;
   fCloseToTray:= false;
   fStartInTray:= false;
+  fSingleInstance:= true; // one window at a time, as in 0.98 to 1.02
   fExitOnLastTabClose:= false;
   fAutoCheckUpdates:= false;
   fWow64Enabled:= false;

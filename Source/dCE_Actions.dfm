@@ -26,6 +26,12 @@ object CEActions: TCEActions
         'Ctrl+F4')
       OnExecute = ActionExecute
     end
+    object act_gen_newwindow: TAction
+      Tag = 103
+      Category = 'General'
+      Caption = 'New Window'
+      OnExecute = ActionExecute
+    end
     object act_gen_exit: TAction
       Tag = 100
       Category = 'General'

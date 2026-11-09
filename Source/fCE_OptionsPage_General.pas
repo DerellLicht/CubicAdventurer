@@ -41,6 +41,7 @@ type
     check_tray_minimize: TCheckBox;
     check_tray_close: TCheckBox;
     check_tray_start: TCheckBox;
+    check_single: TCheckBox;
     TntGroupBox1: TSpTBXGroupBox;
     procedure HandleChange(Sender: TObject);
     procedure radioClick(Sender: TObject);
@@ -105,6 +106,8 @@ begin
   MainForm.Settings.MinimizeToTray:= check_tray_minimize.Checked;
   MainForm.Settings.CloseToTray:= check_tray_close.Checked;
   MainForm.Settings.StartInTray:= check_tray_start.Checked;
+  // Single Instance Only
+  MainForm.Settings.SingleInstance:= check_single.Checked;
 end;
 
 {-------------------------------------------------------------------------------
@@ -148,6 +151,9 @@ begin
   check_tray_minimize.Checked:= MainForm.Settings.MinimizeToTray;
   check_tray_close.Checked:= MainForm.Settings.CloseToTray;
   check_tray_start.Checked:= MainForm.Settings.StartInTray;
+
+  // Single Instance Only
+  check_single.Checked:= MainForm.Settings.SingleInstance;
 
   check_tray_minimize.Enabled:= check_tray_enable.Checked;
   check_tray_close.Enabled:= check_tray_enable.Checked;
