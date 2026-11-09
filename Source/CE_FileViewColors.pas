@@ -49,6 +49,8 @@ type
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
         Boolean); override;
+    procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray:
+        TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
   TCEViewListItem = class(TEasyViewListItem)
@@ -56,6 +58,8 @@ type
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
         Boolean); override;
+    procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray:
+        TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
   TCEViewReportItem = class(TEasyViewReportItem)
@@ -63,6 +67,8 @@ type
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
         Boolean); override;
+    procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray:
+        TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
   TCEViewReportThumbItem = class(TEasyViewReportThumbItem)
@@ -70,6 +76,8 @@ type
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
         Boolean); override;
+    procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray:
+        TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
   TCEViewIconItem = class(TEasyViewIconItem)
@@ -77,6 +85,8 @@ type
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
         Boolean); override;
+    procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray:
+        TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
   TCEViewThumbnailItem = class(TEasyViewThumbnailItem)
@@ -84,6 +94,8 @@ type
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
         Boolean); override;
+    procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray:
+        TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
   TCEViewTileItem = class(TEasyViewTileItem)
@@ -91,6 +103,8 @@ type
     procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption:
         string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled:
         Boolean); override;
+    procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray:
+        TEasyRectArrayObject; ACanvas: TCanvas); override;
   end;
 
 var
@@ -135,6 +149,57 @@ procedure CE_ColorizeItemView(ViewStyle: TEasyListStyle; var View:
     TEasyViewItemClass);
 
 implementation
+
+uses
+  Controls, StdCtrls, SpTBXSkins;
+
+type
+  // Gives this unit access to the protected check-box properties of TEasyItem.
+  TCEItemCracker = class(TEasyItem);
+
+{*------------------------------------------------------------------------------
+  Draws the item check box with the active SpTBX theme.
+  The library can do this itself only when it is compiled with its SpTBX
+  switch, which the installed copy is not, so without this the check boxes are
+  always plain Windows ones (white box on a dark theme).
+  Returns true if the box was drawn here. Returns false when the library should
+  draw it: Windows or no theme, radio buttons, and columns after the first.
+-------------------------------------------------------------------------------}
+function PaintThemedCheckBox(AListview: TControl; Item: TEasyItem; Column:
+    TEasyColumn; const RectArray: TEasyRectArrayObject; ACanvas: TCanvas): Boolean;
+var
+  r: TRect;
+  state: TCheckBoxState;
+  crack: TCEItemCracker;
+begin
+  Result:= false;
+  if not (SkinManager.GetSkinType(AListview) in [sknSkin, sknDelphiStyle]) then
+  begin
+    Exit;
+  end;
+  crack:= TCEItemCracker(Item);
+  if crack.CheckType <> ectBox then
+  begin
+    Exit;
+  end;
+  if Assigned(Column) and (Column.Index > 0) then
+  begin
+    Exit;
+  end;
+  if crack.Checked then
+  begin
+    state:= cbChecked;
+  end
+  else
+  begin
+    state:= cbUnchecked;
+  end;
+  r:= RectArray.CheckRect;
+  InflateRect(r, -1, -1);
+  SpDrawXPCheckBoxGlyph(AListview, ACanvas, r, crack.Enabled, state,
+      crack.CheckHovering, crack.CheckPending, AListview.CurrentPPI);
+  Result:= true;
+end;
 
 var
   // Lower case extension (no dot) -> background color. See CE_SetExtensionBgColors.
@@ -382,6 +447,15 @@ end;
 
 { TCEViewSmallIconItem }
 
+procedure TCEViewSmallIconItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
+    RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+begin
+  if not PaintThemedCheckBox(OwnerListview, Item, Column, RectArray, ACanvas) then
+  begin
+    inherited PaintCheckBox(Item, Column, RectArray, ACanvas);
+  end;
+end;
+
 procedure TCEViewSmallIconItem.PaintBefore(Item: TEasyItem; Column:
     TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray:
     TEasyRectArrayObject; var Handled: Boolean);
@@ -391,6 +465,15 @@ begin
 end;
 
 { TCEViewListItem }
+
+procedure TCEViewListItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
+    RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+begin
+  if not PaintThemedCheckBox(OwnerListview, Item, Column, RectArray, ACanvas) then
+  begin
+    inherited PaintCheckBox(Item, Column, RectArray, ACanvas);
+  end;
+end;
 
 procedure TCEViewListItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn;
     const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject;
@@ -402,6 +485,15 @@ end;
 
 { TCEViewReportItem }
 
+procedure TCEViewReportItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
+    RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+begin
+  if not PaintThemedCheckBox(OwnerListview, Item, Column, RectArray, ACanvas) then
+  begin
+    inherited PaintCheckBox(Item, Column, RectArray, ACanvas);
+  end;
+end;
+
 procedure TCEViewReportItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn;
     const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject;
     var Handled: Boolean);
@@ -411,6 +503,15 @@ begin
 end;
 
 { TCEViewReportThumbItem }
+
+procedure TCEViewReportThumbItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
+    RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+begin
+  if not PaintThemedCheckBox(OwnerListview, Item, Column, RectArray, ACanvas) then
+  begin
+    inherited PaintCheckBox(Item, Column, RectArray, ACanvas);
+  end;
+end;
 
 procedure TCEViewReportThumbItem.PaintBefore(Item: TEasyItem; Column:
     TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray:
@@ -422,6 +523,15 @@ end;
 
 { TCEViewIconItem }
 
+procedure TCEViewIconItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
+    RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+begin
+  if not PaintThemedCheckBox(OwnerListview, Item, Column, RectArray, ACanvas) then
+  begin
+    inherited PaintCheckBox(Item, Column, RectArray, ACanvas);
+  end;
+end;
+
 procedure TCEViewIconItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn;
     const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject;
     var Handled: Boolean);
@@ -432,6 +542,15 @@ end;
 
 { TCEViewThumbnailItem }
 
+procedure TCEViewThumbnailItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
+    RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+begin
+  if not PaintThemedCheckBox(OwnerListview, Item, Column, RectArray, ACanvas) then
+  begin
+    inherited PaintCheckBox(Item, Column, RectArray, ACanvas);
+  end;
+end;
+
 procedure TCEViewThumbnailItem.PaintBefore(Item: TEasyItem; Column:
     TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray:
     TEasyRectArrayObject; var Handled: Boolean);
@@ -441,6 +560,15 @@ begin
 end;
 
 { TCEViewTileItem }
+
+procedure TCEViewTileItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
+    RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+begin
+  if not PaintThemedCheckBox(OwnerListview, Item, Column, RectArray, ACanvas) then
+  begin
+    inherited PaintCheckBox(Item, Column, RectArray, ACanvas);
+  end;
+end;
 
 procedure TCEViewTileItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn;
     const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject;
