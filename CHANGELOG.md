@@ -4,6 +4,7 @@
 - Added: Options > General > Single Instance Only (on by default) and File > New Window are back; with the option off, every start opens its own window
 - Added: Help > Download Latest Version opens the releases page, where the installer and the portable zip can be downloaded
 - Added: Options > General can register CubicAdventurer as the Windows default file manager (experimental; tick "Show Default File Manager" to reveal the Register and Unregister buttons; uninstalling removes the entry)
+- Removed: the Plugins page in Options (the plugin interface was never finished and nothing used it)
 
 ## [1.02] - 2026-11-08
 - Added: a theme that has no preview picture gets one made automatically when Options > Display is opened (a window explains what is happening)

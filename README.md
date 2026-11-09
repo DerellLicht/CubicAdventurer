@@ -91,7 +91,7 @@ Some elements of the original are either removed from this program, or simply ar
   It remains available (via F7 key, after clicking on a filename), but most users are
   better off dragging a file to their own program editors.
 - not tested: treat zip (etc) archives as folders
-- not tested: File search, plugins, the media player and the image viewer.
+- not tested: File search, the media player and the image viewer.
 - not tested: non-English (non-ASCII) text in saved settings and in thumbnails of text files.
 
 ##  Introducing the development team

@@ -6,10 +6,10 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-068). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-072). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-08 (version 1.02 in progress).
+Last updated: 2026-11-09 (version 1.03 in progress).
 
 ## Open bugs and gaps
 
@@ -17,7 +17,33 @@ Last updated: 2026-11-08 (version 1.02 in progress).
 
 ## Checks still owed
 
-(none at the moment)
+Requested by the Portable Freeware forum user sl23. All four were written on 2026-11-09 and not
+compiled; build first (Shift-F9), then test.
+
+- **CA-069 [task] Test: Single Instance Only and File > New Window.** Options > General has a
+  Single Instance Only check box, on by default. On: File > New Window is greyed out and starting
+  the program again brings the running window forward (as in 0.98 to 1.02). Off, then OK: New Window
+  opens a second window, and so does starting the program again. The windows share one set of
+  settings files; the last one closed writes them last. Old `settings.xml` files from before 0.98 may
+  carry a stored `SingleInstance` value, which is now read again.
+- **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
+  "Show Default File Manager" check box starts unticked every time Options is shown; ticking it
+  reveals the group with the two buttons. The warning text stays visible. Both buttons ask first and
+  report the result. Only the current user is changed: `HKCU\Software\Classes\Folder\shell`, the
+  verb key `cubicadventurer` and the default value of `Folder\shell`. Unregister puts back the old
+  default (only if it still is ours). Uninstalling runs `CubicAdventurer.exe /unregister` (from
+  `[UninstallRun]` in the installer script). NOT verified: that Windows 11 honours a per-user default
+  verb (Win+E and some other "open folder" paths may still use Explorer). sl23 was asked to test it;
+  if it does not work for him, the fallback is the old machine-wide key (`HKCR`, needs elevation),
+  or removing the feature again.
+- **CA-071 [task] Test: Help > Download Latest Version.** Opens
+  `https://github.com/DerellLicht/CubicAdventurer/releases/latest` in the default browser (it
+  replaces the Updater idea; both zips are listed there).
+- **CA-072 [task] Test: Plugins page removed.** Options no longer has a Plugins page, and the plugin
+  engine, its two forms and the sample plugin (`Source/Plugins`) are deleted, because nothing used
+  them. The program no longer loads DLLs from a `Plugins` folder. (SumatraPDF.exe is still looked for
+  there by the PDF viewer; that is unrelated.) Check that it builds, Options opens, and nothing
+  mentions plugins any more. Last commit before the removal: eb5d8b3.
 
 ## Wishlist
 

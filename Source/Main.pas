@@ -31,7 +31,7 @@ uses
   fCE_ExtAppPage, fCE_FiltersPanel, fCE_BookmarkPropDlg,
   fCE_DockHostForm, fCE_DockableForm, fCE_TabPage, fCE_FileView,
   fCE_FolderPanel, fCE_QuickViewPanel, fCE_BookmarkPanel, fCE_Customizer,
-  fCE_PoEditor, fCE_PluginLog,
+  fCE_PoEditor,
   // CE Data Modules
   dCE_Actions, dCE_Images, dCE_Input,
   // CE Units
@@ -40,7 +40,7 @@ uses
   CE_ToolbarButtons, CE_TBActions, CE_LanguageCodes, CE_LanguageEngine,
   CE_LanguageUtils, CE_Sessions, CE_SpTabBar,
   CE_AppSettings, CE_Toolbar, AppCommand,
-  CEJvDockVSNetStyleTBX, CE_Plugins, CE_PluginsIntf,
+  CEJvDockVSNetStyleTBX,
   // Toolbar2000
   TB2Dock, TB2Item, TB2Toolbar, TB2ToolWindow, TB2ExtItems,
   // SpTBX
@@ -551,9 +551,6 @@ begin
   fIsReady:= false;
   CEActions.UpdateTimer.Enabled:= false;
 
-  // unload plugins
-  GlobalPluginHost.Finalize;
-
   // finalize UI
   FinalizeUI;
 
@@ -818,15 +815,6 @@ begin
   begin
     MainForm.Show;
   end;
-
-  // TODO: remove this!!!!
-  //ShowPluginLog;
-
-  // Load Plugins
-  GlobalPluginHost.LoadPlugins(ExePath + 'Plugins\', 'dll', true);
-  if not WideIsSameText(SettingsDirPath, ExePath) then
-  GlobalPluginHost.LoadPlugins(SettingsDirPath + 'Plugins\', 'dll', true);
-  GlobalPluginHost.SetSettingsFolder(SettingsDirPath + 'Plugins\.settings\');
 
   // Load Bookmarks
   CEBookmarkPanel.BookmarkMenuItems.Add(BookmarkToolbar.Items);
