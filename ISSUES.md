@@ -28,7 +28,7 @@ Requested by the Portable Freeware forum user sl23. CA-069, CA-071 and CA-072 we
   be turned on). Fix: the item view classes in `CE_FileViewColors.pas` override `PaintCheckBox`
   and call SpTBXLib's own check box routine for themes from a skin file or a Delphi style; the
   Windows and "Default" themes still use the library's drawing. The same applies to the group
-  header bands of Group By (check box, and caption color from the theme's list item text color,
+  header bands of Group By (check box, plus/minus box, and caption in the list's own text color,
   class `TCEViewGroup`). Test: switch the option on, try a
   dark theme (for example Paint It Black), look at Report, List, Icon and Thumbnail views: normal,
   hover, ticked, and a disabled item if any.

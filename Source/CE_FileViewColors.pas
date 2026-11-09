@@ -113,6 +113,9 @@ type
     procedure LoadTextFont(Group: TEasyGroup; ACanvas: TCanvas); override;
     procedure PaintCheckBox(Group: TEasyGroup; ACanvas: TCanvas; RectArray:
         TEasyRectArrayObject); override;
+    procedure PaintExpandButton(Group: TEasyGroup; ACanvas: TCanvas;
+        MarginEdge: TEasyGroupMarginEdge; ObjRect: TRect; RectArray:
+        TEasyRectArrayObject); override;
   end;
 
 var
@@ -609,19 +612,18 @@ end;
 
 {*------------------------------------------------------------------------------
   Caption of a group header band. The library takes the group font color from
-  the system colors, which is unreadable on a dark theme. With a skin-file or
-  Delphi-style theme the caption uses the theme's list item text color.
-  A focused group keeps the library's highlight text color.
+  the system colors, which can be unreadable on the list background (dark grey
+  on black). The caption uses the list's own text color, the one file names are
+  drawn with. A focused group keeps the library's highlight text color.
 -------------------------------------------------------------------------------}
 procedure TCEViewGroup.LoadTextFont(Group: TEasyGroup; ACanvas: TCanvas);
 begin
   inherited LoadTextFont(Group, ACanvas);
-  if Assigned(ACanvas) and ThemeNeedsOwnDrawing(OwnerListview) and
-      not TCEGroupCracker(Group).Focused then
+  if Assigned(ACanvas) and not TCEGroupCracker(Group).Focused then
   begin
-    ACanvas.Font.Color:= SkinManager.CurrentSkin.GetTextColor(OwnerListview,
-        skncListItem, sknsNormal);
+    ACanvas.Font.Color:= OwnerListview.Font.Color;
   end;
+end;
 end;
 
 {*------------------------------------------------------------------------------
@@ -641,6 +643,51 @@ begin
   else
   begin
     inherited PaintCheckBox(Group, ACanvas, RectArray);
+  end;
+end;
+
+{*------------------------------------------------------------------------------
+  The small plus / minus box left of a group caption. The library draws it with
+  the Windows tree view theme (black on white). For skin-file and Delphi-style
+  themes it is drawn here as a hollow box in the list's text color on the list
+  background, so it is readable on any list color.
+-------------------------------------------------------------------------------}
+procedure TCEViewGroup.PaintExpandButton(Group: TEasyGroup; ACanvas: TCanvas;
+    MarginEdge: TEasyGroupMarginEdge; ObjRect: TRect; RectArray:
+    TEasyRectArrayObject);
+var
+  r: TRect;
+  side, cx, cy: Integer;
+begin
+  if not ThemeNeedsOwnDrawing(OwnerListview) or (MarginEdge <> egmeTop) or
+      IsRectEmpty(RectArray.ExpandButtonRect) then
+  begin
+    inherited PaintExpandButton(Group, ACanvas, MarginEdge, ObjRect, RectArray);
+    Exit;
+  end;
+  // odd side length so the plus / minus lines sit in the middle
+  side:= MulDiv(9, OwnerListview.CurrentPPI, 96);
+  if (side and 1) = 0 then
+  begin
+    Inc(side);
+  end;
+  cx:= (RectArray.ExpandButtonRect.Left + RectArray.ExpandButtonRect.Right) div 2;
+  cy:= (RectArray.ExpandButtonRect.Top + RectArray.ExpandButtonRect.Bottom) div 2;
+  r:= Rect(cx - side div 2, cy - side div 2, cx - side div 2 + side,
+      cy - side div 2 + side);
+  ACanvas.Pen.Style:= psSolid;
+  ACanvas.Pen.Width:= 1;
+  ACanvas.Pen.Color:= OwnerListview.Font.Color;
+  ACanvas.Brush.Style:= bsSolid;
+  ACanvas.Brush.Color:= OwnerListview.Color;
+  ACanvas.Rectangle(r);
+  // minus line (always) and the vertical line that makes it a plus
+  ACanvas.MoveTo(r.Left + 2, cy);
+  ACanvas.LineTo(r.Right - 2, cy);
+  if not TCEGroupCracker(Group).Expanded then
+  begin
+    ACanvas.MoveTo(cx, r.Top + 2);
+    ACanvas.LineTo(cx, r.Bottom - 2);
   end;
 end;
 
