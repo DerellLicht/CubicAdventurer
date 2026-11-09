@@ -3,6 +3,7 @@
 CubicAdventurer has no tooltips and no built-in help, so this is the closest thing to a manual.
 It explains the features that are easy to miss.
 
+- [Small things worth knowing](#small-things-worth-knowing)
 - [Bookmarks and Sessions](#bookmarks-and-sessions): get back to where you were
 - [Panels at a glance](#panels-at-a-glance) (Ctrl+1 to Ctrl+6)
 - [Workspace: a second file list](#workspace-a-second-file-list) (dual-pane layout)
@@ -16,7 +17,36 @@ It explains the features that are easy to miss.
 - [The tray icon](#the-tray-icon)
 - [Where your settings live](#where-your-settings-live)
 - [Starting from the command line](#starting-from-the-command-line)
-- [Small things worth knowing](#small-things-worth-knowing)
+
+## Small things worth knowing
+
+- **One window, or several.** By default only one window runs: starting CubicAdventurer again
+  (from the Start Menu, for example) brings the existing window forward. To allow more than one,
+  untick **Options > General > Single Instance Only**, then use **File > New Window** or start
+  the program again. All windows share the same settings files, so the window you close last
+  writes them last and its settings win. **Do not change Options while more than one window is
+  open.** Tabs, sessions and the Workspace panel are often an easier way to work in several
+  places at once.
+- **Default file manager (experimental).** CubicAdventurer can ask Windows to open folders with it
+  instead of Windows Explorer. Open **Options > General**, tick **Show Default File Manager**, and
+  use **Register**. **Unregister** puts back what was there before, and uninstalling the program
+  removes the entry too. Only your own Windows account is changed, but this is a change to the
+  Windows registry, so use it with care. If you delete or move the program without using
+  Unregister first, folders may stop opening until the entry is removed. If that happens, start
+  Registry Editor (`regedit`), go to `HKEY_CURRENT_USER\Software\Classes\Folder\shell`, delete
+  the `cubicadventurer` key under it, and delete the (Default) value of `shell` itself. This is
+  lightly tested, and Windows 11 may still use Explorer for some ways of opening a folder (the
+  Win+E key, for example).
+- **Refresh** (F5) reloads the file list and also rebuilds its thumbnails. **Refresh Fileview**
+  (Shift+F5) reloads the list without touching the thumbnail cache.
+- **Scroll Left** and **Scroll Right** move the tab bar when you have more tabs than fit.
+- **Text files** are previewed (their first lines, with accented letters and other Unicode text
+  shown correctly) in the **Quickview** panel (Ctrl+3). The file list's Thumbnails view shows only
+  an icon for a text file.
+- **Unicode file names** (accented letters, Chinese, Japanese and so on) show correctly in the file
+  list, even in a font that lacks those characters; the program borrows glyphs from another font.
+  Emoji in file names are shown, but some other programs, such as the Windows `dir` command,
+  cannot display them.
 
 ## Bookmarks and Sessions
 
@@ -318,28 +348,3 @@ the program is already running, hands it to the running window):
 
 Paths may contain system variables such as `%USERPROFILE%` or `%TEMP%`. The complete list is in
 `Documents\CommandLine Switches.rtf`.
-
-## Small things worth knowing
-
-- **Refresh** (F5) reloads the file list and also rebuilds its thumbnails. **Refresh Fileview**
-  (Shift+F5) reloads the list without touching the thumbnail cache.
-- **Scroll Left** and **Scroll Right** move the tab bar when you have more tabs than fit.
-- **One window, or several.** By default only one window runs: starting CubicAdventurer again
-  (from the Start Menu, for example) brings the existing window forward. To allow more than one,
-  untick **Options > General > Single Instance Only**, then use **File > New Window** or start
-  the program again. All windows share the same settings files, so the window you close last
-  writes them last and its settings win. **Do not change Options while more than one window is
-  open.** Tabs, sessions and the Workspace panel are often an easier way to work in several
-  places at once.
-- **Default file manager (experimental).** CubicAdventurer can ask Windows to open folders with it
-  instead of Windows Explorer. Open **Options > General**, tick **Show Default File Manager**, and
-  use **Register**. **Unregister** puts back what was there before, and uninstalling the program
-  removes the entry too. Only your own Windows account is changed. This is lightly tested, and
-  Windows 11 may still use Explorer for some ways of opening a folder (the Win+E key, for example).
-- **Text files** are previewed (their first lines, with accented letters and other Unicode text
-  shown correctly) in the **Quickview** panel (Ctrl+3). The file list's Thumbnails view shows only
-  an icon for a text file.
-- **Unicode file names** (accented letters, Chinese, Japanese and so on) show correctly in the file
-  list, even in a font that lacks those characters; the program borrows glyphs from another font.
-  Emoji in file names are shown, but some other programs, such as the Windows `dir` command,
-  cannot display them.

@@ -141,17 +141,18 @@ inherited CEOptionsPage_General: TCEOptionsPage_General
     Left = 233
     Top = 175
     Width = 192
-    Height = 104
+    Height = 121
     AutoSize = False
     Caption = 
       'Experimental. Register makes CubicAdventurer the program Windows ' +
       'opens folders with. Only your own Windows account is changed. ' +
-      'Unregister, or uninstalling the program, restores the old setting.'
+      'Unregister, or uninstalling the program, restores the old setting. ' +
+      'See the warnings about registry changes in the Tips and Tricks guide.'
     Wrapping = twWrap
   end
   object check_single: TCheckBox
     Left = 16
-    Top = 285
+    Top = 303
     Width = 409
     Height = 17
     Caption = 'Single Instance Only'
