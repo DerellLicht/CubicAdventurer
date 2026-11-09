@@ -171,6 +171,8 @@ type
   // Gives this unit access to the protected check-box properties of TEasyItem.
   TCEItemCracker = class(TEasyItem);
   TCEGroupCracker = class(TEasyGroup);
+  // Font is a protected property of TControl.
+  TCEControlCracker = class(TControl);
 
 // True when the active theme comes from a skin file or a Delphi style, i.e. when
 // the library would draw plain Windows controls on it.
@@ -621,9 +623,8 @@ begin
   inherited LoadTextFont(Group, ACanvas);
   if Assigned(ACanvas) and not TCEGroupCracker(Group).Focused then
   begin
-    ACanvas.Font.Color:= OwnerListview.Font.Color;
+    ACanvas.Font.Color:= TCEControlCracker(OwnerListview).Font.Color;
   end;
-end;
 end;
 
 {*------------------------------------------------------------------------------
@@ -677,7 +678,7 @@ begin
       cy - side div 2 + side);
   ACanvas.Pen.Style:= psSolid;
   ACanvas.Pen.Width:= 1;
-  ACanvas.Pen.Color:= OwnerListview.Font.Color;
+  ACanvas.Pen.Color:= TCEControlCracker(OwnerListview).Font.Color;
   ACanvas.Brush.Style:= bsSolid;
   ACanvas.Brush.Color:= OwnerListview.Color;
   ACanvas.Rectangle(r);
