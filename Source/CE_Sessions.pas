@@ -1704,6 +1704,9 @@ var
   chNode2: TDOMNode;
   sli: TCESessionSaveLoadItems;
 begin
+  // The item's old node may already be destroyed (ReplaceChild frees it), and the
+  // property setters below would write into it. Detach it first.
+  AItem.Node:= nil;
   AItem.fName:= ANode.AttribStrings['name'];
   AItem.TimeStr:= ANode.AttribStrings['time'];
   AItem.fAutoSave:= StrToBoolDef(ANode.AttribStrings['autosave'], false);
