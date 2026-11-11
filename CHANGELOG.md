@@ -3,6 +3,7 @@
 ## [1.04] - 2026-11-09
 - Added: the window title starts with the name of the active session (for example "Entertain Me - CubicAdventurer v1.04"), so several windows can be told apart in the taskbar
 - Changed: with several windows open, saving a session in one window no longer discards sessions or History saved by another; sessions and History are merged before they are written
+- Changed: a new window opens offset from the window already open, instead of exactly on top of it
 - Changed: History no longer gets an entry at exit when the tabs are as they were when loaded, and its items are now listed as "Tabs saved at" instead of "Session at"
 - Fixed: the check boxes shown by Advanced > FileView > CheckBoxSelection now use the colors of the selected theme, and so do the check box, caption and plus/minus box of the group headers shown by Group By
 

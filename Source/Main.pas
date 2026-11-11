@@ -2035,6 +2035,107 @@ begin
   ShowCmd:= Placement.showCmd;
 end;
 
+const
+  CA_PROCESS_QUERY_LIMITED_INFORMATION = $1000;
+
+function CA_QueryProcessImageName(hProcess: THandle; dwFlags: DWORD; lpExeName: PWideChar;
+    var lpdwSize: DWORD): BOOL; stdcall; external kernel32 name 'QueryFullProcessImageNameW';
+
+type
+  TOtherWindowSearch = record
+    Found: Boolean;
+    Place: TWindowPlacement;
+  end;
+  POtherWindowSearch = ^TOtherWindowSearch;
+
+{-------------------------------------------------------------------------------
+  EnumWindows callback: is this a visible main window of another running copy of
+  this program?  If so, remember its placement and stop.  The first one found is
+  the topmost, so a third window cascades from the second.
+-------------------------------------------------------------------------------}
+function EnumOtherWindowsProc(Wnd: HWND; Param: LPARAM): BOOL; stdcall;
+var
+  search: POtherWindowSearch;
+  cls: array[0..255] of Char;
+  pid: DWORD;
+  proc: THandle;
+  buf: array[0..MAX_PATH] of Char;
+  len: DWORD;
+begin
+  Result:= true;
+  search:= POtherWindowSearch(Param);
+  if (Wnd = MainForm.Handle) or not IsWindowVisible(Wnd) then
+  begin
+    Exit;
+  end;
+  if (GetClassName(Wnd, cls, Length(cls)) = 0) or (string(cls) <> MainForm.ClassName) then
+  begin
+    Exit;
+  end;
+  // class names such as TMainForm are common, so check the program too
+  GetWindowThreadProcessId(Wnd, pid);
+  proc:= OpenProcess(CA_PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
+  if proc = 0 then
+  begin
+    Exit;
+  end;
+  try
+    len:= Length(buf);
+    if CA_QueryProcessImageName(proc, 0, buf, len) and SameText(string(buf), ParamStr(0)) then
+    begin
+      search.Place.Length:= SizeOf(TWindowPlacement);
+      if GetWindowPlacement(Wnd, @search.Place) then
+      begin
+        search.Found:= true;
+        Result:= false;
+      end;
+    end;
+  finally
+    CloseHandle(proc);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Cascade a new window from the one already open
+  When another window of this program is showing, the saved position would put
+  the new window exactly on top of it.  Offset it by one title bar height instead
+  (the other window's real position, not the one saved at its last exit), and
+  bring it back to the top-left of the screen if that pushes it off the screen.
+-------------------------------------------------------------------------------}
+procedure CascadeFromOtherWindow(var R: TRect);
+var
+  search: TOtherWindowSearch;
+  off, w, h: Integer;
+  mi: TMonitorInfo;
+  other: TRect;
+begin
+  search.Found:= false;
+  EnumWindows(@EnumOtherWindowsProc, LPARAM(@search));
+  if not search.Found or (search.Place.showCmd = SW_SHOWMAXIMIZED) then
+  begin
+    Exit;
+  end;
+  other:= search.Place.rcNormalPosition;
+  off:= GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYSIZEFRAME);
+  w:= R.Right - R.Left;
+  h:= R.Bottom - R.Top;
+  R.Left:= other.Left + off;
+  R.Top:= other.Top + off;
+  R.Right:= R.Left + w;
+  R.Bottom:= R.Top + h;
+  mi.cbSize:= SizeOf(mi);
+  if GetMonitorInfo(MonitorFromRect(R, MONITOR_DEFAULTTONEAREST), @mi) then
+  begin
+    if (R.Right > mi.rcWork.Right) or (R.Bottom > mi.rcWork.Bottom) then
+    begin
+      R.Left:= mi.rcWork.Left;
+      R.Top:= mi.rcWork.Top;
+      R.Right:= R.Left + w;
+      R.Bottom:= R.Top + h;
+    end;
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   SetP ositionInfo
 -------------------------------------------------------------------------------}
@@ -2047,6 +2148,7 @@ begin
   r.Top:= Top;
   r.Right:= Left + Max(Width, 50);
   r.Bottom:= Top + Max(Height, 50);
+  CascadeFromOtherWindow(r);
   Placement.Length := SizeOf(TWindowPlacement);
   GetWindowPlacement(MainForm.Handle, @Placement);
   Placement.rcNormalPosition:= r;
