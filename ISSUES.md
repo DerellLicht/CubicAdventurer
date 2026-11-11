@@ -18,18 +18,8 @@ Last updated: 2026-11-11 (version 1.04 in progress).
 ## Checks still owed
 
 Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
-on 2026-11-09 and CA-074 to CA-078 and CA-080 on 2026-11-11 (see `HISTORY.md`). CA-070 waits for sl23's
-test (1.03 is out). CA-081 is left from Derell's own use of several windows, and CA-079 is new on 2026-11-11.
-
-- **CA-079 [task] Test: Sessions > Open in New Window.** Requested by Derell 2026-11-10 (he opens a
-  new window and then loads a session every time). Sessions menu, below Manage...: "Open in New
-  Window" is a sub-menu listing the saved sessions; clicking one starts another copy of the program
-  with the switch `/session:<name>`, which loads that session at startup instead of the On Startup
-  choice (an unknown name falls back to the normal startup). This window is not changed. The item is
-  disabled while Single Instance Only is on. The new window cascades (CA-077). If the session is
-  already active in another window it is simply opened again (two windows, the later save wins).
-  Folder arguments given with the switch open as extra tabs. A session name containing a double
-  quote cannot be passed this way. Not tested yet (2026-11-11).
+on 2026-11-09 and CA-074 to CA-080 on 2026-11-11 (see `HISTORY.md`). CA-070 waits for sl23's
+test (1.03 is out). CA-081 is left from Derell's own use of several windows.
 
 - **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
   and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to
@@ -84,21 +74,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
     when settings are used at a different scale; pixel sizes hard-coded in the code.
   - First step when taken up: screenshots at 150% (main window with a few panels open, and
     the Options dialog) from the Windows 11 laptop or a user; not from the desktop.
-- **CA-016 [feature] Text editor: highlighter color settings.** There is no page for
-  editing highlighter colors; the highlighters use the SynEdit default colors. The Text
-  Editor options page (`fCE_TextEditorOptions.pas`) only has the multi-highlighter
-  background check box.
-  Deferred by decision (2026-10-27): the built-in text editor stays basic. Programmers
-  have their own editors (drag and drop from the List view works), and making this a real
-  editor is too much effort for a file manager.
-- **CA-051 [bug] Text editor: Alt-drag column selection.** Not re-checked since the SynEdit
-  swap. `eoAltSetsColumnMode` is missing from the editor's `Options` in
-  `fCE_TextEditor.dfm`, which would explain it. Add the option, then test Alt-drag.
-  Deferred with CA-016 (no further text editor development).
-- **CA-021 [feature] Win64 build.**
-- **CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal).** Decided to do
-  this in a new thread after the Delphi release is stable. Core code is portable; the hard
-  parts are SpTBX/Toolbar2000, the Mustangpeak shell components and JVCL docking.
 - **CA-017 [bug] Dock layout hardening.** `DoUnAutoHideDockForm` bypasses the dock-chain
   guard; only root-level floating hosts are pre-created. Optional proper fix: derive
   `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
