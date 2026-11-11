@@ -119,6 +119,24 @@ object CESessionManager: TCESessionManager
         Caption = 'Name'
         Anchors = [akTop, akRight]
       end
+      object label_name_locked: TSpTBXLabel
+        Left = 202
+        Top = 100
+        Width = 185
+        Height = 45
+        Caption = 'Name change disabled: this session is active in a window.'
+        Anchors = [akTop, akRight]
+        AutoSize = False
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        Visible = False
+        Wrapping = twWrap
+      end
       object list_sessions: TSpTBXListBox
         Left = 12
         Top = 12

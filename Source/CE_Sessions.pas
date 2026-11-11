@@ -133,11 +133,14 @@ type
     fKeepItem: TCESessionItem;
     fLastActiveName: string;
     fLastSyncTick: Cardinal;
+    fPublishedAtom: ATOM;
+    fPublishedWnd: HWND;
     fSessionHistory: TCESessionList;
     fSessions: TCESessionList;
     function GetActiveSessionIndex: Integer;
     function GetPlainTabSetActive: Boolean;
     procedure ActiveChanged;
+    procedure PublishActiveSession;
     procedure RebuildSessionsToolbar;
     procedure ForgetDeletedActive;
     procedure NormalizeLastTimeFlag;
@@ -163,6 +166,7 @@ type
     procedure SaveActiveSession;
     procedure SaveSessionDlg;
     procedure SaveToFile(AFilePath: WideString); override;
+    function SessionActiveInAnyWindow(const AName: string): Boolean;
     procedure ShowSessionManager;
     procedure SyncFromDisk(AKeep: TCESessionItem = nil; AMinInterval: Cardinal =
         0);
@@ -237,6 +241,17 @@ uses
   fCE_TabPage, WideSupport, XMLRead, XMLWrite, Main, CE_SpTabBar,
   fCE_SessionManager, CE_LanguageEngine, dCE_Images, fCE_FileView,
   CE_VistaFuncs, CE_Utils, Forms;
+
+const
+  // window property on the main window: atom holding the active session's name
+  ActivePropName = 'CubicAdventurer.ActiveSession';
+
+type
+  TActiveSessionSearch = record
+    Name: string;
+    Found: Boolean;
+  end;
+  PActiveSessionSearch = ^TActiveSessionSearch;
 
 var
   fGlobalSessions: TCESessions;  
@@ -355,6 +370,14 @@ end;
 -------------------------------------------------------------------------------}
 destructor TCESessions.Destroy;
 begin
+  if (fPublishedWnd <> 0) and IsWindow(fPublishedWnd) then
+  begin
+    RemoveProp(fPublishedWnd, ActivePropName);
+  end;
+  if fPublishedAtom <> 0 then
+  begin
+    GlobalDeleteAtom(fPublishedAtom);
+  end;
   fAutoSaveTimer.Free;
   fSessions.Free;
   fSessionHistory.Free;
@@ -948,6 +971,84 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Publish Active Session
+
+  Tells the other windows of this program which saved session this window has
+  active: the name is kept as a global atom and hung on the main window as a
+  window property, where any other copy can read it (see SessionActiveInAnyWindow).
+  Nothing is stored on disk, and a window that is gone takes its property with it.
+-------------------------------------------------------------------------------}
+procedure TCESessions.PublishActiveSession;
+var
+  newAtom: ATOM;
+  wnd: HWND;
+begin
+  if not assigned(MainForm) or not MainForm.HandleAllocated then
+  begin
+    Exit;
+  end;
+  wnd:= MainForm.Handle;
+  newAtom:= 0;
+  if assigned(fActiveSession) and not fActiveSessionIsHistory then
+  begin
+    newAtom:= GlobalAddAtom(PChar(Copy(fActiveSession.Name, 1, 250)));
+  end;
+  if newAtom <> 0 then
+  begin
+    SetProp(wnd, ActivePropName, THandle(newAtom));
+  end
+  else
+  begin
+    RemoveProp(wnd, ActivePropName);
+  end;
+  // each GlobalAddAtom counts once: give back the one from the previous call
+  if fPublishedAtom <> 0 then
+  begin
+    GlobalDeleteAtom(fPublishedAtom);
+  end;
+  fPublishedAtom:= newAtom;
+  fPublishedWnd:= wnd;
+end;
+
+{-------------------------------------------------------------------------------
+  EnumWindows callback for SessionActiveInAnyWindow: stops at the first window
+  whose published session name matches.
+-------------------------------------------------------------------------------}
+function EnumActiveSessionProc(Wnd: HWND; Param: LPARAM): BOOL; stdcall;
+var
+  search: PActiveSessionSearch;
+  h: THandle;
+  buf: array[0..255] of Char;
+begin
+  search:= PActiveSessionSearch(Param);
+  h:= GetProp(Wnd, ActivePropName);
+  if h <> 0 then
+  begin
+    if (GlobalGetAtomName(ATOM(h), buf, Length(buf)) > 0) and SameText(string(buf), search.Name) then
+    begin
+      search.Found:= true;
+    end;
+  end;
+  Result:= not search.Found;
+end;
+
+{-------------------------------------------------------------------------------
+  Session Active In Any Window
+
+  True if the saved session AName is the active session of this window or of
+  any other open window of this program.
+-------------------------------------------------------------------------------}
+function TCESessions.SessionActiveInAnyWindow(const AName: string): Boolean;
+var
+  search: TActiveSessionSearch;
+begin
+  search.Name:= AName;
+  search.Found:= false;
+  EnumWindows(@EnumActiveSessionProc, LPARAM(@search));
+  Result:= search.Found;
+end;
+
+{-------------------------------------------------------------------------------
   Rebuild Sessions Toolbar (queued, see SyncFromDisk)
 -------------------------------------------------------------------------------}
 procedure TCESessions.RebuildSessionsToolbar;
@@ -966,6 +1067,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESessions.ActiveChanged;
 begin
+  PublishActiveSession;
   MainForm.SessionsToolbar.Recreate;
   MainForm.UpdateTitle;
 end;

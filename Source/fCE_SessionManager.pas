@@ -46,6 +46,7 @@ type
     SpTBXTabSheet1: TSpTBXTabSheet;
     list_sessions: TSpTBXListBox;
     SpTBXLabel2: TSpTBXLabel;
+    label_name_locked: TSpTBXLabel;
     procedure but_deleteClick(Sender: TObject);
     procedure check_autosaveClick(Sender: TObject);
     procedure edit_nameChange(Sender: TObject);
@@ -164,6 +165,8 @@ end;
   On list_sessions Click
 -------------------------------------------------------------------------------}
 procedure TCESessionManager.list_sessionsClick(Sender: TObject);
+var
+  locked: Boolean;
 begin
   fSessionPropertiesEnabled:= false;
 
@@ -181,6 +184,13 @@ begin
   end
   else
   SessionPropertiesEnabled:= false;
+
+  // A session that is active in any window (this one or another copy of the
+  // program) cannot be renamed: that window would not learn the new name.
+  locked:= SessionPropertiesEnabled and assigned(fSelectedSession) and
+      GlobalSessions.SessionActiveInAnyWindow(fSelectedSession.Name);
+  edit_name.Enabled:= SessionPropertiesEnabled and not locked;
+  label_name_locked.Visible:= locked;
 end;
 
 {-------------------------------------------------------------------------------
