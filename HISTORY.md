@@ -24,6 +24,18 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-11
 
+### CA-017 [bug] Dock layout hardening
+Opened before 2026-10-27, closed 2026-11-11 (1.04). Fixed; Derell tested it in a Debug build.
+Two loose ends in the docking code. (1) Floating panels have border style 5 (a tool window); JVCL keeps it in a
+0..1 type, so storing it needed range checking switched off (the `{$R-}` block in `CE_DockInfo.pas`, added
+2026-10-22 after an `ERangeError` at startup). Fix: `TCEDockInfoZone` keeps the value in a full-range property and
+re-implements the two methods that copy a zone to and from a form; the `{$R-}` block is gone and `layout.xml` is
+unchanged (values still 0 and 5). (2) JVCL's un-auto-hide routine calls the base show routine directly, so it
+skipped the dock-chain guard against the endless loop; `TJvDockVSNetStyleTBX.DoUnAutoHideDockForm` now runs it.
+It had been deferred on 2026-10-27 ("take it up when a user reports a layout hang"); Derell took it up on
+2026-11-11 so a first-time user never meets a freeze. The note that only top-level floating hosts are created in
+advance was left as it is: no failure was found.
+
 ### CA-079 [feature] Sessions > Open in New Window
 Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it and uses it.
 With several windows the usual routine was "new window, then load a session". The Sessions menu now has an

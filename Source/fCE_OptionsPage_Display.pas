@@ -183,7 +183,6 @@ begin
     try
       png.LoadFromFile(picFile);
       src.Assign(png);
-      scale:= 1.0;
       if src.Width * image_preview.Height > src.Height * image_preview.Width then
       begin
         scale:= image_preview.Width / src.Width;

@@ -852,26 +852,22 @@ end;
 function TDOMNode.InsertBefore(NewChild, RefChild: TDOMNode): TDOMNode;
 begin
   raise EDOMHierarchyRequest.Create('Node.InsertBefore');
-  Result:=nil;
 end;
 
 function TDOMNode.ReplaceChild(NewChild, OldChild: TDOMNode): TDOMNode;
 begin
   raise EDOMHierarchyRequest.Create('Node.ReplaceChild');
-  Result:=nil;
 end;
 
 function TDOMNode.RemoveChild(OldChild: TDOMNode): TDOMNode;
 begin
   // OldChild isn't in our child list
   raise EDOMNotFound.Create('Node.RemoveChild');
-  Result:=nil;
 end;
 
 function TDOMNode.AppendChild(NewChild: TDOMNode): TDOMNode;
 begin
   raise EDOMHierarchyRequest.Create('Node.AppendChild');
-  Result:=nil;
 end;
 
 function TDOMNode.HasChildNodes: Boolean;
@@ -887,7 +883,6 @@ end;
 function TDOMNode.CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode;
 begin
   raise EDOMNotSupported.CreateFmt('CloneNode not implemented for %s', [ClassName]);
-  Result:=nil;
 end;
 
 function TDOMNode.FindNode(const ANodeName: DOMString): TDOMNode;
@@ -1429,7 +1424,6 @@ function TDOMNamedNodeMap.GetNamedItemNS(const namespaceURI, localName: DOMStrin
 begin
   // TODO: implement TDOMNamedNodeMap.GetNamedItemNS
   raise EDOMNotSupported.Create('TDOMNamedNodeMap.GetNamedItemNS');
-  Result := nil;
 end;
 
 function TDOMNamedNodeMap.SetNamedItem(arg: TDOMNode): TDOMNode;
@@ -1785,14 +1779,12 @@ function TDOMDocument.CreateCDATASection(const data: DOMString):
   TDOMCDATASection;
 begin
   raise EDOMNotSupported.Create('DOMDocument.CreateCDATASection');
-  Result:=nil;
 end;
 
 function TDOMDocument.CreateProcessingInstruction(const target,
   data: DOMString): TDOMProcessingInstruction;
 begin
   raise EDOMNotSupported.Create('DOMDocument.CreateProcessingInstruction');
-  Result:=nil;
 end;
 
 function TDOMDocument.CreateAttribute(const name: DOMString): TDOMAttr;
@@ -1814,7 +1806,6 @@ function TDOMDocument.CreateEntityReference(const name: DOMString):
   TDOMEntityReference;
 begin
   raise EDOMNotSupported.Create('DOMDocument.CreateEntityReference');
-  Result:=nil;
 end;
 
 function TDOMDocument.GetElementsByTagName(const tagname: DOMString): TDOMNodeList;
@@ -1832,7 +1823,6 @@ function TDOMDocument.CreateAttributeNS(const NamespaceURI,
 begin
   // TODO: Implement TDOMDocument.CreateAttributeNS
   raise EDOMNotSupported.Create('TDOMDocument.CreateAttributeNS');
-  Result := nil;
 end;
 
 function TDOMDocument.CreateElementNS(const NamespaceURI,
@@ -1840,7 +1830,6 @@ function TDOMDocument.CreateElementNS(const NamespaceURI,
 begin
   // TODO: Implement TDOMDocument.CreateElementNS
   raise EDOMNotSupported.Create('TDOMDocument.CreateElementNS');
-  Result := nil;
 end;
 
 function TDOMDocument.GetElementById(const ElementID: DOMString): TDOMElement;
@@ -1859,7 +1848,6 @@ function TDOMDocument.ImportNode(ImportedNode: TDOMNode;
 begin
   // TODO: Implement TDOMDocument.ImportNode
   raise EDOMNotSupported.Create('TDOMDocument.ImportNode');
-  Result := nil;
 end;
 
 function TDOMDocument.IndexOfNS(const nsURI: DOMString): Integer;
