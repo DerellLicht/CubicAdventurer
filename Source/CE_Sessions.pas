@@ -371,7 +371,8 @@ var
 begin
   SyncFromDisk;
   // Delete/clear previous LastTimeSession
-  for i:= 0 to SessionHistory.Count - 1 do
+  // (counting down: deleting an entry must not shift the ones still to be visited)
+  for i:= SessionHistory.Count - 1 downto 0 do
   begin
     if SessionHistory.Items[i].IsLastTimeSession then
     begin
