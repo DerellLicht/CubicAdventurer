@@ -162,6 +162,7 @@ type
     SpTBXItem82: TSpTBXItem;
     SpTBXItem84: TSpTBXItem;
     sessionsMenuItem: TSpTBXSubmenuItem;
+    sessionNewWindowMenuItem: TSpTBXSubmenuItem;
     SpTBXItem51: TSpTBXItem;
     SpTBXSeparatorItem18: TSpTBXSeparatorItem;
     SpTBXItem72: TSpTBXItem;
@@ -679,6 +680,7 @@ begin
 
   // Add Session menu items
   sessionsMenuItem.Add(TCESessionsMenuItem.Create(self));
+  sessionNewWindowMenuItem.Add(TCESessionsMenuItem.CreateForNewWindow(self));
   sessionHistoryMenuItem.Add(TCESessionHistoryMenuItem.Create(self));
 
   // Add custom menu items
@@ -838,7 +840,8 @@ begin
   Layouts.LoadSettingsForToolbars;
   Layouts.FilePath:= SettingsDirPath + 'layout.xml';
 
-  TabsOpened:= false;
+  // "/session:<name>" (Sessions > Open in New Window): load that session
+  TabsOpened:= GlobalSessions.LoadSessionFromCommandLine;
   if ParamCount > 0 then
   begin
     for i:= 1 to ParamCount do
@@ -847,7 +850,10 @@ begin
       if i < ParamCount then
       ws:= ws + ',';
     end;
-    TabsOpened:= HandleCmdParams(ws);
+    if HandleCmdParams(ws) then
+    begin
+      TabsOpened:= true;
+    end;
   end;
 
   if not TabsOpened then

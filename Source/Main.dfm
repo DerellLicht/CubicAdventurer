@@ -382,6 +382,9 @@ object MainForm: TMainForm
         object SpTBXItem94: TSpTBXItem
           Action = CEActions.act_sessions_manage
         end
+        object sessionNewWindowMenuItem: TSpTBXSubmenuItem
+          Action = CEActions.act_sessions_newwindow
+        end
         object SpTBXSeparatorItem26: TSpTBXSeparatorItem
         end
         object sessionHistoryMenuItem: TSpTBXSubmenuItem

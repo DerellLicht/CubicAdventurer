@@ -454,6 +454,13 @@ object CEActions: TCEActions
       Hint = 'Save the open tabs into the active session now.'
       OnExecute = ActionExecute
     end
+    object act_sessions_newwindow: TAction
+      Tag = 859
+      Category = 'Sessions'
+      Caption = 'Open in New Window'
+      Hint = 'Start another window and load a saved session in it.'
+      OnExecute = ActionExecute
+    end
     object act_sessions_save: TAction
       Tag = 851
       Category = 'Sessions'
