@@ -138,6 +138,7 @@ type
     function GetActiveSessionIndex: Integer;
     function GetPlainTabSetActive: Boolean;
     procedure ActiveChanged;
+    procedure RebuildSessionsToolbar;
     procedure ForgetDeletedActive;
     procedure NormalizeLastTimeFlag;
     procedure SnapshotPlainTabs;
@@ -946,6 +947,17 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Rebuild Sessions Toolbar (queued, see SyncFromDisk)
+-------------------------------------------------------------------------------}
+procedure TCESessions.RebuildSessionsToolbar;
+begin
+  if assigned(MainForm) and assigned(MainForm.SessionsToolbar) then
+  begin
+    MainForm.SessionsToolbar.Recreate;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Active Changed
 
   Called whenever the active session (or its name) changes: rebuilds the
@@ -1091,7 +1103,8 @@ begin
     fDiskStampValid:= true;
     if listChanged and assigned(MainForm) and assigned(MainForm.SessionsToolbar) then
     begin
-      MainForm.SessionsToolbar.Recreate;
+      // not now: we may be inside a menu being opened or a button being clicked
+      TThread.Queue(nil, RebuildSessionsToolbar);
     end;
   finally
     doc.Free;
@@ -1753,7 +1766,7 @@ begin
           if not assigned(item) then
           begin
             EnsureRootNode;
-            imp:= TDOMElement(AStorage.XML.ImportNode(dnode, true));
+            imp:= TDOMElement(dnode.CloneNode(true, AStorage.XML)); // ImportNode is not implemented in fcl-xml
             ARootNode.AppendChild(imp);
             item:= TCESessionItem.Create;
             FillItemFromNode(item, imp);
@@ -1765,7 +1778,7 @@ begin
             item.OnDisk:= true;
             if ANamed and (item <> AActive) and (NodeToSig(dnode) <> NodeToSig(item.Node)) then
             begin
-              imp:= TDOMElement(AStorage.XML.ImportNode(dnode, true));
+              imp:= TDOMElement(dnode.CloneNode(true, AStorage.XML)); // ImportNode is not implemented in fcl-xml
               ARootNode.ReplaceChild(imp, item.Node);
               FillItemFromNode(item, imp);
               item.LastSig:= '';
