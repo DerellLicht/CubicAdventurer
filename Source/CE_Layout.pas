@@ -957,7 +957,7 @@ begin
     CE_DoFloatAllForm;
     HideAllPopupPanel(nil);
 
-    DockInfoTree:= TCEDockInfoTree.Create(TJvDockInfoZone);
+    DockInfoTree:= TCEDockInfoTree.Create(TCEDockInfoZone);
     DockInfoTree.HandleMainForm:= HandleMainForm;
 
     try
@@ -1010,7 +1010,7 @@ begin
   AppStorage.BeginUpdate;
   try
     HideAllPopupPanel(nil);
-    DockInfoTree := TCEDockInfoTree.Create(TJvDockInfoZone);
+    DockInfoTree := TCEDockInfoTree.Create(TCEDockInfoZone);
     try
       for I := 0 to Screen.CustomFormCount - 1 do
       begin

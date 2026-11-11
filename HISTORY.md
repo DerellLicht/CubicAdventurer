@@ -24,6 +24,37 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-11
 
+### CA-079 [feature] Sessions > Open in New Window
+Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it and uses it.
+With several windows the usual routine was "new window, then load a session". The Sessions menu now has an
+"Open in New Window" sub-menu that lists the saved sessions; a click starts another copy of the program
+with the switch `/session:<name>` (also usable from a shortcut), which loads that session at startup
+instead of the On Startup choice. Disabled while Single Instance Only is on. A session that is already
+active in another window is simply opened again (the later save wins). Known limit: a session name that
+contains a double quote cannot be passed this way.
+
+### CA-051 (2nd use) [feature] Text editor: Alt-drag column selection
+Opened 2026-10-27 (split out of the old CA-016), closed 2026-11-11. Dropped.
+Not re-checked since the SynEdit swap; `eoAltSetsColumnMode` was missing from the editor's `Options`. Derell
+(2026-11-11): it is one of hundreds of programmer-editor features the built-in text editor lacks, and the
+editor stays frozen, so the ticket was removed.
+
+### CA-023 [feature] Move to a free toolchain (Lazarus / Free Pascal)
+Opened before 2026-10-23 (carried over from the old handoff list), closed 2026-11-11. Dropped.
+A Lazarus port was studied on 2026-11-04 and parked. Derell (2026-11-11): will not be implemented, due to
+library conflicts (SpTBXLib with Toolbar2000, the Mustangpeak shell tools and EasyListview, and JVCL
+docking have no Lazarus versions).
+
+### CA-021 [feature] Win64 build
+Opened before 2026-10-23 (carried over from the old handoff list), closed 2026-11-11. Dropped.
+Derell (2026-11-11): will not be implemented, due to library conflicts. The ticket never said more than its
+title.
+
+### CA-016 [feature] Text editor: highlighter color settings
+Opened before 2026-10-27 (once part of a four-item "Text editor" ticket), closed 2026-11-11. Dropped.
+There is no page for editing highlighter colors; the highlighters use the SynEdit default colors. Deferred on
+2026-10-27 when Derell froze the built-in text editor, and removed on 2026-11-11 together with CA-051.
+
 ### CA-080 [task] File > Exit All
 Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it with several windows. The tray
 case (windows hidden in the tray) was not tested and became CA-081.
