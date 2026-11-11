@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-078). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-079). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-10 (version 1.04 in progress).
@@ -69,7 +69,15 @@ from Derell's own use of several windows (2026-11-10).
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
-(none at the moment)
+- **CA-079 [feature] Sessions > Open in New Window.** Requested by Derell 2026-11-10: with
+  several windows in use, the usual routine is to open a new window and then load a session into
+  it, so one menu command should do both. Shown in the Sessions menu (and perhaps on a session's
+  entry); disabled while Single Instance Only is on, like File > New Window. Open points: the new
+  window must be told which session to load, and every command-line argument is now taken as a
+  folder to open, so a switch such as `/session:<name>` is needed; the new window should open
+  cascaded (CA-077) and the session must not be loaded in this window; and if the session is
+  already active in another window, ask or just open it again (two windows saving the same
+  session, the later save wins). Not started.
 
 ## Deferred (not started)
 
