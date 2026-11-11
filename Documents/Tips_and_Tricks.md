@@ -27,8 +27,11 @@ It explains the features that are easy to miss.
   writes them last and its settings win. **Do not change Options while more than one window is
   open.** Saved sessions and History are the exception: each window merges in what the others
   saved before it writes. A window that has a saved session active shows the session's name at
-  the start of its title, so you can tell the windows apart in the taskbar. Tabs, sessions and
-  the Workspace panel are often an easier way to work in several places at once.
+  the start of its title, so you can tell the windows apart in the taskbar. **Sessions > Open in
+  New Window** starts a new window with a saved session already loaded; a desktop shortcut can do
+  the same with the switch `/session:Name` after the program path (put quotes around the whole
+  switch when the name has spaces). Tabs, sessions and the Workspace panel are often an easier way
+  to work in several places at once.
 - **Default file manager (experimental).** CubicAdventurer can ask Windows to open folders with it
   instead of Windows Explorer. Open **Options > General**, tick **Show Default File Manager**, and
   use **Register**. **Unregister** puts back what was there before, and uninstalling the program

@@ -162,6 +162,7 @@ type
     function LoadFromFile(AFilePath: WideString): Boolean; override;
     procedure LoadLastTimeSession;
     procedure LoadLatestHistorySession;
+    function LoadSessionFromCommandLine: Boolean;
     procedure MarkTabsBaseline;
     procedure SaveActiveSession;
     procedure SaveSessionDlg;
@@ -196,12 +197,16 @@ type
 type
   TCESessionsMenuItem = class(TTBGroupItem)
   protected
+    fNewWindow: Boolean;
     procedure FillList; virtual;
   public
     constructor Create(AOwner: TComponent); override;
+    constructor CreateForNewWindow(AOwner: TComponent);
     procedure InitiateAction; override;
     procedure OnSessionClick(Sender: TObject);
     procedure Recreate; virtual;
+    // true: a click opens the session in a new window (Sessions > Open in New Window)
+    property NewWindow: Boolean read fNewWindow write fNewWindow;
   end;
 
   TCESessionHistoryMenuItem = class(TTBGroupItem)
@@ -240,7 +245,7 @@ implementation
 uses
   fCE_TabPage, WideSupport, XMLRead, XMLWrite, Main, CE_SpTabBar,
   fCE_SessionManager, CE_LanguageEngine, dCE_Images, fCE_FileView,
-  CE_VistaFuncs, CE_Utils, Forms;
+  CE_VistaFuncs, CE_Utils, Forms, ShellAPI;
 
 const
   // window property on the main window: atom holding the active session's name
@@ -621,6 +626,37 @@ end;
 procedure TCESessions.LoadAutoSession;
 begin
   ActiveSession:= AutoLoadSession;
+end;
+
+{-------------------------------------------------------------------------------
+  Load Session From Command Line
+
+  Looks for a "/session:<name>" switch (first one wins) and loads that saved
+  session. Used at startup by a window opened with Sessions > Open in New Window,
+  and works from a shortcut too. Result is false when there is no switch or no
+  saved session of that name, so the normal startup behaviour applies.
+-------------------------------------------------------------------------------}
+function TCESessions.LoadSessionFromCommandLine: Boolean;
+var
+  i: Integer;
+  arg: string;
+  session: TCESessionItem;
+begin
+  Result:= false;
+  for i:= 1 to ParamCount do
+  begin
+    arg:= ParamStr(i);
+    if SameText(Copy(arg, 1, 9), '/session:') then
+    begin
+      session:= Sessions.FindSession(Copy(arg, 10, MaxInt));
+      if assigned(session) then
+      begin
+        ActiveSession:= session;
+        Result:= true;
+      end;
+      Exit; // -->
+    end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2021,11 +2057,37 @@ end;
 {##############################################################################}
 
 {-------------------------------------------------------------------------------
+  Open Session In New Window
+
+  Starts another copy of the program with "/session:<name>" (quoted, the name may
+  contain spaces). The new process loads the session at startup; this window is
+  not touched. Only used while Single Instance Only is off (the menu is disabled
+  otherwise), so the new process does not hand its arguments to this window.
+-------------------------------------------------------------------------------}
+procedure OpenSessionInNewWindow(const AName: string);
+var
+  args: string;
+begin
+  args:= '"/session:' + AName + '"';
+  ShellExecute(0, 'open', PChar(ParamStr(0)), PChar(args),
+      PChar(ExtractFilePath(ParamStr(0))), SW_SHOWNORMAL);
+end;
+
+{-------------------------------------------------------------------------------
   Create an instance of TCESessionsMenuItem
 -------------------------------------------------------------------------------}
 constructor TCESessionsMenuItem.Create(AOwner: TComponent);
 begin
   inherited;
+end;
+
+{-------------------------------------------------------------------------------
+  Create an instance that lists the sessions for "Open in New Window"
+-------------------------------------------------------------------------------}
+constructor TCESessionsMenuItem.CreateForNewWindow(AOwner: TComponent);
+begin
+  Create(AOwner);
+  fNewWindow:= true;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2046,7 +2108,8 @@ begin
     item.Images:= CE_Images.SmallIcons;
     item.ImageIndex:= 41;
     item.OnClick:= OnSessionClick;
-    if not GlobalSessions.ActiveSessionIsHistory then
+    // the "open in new window" list never marks the session active in this window
+    if (not fNewWindow) and (not GlobalSessions.ActiveSessionIsHistory) then
     item.Checked:= GlobalSessions.ActiveSession = session;
     Add(item);
   end;
@@ -2074,7 +2137,14 @@ begin
   if (item.Tag > -1) and (item.Tag < GlobalSessions.Sessions.Count) then
   begin
     session:= GlobalSessions.Sessions.Items[item.Tag];
-    GlobalSessions.ActiveSession:= session;
+    if fNewWindow then
+    begin
+      OpenSessionInNewWindow(session.Name);
+    end
+    else
+    begin
+      GlobalSessions.ActiveSession:= session;
+    end;
   end;
 end;
 

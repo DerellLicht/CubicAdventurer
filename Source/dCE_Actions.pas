@@ -176,6 +176,7 @@ type
     act_sessions_new: TAction;
     act_sessions_detach: TAction;
     act_sessions_update: TAction;
+    act_sessions_newwindow: TAction;
     act_sessions_save: TAction;
     act_sessions_manage: TAction;
     act_view_dropstack: TAction;
@@ -1366,6 +1367,11 @@ begin
     // only meaningful while a saved session is active
     TargetAction.Enabled:= not GlobalSessions.PlainTabSetActive;
   end;
+  // Open in New Window only makes sense when more than one window is allowed
+  if ActionID = 859 then
+  begin
+    TargetAction.Enabled:= not IsSingleInstance;
+  end;
 end;
 
 {##############################################################################}
@@ -1652,6 +1658,10 @@ begin
         IsShortcut:= false;
         IsFile:= false;
         IsIcon:= true;
+      end
+      else if SameText(Copy(list.Strings[i], 1, 9), '/session:') then
+      begin
+        // handled at startup (TCESessions.LoadSessionFromCommandLine); not a folder
       end
       else if list.Strings[i] <> '' then
       begin

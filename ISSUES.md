@@ -19,7 +19,17 @@ Last updated: 2026-11-11 (version 1.04 in progress).
 
 Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
 on 2026-11-09 and CA-074 to CA-078 and CA-080 on 2026-11-11 (see `HISTORY.md`). CA-070 waits for sl23's
-test (1.03 is out). CA-081 is left from Derell's own use of several windows.
+test (1.03 is out). CA-081 is left from Derell's own use of several windows, and CA-079 is new on 2026-11-11.
+
+- **CA-079 [task] Test: Sessions > Open in New Window.** Requested by Derell 2026-11-10 (he opens a
+  new window and then loads a session every time). Sessions menu, below Manage...: "Open in New
+  Window" is a sub-menu listing the saved sessions; clicking one starts another copy of the program
+  with the switch `/session:<name>`, which loads that session at startup instead of the On Startup
+  choice (an unknown name falls back to the normal startup). This window is not changed. The item is
+  disabled while Single Instance Only is on. The new window cascades (CA-077). If the session is
+  already active in another window it is simply opened again (two windows, the later save wins).
+  Folder arguments given with the switch open as extra tabs. A session name containing a double
+  quote cannot be passed this way. Not tested yet (2026-11-11).
 
 - **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
   and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to
@@ -43,15 +53,7 @@ test (1.03 is out). CA-081 is left from Derell's own use of several windows.
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
-- **CA-079 [feature] Sessions > Open in New Window.** Requested by Derell 2026-11-10: with
-  several windows in use, the usual routine is to open a new window and then load a session into
-  it, so one menu command should do both. Shown in the Sessions menu (and perhaps on a session's
-  entry); disabled while Single Instance Only is on, like File > New Window. Open points: the new
-  window must be told which session to load, and every command-line argument is now taken as a
-  folder to open, so a switch such as `/session:<name>` is needed; the new window should open
-  cascaded (CA-077) and the session must not be loaded in this window; and if the session is
-  already active in another window, ask or just open it again (two windows saving the same
-  session, the later save wins). Not started.
+(none at the moment)
 
 ## Deferred (not started)
 
