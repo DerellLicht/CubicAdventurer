@@ -1445,20 +1445,23 @@ end;
 procedure TCETextEditor.UpdateStats;
 var
   i: Integer;
+  lineCount: Integer;
   len: Int64;
 begin
   // stats label
+  // (SynEdit marks TStrings.Count as deprecated; CountNative is its replacement)
+  lineCount:= Integer(SynMemo.Lines.CountNative);
   len:= 0;
-  if SynMemo.Lines.Count > 0 then
+  if lineCount > 0 then
   begin
-    for i:= 0 to SynMemo.Lines.Count-1 do
+    for i:= 0 to lineCount-1 do
     begin
-      len:= len + Length(SynMemo.Lines.Strings[i]);
+      len:= len + Length(SynMemo.Lines.StringsNative[i]);
     end;
-    len:= len + ((SynMemo.Lines.Count-1) * 2); // <-- add line breaks to the count
+    len:= len + ((lineCount-1) * 2); // <-- add line breaks to the count
   end;
 
-  label_stats.Caption:= Format(fStatsStr, [len, SynMemo.Lines.Count]);
+  label_stats.Caption:= Format(fStatsStr, [len, lineCount]);
 
   // modified label
   if SynMemo.Modified <> label_modified.Visible then

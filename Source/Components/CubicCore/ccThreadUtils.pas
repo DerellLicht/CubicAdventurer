@@ -810,12 +810,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCCTaskPoolThread.Execute;
 var
-  done: Boolean;
   list: TList;
   poolData: PCCTaskPoolData;
 begin
   inherited;
-  done:= false;
 
   repeat
     // Execute task

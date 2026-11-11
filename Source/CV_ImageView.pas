@@ -446,7 +446,6 @@ begin
   end
   else
   begin
-    bit:= nil;
     freeBit:= false;
     // jpeg
     if AGraphic is TJPEGImage then
@@ -521,7 +520,6 @@ begin
   // Draw other formats
   else
   begin
-    bit:= nil;
     freeBit:= false;
     // jpeg
     if AGraphic is TJPEGImage then

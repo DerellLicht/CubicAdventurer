@@ -627,7 +627,6 @@ begin
       reg.RootKey:= HKEY_CURRENT_USER;
 
       // What is the default verb of this user's Folder\shell key right now?
-      hadValue:= false;
       oldValue:= '';
       if not reg.OpenKey(CE_FolderShellKey, true) then
       begin
@@ -690,7 +689,6 @@ var
   hadValue: Boolean;
   verbKey: String;
 begin
-  Result:= false;
   reg:= TRegistry.Create;
   try
     try
