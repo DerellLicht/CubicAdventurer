@@ -524,6 +524,12 @@ begin
       ExecShellEx(ParamStr(0), '', '', SW_SHOWNORMAL, false, false, true);
     end;
     104: MainForm.MakeVisible;
+    105: begin
+      // Exit All: close the other windows first (each saves its own state), then
+      // this one. A window's own Close button closes only that window.
+      MainForm.CloseOtherWindows;
+      Application.MainForm.Close;
+    end;
   end;
 end;
 
@@ -536,6 +542,7 @@ begin
   case ActionID of
     // New Window only makes sense when more than one window is allowed
     103: TargetAction.Enabled:= not IsSingleInstance;
+    105: TargetAction.Enabled:= not IsSingleInstance;
   end;
 end;
 

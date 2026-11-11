@@ -3,6 +3,7 @@
 ## [1.04] - 2026-11-09
 - Added: the window title starts with the name of the active session (for example "Entertain Me - CubicAdventurer v1.04"), so several windows can be told apart in the taskbar
 - Changed: with several windows open, saving a session in one window no longer discards sessions or History saved by another; sessions and History are merged before they are written
+- Added: File > Exit All closes every open window (available when Single Instance Only is off); the Close button of a window still closes only that window
 - Changed: a new window opens offset from the window already open, instead of exactly on top of it
 - Changed: Manage Sessions no longer lets you rename a session that is active in any open window (this one or another), with a note saying why
 - Changed: History no longer gets an entry at exit when the tabs are as they were when loaded, and its items are now listed as "Tabs saved at" instead of "Session at"

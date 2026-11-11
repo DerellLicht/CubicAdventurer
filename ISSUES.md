@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-079). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-080). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-10 (version 1.04 in progress).
@@ -18,7 +18,7 @@ Last updated: 2026-11-10 (version 1.04 in progress).
 ## Checks still owed
 
 Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
-on 2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out). CA-074 to CA-078 come
+on 2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out). CA-074 to CA-080 come
 from Derell's own use of several windows (2026-11-10).
 
 - **CA-074 [task] Test: sessions kept when several windows save.** Untick Options > General >
@@ -40,6 +40,11 @@ from Derell's own use of several windows (2026-11-10).
   reads `<session name> - CubicAdventurer v1.04`, also with one window. New Session, Detach from
   Session, or loading a History item gives the plain title; renaming the active session in Manage
   updates it; with Options > General > Show Path in Title bar on, the title stays the folder path.
+- **CA-080 [task] Test: File > Exit All.** With Single Instance Only off and two or three windows
+  open, File > Exit All closes every window (each saves its own session and History, nothing is
+  lost; it can take a moment while the others finish); it is greyed out while Single Instance Only
+  is on. The Close button on a window's title bar closes only that window, as does File > Exit.
+  A window hidden in the tray is closed too.
 - **CA-078 [task] Test: no renaming of a session that is active in a window.** With several
   windows open and different sessions active, open Sessions > Manage in any window and select a
   session that is active in this or any other window: the Name field is greyed and the note "Name
