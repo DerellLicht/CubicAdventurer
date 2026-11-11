@@ -6,10 +6,10 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-080). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-081). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-10 (version 1.04 in progress).
+Last updated: 2026-11-11 (version 1.04 in progress).
 
 ## Open bugs and gaps
 
@@ -18,46 +18,15 @@ Last updated: 2026-11-10 (version 1.04 in progress).
 ## Checks still owed
 
 Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
-on 2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out). CA-074 to CA-080 come
-from Derell's own use of several windows (2026-11-10).
+on 2026-11-09 and CA-074 to CA-078 and CA-080 on 2026-11-11 (see `HISTORY.md`). CA-070 waits for sl23's
+test (1.03 is out). CA-081 is left from Derell's own use of several windows.
 
-- **CA-074 [task] Test: sessions kept when several windows save.** Untick Options > General >
-  Single Instance Only, open two windows. Load `default` in one and `Entertain Me` in the other
-  (both save changes automatically), change the tabs in each, wait a few seconds, close both
-  windows, start again: both sessions must show their changes. Also: save a new session in one
-  window and open the Sessions menu in the other (the new name appears within a second); delete a
-  session in Manage in one window and open the menu in the other (the name is gone). Before each
-  change a window now merges what is in `sessions.xml` into its own copy. Limit: if two windows
-  change the same session, the later save wins for that session.
-- **CA-075 [task] Test: History at exit and its new caption.** History items now read "Tabs saved
-  at <date time>" (they were "Session at ..."; they are not sessions). Translations of the old text
-  in the `Locale` files no longer apply, so those languages show the English caption. With Auto Save
-  History on and a plain tab set (no session active): exit with the tabs as started, so no new
-  History item; open another folder, exit, one new item. Load the newest History item and exit
-  unchanged, no new item; load an older one and exit, a new item (so "Continue from last time" comes
-  back with what you last had open).
-- **CA-076 [task] Test: session name in the window title.** With a saved session active the title
-  reads `<session name> - CubicAdventurer v1.04`, also with one window. New Session, Detach from
-  Session, or loading a History item gives the plain title; renaming the active session in Manage
-  updates it; with Options > General > Show Path in Title bar on, the title stays the folder path.
-- **CA-080 [task] Test: File > Exit All.** With Single Instance Only off and two or three windows
-  open, File > Exit All closes every window (each saves its own session and History, nothing is
-  lost; it can take a moment while the others finish); it is greyed out while Single Instance Only
-  is on. The Close button on a window's title bar closes only that window, as does File > Exit.
-  A window hidden in the tray is closed too.
-- **CA-078 [task] Test: no renaming of a session that is active in a window.** With several
-  windows open and different sessions active, open Sessions > Manage in any window and select a
-  session that is active in this or any other window: the Name field is greyed and the note "Name
-  change disabled: this session is active in a window." shows under the automatic-save check box.
-  Select a session no window has active: the field works. Close the window that had it active and
-  reopen Manage in another: the field is enabled again. (Each window tells the others its active
-  session through a window property; nothing is stored on disk.)
-- **CA-077 [task] Test: a new window opens offset from the first.** With Single Instance Only off,
-  File > New Window: the new window opens one title bar height down and to the right of the open
-  window (taken from where that window is now, not where it was at its last exit); a third window
-  cascades from the second. Near the bottom or right edge of the screen it goes back to the top-left
-  of the screen. If the open window is maximized, the new one opens as saved. Before, it covered the
-  first window exactly.
+- **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
+  and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to
+  tray and Minimize to tray in one window and in several, restore from the tray, and run File > Exit All
+  (and Exit from the tray menu) while some windows are hidden in the tray. All windows must close and
+  save, and no tray icon may be left behind. The tray was a source of trouble before (CA-054), so
+  report anything odd. Not tested yet (2026-11-11).
 
 - **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
   "Show Default File Manager" check box starts unticked every time Options is shown; ticking it

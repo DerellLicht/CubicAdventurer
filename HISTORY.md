@@ -22,6 +22,53 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-11
+
+### CA-080 [task] File > Exit All
+Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it with several windows. The tray
+case (windows hidden in the tray) was not tested and became CA-081.
+Each window is its own program, so closing one never closed the others. Derell checked
+CubicExplorer first: its Close button also closed only that window. Decision: the Close button stays
+as it is, and File > Exit All (after Exit, disabled while Single Instance Only is on) sends WM_CLOSE to
+every other window, waits for them, then closes the window it was used in. Each window saves its own
+session and History as usual.
+
+### CA-078 [task] No renaming of a session that is active in a window
+Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it.
+Renaming a session in one window left another window that had it active showing both the old and the
+new name (a window never refreshes its active session, and a rename looks like one session gone and
+one new). Ideas weighed: match a rename by identical tabs, or a hidden id on each session (Derell dislikes
+hidden flags). His idea was chosen: Manage Sessions greys the Name field of any session that is active in
+a window and shows a note under the check box. Each window publishes its active session name as a window
+property, so this works across windows with nothing stored on disk. Delete is not locked.
+
+### CA-077 [task] A new window opens offset from the first
+Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it: works well enough.
+A new window opened exactly on top of the one that was open, which was disconcerting. It now opens one
+title bar height down and to the right of the topmost other window (its real position, not the saved one).
+Derell would like the offset a little larger; he called it sufficient and did not ask for a change.
+
+### CA-076 [task] Session name in the window title
+Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it.
+The title reads "<session name> - CubicAdventurer vX.YY" while a saved session is active, also with one
+window. A plain hyphen, never an em dash; not used when Show Path in Title bar is on. Known and accepted:
+that option is stored per window and Options changes are not passed to other windows, so it affects only
+the window where it was changed.
+
+### CA-075 [task] History at exit and its new caption
+Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it.
+History items now read "Tabs saved at <date time>" (they were "Session at ..."). No exit History item is
+written when the plain tab set is unchanged since it was loaded.
+
+### CA-074 [task] Sessions kept when several windows save
+Opened 2026-11-10, closed 2026-11-11 (1.04). Done; Derell tested it in several rounds.
+Each window used to rewrite the whole sessions.xml, so the last window closed won everything. Windows now
+merge what is on disk into their own copy before every change and at exit. Three bugs turned up in his
+testing and were fixed on the way: the XML library has no ImportNode (EDOMNotSupported), a refreshed
+session wrote into its destroyed old node (access violation), and a loop deleting old "last time"
+History items counted upward (list index out of bounds). Limit: two windows changing the same session,
+the later save wins.
+
 ## 2026-11-09
 
 ### CA-073 [bug] File check boxes and Group By headers ignored the theme
