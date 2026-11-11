@@ -19,7 +19,18 @@ Last updated: 2026-11-11 (version 1.04 in progress).
 
 Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
 on 2026-11-09 and CA-074 to CA-080 on 2026-11-11 (see `HISTORY.md`). CA-070 waits for sl23's
-test (1.03 is out). CA-081 is left from Derell's own use of several windows.
+test (1.03 is out). CA-081 is left from Derell's own use of several windows, and CA-017 is the dock layout fix of 2026-11-11.
+
+- **CA-017 [task] Test: dock layout hardening (two changes).** (1) Layout files hold the border style
+  of floating panels as 5 (a tool window), which does not fit the 0..1 type JVCL keeps it in, so the
+  loader used to switch range checking off for that assignment. The zones now keep the value in a
+  property of their own (`TCEDockInfoZone.FormBorder` in `CE_DockInfo.pas`) and the `{$R-}` block is gone.
+  (2) Showing a panel that was auto-hidden (the pin on a docked panel's title bar) skipped the check
+  that stops JVCL looping forever on a broken dock chain; it now runs the same check as every other
+  way of showing a panel (`DoUnAutoHideDockForm` in `CEJvDockVSNetStyleTBX.pas`). To test, in a Debug
+  build run from the IDE (range checking on): start with your current `layout.xml` (no error dialog),
+  float a panel, pin and unpin (auto-hide) panels, exit, restart, and compare the `BorderStyle` values in
+  `layout.xml` (still only 0 and 5, as before). Not tested yet (2026-11-11).
 
 - **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
   and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to
@@ -74,11 +85,6 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
     when settings are used at a different scale; pixel sizes hard-coded in the code.
   - First step when taken up: screenshots at 150% (main window with a few panels open, and
     the Options dialog) from the Windows 11 laptop or a user; not from the desktop.
-- **CA-017 [bug] Dock layout hardening.** `DoUnAutoHideDockForm` bypasses the dock-chain
-  guard; only root-level floating hosts are pre-created. Optional proper fix: derive
-  `TCEDockInfoZone` with a wide `TFormBorderStyle` property (the `{$R-}` interim in
-  `CE_DockInfo.pas` stays until then). Deferred (2026-10-27): nothing has gone wrong in testing; take it up when
-  a user reports a layout hang.
 
 ## Misc tasks
 

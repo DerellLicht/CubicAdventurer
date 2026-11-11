@@ -8,6 +8,7 @@
 - Changed: Manage Sessions no longer lets you rename a session that is active in any open window (this one or another), with a note saying why
 - Changed: History no longer gets an entry at exit when the tabs are as they were when loaded, and its items are now listed as "Tabs saved at" instead of "Session at"
 - Added: Sessions > Open in New Window starts another window with the chosen saved session loaded (available when Single Instance Only is off); a shortcut can do the same with the switch /session:name
+- Fixed: showing a panel that was auto-hidden now runs the same safety check as other ways of showing a panel, so a damaged panel layout cannot freeze the program there
 - Fixed: the check boxes shown by Advanced > FileView > CheckBoxSelection now use the colors of the selected theme, and so do the check box, caption and plus/minus box of the group headers shown by Group By
 
 ## [1.03] - 2026-11-09

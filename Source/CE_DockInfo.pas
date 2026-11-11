@@ -37,6 +37,23 @@ uses
 type
   TCEDockInfoTree = class;
 
+  // A dock info zone that keeps the form border style in a full-range property.
+  // TJvDockInfoZone.BorderStyle is a TBorderStyle (bsNone..bsSingle, 0..1), but the
+  // dock forms use TFormBorderStyle (0..5): a floating tool window is bsSizeToolWin
+  // (5), and layout.xml files from CubicExplorer hold that 5. Storing it in the narrow
+  // property needs range checking switched off, so this class never touches that
+  // property: FormBorder holds the real value, and the two methods that copy a zone
+  // to and from a form are re-implemented here to use it (everything else they do is
+  // the same as in JvDockInfo.pas).
+  TCEDockInfoZone = class(TJvDockInfoZone)
+  private
+    fFormBorder: TFormBorderStyle;
+  public
+    procedure SetDockInfoFromControlToNode(Control: TControl); override;
+    procedure SetDockInfoFromNodeToControl(Control: TControl); override;
+    property FormBorder: TFormBorderStyle read fFormBorder write fFormBorder;
+  end;
+
   TCEDockInfoStyle = (isNone, isReadInfo, isWriteInfo);
   
   TCEDockInfoTree = class(TJvDockBaseTree)
@@ -159,11 +176,103 @@ begin
   end;
 end;
 
+//=== { TCEDockInfoZone } ====================================================
+
+{-------------------------------------------------------------------------------
+  Copy the properties of a control (form) into the zone, when a layout is saved.
+  Same as TJvDockInfoZone.SetDockInfoFromControlToNode, but the border style goes
+  to FormBorder (see the class comment).
+-------------------------------------------------------------------------------}
+procedure TCEDockInfoZone.SetDockInfoFromControlToNode(Control: TControl);
+begin
+  DockRect:= Control.BoundsRect;
+  UnDockWidth:= Control.UnDockWidth;
+  UnDockHeight:= Control.UnDockHeight;
+  if Control is TJvDockVSPopupPanel then
+  begin
+    Control.Visible:= False;
+  end
+  else
+  begin
+    Visible:= Control.Visible;
+  end;
+
+  if Control is TForm then
+  begin
+    fFormBorder:= TForm(Control).BorderStyle;
+    FormStyle:= TForm(Control).FormStyle;
+    WindowState:= TForm(Control).WindowState;
+    LRDockWidth:= Control.LRDockWidth;
+    TBDockHeight:= Control.TBDockHeight;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Copy the zone into a control (form), when a layout is loaded.
+  Same as TJvDockInfoZone.SetDockInfoFromNodeToControl, but the border style comes
+  from FormBorder (see the class comment).
+-------------------------------------------------------------------------------}
+procedure TCEDockInfoZone.SetDockInfoFromNodeToControl(Control: TControl);
+var
+  DS: TJvDockServer;
+
+  procedure SetDockSiteSize(DockSite: TJvDockPanel);
+  begin
+    if DockSite.Align in [alTop, alBottom] then
+    begin
+      DockSite.JvDockManager.DockSiteSize:= DockRect.Bottom - DockRect.Top;
+    end
+    else
+    begin
+      DockSite.JvDockManager.DockSiteSize:= DockRect.Right - DockRect.Left;
+    end;
+  end;
+
+begin
+  if (ParentName = '') or ((Control is TJvDockPanel) and
+     (TJvDockPanel(Control).VisibleDockClientCount > 0)) then
+  begin
+    TWinControl(Control).DisableAlign;
+    try
+      if Control is TForm then
+      begin
+        TForm(Control).BorderStyle:= fFormBorder;
+        TForm(Control).FormStyle:= FormStyle;
+        if WindowState = wsNormal then
+        begin
+          Control.BoundsRect:= DockRect;
+        end;
+        TForm(Control).WindowState:= WindowState;
+      end
+      else if not (Control is TJvDockVSPopupPanel) then
+      begin
+        SetDockSiteSize(Control as TJvDockPanel);
+      end;
+      DS:= FindDockServer(Control);
+      if DS <> nil then
+      begin
+        DS.GetClientAlignControl(alTop);
+        DS.GetClientAlignControl(alBottom);
+        DS.GetClientAlignControl(alLeft);
+        DS.GetClientAlignControl(alRight);
+      end;
+    finally
+      TWinControl(Control).EnableAlign;
+    end;
+  end;
+  Control.Visible:= Visible;
+  Control.LRDockWidth:= LRDockWidth;
+  Control.TBDockHeight:= TBDockHeight;
+  Control.UnDockHeight:= UnDockHeight;
+  Control.UnDockWidth:= UnDockWidth;
+end;
+
 //=== { TCEDockInfoTree } ====================================================
 
 constructor TCEDockInfoTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin
-  inherited Create(TreeZone);
+  // the zones must be TCEDockInfoZone (the code below casts to it)
+  inherited Create(TCEDockInfoZone);
   FCEDockInfoStyle := isNone;
   FDataStream := TMemoryStream.Create;
 end;
@@ -344,12 +453,12 @@ var
   procedure CreateZoneAndAddInfo(Index: Integer);
   var
     I: Integer;
-    TreeZone: TJvDockInfoZone;
+    TreeZone: TCEDockInfoZone;
     r: TRect;
   begin
     if FAppStorage.PathExists(FormList[Index]) then
     begin
-      TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
+      TreeZone := TCEDockInfoZone(AddChildZone(CurrTreeZone, nil));
       with FAppStorage do
       begin
         { Move down into the folder of the form.. }
@@ -373,16 +482,10 @@ var
         TreeZone.VSPaneWidth := ReadInteger('VSPaneWidth');
         
         TreeZone.Visible := ReadBoolean('Visible');
-        // CubicAdventurer: range checking off for these assignments. JvDock stores
-        // BorderStyle in a narrower type than TFormBorderStyle (layout.xml files from
-        // the original CubicExplorer contain 5 = bsSizeToolWin), so with range checking
-        // on (Debug builds) the assignment raised ERangeError at startup.
-        {$IFOPT R+}{$R-}{$DEFINE CE_DOCKINFO_R_WAS_ON}{$ENDIF}
-        TreeZone.BorderStyle:= TFormBorderStyle(ReadEnumOrd('BorderStyle', Ord(High(TFormBorderStyle))));
+        TreeZone.FormBorder := TFormBorderStyle(ReadEnumOrd('BorderStyle', Ord(High(TFormBorderStyle))));
         TreeZone.FormStyle := TFormStyle(ReadEnumOrd('FormStyle', Ord(High(TFormStyle))));
         TreeZone.WindowState := TWindowState(ReadEnumOrd('WindowState', Ord(High(TWindowState))));
         TreeZone.DockFormStyle := TJvDockFormStyle(ReadEnumOrd('DockFormStyle', Ord(High(TJvDockFormStyle))));
-        {$IFDEF CE_DOCKINFO_R_WAS_ON}{$R+}{$UNDEF CE_DOCKINFO_R_WAS_ON}{$ENDIF}
         TreeZone.CanDocked := ReadBoolean('CanDocked');
         TreeZone.EachOtherDocked := ReadBoolean('EachOtherDocked');
 
@@ -571,7 +674,7 @@ begin
             WriteInteger('TBDockHeight', TBDockHeight);
             WriteInteger('VSPaneWidth', VSPaneWidth);
 
-            WriteInteger('BorderStyle', Integer(BorderStyle));
+            WriteInteger('BorderStyle', Integer(TCEDockInfoZone(TreeZone).FormBorder));
             WriteInteger('FormStyle', Integer(FormStyle));
             WriteInteger('WindowState', Integer(WindowState));
             WriteInteger('DockFormStyle', Integer(DockFormStyle));

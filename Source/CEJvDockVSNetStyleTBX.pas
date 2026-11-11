@@ -153,6 +153,10 @@ Type
     // up here, so this is the one place to run CEDockShowGuard before JVCL's
     // endless-loop-prone DoShowDockForm.
     procedure DoShowDockForm(DockWindow: TWinControl); override;
+    // Showing a panel that was auto-hidden (the pin on its title bar) goes through
+    // here, and JVCL's version calls the base DoShowDockForm directly, skipping
+    // the override above, so the guard has to be run here as well.
+    procedure DoUnAutoHideDockForm(DockWindow: TWinControl); override;
   end;
 
   TCEJvDockVSNETTabSheet = class(TJvDockVSNETTabSheet)
@@ -708,6 +712,18 @@ begin
     CEDockShowGuard(DockWindow);
   end;
   inherited DoShowDockForm(DockWindow);
+end;
+
+{*------------------------------------------------------------------------------
+  Run the dock-chain check (if installed), then let JVCL show the auto-hidden form.
+-------------------------------------------------------------------------------}
+procedure TJvDockVSNetStyleTBX.DoUnAutoHideDockForm(DockWindow: TWinControl);
+begin
+  if Assigned(CEDockShowGuard) then
+  begin
+    CEDockShowGuard(DockWindow);
+  end;
+  inherited DoUnAutoHideDockForm(DockWindow);
 end;
 
 constructor TJvDockVSNetStyleTBX.Create(AOwner: TComponent);
