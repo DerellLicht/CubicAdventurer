@@ -56,6 +56,10 @@ type
     // Serialized form of the Tabs node as last saved or loaded; used to detect
     // whether the open tabs have changed since (see SaveSessionIfChanged).
     LastSig: AnsiString;
+    // True once the item is known to be in sessions.xml (loaded from it or
+    // written to it). An item that is missing from the file later was deleted
+    // by another window (see TCESessions.SyncFromDisk).
+    OnDisk: Boolean;
     property Node: TDOMElement read fNode write fNode;
   published
     property AutoSave: Boolean read fAutoSave write SetAutoSave;
@@ -79,6 +83,10 @@ type
     fItems: TObjectList;
     function CreateTabsNode: TDOMElement;
     function NodeToSig(ANode: TDOMNode): AnsiString;
+    function EntryKey(ANode: TDOMNode; ANamed: Boolean): string;
+    function EnsureRootNode: TDOMNode;
+    function FindByKey(const AKey: string; ANamed: Boolean): TCESessionItem;
+    procedure FillItemFromNode(AItem: TCESessionItem; ANode: TDOMElement);
   public
     constructor Create;
     destructor Destroy; override;
@@ -93,10 +101,15 @@ type
     function IndexOf(ASession: TCESessionItem): Integer; overload;
     procedure Load(AAppStorage: TCEAppSettings; ANode: TDOMNode); override;
     procedure LoadSession(ASession: TCESessionItem);
+    procedure MarkAllOnDisk;
+    function MergeFromDisk(ADiskRoot: TDOMNode; ANamed: Boolean; AActive, AKeep:
+        TCESessionItem): Boolean;
     procedure MoveSession(CurIndex: Integer; NewIndex: Integer);
+    procedure ReorderNodes;
     procedure SaveSession(ASession: TCESessionItem);
     function SaveSessionIfChanged(ASession: TCESessionItem): Boolean;
     procedure SortByTime;
+    function TabsChanged(ASession: TCESessionItem): Boolean;
     property Items[Index: Integer]: TCESessionItem read GetItems;
     property RootNodeName: WideString read fRootNodeName write fRootNodeName;
   published
@@ -112,12 +125,21 @@ type
     fAutoSaveHistory: Boolean;
     fAutoSaveTimer: TTimer;
     fHistoryCount: Integer;
+    fBaselineSet: Boolean;
+    fBaselineSig: AnsiString;
+    fDialogBlock: Integer;
+    fDiskStamp: TDateTime;
+    fDiskStampValid: Boolean;
+    fKeepItem: TCESessionItem;
     fLastActiveName: string;
+    fLastSyncTick: Cardinal;
     fSessionHistory: TCESessionList;
     fSessions: TCESessionList;
     function GetActiveSessionIndex: Integer;
     function GetPlainTabSetActive: Boolean;
+    procedure ActiveChanged;
     procedure ForgetDeletedActive;
+    procedure NormalizeLastTimeFlag;
     procedure SnapshotPlainTabs;
     procedure StoreActiveName;
     procedure AutoSaveTimerTick(Sender: TObject);
@@ -136,10 +158,14 @@ type
     function LoadFromFile(AFilePath: WideString): Boolean; override;
     procedure LoadLastTimeSession;
     procedure LoadLatestHistorySession;
+    procedure MarkTabsBaseline;
     procedure SaveActiveSession;
     procedure SaveSessionDlg;
     procedure SaveToFile(AFilePath: WideString); override;
     procedure ShowSessionManager;
+    procedure SyncFromDisk(AKeep: TCESessionItem = nil; AMinInterval: Cardinal =
+        0);
+    function TabsUnchangedSinceLoad: Boolean;
     procedure UpdateActiveSession;
     property ActiveSession: TCESessionItem read fActiveSession write
         SetActiveSession;
@@ -207,7 +233,7 @@ function GlobalSessions: TCESessions;
 implementation
 
 uses
-  fCE_TabPage, WideSupport, XMLWrite, Main, CE_SpTabBar,
+  fCE_TabPage, WideSupport, XMLRead, XMLWrite, Main, CE_SpTabBar,
   fCE_SessionManager, CE_LanguageEngine, dCE_Images, fCE_FileView,
   CE_VistaFuncs, CE_Utils, Forms;
 
@@ -342,6 +368,7 @@ var
   session: TCESessionItem;
   i, c: Integer;
 begin
+  SyncFromDisk;
   // Delete/clear previous LastTimeSession
   for i:= 0 to SessionHistory.Count - 1 do
   begin
@@ -385,6 +412,7 @@ begin
                  TD_ICON_QUESTION,
                  TD_BUTTON_YES + TD_BUTTON_NO) = TD_RESULT_YES) then
   begin
+    SyncFromDisk;
     SessionHistory.ClearSessions;
     ForgetDeletedActive;
   end;
@@ -419,9 +447,14 @@ begin
     Exit;
   end;
   try
-    if Sessions.SaveSessionIfChanged(fActiveSession) then
+    if Sessions.TabsChanged(fActiveSession) then
     begin
-      Flush;
+      // another window may have saved sessions.xml since we last looked
+      SyncFromDisk;
+      if Sessions.SaveSessionIfChanged(fActiveSession) then
+      begin
+        Flush;
+      end;
     end;
   except
     on E: Exception do
@@ -441,6 +474,7 @@ end;
 -------------------------------------------------------------------------------}
 function TCESessions.CloseTabsForNewSession: Boolean;
 begin
+  SyncFromDisk;
   Inc(fAutoSaveBlock);
   try
     if assigned(fActiveSession) and not fActiveSessionIsHistory and fActiveSession.AutoSave then
@@ -454,7 +488,7 @@ begin
       // Not through SetActiveSession: that would save the (now empty) tab set.
       fActiveSession:= nil;
       fActiveSessionIsHistory:= false;
-      MainForm.SessionsToolbar.Recreate;
+      ActiveChanged;
       Flush;
     end;
   finally
@@ -471,6 +505,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESessions.UpdateActiveSession;
 begin
+  SyncFromDisk;
   if PlainTabSetActive then
   begin
     Exit;
@@ -489,6 +524,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESessions.DetachSession;
 begin
+  SyncFromDisk;
   if PlainTabSetActive then
   begin
     Exit;
@@ -499,7 +535,7 @@ begin
   end;
   fActiveSession:= nil;
   fActiveSessionIsHistory:= false;
-  MainForm.SessionsToolbar.Recreate;
+  ActiveChanged;
   Flush;
 end;
 
@@ -527,6 +563,7 @@ var
 begin
   Result:= inherited LoadFromFile(AFilePath);
   fLastActiveName:= '';
+  fDiskStampValid:= Result and FileAge(AFilePath, fDiskStamp);
   if Result and assigned(XML.DocumentElement) then
   begin
     node:= XML.DocumentElement.FirstChild;
@@ -747,14 +784,25 @@ procedure TCESessions.SaveSessionDlg;
 var
   dlg: TCEItemSelectSaveDlg;
   session: TCESessionItem;
+  res: Integer;
 begin
+  // the name list in the dialog should include sessions saved by other windows
+  SyncFromDisk;
   dlg:= CreateSaveSessionDlg;
   try
     dlg.ShowOption(_('Save changes to this session automatically'), false);
     SaveDlgNameChange(dlg);
     dlg.OnNameChange:= SaveDlgNameChange;
-    if dlg.ShowModal = mrOK then
+    Inc(fDialogBlock);
+    try
+      res:= dlg.ShowModal;
+    finally
+      Dec(fDialogBlock);
+    end;
+    if res = mrOK then
     begin
+      // pick up what other windows saved while the dialog was open
+      SyncFromDisk;
       session:= Sessions.FindSession(dlg.combo.Text);
       if not assigned(session) then
       begin
@@ -768,7 +816,7 @@ begin
       fActiveSession:= session;
       fActiveSessionIsHistory:= false;
       Flush;
-      MainForm.SessionsToolbar.Recreate;
+      ActiveChanged;
     end;
   finally
     dlg.Free;
@@ -800,6 +848,14 @@ begin
   finally
     FileStream.Free;
   end;
+  // Remember what we wrote, so SyncFromDisk can tell when another window has
+  // written the file since.
+  Sessions.MarkAllOnDisk;
+  SessionHistory.MarkAllOnDisk;
+  if FileAge(AFilePath, fDiskStamp) then
+  begin
+    fDiskStampValid:= true;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -807,6 +863,10 @@ end;
 -------------------------------------------------------------------------------}
 procedure TCESessions.SetActiveSession(const Value: TCESessionItem);
 begin
+  // The session about to be loaded may have been saved by another window since
+  // we last read sessions.xml: refresh it (it is kept even if it is gone).
+  SyncFromDisk(Value);
+  fKeepItem:= Value;
   // AutoSave Previous session
   if assigned(ActiveSession) then
   begin
@@ -843,7 +903,8 @@ begin
   finally
     Dec(fAutoSaveBlock);
   end;
-  MainForm.SessionsToolbar.Recreate;
+  fKeepItem:= nil;
+  ActiveChanged;
   // record which session is active, so the next start can return to it
   Flush;
 end;
@@ -868,15 +929,233 @@ procedure TCESessions.ShowSessionManager;
 var
   manager: TCESessionManager;
 begin
+  // show the sessions of all windows, not just this window's copy
+  SyncFromDisk;
   manager:= TCESessionManager.Create(nil);
+  Inc(fDialogBlock);
   try
     manager.PopupParent:= MainForm;
     manager.ShowModal;
   finally
+    Dec(fDialogBlock);
     manager.Free;
-    MainForm.SessionsToolbar.Recreate;
+    ActiveChanged;
     // names, order, deletions and the automatic-save flags changed in the dialog
     Flush;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Active Changed
+
+  Called whenever the active session (or its name) changes: rebuilds the
+  Sessions toolbar and puts the session name into the window title.
+-------------------------------------------------------------------------------}
+procedure TCESessions.ActiveChanged;
+begin
+  MainForm.SessionsToolbar.Recreate;
+  MainForm.UpdateTitle;
+end;
+
+{-------------------------------------------------------------------------------
+  Normalize Last Time Flag
+
+  Several windows can each mark a History entry as "last time". Keeps the flag
+  on the newest of them only.
+-------------------------------------------------------------------------------}
+procedure TCESessions.NormalizeLastTimeFlag;
+var
+  i: Integer;
+  newest: TCESessionItem;
+begin
+  newest:= nil;
+  for i:= 0 to SessionHistory.Count - 1 do
+  begin
+    if SessionHistory.Items[i].IsLastTimeSession then
+    begin
+      if not assigned(newest) or (SessionHistory.Items[i].Time > newest.Time) then
+      begin
+        newest:= SessionHistory.Items[i];
+      end;
+    end;
+  end;
+  for i:= 0 to SessionHistory.Count - 1 do
+  begin
+    if SessionHistory.Items[i].IsLastTimeSession and (SessionHistory.Items[i] <> newest) then
+    begin
+      SessionHistory.Items[i].IsLastTimeSession:= false;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Sync From Disk
+
+  Several windows can run at once, each holding its own copy of sessions.xml.
+  Every write sends the whole copy, so a window that saved its session would
+  silently drop what another window had saved before. To prevent that, this is
+  called before anything that changes sessions or History (and before the
+  final write at exit). When the file on disk is newer than our last read or
+  write, it is merged into the copy in memory:
+    - sessions and History entries that exist only on disk are added,
+    - saved sessions that changed on disk are refreshed,
+    - entries we knew to be in the file that are gone were deleted by another
+      window, so they are dropped here too.
+  The active session is never touched (it is this window's own working copy).
+  AKeep is an entry the caller is about to use: it is refreshed but never
+  deleted. Nothing is merged while the Save or Manage dialog is open, because
+  they hold on to entries. AMinInterval (milliseconds) limits how often the
+  file is even looked at; 0 means on every call. A file that cannot be read
+  (for instance while another window is writing it) is skipped, and the next
+  call tries again.
+-------------------------------------------------------------------------------}
+procedure TCESessions.SyncFromDisk(AKeep: TCESessionItem; AMinInterval: Cardinal);
+var
+  path: WideString;
+  stamp: TDateTime;
+  doc: TXMLDocument;
+  node, sessNode, histNode: TDOMNode;
+  tick: Cardinal;
+  listChanged, histChanged: Boolean;
+begin
+  if (fDialogBlock > 0) or ReadOnlySettings or (SettingsDirPath = '') then
+  begin
+    Exit;
+  end;
+  // while a session is being switched, the one being loaded must survive
+  if not assigned(AKeep) then
+  begin
+    AKeep:= fKeepItem;
+  end;
+  if AMinInterval > 0 then
+  begin
+    tick:= GetTickCount;
+    if (tick >= fLastSyncTick) and (tick - fLastSyncTick < AMinInterval) then
+    begin
+      Exit;
+    end;
+    fLastSyncTick:= tick;
+  end;
+  path:= SettingsDirPath + 'sessions.xml';
+  if not FileAge(path, stamp) then
+  begin
+    Exit;
+  end;
+  if fDiskStampValid and (stamp = fDiskStamp) then
+  begin
+    Exit;
+  end;
+  doc:= nil;
+  try
+    try
+      ReadXMLFile(doc, path);
+    except
+      on E: Exception do
+      begin
+        OutputDebugString(PChar('CA sessions: cannot read ' + path + ': ' + E.Message));
+        Exit;
+      end;
+    end;
+    if not assigned(doc) or not assigned(doc.DocumentElement) then
+    begin
+      Exit;
+    end;
+    sessNode:= nil;
+    histNode:= nil;
+    node:= doc.DocumentElement.FirstChild;
+    while assigned(node) do
+    begin
+      if node.NodeName = 'Sessions' then
+      begin
+        sessNode:= node;
+      end
+      else if node.NodeName = 'SessionHistory' then
+      begin
+        histNode:= node;
+      end;
+      node:= node.NextSibling;
+    end;
+    listChanged:= Sessions.MergeFromDisk(sessNode, true, fActiveSession, AKeep);
+    histChanged:= SessionHistory.MergeFromDisk(histNode, false, fActiveSession, AKeep);
+    if histChanged then
+    begin
+      NormalizeLastTimeFlag;
+      SessionHistory.SortByTime;
+      SessionHistory.ReorderNodes;
+    end;
+    if assigned(fAutoLoadSession) and (Sessions.fItems.IndexOf(fAutoLoadSession) = -1) then
+    begin
+      fAutoLoadSession:= nil;
+    end;
+    fDiskStamp:= stamp;
+    fDiskStampValid:= true;
+    if listChanged and assigned(MainForm) and assigned(MainForm.SessionsToolbar) then
+    begin
+      MainForm.SessionsToolbar.Recreate;
+    end;
+  finally
+    doc.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Mark Tabs Baseline
+
+  Remembers the open tabs as they are right now (called once after start-up has
+  opened them), so that at exit a plain tab set that was not changed since can
+  be recognised (see TabsUnchangedSinceLoad).
+-------------------------------------------------------------------------------}
+procedure TCESessions.MarkTabsBaseline;
+var
+  tabsNode: TDOMElement;
+begin
+  if not assigned(MainForm) or (MainForm.TabSet.TabCount = 0) then
+  begin
+    Exit;
+  end;
+  tabsNode:= SessionHistory.CreateTabsNode;
+  try
+    fBaselineSig:= SessionHistory.NodeToSig(tabsNode);
+  finally
+    tabsNode.Free;
+  end;
+  fBaselineSet:= true;
+end;
+
+{-------------------------------------------------------------------------------
+  Tabs Unchanged Since Load
+
+  True when the open tabs are a plain tab set that has not changed since it was
+  loaded, so exiting needs no new History entry:
+    - loaded from a History entry: it must still be the newest entry (otherwise
+      "Continue from last time" would come back with different tabs) and the
+      tabs must match it;
+    - not from History: the tabs must match what start-up opened.
+  Returns false whenever in doubt, which just means an entry is added as before.
+-------------------------------------------------------------------------------}
+function TCESessions.TabsUnchangedSinceLoad: Boolean;
+var
+  tabsNode: TDOMElement;
+  sig: AnsiString;
+begin
+  Result:= false;
+  if not PlainTabSetActive or not assigned(MainForm) or (MainForm.TabSet.TabCount = 0) then
+  begin
+    Exit;
+  end;
+  tabsNode:= SessionHistory.CreateTabsNode;
+  try
+    sig:= SessionHistory.NodeToSig(tabsNode);
+  finally
+    tabsNode.Free;
+  end;
+  if assigned(fActiveSession) then
+  begin
+    Result:= (fActiveSession = SessionHistory.GetNewestSession) and (sig = fActiveSession.LastSig);
+  end
+  else
+  begin
+    Result:= fBaselineSet and (sig = fBaselineSig);
   end;
 end;
 
@@ -1075,8 +1354,7 @@ end;
 procedure TCESessionList.Load(AAppStorage: TCEAppSettings; ANode: TDOMNode);
 var
   item: TCESessionItem;
-  chNode, chNode2: TDOMNode;
-  sli: TCESessionSaveLoadItems;
+  chNode: TDOMNode;
 begin
   AStorage:= AAppStorage;
   ARootNode:= ANode;
@@ -1087,26 +1365,7 @@ begin
     if chNode.NodeName = 'Session' then
     begin
       item:= TCESessionItem.Create;
-      item.fName:= TDOMElement(chNode).AttribStrings['name'];
-      item.TimeStr:= TDOMElement(chNode).AttribStrings['time'];
-      item.fAutoSave:= StrToBoolDef(TDOMElement(chNode).AttribStrings['autosave'], false);
-      item.fIsLastTimeSession:= StrToBoolDef(TDOMElement(chNode).AttribStrings['last'], false);
-
-      sli:= [];
-      chNode2:= chNode.FirstChild;
-      while assigned(chNode2) do
-      begin
-        if chNode2.NodeName = 'Tabs' then
-        Include(sli, sliTabs)
-        else if chNode2.NodeName = 'Bookmarks' then
-        Include(sli, sliBookmarks)
-        else if chNode2.NodeName = 'Layout' then
-        Include(sli, sliLayout);
-        chNode2:= chNode2.NextSibling;
-      end;
-      item.SaveLoadItems:= sli;
-
-      item.Node:= TDOMElement(chNode);
+      FillItemFromNode(item, TDOMElement(chNode));
       fItems.Add(item);
     end;
     chNode:= chNode.NextSibling;
@@ -1302,6 +1561,241 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  Tabs Changed
+
+  True when the open tabs differ from what ASession last saved or loaded.
+-------------------------------------------------------------------------------}
+function TCESessionList.TabsChanged(ASession: TCESessionItem): Boolean;
+var
+  newNode: TDOMElement;
+begin
+  Result:= false;
+  if assigned(ASession) then
+  begin
+    newNode:= CreateTabsNode;
+    try
+      Result:= NodeToSig(newNode) <> ASession.LastSig;
+    finally
+      newNode.Free;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Mark All On Disk (sessions.xml has just been written or read)
+-------------------------------------------------------------------------------}
+procedure TCESessionList.MarkAllOnDisk;
+var
+  i: Integer;
+begin
+  for i:= 0 to fItems.Count - 1 do
+  begin
+    TCESessionItem(fItems.Items[i]).OnDisk:= true;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Reorder Nodes
+
+  Puts the XML nodes into the same order as the items (after a sort).
+-------------------------------------------------------------------------------}
+procedure TCESessionList.ReorderNodes;
+var
+  i: Integer;
+begin
+  if assigned(ARootNode) then
+  begin
+    for i:= 0 to fItems.Count - 1 do
+    begin
+      ARootNode.AppendChild(TCESessionItem(fItems.Items[i]).Node);
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Ensure Root Node (creates the Sessions / SessionHistory element if missing)
+-------------------------------------------------------------------------------}
+function TCESessionList.EnsureRootNode: TDOMNode;
+begin
+  if not assigned(ARootNode) then
+  begin
+    ARootNode:= AStorage.XML.CreateElement(RootNodeName);
+    AStorage.XML.DocumentElement.AppendChild(ARootNode);
+  end;
+  Result:= ARootNode;
+end;
+
+{-------------------------------------------------------------------------------
+  Entry Key
+
+  Text that identifies an entry when comparing our copy with the file. A saved
+  session is known by its name. A History entry has no name: its time, the
+  number of tabs and the active tab are used.
+-------------------------------------------------------------------------------}
+function TCESessionList.EntryKey(ANode: TDOMNode; ANamed: Boolean): string;
+var
+  ch, tab: TDOMNode;
+  n: Integer;
+begin
+  Result:= TDOMElement(ANode).AttribStrings['name'];
+  if not ANamed then
+  begin
+    Result:= TDOMElement(ANode).AttribStrings['time'] + '|';
+    ch:= ANode.FirstChild;
+    while assigned(ch) do
+    begin
+      if ch.NodeName = 'Tabs' then
+      begin
+        n:= 0;
+        tab:= ch.FirstChild;
+        while assigned(tab) do
+        begin
+          Inc(n);
+          tab:= tab.NextSibling;
+        end;
+        Result:= Result + IntToStr(n) + '|' + TDOMElement(ch).AttribStrings['active'];
+        Break;
+      end;
+      ch:= ch.NextSibling;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Find By Key (see EntryKey)
+-------------------------------------------------------------------------------}
+function TCESessionList.FindByKey(const AKey: string; ANamed: Boolean): TCESessionItem;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to fItems.Count - 1 do
+  begin
+    if EntryKey(TCESessionItem(fItems.Items[i]).Node, ANamed) = AKey then
+    begin
+      Result:= TCESessionItem(fItems.Items[i]);
+      Break;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  Fill Item From Node
+
+  Sets an item's fields from a Session element and makes that element the
+  item's node. Used when loading sessions.xml and when merging changes made by
+  another window.
+-------------------------------------------------------------------------------}
+procedure TCESessionList.FillItemFromNode(AItem: TCESessionItem; ANode: TDOMElement);
+var
+  chNode2: TDOMNode;
+  sli: TCESessionSaveLoadItems;
+begin
+  AItem.fName:= ANode.AttribStrings['name'];
+  AItem.TimeStr:= ANode.AttribStrings['time'];
+  AItem.fAutoSave:= StrToBoolDef(ANode.AttribStrings['autosave'], false);
+  AItem.fIsLastTimeSession:= StrToBoolDef(ANode.AttribStrings['last'], false);
+
+  sli:= [];
+  chNode2:= ANode.FirstChild;
+  while assigned(chNode2) do
+  begin
+    if chNode2.NodeName = 'Tabs' then
+    Include(sli, sliTabs)
+    else if chNode2.NodeName = 'Bookmarks' then
+    Include(sli, sliBookmarks)
+    else if chNode2.NodeName = 'Layout' then
+    Include(sli, sliLayout);
+    chNode2:= chNode2.NextSibling;
+  end;
+  AItem.SaveLoadItems:= sli;
+
+  AItem.Node:= ANode;
+  AItem.OnDisk:= true;
+end;
+
+{-------------------------------------------------------------------------------
+  Merge From Disk
+
+  Merges the entries of this list as found in sessions.xml (ADiskRoot, the
+  Sessions or SessionHistory element of a freshly read copy; may be nil) into
+  the entries held in memory. See TCESessions.SyncFromDisk for the reasoning.
+  ANamed: entries are saved sessions known by name (true) or History entries
+  (false). AActive is never refreshed or deleted; AKeep is never deleted.
+  Returns true if entries were added, replaced or removed.
+-------------------------------------------------------------------------------}
+function TCESessionList.MergeFromDisk(ADiskRoot: TDOMNode; ANamed: Boolean;
+    AActive, AKeep: TCESessionItem): Boolean;
+var
+  node: TDOMNode;
+  dnode, imp: TDOMElement;
+  item: TCESessionItem;
+  keys: TStringList;
+  key: string;
+  i: Integer;
+begin
+  Result:= false;
+  keys:= TStringList.Create;
+  try
+    keys.CaseSensitive:= true;
+    // 1. entries on disk: add the ones we lack, refresh saved sessions that changed
+    if assigned(ADiskRoot) then
+    begin
+      node:= ADiskRoot.FirstChild;
+      while assigned(node) do
+      begin
+        if node.NodeName = 'Session' then
+        begin
+          dnode:= TDOMElement(node);
+          key:= EntryKey(dnode, ANamed);
+          keys.Add(key);
+          item:= FindByKey(key, ANamed);
+          if not assigned(item) then
+          begin
+            EnsureRootNode;
+            imp:= TDOMElement(AStorage.XML.ImportNode(dnode, true));
+            ARootNode.AppendChild(imp);
+            item:= TCESessionItem.Create;
+            FillItemFromNode(item, imp);
+            fItems.Add(item);
+            Result:= true;
+          end
+          else
+          begin
+            item.OnDisk:= true;
+            if ANamed and (item <> AActive) and (NodeToSig(dnode) <> NodeToSig(item.Node)) then
+            begin
+              imp:= TDOMElement(AStorage.XML.ImportNode(dnode, true));
+              ARootNode.ReplaceChild(imp, item.Node);
+              FillItemFromNode(item, imp);
+              item.LastSig:= '';
+              Result:= true;
+            end;
+          end;
+        end;
+        node:= node.NextSibling;
+      end;
+    end;
+    // 2. entries that were in the file when we last looked but are not any more
+    //    were deleted by another window
+    for i:= fItems.Count - 1 downto 0 do
+    begin
+      item:= TCESessionItem(fItems.Items[i]);
+      if item.OnDisk and (item <> AActive) and (item <> AKeep) then
+      begin
+        if keys.IndexOf(EntryKey(item.Node, ANamed)) = -1 then
+        begin
+          DeleteSession(i);
+          Result:= true;
+        end;
+      end;
+    end;
+  finally
+    keys.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Sort By Time
 -------------------------------------------------------------------------------}
 procedure TCESessionList.SortByTime;
@@ -1445,6 +1939,7 @@ end;
 procedure TCESessionsMenuItem.InitiateAction;
 begin
   inherited;
+  GlobalSessions.SyncFromDisk(nil, 1000);
   Recreate;
 end;
 
@@ -1496,7 +1991,7 @@ begin
   begin
     session:= GlobalSessions.SessionHistory.Items[i];
     item:= TSpTBXItem.Create(self);
-    item.Caption:= _('Session at') + ' ' + session.TimeStr;
+    item.Caption:= _('Tabs saved at') + ' ' + session.TimeStr;
     item.Tag:= i;
     item.Images:= CE_Images.SmallIcons;
     item.ImageIndex:= 41;
@@ -1513,6 +2008,7 @@ end;
 procedure TCESessionHistoryMenuItem.InitiateAction;
 begin
   inherited;
+  GlobalSessions.SyncFromDisk(nil, 1000);
   Recreate;
 end;
 

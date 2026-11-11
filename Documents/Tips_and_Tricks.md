@@ -25,8 +25,10 @@ It explains the features that are easy to miss.
   untick **Options > General > Single Instance Only**, then use **File > New Window** or start
   the program again. All windows share the same settings files, so the window you close last
   writes them last and its settings win. **Do not change Options while more than one window is
-  open.** Tabs, sessions and the Workspace panel are often an easier way to work in several
-  places at once.
+  open.** Saved sessions and History are the exception: each window merges in what the others
+  saved before it writes. A window that has a saved session active shows the session's name at
+  the start of its title, so you can tell the windows apart in the taskbar. Tabs, sessions and
+  the Workspace panel are often an easier way to work in several places at once.
 - **Default file manager (experimental).** CubicAdventurer can ask Windows to open folders with it
   instead of Windows Explorer. Open **Options > General**, tick **Show Default File Manager**, and
   use **Register**. **Unregister** puts back what was there before, and uninstalling the program
@@ -124,8 +126,11 @@ saved into it within a few seconds, and again when you switch to another session
 
 **History** (a submenu of **Sessions**) keeps automatic snapshots:
 - **Add History Item** takes a snapshot now.
-- **Auto Save History** takes one every time you exit. The last 30 are kept.
+- **Auto Save History** takes one when you exit, unless your tabs are exactly as they were when
+  loaded. The last 30 are kept.
 - **Clear History** deletes them all.
+
+Each item is listed as **Tabs saved at** with the date and time.
 
 History is for tabs that are *not* part of a saved session. While a saved session is active,
 exiting adds nothing to History; the program remembers the session's name instead.

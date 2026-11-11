@@ -6,10 +6,10 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-073). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-076). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-09 (version 1.04 in progress).
+Last updated: 2026-11-10 (version 1.04 in progress).
 
 ## Open bugs and gaps
 
@@ -18,7 +18,28 @@ Last updated: 2026-11-09 (version 1.04 in progress).
 ## Checks still owed
 
 Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
-on 2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out).
+on 2026-11-09 (see `HISTORY.md`). CA-070 waits for sl23's test (1.03 is out). CA-074 to CA-076 come
+from Derell's own use of several windows (2026-11-10).
+
+- **CA-074 [task] Test: sessions kept when several windows save.** Untick Options > General >
+  Single Instance Only, open two windows. Load `default` in one and `Entertain Me` in the other
+  (both save changes automatically), change the tabs in each, wait a few seconds, close both
+  windows, start again: both sessions must show their changes. Also: save a new session in one
+  window and open the Sessions menu in the other (the new name appears within a second); delete a
+  session in Manage in one window and open the menu in the other (the name is gone). Before each
+  change a window now merges what is in `sessions.xml` into its own copy. Limit: if two windows
+  change the same session, the later save wins for that session.
+- **CA-075 [task] Test: History at exit and its new caption.** History items now read "Tabs saved
+  at <date time>" (they were "Session at ..."; they are not sessions). Translations of the old text
+  in the `Locale` files no longer apply, so those languages show the English caption. With Auto Save
+  History on and a plain tab set (no session active): exit with the tabs as started, so no new
+  History item; open another folder, exit, one new item. Load the newest History item and exit
+  unchanged, no new item; load an older one and exit, a new item (so "Continue from last time" comes
+  back with what you last had open).
+- **CA-076 [task] Test: session name in the window title.** With a saved session active the title
+  reads `<session name> - CubicAdventurer v1.04`, also with one window. New Session, Detach from
+  Session, or loading a History item gives the plain title; renaming the active session in Manage
+  updates it; with Options > General > Show Path in Title bar on, the title stays the folder path.
 
 - **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
   "Show Default File Manager" check box starts unticked every time Options is shown; ticking it

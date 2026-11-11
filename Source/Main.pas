@@ -304,6 +304,7 @@ type
     function GetSkinFileName(const ASkinName: string): string;
     procedure SaveSettingsNow;
     procedure Shutdown;
+    procedure UpdateTitle;
     procedure StartUp;
     procedure ToggleVisibility;
     procedure TranslateUI(Sender: TObject);
@@ -862,6 +863,9 @@ begin
     CEActions.act_tabs_addtab.Execute;
   end;
 
+  // remember the tabs as opened, so an unchanged tab set can be recognised at exit
+  GlobalSessions.MarkTabsBaseline;
+
   if Application.MainForm.AlphaBlendValue < 255 then
   Application.MainForm.AlphaBlend:= true;
 
@@ -1039,6 +1043,10 @@ begin
   if GlobalPathCtrl.ActivePage is TCEFileViewPage then
   GlobalFileViewSettings.AssignColumnSettingsFrom(TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView);  
 
+  // Other windows may have saved sessions.xml since we last looked: take over
+  // their changes before ours go in, so the file keeps both.
+  GlobalSessions.SyncFromDisk;
+
   if assigned(GlobalSessions.ActiveSession) then
   begin
     if GlobalSessions.ActiveSession.AutoSave then
@@ -1048,7 +1056,8 @@ begin
   // History snapshots are for a plain (unnamed) tab set only. With a saved
   // session active, nothing goes to History; the session's name is recorded
   // in sessions.xml instead (see TCESessions.StoreActiveName).
-  if GlobalSessions.PlainTabSetActive then
+  // A plain tab set that is still as it was when loaded adds nothing to History.
+  if GlobalSessions.PlainTabSetActive and not GlobalSessions.TabsUnchangedSinceLoad then
   begin
     if GlobalSessions.AutoSaveHistory then
     GlobalSessions.AddHistorySession
@@ -1589,10 +1598,34 @@ begin
     end
     else
     begin
-      Caption:= GetAppTitleStr;
-      Application.Title:= Caption;
+      UpdateTitle;
     end;
   end;
+end;
+
+{*------------------------------------------------------------------------------
+  Window title when "Show Path in Title bar" is off: the program name and
+  version, with the name of the active saved session in front of it
+  ("Entertain Me - CubicAdventurer v1.04"), so that several windows can be told
+  apart in the taskbar previews. A plain tab set (also one loaded from History)
+  gets no session name. The separator is a plain hyphen on purpose. Does nothing
+  while the path is shown in the title.
+-------------------------------------------------------------------------------}
+procedure TMainForm.UpdateTitle;
+var
+  s: string;
+begin
+  if fPathInTitle then
+  begin
+    Exit;
+  end;
+  s:= GetAppTitleStr;
+  if assigned(GlobalSessions.ActiveSession) and not GlobalSessions.ActiveSessionIsHistory then
+  begin
+    s:= GlobalSessions.ActiveSession.Name + ' - ' + s;
+  end;
+  Caption:= s;
+  Application.Title:= s;
 end;
 
 {*------------------------------------------------------------------------------
