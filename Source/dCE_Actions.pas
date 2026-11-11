@@ -106,6 +106,7 @@ type
     ActionList: TActionList;
     act_gen_exit: TAction;
     act_gen_newwindow: TAction;
+    act_gen_exitall: TAction;
     UpdateTimer: TTimer;
     act_navi_folderup: TAction;
     act_navi_refresh: TAction;

@@ -75,6 +75,7 @@ type
     ViewToolbar: TCEToolbar;
     SpTBXItem3: TSpTBXItem;
     SpTBXItemNewWindow: TSpTBXItem;
+    SpTBXItemExitAll: TSpTBXItem;
     SpTBXItemDownload: TSpTBXItem;
     SpTBXSubmenuItem6: TSpTBXSubmenuItem;
     SpTBXItem4: TSpTBXItem;
@@ -305,6 +306,7 @@ type
     procedure SaveSettingsNow;
     procedure Shutdown;
     procedure UpdateTitle;
+    procedure CloseOtherWindows;
     procedure StartUp;
     procedure ToggleVisibility;
     procedure TranslateUI(Sender: TObject);
@@ -2049,22 +2051,19 @@ type
   POtherWindowSearch = ^TOtherWindowSearch;
 
 {-------------------------------------------------------------------------------
-  EnumWindows callback: is this a visible main window of another running copy of
-  this program?  If so, remember its placement and stop.  The first one found is
-  the topmost, so a third window cascades from the second.
+  Is Wnd the main window of another running copy of this program (not this
+  window)?  Class names such as TMainForm are common, so the program is checked too.
 -------------------------------------------------------------------------------}
-function EnumOtherWindowsProc(Wnd: HWND; Param: LPARAM): BOOL; stdcall;
+function IsOtherCopyWindow(Wnd: HWND): Boolean;
 var
-  search: POtherWindowSearch;
   cls: array[0..255] of Char;
   pid: DWORD;
   proc: THandle;
   buf: array[0..MAX_PATH] of Char;
   len: DWORD;
 begin
-  Result:= true;
-  search:= POtherWindowSearch(Param);
-  if (Wnd = MainForm.Handle) or not IsWindowVisible(Wnd) then
+  Result:= false;
+  if Wnd = MainForm.Handle then
   begin
     Exit;
   end;
@@ -2072,7 +2071,6 @@ begin
   begin
     Exit;
   end;
-  // class names such as TMainForm are common, so check the program too
   GetWindowThreadProcessId(Wnd, pid);
   proc:= OpenProcess(CA_PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
   if proc = 0 then
@@ -2081,18 +2079,96 @@ begin
   end;
   try
     len:= Length(buf);
-    if CA_QueryProcessImageName(proc, 0, buf, len) and SameText(string(buf), ParamStr(0)) then
-    begin
-      search.Place.Length:= SizeOf(TWindowPlacement);
-      if GetWindowPlacement(Wnd, @search.Place) then
-      begin
-        search.Found:= true;
-        Result:= false;
-      end;
-    end;
+    Result:= CA_QueryProcessImageName(proc, 0, buf, len) and SameText(string(buf), ParamStr(0));
   finally
     CloseHandle(proc);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  EnumWindows callback: is this a visible main window of another running copy of
+  this program?  If so, remember its placement and stop.  The first one found is
+  the topmost, so a third window cascades from the second.
+-------------------------------------------------------------------------------}
+function EnumOtherWindowsProc(Wnd: HWND; Param: LPARAM): BOOL; stdcall;
+var
+  search: POtherWindowSearch;
+begin
+  Result:= true;
+  search:= POtherWindowSearch(Param);
+  if IsWindowVisible(Wnd) and IsOtherCopyWindow(Wnd) then
+  begin
+    search.Place.Length:= SizeOf(TWindowPlacement);
+    if GetWindowPlacement(Wnd, @search.Place) then
+    begin
+      search.Found:= true;
+      Result:= false;
+    end;
+  end;
+end;
+
+type
+  TCloseList = record
+    Count: Integer;
+    Wnds: array[0..63] of HWND;
+  end;
+  PCloseList = ^TCloseList;
+
+{-------------------------------------------------------------------------------
+  EnumWindows callback: collect every other copy's main window (hidden ones
+  too, such as a window sitting in the tray).
+-------------------------------------------------------------------------------}
+function EnumCloseListProc(Wnd: HWND; Param: LPARAM): BOOL; stdcall;
+var
+  list: PCloseList;
+begin
+  list:= PCloseList(Param);
+  if (list.Count <= High(list.Wnds)) and IsOtherCopyWindow(Wnd) then
+  begin
+    list.Wnds[list.Count]:= Wnd;
+    Inc(list.Count);
+  end;
+  Result:= true;
+end;
+
+{-------------------------------------------------------------------------------
+  Close Other Windows (File > Exit All)
+
+  Asks every other window of this program to close, as if its Close button had
+  been used, so each saves its own session and settings. WM_CLOSE (not the
+  title bar's Close command) is used so that a window set to "close to tray"
+  really closes. Then waits, for up to 10 seconds, until they are gone, so
+  that two windows do not write sessions.xml at the same moment.
+-------------------------------------------------------------------------------}
+procedure TMainForm.CloseOtherWindows;
+var
+  list: TCloseList;
+  i: Integer;
+  waited: Integer;
+  anyLeft: Boolean;
+begin
+  list.Count:= 0;
+  EnumWindows(@EnumCloseListProc, LPARAM(@list));
+  for i:= 0 to list.Count - 1 do
+  begin
+    PostMessage(list.Wnds[i], WM_CLOSE, 0, 0);
+  end;
+  waited:= 0;
+  repeat
+    anyLeft:= false;
+    for i:= 0 to list.Count - 1 do
+    begin
+      if IsWindow(list.Wnds[i]) then
+      begin
+        anyLeft:= true;
+      end;
+    end;
+    if anyLeft then
+    begin
+      Sleep(50);
+      Inc(waited, 50);
+    end;
+  until not anyLeft or (waited >= 10000);
 end;
 
 {-------------------------------------------------------------------------------

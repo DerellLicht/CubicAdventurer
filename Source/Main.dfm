@@ -133,6 +133,9 @@ object MainForm: TMainForm
         object SpTBXItem3: TSpTBXItem
           Action = CEActions.act_gen_exit
         end
+        object SpTBXItemExitAll: TSpTBXItem
+          Action = CEActions.act_gen_exitall
+        end
       end
       object editMenuItem: TSpTBXSubmenuItem
         Caption = 'Edit'

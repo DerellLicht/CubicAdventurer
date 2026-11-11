@@ -32,6 +32,12 @@ object CEActions: TCEActions
       Caption = 'New Window'
       OnExecute = ActionExecute
     end
+    object act_gen_exitall: TAction
+      Tag = 105
+      Category = 'General'
+      Caption = 'Exit All'
+      OnExecute = ActionExecute
+    end
     object act_gen_exit: TAction
       Tag = 100
       Category = 'General'
