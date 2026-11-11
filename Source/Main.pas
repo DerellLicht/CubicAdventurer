@@ -2106,7 +2106,7 @@ procedure CascadeFromOtherWindow(var R: TRect);
 var
   search: TOtherWindowSearch;
   off, w, h: Integer;
-  mi: TMonitorInfo;
+  work: TRect;
   other: TRect;
 begin
   search.Found:= false;
@@ -2123,16 +2123,13 @@ begin
   R.Top:= other.Top + off;
   R.Right:= R.Left + w;
   R.Bottom:= R.Top + h;
-  mi.cbSize:= SizeOf(mi);
-  if GetMonitorInfo(MonitorFromRect(R, MONITOR_DEFAULTTONEAREST), @mi) then
+  work:= Screen.MonitorFromRect(R, mdNearest).WorkareaRect;
+  if (R.Right > work.Right) or (R.Bottom > work.Bottom) then
   begin
-    if (R.Right > mi.rcWork.Right) or (R.Bottom > mi.rcWork.Bottom) then
-    begin
-      R.Left:= mi.rcWork.Left;
-      R.Top:= mi.rcWork.Top;
-      R.Right:= R.Left + w;
-      R.Bottom:= R.Top + h;
-    end;
+    R.Left:= work.Left;
+    R.Top:= work.Top;
+    R.Right:= R.Left + w;
+    R.Bottom:= R.Top + h;
   end;
 end;
 
