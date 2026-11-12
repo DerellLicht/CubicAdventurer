@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-084). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-085). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-12 (version 1.04 in progress).
@@ -44,14 +44,10 @@ several windows.
   Tested 2026-11-12 by Derell with Minimize to Tray on: two windows (`standard`, then Sessions > Open in
   New Window > "Entertain Me") gave two taskbar buttons with the session names and two tray icons; left
   click on a tray icon toggles its window; File > Exit All with both windows open closed both, and the
-  next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). Not explained: on
-  the first try "Entertain Me" replaced `standard` and only one window stayed open; the same steps
-  worked the second time and it has not come back. Sessions > Open in New Window is disabled while
-  Single Instance Only is on (checked in `dCE_Actions.pas`), so that option was off when it was used.
-  "Replaced" is what happens when the running window answers the new start's question with "single
-  instance" (the new start then hands its `/session:` switch to the running window, which loads it).
-  Why it would answer that while the menu item was enabled is unknown. If it comes back, send a
-  DbgView log and say what was done just before (Options OK or Apply, a restart, a settings change). Not tested: different tray settings in different windows (Derell
+  next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). A first-try
+  oddity ("Entertain Me" replaced `standard`) was explained later the same day: the session had been
+  picked directly from the Sessions menu, which loads it into the current window, instead of from
+  Open in New Window. Not a bug. Not tested: different tray settings in different windows (Derell
   skipped it: changing Options with several windows open is not supported, and the expected behavior
   is not defined). Seen later the same day: with two windows open, Tray Icon > Show was turned off in
   Options (Apply, OK); both tray icons collapsed to one, kept by "Entertain Me". New Window and Open in
@@ -73,6 +69,18 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   Exit All (one window at a time, so only one process writes the settings files). A
   preliminary spec with land-mines and open questions exists as `derelict_mode_spec.md`
   (kept outside the repo, in Derell's notes).
+
+- **CA-085 [feature] Safer way to open a saved session (undecided).** Not started; Derell is not sure
+  it matters (2026-11-12), and may be the only person it affects. Picking a session name in the
+  Sessions menu loads it into the current window; Sessions > Open in New Window is a separate entry,
+  and the two are easy to mix up (Derell did, during the CA-081 test). Ideas, cheapest first:
+  (a) regroup or relabel the menu so the two look different (separator, heading), a few lines;
+  (b) one submenu per session with "Open in this window" and "Open in New Window", so a click on a
+  name never loads anything (small; the common case costs one more click, unless SpTBX allows a split
+  item); (c) right-click on a session name for the same two choices (original idea; unknown whether
+  Toolbar2000/SpTBXLib menu items report a right click, so a small test comes first; also hard to
+  discover). Every place that lists sessions (menu, "Open in New Window" submenu, sessions toolbar)
+  would need the same change.
 
 ## Deferred (not started)
 
