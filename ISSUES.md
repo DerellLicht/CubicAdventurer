@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-081). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-082). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-11 (version 1.04 in progress).
@@ -43,7 +43,17 @@ test (1.03 is out). CA-081 is left from Derell's own use of several windows.
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
 
-(none at the moment)
+- **CA-082 [feature] Linked Multiple Windows ("derelict mode").** Not started; on Derell's
+  think-about list (2026-11-11). A third mode in Options > General, beside Single Instance
+  Only and Multiple Windows (a group box with three radio buttons replaces the single check
+  box; the Options dialog may grow). Off by default; the other two modes stay as they are.
+  In Linked mode the windows act as one program: Minimize on any window minimizes all (and
+  restoring one restores all), the Close button closes all, and the next start brings back
+  every window with its own session or tab set and position. It bypasses the On Startup
+  and Tray settings. Needs a per-window record file, leader election at start, and a serial
+  Exit All (one window at a time, so only one process writes the settings files). A
+  preliminary spec with land-mines and open questions exists as `derelict_mode_spec.md`
+  (kept outside the repo, in Derell's notes).
 
 ## Deferred (not started)
 
