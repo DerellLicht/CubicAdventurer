@@ -316,13 +316,14 @@ procedure TCEPathCtrl.SetGlobalPathCaption(const Value: WideString);
 begin
   fGlobalPathCaption:= Value;
 
+  // The tray icon tip follows the window title: the path while the path is
+  // shown in the title, otherwise the title set by TMainForm.UpdateTitle.
   if MainForm.PathInTitle then
   begin
     MainForm.Caption:= fGlobalPathCaption;
     Application.Title:= fGlobalPathCaption;
+    MainForm.TrayIcon.Hint:= 'CubicAdventurer: ' +  fGlobalPathCaption;
   end;
-
-  MainForm.TrayIcon.Hint:= 'CubicAdventurer: ' +  fGlobalPathCaption;
 end;
 
 {##############################################################################}

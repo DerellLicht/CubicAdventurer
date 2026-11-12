@@ -13,28 +13,26 @@ Last updated: 2026-11-12 (version 1.04 in progress).
 
 ## Open bugs and gaps
 
-- **CA-084 [bug] Tray menu "Show main window" does nothing while the window is visible.** A single
-  left click on the tray icon toggles the window (hide or minimize, then restore), but the right-click
-  menu item "Show main window" only restores: on a window that is already visible it does nothing. In
-  `Main.pas` the tray menu item calls `MakeVisible`, the icon click calls `ToggleVisibility`. Two ways
-  to make it consistent, Derell to choose: (a) remove the item, leaving only Exit; (b) make it a toggle
-  (call `ToggleVisibility`, and let the caption follow the state, "Show main window" or "Hide main
-  window"; the menu is rebuilt on every popup, so that is easy). Found 2026-11-12 while testing CA-081.
-
-- **CA-083 [bug] The tray icon tip shows the folder path although "Show Path in Title bar" is off.**
-  Hovering a tray icon gives `CubicAdventurer: <path>`. With the option off, the window title and the
-  taskbar button show the session name, so the tray tip should show the same text; with
-  several windows open the tray icons are otherwise hard to tell apart. Seen in the code, not yet
-  changed: `TCEPathCtrl.SetGlobalPathCaption` (`CE_GlobalCtrl.pas`) always sets `TrayIcon.Hint` to the
-  path and ignores `PathInTitle`, and `TMainForm.UpdateTitle` (`Main.pas`) does not touch the hint.
-  Suggested: the tip follows the window caption (the path when the option is on, otherwise the title
-  with the session name), refreshed in both places. Found 2026-11-12 while testing CA-081.
+(none at the moment)
 
 ## Checks still owed
 
 CA-069, CA-071, CA-072 and CA-073 were confirmed on 2026-11-09, CA-017 and CA-074 to CA-080 on
 2026-11-11, and CA-070 on 2026-11-12 (see `HISTORY.md`). CA-081 is left from Derell's own use of
 several windows.
+
+- **CA-083 [task] Test: the tray icon tip.** Fixed 2026-11-12 (version 1.04), needs Derell's test.
+  With the tray icon on, hover it: with Show Path in Title bar off the tip is the window title
+  ("Entertain Me - CubicAdventurer v1.04", or without the session name for a plain tab set) and follows
+  Sessions changes; with the option on the tip is `CubicAdventurer: <path>` and follows the folder.
+  Turning the option on and off in Options must switch the tip at once. Windows limits the
+  length of a tip, so a very long path may be cut off.
+
+- **CA-084 [task] Test: the tray menu "Show / Hide main window".** Done 2026-11-12 (version 1.04), needs
+  Derell's test. Right-click the tray icon: the first item reads "Hide main window" while the window is
+  visible and "Show main window" while it is minimized or hidden, and does the same as a left click on
+  the icon (hide or minimize, then restore). Derell chose this over removing the item, even though he
+  finds the tray icons of little use.
 
 - **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
   and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to

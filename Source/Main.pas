@@ -271,7 +271,7 @@ type
     procedure ConvertCustomActions(Root: TTBCustomItem; Recursive: Boolean = true);
     procedure InitLanguage;
     procedure LanguageItemClick(Sender: TObject);
-    procedure TrayShowClick(Sender: TObject);
+    procedure TrayToggleClick(Sender: TObject);
     procedure WMDeviceChange(var Message: TMessage); message WM_DEVICECHANGE;
     procedure WMPowerBroadcast(var Message: TMessage); message WM_POWERBROADCAST;
     procedure WMShellNotify(var Msg: TMessage); message WM_SHELLNOTIFY;
@@ -515,6 +515,7 @@ begin
   // settings calls SetPathInTitle only when the option is turned on.
   Caption:= GetAppTitleStr;
   Application.Title:= Caption;
+  TrayIcon.Hint:= Caption;
   // Delayed save of the window position and size (see SchedulePositionSave)
   fPosSaveTimer:= TTimer.Create(Self);
   fPosSaveTimer.Enabled:= false;
@@ -1603,6 +1604,7 @@ begin
     begin
       Caption:= GlobalPathCtrl.GlobalPathCaption;
       Application.Title:= Caption;
+      TrayIcon.Hint:= 'CubicAdventurer: ' + GlobalPathCtrl.GlobalPathCaption;
     end
     else
     begin
@@ -1634,6 +1636,8 @@ begin
   end;
   Caption:= s;
   Application.Title:= s;
+  // the tray icon tip follows the title, so several tray icons can be told apart
+  TrayIcon.Hint:= s;
 end;
 
 {*------------------------------------------------------------------------------
@@ -1956,18 +1960,27 @@ end;
 {-------------------------------------------------------------------------------
   On TrayPopupMenu.Popup
 
-  Rebuilt on every popup: Show main window (default item), separator, Exit.
+  Rebuilt on every popup: Show / Hide main window (default item), separator,
+  Exit. The first item does what a left click on the icon does, so its caption
+  follows the window state.
 -------------------------------------------------------------------------------}
 procedure TMainForm.TrayPopupMenuPopup(Sender: TObject);
 var
   item: TSpTBXItem;
 begin
   TrayPopupMenu.Items.Clear;
-  // show main window
+  // show or hide main window
   item:= TSpTBXItem.Create(TrayPopupMenu);
-  item.Caption:= _('Show main window');
+  if fHiddenInTray or IsIconic(Handle) then
+  begin
+    item.Caption:= _('Show main window');
+  end
+  else
+  begin
+    item.Caption:= _('Hide main window');
+  end;
   item.Options:= [tboDefault];
-  item.OnClick:= TrayShowClick;
+  item.OnClick:= TrayToggleClick;
   TrayPopupMenu.Items.Add(item);
   // separator
   TrayPopupMenu.Items.Add(TSpTBXSeparatorItem.Create(TrayPopupMenu));
@@ -1978,11 +1991,12 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  On "Show main window" in the tray menu
+  On "Show main window" / "Hide main window" in the tray menu: same as a left
+  click on the tray icon
 -------------------------------------------------------------------------------}
-procedure TMainForm.TrayShowClick(Sender: TObject);
+procedure TMainForm.TrayToggleClick(Sender: TObject);
 begin
-  MakeVisible;
+  ToggleVisibility;
 end;
 
 {-------------------------------------------------------------------------------
