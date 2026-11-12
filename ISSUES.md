@@ -6,38 +6,52 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-082). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-084). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-11 (version 1.04 in progress).
+Last updated: 2026-11-12 (version 1.04 in progress).
 
 ## Open bugs and gaps
 
-(none at the moment)
+- **CA-084 [bug] Tray menu "Show main window" does nothing while the window is visible.** A single
+  left click on the tray icon toggles the window (hide or minimize, then restore), but the right-click
+  menu item "Show main window" only restores: on a window that is already visible it does nothing. In
+  `Main.pas` the tray menu item calls `MakeVisible`, the icon click calls `ToggleVisibility`. Two ways
+  to make it consistent, Derell to choose: (a) remove the item, leaving only Exit; (b) make it a toggle
+  (call `ToggleVisibility`, and let the caption follow the state, "Show main window" or "Hide main
+  window"; the menu is rebuilt on every popup, so that is easy). Found 2026-11-12 while testing CA-081.
+
+- **CA-083 [bug] The tray icon tip shows the folder path although "Show Path in Title bar" is off.**
+  Hovering a tray icon gives `CubicAdventurer: <path>`. With the option off, the window title and the
+  taskbar button show the session name, so the tray tip should show the same text; with
+  several windows open the tray icons are otherwise hard to tell apart. Seen in the code, not yet
+  changed: `TCEPathCtrl.SetGlobalPathCaption` (`CE_GlobalCtrl.pas`) always sets `TrayIcon.Hint` to the
+  path and ignores `PathInTitle`, and `TMainForm.UpdateTitle` (`Main.pas`) does not touch the hint.
+  Suggested: the tip follows the window caption (the path when the option is on, otherwise the title
+  with the session name), refreshed in both places. Found 2026-11-12 while testing CA-081.
 
 ## Checks still owed
 
-Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
-on 2026-11-09 and CA-017 and CA-074 to CA-080 on 2026-11-11 (see `HISTORY.md`). CA-070 waits for sl23's
-test (1.03 is out). CA-081 is left from Derell's own use of several windows.
+CA-069, CA-071, CA-072 and CA-073 were confirmed on 2026-11-09, CA-017 and CA-074 to CA-080 on
+2026-11-11, and CA-070 on 2026-11-12 (see `HISTORY.md`). CA-081 is left from Derell's own use of
+several windows.
 
 - **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
   and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to
   tray and Minimize to tray in one window and in several, restore from the tray, and run File > Exit All
   (and Exit from the tray menu) while some windows are hidden in the tray. All windows must close and
   save, and no tray icon may be left behind. The tray was a source of trouble before (CA-054), so
-  report anything odd. Not tested yet (2026-11-11).
+  report anything odd.
 
-- **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
-  "Show Default File Manager" check box starts unticked every time Options is shown; ticking it
-  reveals the group with the two buttons. The warning text stays visible. Both buttons ask first and
-  report the result. Only the current user is changed: `HKCU\Software\Classes\Folder\shell`, the
-  verb key `cubicadventurer` and the default value of `Folder\shell`. Unregister puts back the old
-  default (only if it still is ours). Uninstalling runs `CubicAdventurer.exe /unregister` (from
-  `[UninstallRun]` in the installer script). NOT verified: that Windows 11 honours a per-user default
-  verb (Win+E and some other "open folder" paths may still use Explorer). sl23 was asked to test it;
-  if it does not work for him, the fallback is the old machine-wide key (`HKCR`, needs elevation),
-  or removing the feature again.
+  Tested 2026-11-12 by Derell with Minimize to Tray on: two windows (`standard`, then Sessions > Open in
+  New Window > "Entertain Me") gave two taskbar buttons with the session names and two tray icons; left
+  click on a tray icon toggles its window; File > Exit All with both windows open closed both, and the
+  next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). Not explained: on
+  the first try "Entertain Me" replaced `standard` and only one window stayed open; the same steps
+  worked the second time and it has not come back. If it does, note whether Single Instance Only was
+  on and send a DbgView log. Not tested: different tray settings in different windows (Derell
+  skipped it: changing Options with several windows open is not supported, and the expected behavior
+  is not defined). Kept open until Derell calls it done.
 
 ## Wishlist
 
