@@ -78,9 +78,8 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
   do not). The Translate action and the PO (Portable Object, the gettext translation file
-  format) editor code remain in the source; the menu items are removed. Take up when someone with another language asks. At that
-  point also test
-  loading and saving a shipped Locale `.po` in the PO translation editor (not reachable from
+  format) editor code remain in the source; the menu items are removed. Take up when someone
+  with another language asks. At that point also test loading and saving a shipped Locale `.po` in the PO translation editor (not reachable from
   the menus now; its UTF-8 handling was changed but never exercised).
   The `BuildCE/Tools/dxgettext` binaries (Cygwin and gettext tools that rebuilt
   `Locale/default.pot` with `ExtractPOT.bat`) were deleted on 2026-10-27; fetch dxgettext
