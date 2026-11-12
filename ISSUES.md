@@ -46,8 +46,12 @@ several windows.
   click on a tray icon toggles its window; File > Exit All with both windows open closed both, and the
   next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). Not explained: on
   the first try "Entertain Me" replaced `standard` and only one window stayed open; the same steps
-  worked the second time and it has not come back. If it does, note whether Single Instance Only was
-  on and send a DbgView log. Not tested: different tray settings in different windows (Derell
+  worked the second time and it has not come back. Sessions > Open in New Window is disabled while
+  Single Instance Only is on (checked in `dCE_Actions.pas`), so that option was off when it was used.
+  "Replaced" is what happens when the running window answers the new start's question with "single
+  instance" (the new start then hands its `/session:` switch to the running window, which loads it).
+  Why it would answer that while the menu item was enabled is unknown. If it comes back, send a
+  DbgView log and say what was done just before (Options OK or Apply, a restart, a settings change). Not tested: different tray settings in different windows (Derell
   skipped it: changing Options with several windows open is not supported, and the expected behavior
   is not defined). Kept open until Derell calls it done.
 
