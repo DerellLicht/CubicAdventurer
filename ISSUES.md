@@ -53,7 +53,10 @@ several windows.
   Why it would answer that while the menu item was enabled is unknown. If it comes back, send a
   DbgView log and say what was done just before (Options OK or Apply, a restart, a settings change). Not tested: different tray settings in different windows (Derell
   skipped it: changing Options with several windows open is not supported, and the expected behavior
-  is not defined). Kept open until Derell calls it done.
+  is not defined). Seen later the same day: with two windows open, Tray Icon > Show was turned off in
+  Options (Apply, OK); both tray icons collapsed to one, kept by "Entertain Me". New Window and Open in
+  New Window still worked. Left as it is by Derell's decision: it belongs with "do not change Options
+  while more than one window is open". Kept open until Derell calls it done.
 
 ## Wishlist
 
@@ -74,8 +77,9 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 ## Deferred (not started)
 
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
-  do not). The Translate action and PO editor code remain in the source; the menu items
-  are removed. Take up when someone with another language asks. At that point also test
+  do not). The Translate action and the PO (gettext translation file) editor code remain in the
+  source; the menu items are removed. Take up when someone with another language asks. At that
+  point also test
   loading and saving a shipped Locale `.po` in the PO translation editor (not reachable from
   the menus now; its UTF-8 handling was changed but never exercised).
   The `BuildCE/Tools/dxgettext` binaries (Cygwin and gettext tools that rebuilt
