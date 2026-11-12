@@ -22,6 +22,16 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-12
+
+### CA-070 [task] Test: Default File Manager (Register / Unregister)
+Opened 2026-11-09, closed 2026-11-12 (1.04). Closed as working; sl23 tested it.
+The 1.03 default file manager (Options > General, per-user registry entry under `HKCU\Software\Classes\Folder\shell`,
+removed again by `/unregister` at uninstall) waited for a test by sl23, the Portable Freeware forum user who asked
+for it. Derell reported on 2026-11-12 that sl23 said it worked fine for him. Which Windows version sl23 used was not
+said, so the open question (does Windows 11 honour a per-user default verb?) is still unanswered; the fallbacks
+(machine-wide key with elevation, or removing the feature) were not needed.
+
 ## 2026-11-11
 
 ### CA-017 [bug] Dock layout hardening

@@ -10,6 +10,7 @@
 - Added: Sessions > Open in New Window starts another window with the chosen saved session loaded (available when Single Instance Only is off); a shortcut can do the same with the switch /session:name
 - Fixed: showing a panel that was auto-hidden now runs the same safety check as other ways of showing a panel, so a damaged panel layout cannot freeze the program there
 - Fixed: the check boxes shown by Advanced > FileView > CheckBoxSelection now use the colors of the selected theme, and so do the check box, caption and plus/minus box of the group headers shown by Group By
+- Changed: the tray icon tip shows the window title (with the session name) unless Show Path in Title bar is on; the tray menu item is now "Show main window" or "Hide main window" and works like a left click on the icon
 
 ## [1.03] - 2026-11-09
 - Added: Options > General > Single Instance Only (on by default) and File > New Window are back; with the option off, every start opens its own window

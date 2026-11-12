@@ -6,10 +6,10 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-082). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-084). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-11 (version 1.04 in progress).
+Last updated: 2026-11-12 (version 1.04 in progress).
 
 ## Open bugs and gaps
 
@@ -17,27 +17,46 @@ Last updated: 2026-11-11 (version 1.04 in progress).
 
 ## Checks still owed
 
-Requested by the Portable Freeware forum user sl23. CA-069, CA-071, CA-072 and CA-073 were confirmed
-on 2026-11-09 and CA-017 and CA-074 to CA-080 on 2026-11-11 (see `HISTORY.md`). CA-070 waits for sl23's
-test (1.03 is out). CA-081 is left from Derell's own use of several windows.
+CA-069, CA-071, CA-072 and CA-073 were confirmed on 2026-11-09, CA-017 and CA-074 to CA-080 on
+2026-11-11, and CA-070 on 2026-11-12 (see `HISTORY.md`). CA-081 is left from Derell's own use of
+several windows.
+
+- **CA-083 [task] Test: the tray icon tip.** Fixed 2026-11-12 (version 1.04), needs Derell's test.
+  With the tray icon on, hover it: with Show Path in Title bar off the tip is the window title
+  ("Entertain Me - CubicAdventurer v1.04", or without the session name for a plain tab set) and follows
+  Sessions changes; with the option on the tip is `CubicAdventurer: <path>` and follows the folder.
+  Turning the option on and off in Options must switch the tip at once. Windows limits the
+  length of a tip, so a very long path may be cut off.
+
+- **CA-084 [task] Test: the tray menu "Show / Hide main window".** Done 2026-11-12 (version 1.04), needs
+  Derell's test. Right-click the tray icon: the first item reads "Hide main window" while the window is
+  visible and "Show main window" while it is minimized or hidden, and does the same as a left click on
+  the icon (hide or minimize, then restore). Derell chose this over removing the item, even though he
+  finds the tray icons of little use.
 
 - **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
   and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to
   tray and Minimize to tray in one window and in several, restore from the tray, and run File > Exit All
   (and Exit from the tray menu) while some windows are hidden in the tray. All windows must close and
   save, and no tray icon may be left behind. The tray was a source of trouble before (CA-054), so
-  report anything odd. Not tested yet (2026-11-11).
+  report anything odd.
 
-- **CA-070 [task] Test: Default File Manager (Register / Unregister).** Options > General: the
-  "Show Default File Manager" check box starts unticked every time Options is shown; ticking it
-  reveals the group with the two buttons. The warning text stays visible. Both buttons ask first and
-  report the result. Only the current user is changed: `HKCU\Software\Classes\Folder\shell`, the
-  verb key `cubicadventurer` and the default value of `Folder\shell`. Unregister puts back the old
-  default (only if it still is ours). Uninstalling runs `CubicAdventurer.exe /unregister` (from
-  `[UninstallRun]` in the installer script). NOT verified: that Windows 11 honours a per-user default
-  verb (Win+E and some other "open folder" paths may still use Explorer). sl23 was asked to test it;
-  if it does not work for him, the fallback is the old machine-wide key (`HKCR`, needs elevation),
-  or removing the feature again.
+  Tested 2026-11-12 by Derell with Minimize to Tray on: two windows (`standard`, then Sessions > Open in
+  New Window > "Entertain Me") gave two taskbar buttons with the session names and two tray icons; left
+  click on a tray icon toggles its window; File > Exit All with both windows open closed both, and the
+  next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). Not explained: on
+  the first try "Entertain Me" replaced `standard` and only one window stayed open; the same steps
+  worked the second time and it has not come back. Sessions > Open in New Window is disabled while
+  Single Instance Only is on (checked in `dCE_Actions.pas`), so that option was off when it was used.
+  "Replaced" is what happens when the running window answers the new start's question with "single
+  instance" (the new start then hands its `/session:` switch to the running window, which loads it).
+  Why it would answer that while the menu item was enabled is unknown. If it comes back, send a
+  DbgView log and say what was done just before (Options OK or Apply, a restart, a settings change). Not tested: different tray settings in different windows (Derell
+  skipped it: changing Options with several windows open is not supported, and the expected behavior
+  is not defined). Seen later the same day: with two windows open, Tray Icon > Show was turned off in
+  Options (Apply, OK); both tray icons collapsed to one, kept by "Entertain Me". New Window and Open in
+  New Window still worked. Left as it is by Derell's decision: it belongs with "do not change Options
+  while more than one window is open". Kept open until Derell calls it done.
 
 ## Wishlist
 
@@ -58,9 +77,9 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 ## Deferred (not started)
 
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
-  do not). The Translate action and PO editor code remain in the source; the menu items
-  are removed. Take up when someone with another language asks. At that point also test
-  loading and saving a shipped Locale `.po` in the PO translation editor (not reachable from
+  do not). The Translate action and the PO (Portable Object, the gettext translation file
+  format) editor code remain in the source; the menu items are removed. Take up when someone
+  with another language asks. At that point also test loading and saving a shipped Locale `.po` in the PO translation editor (not reachable from
   the menus now; its UTF-8 handling was changed but never exercised).
   The `BuildCE/Tools/dxgettext` binaries (Cygwin and gettext tools that rebuilt
   `Locale/default.pot` with `ExtractPOT.bat`) were deleted on 2026-10-27; fetch dxgettext
