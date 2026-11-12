@@ -44,14 +44,10 @@ several windows.
   Tested 2026-11-12 by Derell with Minimize to Tray on: two windows (`standard`, then Sessions > Open in
   New Window > "Entertain Me") gave two taskbar buttons with the session names and two tray icons; left
   click on a tray icon toggles its window; File > Exit All with both windows open closed both, and the
-  next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). Not explained: on
-  the first try "Entertain Me" replaced `standard` and only one window stayed open; the same steps
-  worked the second time and it has not come back. Sessions > Open in New Window is disabled while
-  Single Instance Only is on (checked in `dCE_Actions.pas`), so that option was off when it was used.
-  "Replaced" is what happens when the running window answers the new start's question with "single
-  instance" (the new start then hands its `/session:` switch to the running window, which loads it).
-  Why it would answer that while the menu item was enabled is unknown. If it comes back, send a
-  DbgView log and say what was done just before (Options OK or Apply, a restart, a settings change). Not tested: different tray settings in different windows (Derell
+  next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). A first-try
+  oddity ("Entertain Me" replaced `standard`) was explained later the same day: the session had been
+  picked directly from the Sessions menu, which loads it into the current window, instead of from
+  Open in New Window. Not a bug. Not tested: different tray settings in different windows (Derell
   skipped it: changing Options with several windows open is not supported, and the expected behavior
   is not defined). Seen later the same day: with two windows open, Tray Icon > Show was turned off in
   Options (Apply, OK); both tray icons collapsed to one, kept by "Entertain Me". New Window and Open in
