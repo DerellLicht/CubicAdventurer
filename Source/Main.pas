@@ -2059,6 +2059,8 @@ end;
 
 const
   CA_PROCESS_QUERY_LIMITED_INFORMATION = $1000;
+  // horizontal step between stacked windows, in pixels (see CascadeFromOtherWindow)
+  CA_CASCADE_DX = 800;
 
 function CA_QueryProcessImageName(hProcess: THandle; dwFlags: DWORD; lpExeName: PWideChar;
     var lpdwSize: DWORD): BOOL; stdcall; external kernel32 name 'QueryFullProcessImageNameW';
@@ -2192,11 +2194,14 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Cascade a new window from the one already open
+  Stack a new window above and to the right of the one already open
   When another window of this program is showing, the saved position would put
-  the new window exactly on top of it.  Offset it by one title bar height instead
-  (the other window's real position, not the one saved at its last exit), and
-  bring it back to the top-left of the screen if that pushes it off the screen.
+  the new window exactly on top of it.  Place it CA_CASCADE_DX pixels to the
+  right of that window and one title bar height higher (the other window's real
+  position, not the one saved at its last exit), so every title bar stays
+  readable and a wide screen is used well.  When the new window would not fit on
+  the screen (past the right edge or above the top), start again at the top-left
+  corner of the work area.
 -------------------------------------------------------------------------------}
 procedure CascadeFromOtherWindow(var R: TRect);
 var
@@ -2215,12 +2220,12 @@ begin
   off:= GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYSIZEFRAME);
   w:= R.Right - R.Left;
   h:= R.Bottom - R.Top;
-  R.Left:= other.Left + off;
-  R.Top:= other.Top + off;
+  R.Left:= other.Left + CA_CASCADE_DX;
+  R.Top:= other.Top - off;
   R.Right:= R.Left + w;
   R.Bottom:= R.Top + h;
   work:= Screen.MonitorFromRect(R, mdNearest).WorkareaRect;
-  if (R.Right > work.Right) or (R.Bottom > work.Bottom) then
+  if (R.Right > work.Right) or (R.Top < work.Top) or (R.Bottom > work.Bottom) then
   begin
     R.Left:= work.Left;
     R.Top:= work.Top;
