@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-085). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-086). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-12 (version 1.04 in progress).
@@ -17,42 +17,7 @@ Last updated: 2026-11-12 (version 1.04 in progress).
 
 ## Checks still owed
 
-CA-069, CA-071, CA-072 and CA-073 were confirmed on 2026-11-09, CA-017 and CA-074 to CA-080 on
-2026-11-11, and CA-070 on 2026-11-12 (see `HISTORY.md`). CA-081 is left from Derell's own use of
-several windows.
-
-- **CA-083 [task] Test: the tray icon tip.** Fixed 2026-11-12 (version 1.04), needs Derell's test.
-  With the tray icon on, hover it: with Show Path in Title bar off the tip is the window title
-  ("Entertain Me - CubicAdventurer v1.04", or without the session name for a plain tab set) and follows
-  Sessions changes; with the option on the tip is `CubicAdventurer: <path>` and follows the folder.
-  Turning the option on and off in Options must switch the tip at once. Windows limits the
-  length of a tip, so a very long path may be cut off.
-
-- **CA-084 [task] Test: the tray menu "Show / Hide main window".** Done 2026-11-12 (version 1.04), needs
-  Derell's test. Right-click the tray icon: the first item reads "Hide main window" while the window is
-  visible and "Show main window" while it is minimized or hidden, and does the same as a left click on
-  the icon (hide or minimize, then restore). Derell chose this over removing the item, even though he
-  finds the tray icons of little use.
-
-- **CA-081 [task] Test: the tray with several windows, including Exit All.** With the tray icon on
-  and Single Instance Only off, open two or three windows: each shows its own tray icon; use Close to
-  tray and Minimize to tray in one window and in several, restore from the tray, and run File > Exit All
-  (and Exit from the tray menu) while some windows are hidden in the tray. All windows must close and
-  save, and no tray icon may be left behind. The tray was a source of trouble before (CA-054), so
-  report anything odd.
-
-  Tested 2026-11-12 by Derell with Minimize to Tray on: two windows (`standard`, then Sessions > Open in
-  New Window > "Entertain Me") gave two taskbar buttons with the session names and two tray icons; left
-  click on a tray icon toggles its window; File > Exit All with both windows open closed both, and the
-  next start opened `standard`. It works. Two follow-ups were filed (CA-083, CA-084). A first-try
-  oddity ("Entertain Me" replaced `standard`) was explained later the same day: the session had been
-  picked directly from the Sessions menu, which loads it into the current window, instead of from
-  Open in New Window. Not a bug. Not tested: different tray settings in different windows (Derell
-  skipped it: changing Options with several windows open is not supported, and the expected behavior
-  is not defined). Seen later the same day: with two windows open, Tray Icon > Show was turned off in
-  Options (Apply, OK); both tray icons collapsed to one, kept by "Entertain Me". New Window and Open in
-  New Window still worked. Left as it is by Derell's decision: it belongs with "do not change Options
-  while more than one window is open". Kept open until Derell calls it done.
+(none at the moment)
 
 ## Wishlist
 
@@ -83,6 +48,17 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
   would need the same change.
 
 ## Deferred (not started)
+
+- **CA-086 [bug] Turning the tray icon on disables the taskbar button's window previews.** Found by
+  Derell on 2026-11-12 while testing CA-081. With the tray icon off and several windows open,
+  hovering the CubicAdventurer taskbar button shows a preview of every window, and one can be
+  clicked to pick it. With the tray icon on, the hover shows nothing at all, and the taskbar button
+  is not drawn as active even when its window is. Derell did not click the button to see if anything
+  else happens. Cause not investigated (the tray component, `TJvTrayIcon` with Visibility
+  `tvVisibleTaskBar, tvVisibleTaskList`, is only a suspect, unverified). Derell decided on
+  2026-11-12 to give up on the tray icon, which he finds of little use; if a user who relies on
+  the tray reports this or feels strongly about it, take it up then. The tray icon itself still
+  works for each window (tip, left click, menu).
 
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
   do not). The Translate action and the PO (Portable Object, the gettext translation file

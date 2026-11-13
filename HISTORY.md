@@ -24,6 +24,30 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-12
 
+### CA-081 [task] Test: the tray with several windows, including Exit All
+Opened 2026-11-11, closed 2026-11-12 (1.04). Done; Derell tested it and it works.
+With the tray icon on and Single Instance Only off: each window got its own tray icon and taskbar button;
+Minimize to Tray, restore from the tray, and File > Exit All with windows open closed every window, and the
+next start opened `standard`. Notes from the day: a first-try oddity ("Entertain Me" replaced `standard`) was a
+menu mix-up (a session picked directly from the Sessions menu loads into the current window; Open in New Window
+is a separate entry), not a bug, and led to the wishlist idea CA-085. Turning Tray Icon > Show off in Options with two
+windows open collapsed the two tray icons to one; left alone, it belongs with "do not change Options while more than
+one window is open". Mixed tray settings between windows were deliberately not tested. Late in the day Derell found
+that turning the tray icon on removes the taskbar button's window previews (CA-086, deferred).
+
+### CA-084 [bug] Tray menu "Show main window" does nothing while the window is visible
+Opened 2026-11-12, closed 2026-11-12 (1.04). Fixed; Derell tested it.
+The menu item only restored, while a left click on the icon toggled. Derell chose the toggle over removing the
+item: the item now reads "Show main window" or "Hide main window" and does what a left click does
+(`TrayToggleClick` calls `ToggleVisibility`). Commit 1ffdd6e. He said the tray icons add little, and removing the
+item would have left a menu with only Exit.
+
+### CA-083 [bug] The tray icon tip shows the folder path although "Show Path in Title bar" is off
+Opened 2026-11-12, closed 2026-11-12 (1.04). Fixed; Derell tested it, it works for each window.
+`SetGlobalPathCaption` always put the path in the tray tip. The tip now follows the window title (with the
+session name) unless the path is shown in the title; `UpdateTitle` and `SetPathInTitle` keep it current.
+Commit 1ffdd6e.
+
 ### CA-070 [task] Test: Default File Manager (Register / Unregister)
 Opened 2026-11-09, closed 2026-11-12 (1.04). Closed as working; sl23 tested it.
 The 1.03 default file manager (Options > General, per-user registry entry under `HKCU\Software\Classes\Folder\shell`,
