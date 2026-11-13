@@ -2060,7 +2060,7 @@ end;
 const
   CA_PROCESS_QUERY_LIMITED_INFORMATION = $1000;
   // horizontal step between stacked windows, in pixels (see CascadeFromOtherWindow)
-  CA_CASCADE_DX = 800;
+  CA_CASCADE_DX = 150;
 
 function CA_QueryProcessImageName(hProcess: THandle; dwFlags: DWORD; lpExeName: PWideChar;
     var lpdwSize: DWORD): BOOL; stdcall; external kernel32 name 'QueryFullProcessImageNameW';
