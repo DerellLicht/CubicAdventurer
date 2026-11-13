@@ -49,13 +49,16 @@ Nice-to-have ideas, taken up when there is no bug list to work on.
 
 ## Deferred (not started)
 
-- **CA-086 [bug] With several windows and tray icons on, the taskbar button cannot be used to pick
-  a window's session.** Found by Derell on 2026-11-12 while testing CA-081: with several windows open
-  and the tray icon enabled, the taskbar button of a window is not selectable at all. Not
-  investigated, and the exact behavior (no click response, no preview, no jump list) was not
-  written down. Derell decided on 2026-11-12 to give up on the tray icon ("it has no value at
-  all"); if a user who relies on the tray reports this or feels strongly about it, take it up then.
-  The tray icon itself still works for each window (tip, left click, menu).
+- **CA-086 [bug] Turning the tray icon on disables the taskbar button's window previews.** Found by
+  Derell on 2026-11-12 while testing CA-081. With the tray icon off and several windows open,
+  hovering the CubicAdventurer taskbar button shows a preview of every window, and one can be
+  clicked to pick it. With the tray icon on, the hover shows nothing at all, and the taskbar button
+  is not drawn as active even when its window is. Derell did not click the button to see if anything
+  else happens. Cause not investigated (the tray component, `TJvTrayIcon` with Visibility
+  `tvVisibleTaskBar, tvVisibleTaskList`, is only a suspect, unverified). Derell decided on
+  2026-11-12 to give up on the tray icon, which he finds of little use; if a user who relies on
+  the tray reports this or feels strongly about it, take it up then. The tray icon itself still
+  works for each window (tip, left click, menu).
 
 - **CA-020 [feature] Language support.** Menus partly translate (sub-menus and some items
   do not). The Translate action and the PO (Portable Object, the gettext translation file

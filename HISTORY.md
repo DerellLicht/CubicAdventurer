@@ -33,7 +33,7 @@ menu mix-up (a session picked directly from the Sessions menu loads into the cur
 is a separate entry), not a bug, and led to the wishlist idea CA-085. Turning Tray Icon > Show off in Options with two
 windows open collapsed the two tray icons to one; left alone, it belongs with "do not change Options while more than
 one window is open". Mixed tray settings between windows were deliberately not tested. Late in the day Derell found
-that the taskbar buttons cannot be used with several windows and the tray on (CA-086, deferred).
+that turning the tray icon on removes the taskbar button's window previews (CA-086, deferred).
 
 ### CA-084 [bug] Tray menu "Show main window" does nothing while the window is visible
 Opened 2026-11-12, closed 2026-11-12 (1.04). Fixed; Derell tested it.
