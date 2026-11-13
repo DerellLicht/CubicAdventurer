@@ -17,14 +17,7 @@ Last updated: 2026-11-12 (version 1.04 in progress).
 
 ## Checks still owed
 
-- **CA-087 [task] Test: new windows stack above and to the right.** Done 2026-11-12 (version 1.04),
-  needs Derell's test. With Single Instance Only off, each new window (File > New Window or
-  Sessions > Open in New Window) opens 150 pixels to the right of the window already open and one title
-  bar height higher, so all the title bars stay readable (Derell's own way of stacking windows on his
-  3840x1600 screen; the first request said 800 by mistake, his screenshot gives about 150). The step is the constant `CA_CASCADE_DX` in `Main.pas`. When the new window would
-  go past the right edge of the screen or above its top, it starts again at the top-left corner of the
-  work area. A maximized window is not stacked from. Not decided: what to do on a screen too narrow for
-  a second window (it simply wraps), and whether 150 should scale with screen scaling.
+(none at the moment)
 
 ## Wishlist
 

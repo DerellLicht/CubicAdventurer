@@ -24,6 +24,14 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-12
 
+### CA-087 [task] Test: new windows stack above and to the right
+Opened 2026-11-12, closed 2026-11-12 (1.04). Done; Derell tested it and it works.
+Derell's own way of stacking windows on his 3840x1600 screen: each new window opens a fixed step to the right of the
+window already open and one title bar height higher, so every title bar stays readable (`CascadeFromOtherWindow` in
+`Main.pas`, step `CA_CASCADE_DX`). Wrong turn: the step was first set to 800 pixels from his message; his screenshot
+showed about 150 (window edges at roughly 90, 240 and 405), and he corrected it the same evening. It wraps to the
+top-left of the work area when the window would not fit. Whether the step should scale with screen scaling was not decided.
+
 ### CA-081 [task] Test: the tray with several windows, including Exit All
 Opened 2026-11-11, closed 2026-11-12 (1.04). Done; Derell tested it and it works.
 With the tray icon on and Single Instance Only off: each window got its own tray icon and taskbar button;
