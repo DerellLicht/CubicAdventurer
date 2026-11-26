@@ -24,6 +24,13 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-26
 
+### CA-089 [task] Test: rename safeguard
+Opened 2026-11-26, closed 2026-11-26 (1.05). Passed.
+Added as a second protection after CA-088: before applying a new name, CA checks that the
+original item is still there. Derell confirmed that normal renames work. Then rename_test.py
+renamed test.txt while CA had a rename open on it. The rename box stayed open; on Enter, CA
+showed its cancel message and the script's name stayed.
+
 ### CA-090 [feature] Add "New File" to the file list right-click menu
 Opened 2026-11-26, closed 2026-11-26 (1.05). Fixed.
 Asked for by Derell. No separate item was needed: Windows' own New submenu was meant to be

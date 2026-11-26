@@ -15,12 +15,6 @@ Last updated: 2026-11-26 (version 1.05 in progress).
 
 ## Checks still owed
 
-- **CA-089 [task] Test: rename safeguard.** Added 2026-11-26: CA now cancels a rename if the
-  original item is gone or changed. Use only a temporary folder of disposable items. Test
-  normal renames (file, folder), New File and New Folder. Then in that folder run
-  `python <repo>\rename_test.py`, start renaming `test.txt` in CA, wait for the script to
-  finish and press Enter. Expected: "Rename cancelled", and the script's name stays.
-
 ## Wishlist
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
