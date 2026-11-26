@@ -170,6 +170,15 @@ type
     property ExtColumnIndex: Integer read fExtColumnIndex write fExtColumnIndex;
   public
     BalloonHint: TJvBalloonHint;
+  private
+    // Claude: what the open rename box was started on (CA-089).
+    // fEditItem is only compared with other pointers until it is found in the list.
+    fEditItem: TEasyItem;
+    fEditPath: string;
+    fEditOnDisk: Boolean;
+    function EditTargetUnchanged(Item: TEasyItem): Boolean;
+    procedure CancelStaleRename;
+  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure OnScrollAnimTimer(Sender: TObject);
@@ -378,6 +387,72 @@ begin
 end;
 
 {*------------------------------------------------------------------------------
+  Claude: is the item about to be renamed still the one the rename started on?
+  True only if the item is still in this list, still has the path saved by
+  DoItemEditBegin and, if that path was on disk then, is still on disk.
+  The pointer is looked up in the list before anything is read through it.
+  The disk test is needed because shell notices wait while a rename is open,
+  so a list item can still show a file that another program has renamed.
+  Items with no path on disk (inside a zip file, for example) skip that test.
+-------------------------------------------------------------------------------}
+function TCECustomFileView.EditTargetUnchanged(Item: TEasyItem): Boolean;
+var
+  current: TEasyItem;
+  NS: TNamespace;
+begin
+  Result:= false;
+  if (Item = nil) or (Item <> fEditItem) then
+  begin
+    Exit;
+  end;
+
+  current:= Groups.FirstItem;
+  while (current <> nil) and (current <> Item) do
+  begin
+    current:= Groups.NextItem(current);
+  end;
+  if current = nil then
+  begin
+    Exit;
+  end;
+
+  if not ValidateNamespace(current, NS) then
+  begin
+    Exit;
+  end;
+  if not SameText(NS.NameForParsing, fEditPath) then
+  begin
+    Exit;
+  end;
+
+  Result:= not fEditOnDisk or FileExists(fEditPath) or DirectoryExists(fEditPath);
+end;
+
+{*------------------------------------------------------------------------------
+  Claude: close the rename box without renaming and say why (CA-089).
+  Does not use the list item, which may no longer exist.
+-------------------------------------------------------------------------------}
+procedure TCECustomFileView.CancelStaleRename;
+var
+  r: TRect;
+  p: TPoint;
+begin
+  if assigned(EditManager.Editor) then
+  begin
+    GetWindowRect(EditManager.Editor.Handle, r);
+    p.X:= r.Left + ((r.Right - r.Left) div 2);
+    p.Y:= r.Top;
+  end
+  else
+  begin
+    p:= ClientToScreen(Point(0, 0));
+  end;
+  // Rejecting the name alone would keep the box open for another try
+  EditManager.EndEdit;
+  BalloonHint.ActivateHintPos(nil, p, 'Rename cancelled', 'The original item changed.'#13'Nothing was renamed.', 4000, ikError);
+end;
+
+{*------------------------------------------------------------------------------
   Get's called on item edit.
 -------------------------------------------------------------------------------}
 procedure TCECustomFileView.DoItemEdited(Item: TEasyItem; var NewValue: Variant; var
@@ -410,6 +485,14 @@ var
   p: TPoint;
   NS: TNamespace;
 begin
+  // Claude: check first; everything below reads the item (CA-089)
+  if not EditTargetUnchanged(Item) then
+  begin
+    Accept:= false;
+    CancelStaleRename;
+    Exit;
+  end;
+
   inherited;
 
   // Hack around some bug in EasyListView. It adds 2 spaces into the file name for some reason.
@@ -1331,10 +1414,15 @@ var
   NS: TNamespace;
 begin
   inherited;
+  fEditItem:= nil;
   if Column = 0 then
   begin
     NS:= TExplorerItem(Item).Namespace;
     Allow:= NS.CanRename;
+    // Claude: remember what is being renamed (see EditTargetUnchanged)
+    fEditItem:= Item;
+    fEditPath:= NS.NameForParsing;
+    fEditOnDisk:= FileExists(fEditPath) or DirectoryExists(fEditPath);
   end;
 end;
 

@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-088). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-089). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-26 (version 1.05 in progress).
@@ -17,7 +17,11 @@ Last updated: 2026-11-26 (version 1.05 in progress).
 
 ## Checks still owed
 
-(none at the moment)
+- **CA-089 [task] Test: rename safeguard.** Added 2026-11-26: CA now cancels a rename if the
+  original item is gone or changed. Use only a temporary folder of disposable items. Test
+  normal renames (file, folder), New File and New Folder. Then in that folder run
+  `python <repo>\rename_test.py`, start renaming `test.txt` in CA, wait for the script to
+  finish and press Enter. Expected: "Rename cancelled", and the script's name stays.
 
 ## Wishlist
 
