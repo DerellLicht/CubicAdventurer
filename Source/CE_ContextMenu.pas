@@ -205,7 +205,9 @@ var
 begin
   GUIDList.Clear;
   path:= 'Directory\Background\shellex\ContextMenuHandlers';
-  reg:= TRegistry.Create;
+  // Claude: ask for read access only.  The default is full access, which Windows
+  // normally refuses on this key unless the program runs as administrator.
+  reg:= TRegistry.Create(KEY_READ);
   list:= TStringList.Create;
   try
     reg.RootKey:= HKEY_CLASSES_ROOT;

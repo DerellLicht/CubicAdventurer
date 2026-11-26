@@ -1,6 +1,7 @@
 # CubicAdventurer Changelog
 
 ## [1.05] - 2026-11-26
+- Fixed: the right-click menu on an empty part of the file list did not include the Windows add-ons for folders, such as the New submenu
 - Added: before applying a new name, CA checks that the item being renamed is still there; if not, nothing is renamed and a message says so
 - Fixed: when file types changed (for example while a program was being installed) during a rename, the typed name could be applied to a different file or folder, or the program could crash. The refresh now waits until the rename is finished; Refresh (F5) waits the same way by doing nothing during a rename
 

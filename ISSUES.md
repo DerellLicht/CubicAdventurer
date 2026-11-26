@@ -13,12 +13,14 @@ Last updated: 2026-11-26 (version 1.05 in progress).
 
 ## Open bugs and gaps
 
-- **CA-090 [feature] Add "New File" to the file list right-click menu.** Added 2026-11-26 at
-  Derell's request. New File exists as a command (default shortcut Ctrl+Shift+N, which
-  worked once EPIM Mail, which had taken that keystroke, was closed), but Derell found no
-  right-click way to create a file.
-
 ## Checks still owed
+
+- **CA-090 [feature] Add "New File" to the file list right-click menu.** Added 2026-11-26 at
+  Derell's request: the menu had no way to create a file (New File was only on Ctrl+Shift+N).
+  Likely cause: CA opened the registry list of Windows menu add-ons asking for full access,
+  so the list stayed empty. Changed to read access. Test in a temporary folder: right-click
+  an empty part of the file list; the menu opens and has New. Create a folder and a text
+  file through New and rename each. Other add-ons may now appear too.
 
 - **CA-089 [task] Test: rename safeguard.** Added 2026-11-26: CA now cancels a rename if the
   original item is gone or changed. Use only a temporary folder of disposable items. Test
