@@ -6,14 +6,17 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-089). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-090). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-26 (version 1.05 in progress).
 
 ## Open bugs and gaps
 
-(none at the moment)
+- **CA-090 [feature] Add "New File" to the file list right-click menu.** Added 2026-11-26 at
+  Derell's request. New File exists as a command (default shortcut Ctrl+Shift+N, which
+  worked once EPIM Mail, which had taken that keystroke, was closed), but Derell found no
+  right-click way to create a file.
 
 ## Checks still owed
 
