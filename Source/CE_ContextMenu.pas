@@ -305,7 +305,7 @@ begin
     WM_DRAWITEM: begin
                    if TWMDrawItem(Msg).Ctl = 0 then
                    begin
-                     cm:= GetMenu(TWMDrawItem(Msg).DrawItemStruct.itemID);
+                     cm:= GetMenu(Integer(TWMDrawItem(Msg).DrawItemStruct.itemID));
                      if Assigned(cm) then
                      begin
                        if cm.QueryInterface(IContextMenu2, cm2) = S_OK then
@@ -350,7 +350,10 @@ begin
                                   begin
                                     newitem:= TCEContextMenuItem.Create;
                                     newitem.Menu:= cm;
-                                    newitem.ID:= info.wID;
+                                    // Claude: Windows menu IDs are unsigned and can be as large as
+                                    // $FFFFFFFF.  The Integer() cast keeps the bits (giving -1) without a
+                                    // range check error.  The same applies to the two itemID casts.
+                                    newitem.ID:= Integer(info.wID);
                                     newitem.SubMenu:= info.hSubMenu;
                                     newitem.NewMenuItem:= item.NewMenuItem;
                                     newitem.Offset:= item.Offset;
@@ -365,7 +368,7 @@ begin
                         end;
                       end;
     WM_MEASUREITEM: begin
-                      cm:= GetMenu(TWMMeasureItem(Msg).MeasureItemStruct.itemID);
+                      cm:= GetMenu(Integer(TWMMeasureItem(Msg).MeasureItemStruct.itemID));
                       if Assigned(cm) then
                       begin
                         if cm.QueryInterface(IContextMenu2, cm2) = S_OK then
