@@ -13,14 +13,7 @@ Last updated: 2026-11-26 (version 1.05 in progress).
 
 ## Open bugs and gaps
 
-- **CA-088 [bug] High priority: a rename can be applied to the wrong file or folder.** Fix
-  pushed 2026-11-26, waiting for Derell's test. First seen as an access violation (v1.04,
-  `EasyListview.TEasyCollectionItem.GetOwnerListview`, offset 343F27) while the VS Code
-  installer was finishing. Reproduced: run `python assoc_notify.py` (sends the "file types
-  changed" notice after 10 seconds), open a rename box in CA, type a new name, do not press
-  Enter, and wait. Another item (once the `tools` folder, once `sl23`) got the typed name.
-  Cause (from reading the code): the main window rebuilt every tab while the rename box was
-  open. Test only in a temporary folder of disposable files and folders.
+(none at the moment)
 
 ## Checks still owed
 

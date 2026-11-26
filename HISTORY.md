@@ -22,6 +22,16 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-26
+
+### CA-088 [bug] A rename could be applied to the wrong file or folder
+Opened 2026-11-26, closed 2026-11-26 (1.05). Fixed.
+First seen as a crash while the VS Code installer was finishing; reproduced with
+assoc_notify.py, which renamed other folders (tools, sl23). Cause (from the code): the main
+window rebuilt every tab on "file types changed" while a rename box was open. The rebuild now
+waits for the rename to finish. Derell ran the fixed build successfully four times.
+Wrong turns: Claude first thought CA ignored that notice, and read the crash as an empty pointer.
+
 ## 2026-11-12
 
 ### CA-087 [task] Test: new windows stack above and to the right
