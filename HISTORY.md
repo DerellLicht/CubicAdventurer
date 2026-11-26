@@ -24,6 +24,14 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-26
 
+### CA-090 [feature] Add "New File" to the file list right-click menu
+Opened 2026-11-26, closed 2026-11-26 (1.05). Fixed.
+Asked for by Derell. No separate item was needed: Windows' own New submenu was meant to be
+there. CA opened the registry list of menu add-ons asking for full access, so the list stayed
+empty; it now asks for read access (confirmed: New then appeared). Opening the submenu then
+raised a range check error, because unsigned Windows menu IDs were stored in a signed
+Integer; three conversions now use an Integer() cast. Confirmed by Derell.
+
 ### CA-088 [bug] A rename could be applied to the wrong file or folder
 Opened 2026-11-26, closed 2026-11-26 (1.05). Fixed.
 First seen as a crash while the VS Code installer was finishing; reproduced with
