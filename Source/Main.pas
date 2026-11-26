@@ -253,6 +253,7 @@ type
     fPanels: TComponentList;
     fPathInTitle: Boolean;
     fPosSaveTimer: TTimer;
+    fAssocTimer: TTimer; // Claude: retries the file type change rebuild
     fSkinFiles: TStringList;
     fSaveSettingsOnClose: Boolean;
     fUpdatingCount: Integer;
@@ -279,6 +280,7 @@ type
     procedure WMExitSizeMove(var Message: TMessage); message WM_EXITSIZEMOVE;
     procedure PosSaveTimerTick(Sender: TObject);
     procedure SchedulePositionSave;
+    procedure AssocTimerTick(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
     procedure HandleTabSetOleDrop(ASender: TCESpTabSet; ADropTab: TCESpTabItem;
         const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint; var dwEffect:
@@ -521,6 +523,11 @@ begin
   fPosSaveTimer.Enabled:= false;
   fPosSaveTimer.Interval:= 1000;
   fPosSaveTimer.OnTimer:= PosSaveTimerTick;
+  // Claude: delayed rebuild after a file type change (see AssocTimerTick)
+  fAssocTimer:= TTimer.Create(Self);
+  fAssocTimer.Enabled:= false;
+  fAssocTimer.Interval:= 500;
+  fAssocTimer.OnTimer:= AssocTimerTick;
   fSaveSettingsOnClose:= true;
   StackDirPath:= SettingsDirPath + 'Stacks\';
 
@@ -552,6 +559,7 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   ChangeNotifier.UnRegisterShellChangeNotify(Self);
+  fAssocTimer.Enabled:= false;
 
   fIsReady:= false;
   CEActions.UpdateTimer.Enabled:= false;
@@ -981,6 +989,56 @@ begin
   end;
   fPosSaveTimer.Enabled:= false;
   fPosSaveTimer.Enabled:= true;
+end;
+
+{*------------------------------------------------------------------------------
+  Claude: rebuild all file view tabs after a file type change (CA-088).
+  A rebuild frees every list item. If that happens while a rename box is open,
+  the box keeps a pointer to a freed item, and the typed name can be applied to
+  a different file or folder, or the program can crash. OkToDispatch is false
+  while a file list or the Folders tree is renaming, dragging or showing a
+  context menu; the timer then stays on and tries again.
+-------------------------------------------------------------------------------}
+procedure TMainForm.AssocTimerTick(Sender: TObject);
+var
+  i: Integer;
+  item: TCESpTabItem;
+begin
+  if fCEIsClosing then
+  begin
+    fAssocTimer.Enabled:= false;
+    Exit;
+  end;
+  if not ShellNotifyManager.OkToDispatch then
+  begin
+    Exit;
+  end;
+
+  // Off while working, so the message processing below cannot re-enter
+  fAssocTimer.Enabled:= false;
+  ForceIconCachRebuild;
+  Application.ProcessMessages;
+  // A rename may have started while messages were processed
+  if not ShellNotifyManager.OkToDispatch then
+  begin
+    fAssocTimer.Enabled:= true;
+    Exit;
+  end;
+
+  // Rebuild all fileview tabs
+  for i:= 0 to TabSet.Items.Count - 1 do
+  begin
+    if TabSet.Items.Items[i] is TCESpTabItem then
+    begin
+      item:= TCESpTabItem(TabSet.Items.Items[i]);
+      if item.Page is TCEFileViewPage then
+      begin
+        TCEFileViewPage(item.Page).FileView.Rebuild(true);
+      end;
+    end;
+  end;
+  // refresh foldertree
+  CEFolderPanel.FolderTree.Refresh;
 end;
 
 {*------------------------------------------------------------------------------
@@ -1660,22 +1718,8 @@ begin
       ShellEvent:= TVirtualShellEvent(List.Items[i]);
       case ShellEvent.ShellNotifyEvent of
         vsneAssoccChanged: begin
-          ForceIconCachRebuild;
-          Application.ProcessMessages;
-          // Rebuild all fileview tabs
-          for i2:= 0 to TabSet.Items.Count - 1 do
-          begin
-            if TabSet.Items.Items[i2] is TCESpTabItem then
-            begin
-              item:= TCESpTabItem(MainForm.TabSet.Items.Items[i2]);
-              if item.Page is TCEFileViewPage then
-              begin
-                TCEFileViewPage(item.Page).FileView.Rebuild(true);
-              end;
-            end;
-          end;
-          // refresh foldertree
-          CEFolderPanel.FolderTree.Refresh;
+          // Claude: do not rebuild here; a rename may be open (see AssocTimerTick)
+          fAssocTimer.Enabled:= true;
         end;
 
         vsneDriveRemoved, vsneMediaRemoved: begin

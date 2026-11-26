@@ -6,14 +6,21 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-087). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-088). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-12 (version 1.04 in progress).
+Last updated: 2026-11-26 (version 1.05 in progress).
 
 ## Open bugs and gaps
 
-(none at the moment)
+- **CA-088 [bug] High priority: a rename can be applied to the wrong file or folder.** Fix
+  pushed 2026-11-26, waiting for Derell's test. First seen as an access violation (v1.04,
+  `EasyListview.TEasyCollectionItem.GetOwnerListview`, offset 343F27) while the VS Code
+  installer was finishing. Reproduced: run `python assoc_notify.py` (sends the "file types
+  changed" notice after 10 seconds), open a rename box in CA, type a new name, do not press
+  Enter, and wait. Another item (once the `tools` folder, once `sl23`) got the typed name.
+  Cause (from reading the code): the main window rebuilt every tab while the rename box was
+  open. Test only in a temporary folder of disposable files and folders.
 
 ## Checks still owed
 

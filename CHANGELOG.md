@@ -1,5 +1,8 @@
 # CubicAdventurer Changelog
 
+## [1.05] - 2026-11-26
+- Fixed: when file types changed (for example while a program was being installed) during a rename, the typed name could be applied to a different file or folder, or the program could crash. The refresh now waits until the rename is finished; Refresh (F5) waits the same way by doing nothing during a rename
+
 ## [1.04] - 2026-11-11
 - Added: the window title starts with the name of the active session (for example "Entertain Me - CubicAdventurer v1.04"), so several windows can be told apart in the taskbar
 - Changed: with several windows open, saving a session in one window no longer discards sessions or History saved by another; sessions and History are merged before they are written

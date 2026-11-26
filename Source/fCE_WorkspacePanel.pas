@@ -108,7 +108,7 @@ implementation
 
 uses
   System.Contnrs, System.Types,
-  CE_GlobalCtrl, MPCommonUtilities,
+  CE_GlobalCtrl, MPCommonUtilities, VirtualShellNotifier,
   CE_VistaFuncs, CE_Utils, fCE_FileView, Main, dCE_Actions, CE_Layout,
   CE_ToolbarButtons, CE_SpTabBar, CE_LanguageEngine, fCE_BookmarkPanel,
   VirtualTrees, CE_Bookmarks, CE_StdBookmarkComps, CE_ContextMenu,
@@ -313,7 +313,10 @@ begin
       FileView.View:= TEasyListStyle(TComponent(Sender).Tag - 100);
     end;
     110: FileView.PerFolderSettings:= not FileView.PerFolderSettings;
-    606: FileView.Rebuild(true);  
+    606: if ShellNotifyManager.OkToDispatch then // Claude: not during a rename (CA-088)
+         begin
+           FileView.Rebuild(true);
+         end;
   end;
 end;
 

@@ -370,7 +370,7 @@ uses
   fCE_PoEditor, fCE_OptionsDialog, CE_Sessions, fCE_StackPanel,
   CE_BaseFileView, fCE_QuickViewTab, fCE_SearchPage, fCE_CreateSymlink,
   fCE_ArchivePanel, CE_CommonObjects, fCE_QuickView, CE_WideCompat,
-  fCE_WorkspacePanel;
+  fCE_WorkspacePanel, VirtualShellNotifier;
 
 {##############################################################################}
 
@@ -985,7 +985,7 @@ begin
            if GlobalPathCtrl.ActivePage is TCEFileViewPage then
            TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.GoFolderUp;
          end;
-    606: begin
+    606: if ShellNotifyManager.OkToDispatch then begin // Claude: not during a rename (CA-088)
            if GlobalPathCtrl.ActivePage is TCEFileViewPage then
            begin
              if GlobalFileViewSettings.Thumbnails.UseStorage then
@@ -1002,7 +1002,7 @@ begin
          end;
     608: MainForm.TabSet.ScrollLeft;
     609: MainForm.TabSet.ScrollRight;
-    610: begin
+    610: if ShellNotifyManager.OkToDispatch then begin // Claude: not during a rename (CA-088)
       if GlobalPathCtrl.ActivePage is TCEFileViewPage then
       TCEFileViewPage(GlobalPathCtrl.ActivePage).FileView.Rebuild;
     end;
