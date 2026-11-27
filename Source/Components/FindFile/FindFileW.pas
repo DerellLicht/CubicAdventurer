@@ -1149,7 +1149,10 @@ var
     end
     else
     begin
-      Result := WildcardMatches(PWideChar(Name), AMask);
+      // Name has a dot added if there is no extension (for masks such as *.), so
+      // also try the real name, or a plain mask such as LICENSE would not match
+      Result := WildcardMatches(PWideChar(Name), AMask) or
+        WildcardMatches(PWideChar(WideString(FileName)), AMask);
     end;
   end;
 
