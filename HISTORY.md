@@ -24,6 +24,12 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-27
 
+### CA-091 [task] Test: File Search works (GitHub #3)
+Opened 2026-11-27, closed 2026-11-27 (1.06). Passed, including the Location dropdown.
+Two faults: a check box style that Virtual Treeview 8.3 no longer has stopped the tab from
+opening, and then clicking Search raised a thread error (the search thread was started from
+its own constructor).
+
 ### CA-093 [task] Test: File Search masks match long names only
 Opened 2026-11-27, closed 2026-11-27 (1.06). Passed.
 A `*.cpp` search listed `.suppress.cppcheck`, because Windows also matches the short (8.3) name
