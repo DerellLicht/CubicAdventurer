@@ -6,14 +6,21 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-090). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-092). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
-Last updated: 2026-11-26 (version 1.05 in progress).
+Last updated: 2026-11-27 (version 1.05 in progress).
 
 ## Open bugs and gaps
 
 ## Checks still owed
+
+- **CA-091 [task] Test: File Search opens (GitHub #3).** Ctrl+F failed with "Error reading
+  FolderTree.CheckImageKind: Invalid property value". The Location folder picker form used a check
+  box style that Virtual Treeview 8.3 no longer has. Check that the tab opens, the Location
+  dropdown shows check boxes, and a search returns results.
+- **CA-092 [task] Test: column settings window opens.** Same cause in the window opened by
+  right-click on a column header > More...
 
 ## Wishlist
 

@@ -138,7 +138,7 @@ object CEFormColumnSettings: TCEFormColumnSettings
         Width = 281
         Height = 208
         Anchors = [akLeft, akTop, akRight, akBottom]
-        CheckImageKind = ckXP
+        CheckImageKind = ckSystemDefault
         Header.AutoSizeIndex = 0
         Header.DefaultHeight = 17
         Header.Font.Charset = DEFAULT_CHARSET

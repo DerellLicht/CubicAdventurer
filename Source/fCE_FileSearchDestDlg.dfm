@@ -26,7 +26,7 @@ object CEDestDlg: TCEDestDlg
     BevelOuter = bvRaised
     BorderStyle = bsNone
     ButtonFillMode = fmShaded
-    CheckImageKind = ckDarkTick
+    CheckImageKind = ckSystemDefault
     ColumnDetails = cdUser
     ColumnMenuItemCount = 8
     DefaultNodeHeight = 17
