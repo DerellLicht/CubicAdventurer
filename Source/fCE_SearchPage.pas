@@ -822,9 +822,15 @@ procedure TCESearchPage.SelectPage;
 begin
   GlobalPathCtrl.ActivePage:= Self;
   CEFileSearchSettings.AssignColumnSettingsTo(ResultView);
-  try
-    edit_wordphrase.SetFocus;
-  except
+  // Claude: the word/phrase box is disabled when another name option is selected,
+  // so test first; calling SetFocus then raises 'Cannot focus a disabled or
+  // invisible window'. The try/except stays as a backstop.
+  if edit_wordphrase.CanFocus then
+  begin
+    try
+      edit_wordphrase.SetFocus;
+    except
+    end;
   end;
 end;
 
