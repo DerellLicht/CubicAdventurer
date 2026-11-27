@@ -13,15 +13,16 @@ Last updated: 2026-11-27 (version 1.06 in progress).
 
 ## Open bugs and gaps
 
+None.
+
+## Checks still owed
+
 - **CA-098 [bug] File Search results show some Unicode file names as boxes.** Found by Derell on
   2026-11-27; emojis in names display correctly. Likely cause, from the code only: the fallback
   font used when the list font lacks a character (`CE_FontFallback.pas`) is applied by the file
   list (`TCECustomFileView.DoItemPaintText`) and the Folders tree, but the search results list
   is the plain library list view and does not call it.
-
-## Checks still owed
-
-None.
+  Fix pushed 2026-11-27 (search results now call it for each cell); Derell to check.
 
 ## Wishlist
 

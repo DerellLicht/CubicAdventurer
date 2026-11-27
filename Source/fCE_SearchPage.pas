@@ -159,6 +159,8 @@ type
     procedure ResultViewHintCustomInfo(Sender: TCustomEasyListview;
       TargetObj: TEasyCollectionItem; Info: TEasyHintInfo);
     procedure edit_wordphraseChange(Sender: TObject);
+    procedure ResultViewItemPaintText(Sender: TCustomEasyListview;
+        Item: TEasyItem; Position: NativeInt; ACanvas: TCanvas);
     procedure ResultViewItemSelectionsChanged(Sender: TCustomEasyListview);
   private
     fStatus: WideString;
@@ -283,7 +285,7 @@ implementation
 
 uses
   System.Types,
-  Main, dCE_Actions;
+  Main, dCE_Actions, CE_FontFallback;
 
 {$R *.dfm}
 
@@ -307,6 +309,7 @@ begin
   FolderTreePopup.PopupForm:= DestDlg;
   
   ResultView.Active:= true;
+  ResultView.OnItemPaintText:= ResultViewItemPaintText;
 
   SkinManager.AddSkinNotification(Self);
 
@@ -618,6 +621,22 @@ procedure TCESearchPage.ResultViewColumnCustomView(Sender: TCustomEasyListview;
   Column: TEasyColumn; var View: TEasyViewColumnClass);
 begin
   View:= TCEViewColumn;
+end;
+
+{-------------------------------------------------------------------------------
+  On ResultView ItemPaintText
+-------------------------------------------------------------------------------}
+// Claude: use a fallback font when the list font lacks characters, as the file
+// list does. Called for each cell; in this report view Position is the column
+// index, so the text of that cell is tested (folder paths as well as names).
+procedure TCESearchPage.ResultViewItemPaintText(Sender: TCustomEasyListview;
+    Item: TEasyItem; Position: NativeInt; ACanvas: TCanvas);
+begin
+  if assigned(Item) and (Position >= 0) and
+    (Position < ResultView.Header.Columns.Count) then
+  begin
+    CE_ApplyFontFallback(ACanvas, Item.Captions[Position]);
+  end;
 end;
 
 {-------------------------------------------------------------------------------
