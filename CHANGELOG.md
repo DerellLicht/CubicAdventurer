@@ -5,6 +5,7 @@
 - Fixed: the column settings window (right-click a column header > More...) had the same kind of invalid setting
 - Fixed: File Search no longer lists files that match only by their hidden short (8.3) name, for example .suppress.cppcheck for *.cpp
 - Fixed: the Include and Exclude File Masks boxes on the File Search Filters tab now work
+- Changed: those boxes accept a plain file name or mask (conio32.cpp) as well as a path mask (*\conio32.cpp)
 - Fixed: File Search now applies Case Sensitive and Whole Word together when both are ticked
 
 ## [1.05] - 2026-11-26

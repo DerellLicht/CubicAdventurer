@@ -24,6 +24,12 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-27
 
+### CA-093 [task] Test: File Search masks match long names only
+Opened 2026-11-27, closed 2026-11-27 (1.06). Passed.
+A `*.cpp` search listed `.suppress.cppcheck`, because Windows also matches the short (8.3) name
+(`SUPPRE~1.CPP`). Results are now checked against the long name. `*.*` still lists a file with
+no extension.
+
 ### CA-096 [bug] File does not show up in listing when it does not exist
 Opened 2026-11-27, closed 2026-11-27 (1.06). Closed with no action.
 `no_extension` was missing from the file list and from a `*.*` search. Derell then found that

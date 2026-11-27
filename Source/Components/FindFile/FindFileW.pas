@@ -1136,28 +1136,41 @@ function TFileCriteria.Matches(const Folder, FileName: WideString): Boolean;
 var
   I: Integer;
   Path: WideString;
+  Name: WideString;
   Mask: PWideChar;
+
+  // Claude: a mask may match the whole path (original behaviour, e.g. *\conio32.cpp
+  // or *\obj\*) or just the file name, so that plain conio32.cpp also works.
+  function MaskHits(AMask: PWideChar): Boolean;
+  begin
+    Result := WildcardMatches(PWideChar(Path), AMask) or
+      WildcardMatches(PWideChar(Name), AMask);
+  end;
+
 begin
   Result := True;
   if Filters.Count <> 0 then
   begin
-    Path := Folder + FileName;
+    Name := FileName;
     if ExtractFileExt(FileName) = '' then
-      Path := Path + '.';
+    begin
+      Name := Name + '.';
+    end;
+    Path := Folder + Name;
     for I := 0 to Filters.Count - 1 do
     begin
       Mask := PWideChar(Filters[I]);
       if Mask^ = IncludeSign then
       begin
         Inc(Mask);
-        if WildcardMatches(PWideChar(Path), Mask) then
+        if MaskHits(Mask) then
            Exit;
       end
       else
       begin
         if Mask^ = ExcludeSign then
           Inc(Mask);
-        if WildcardMatches(PWideChar(Path), Mask) then
+        if MaskHits(Mask) then
         begin
           Result := False;
           Exit;

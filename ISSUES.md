@@ -20,10 +20,8 @@ Last updated: 2026-11-27 (version 1.06 in progress).
   FolderTree.CheckImageKind: Invalid property value". The Location folder picker form used a check
   box style that Virtual Treeview 8.3 no longer has. Check that the tab opens, the Location
   dropdown shows check boxes, and a search returns results.
-- **CA-093 [task] Test: File Search masks match long names only.** `*.cpp` must not list
-  `.suppress.cppcheck`; `*.*` must still list files with no extension.
 - **CA-094 [task] Test: File Search Filters tab.** Exclude masks remove files; include masks are
-  exceptions to the exclude masks.
+  exceptions to the exclude masks. A plain name (`conio32.cpp`) and `*\conio32.cpp` must both work.
 - **CA-095 [task] Test: File Search content options.** Case Sensitive and Whole Word together.
 
 ## Wishlist
