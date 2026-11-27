@@ -17,13 +17,7 @@ None.
 
 ## Checks still owed
 
-- **CA-100 [bug] Non-English text is garbled after restarting CA.** Found by Derell on
-  2026-11-27: Cyrillic text in the File Search word box was correct until CA was closed and
-  reopened. Cause, from the code: the XML reader's UTF-8 decoder compared a character with the
-  literal `#$80`, which Delphi converts using the Windows code page, so UTF-8 sequences were
-  read one byte at a time. The same reader loads the other XML files CA uses, including
-  settings and sessions. Fix pushed 2026-11-27; Derell to check. Text already saved in garbled
-  form stays garbled until it is entered again.
+None.
 
 ## Wishlist
 

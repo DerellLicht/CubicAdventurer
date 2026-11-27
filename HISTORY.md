@@ -24,6 +24,12 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-27
 
+### CA-100 [bug] Non-English text is garbled after restarting CA
+Opened 2026-11-27, closed 2026-11-27 (1.06). Found by Derell with Cyrillic text in the File
+Search word box. The XML reader compared a character with the literal `#$80`, which Delphi
+converts using the Windows code page, so UTF-8 text was read one byte at a time; it now compares
+numbers. Derell checked saving and restoring. Text already saved garbled has to be entered again.
+
 ### CA-098 [bug] File Search results show some Unicode file names as boxes
 Opened 2026-11-27, closed 2026-11-27 (1.06). Found by Derell; the file list showed the same
 names correctly. The search results list did not use the fallback font that the file list uses
