@@ -1539,6 +1539,10 @@ begin
       Size.Matches(nFileSizeLow {$IFDEF COMPILER4_UP} or (Int64(nFileSizeHigh) shl 32) {$ENDIF}) and
       TimeStamp.Matches(ftCreationTime, ftLastWriteTime, ftLastAccessTime) and
       Files.Matches(Folder, WideString(FindData.cFileName)) and
+      // Claude: a folder has no text to search, and opening one as a file raises
+      // EFOpenError, so with a content phrase a folder never matches.
+      ((Length(Content.Phrase) = 0) or
+      ((dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0)) and
       Content.Matches(Folder + WideString(FindData.cFileName));
   end;
 end;
