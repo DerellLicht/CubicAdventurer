@@ -6,12 +6,18 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-097). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-098). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-27 (version 1.06 in progress).
 
 ## Open bugs and gaps
+
+- **CA-098 [bug] File Search results show some Unicode file names as boxes.** Found by Derell on
+  2026-11-27; emojis in names display correctly. Likely cause, from the code only: the fallback
+  font used when the list font lacks a character (`CE_FontFallback.pas`) is applied by the file
+  list (`TCECustomFileView.DoItemPaintText`) and the Folders tree, but the search results list
+  is the plain library list view and does not call it.
 
 ## Checks still owed
 
