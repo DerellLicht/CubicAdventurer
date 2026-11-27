@@ -24,6 +24,11 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-27
 
+### CA-096 [bug] File does not show up in listing when it does not exist
+Opened 2026-11-27, closed 2026-11-27 (1.06). Closed with no action.
+`no_extension` was missing from the file list and from a `*.*` search. Derell then found that
+he had not put the file in the folder he intended to. Not a program bug.
+
 ### CA-092 [task] Test: column settings window opens
 Opened 2026-11-27, closed 2026-11-27 (1.06). Passed.
 The window had a check box style (ckXP) that Virtual Treeview 8.3 no longer has. Derell changed

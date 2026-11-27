@@ -13,13 +13,6 @@ Last updated: 2026-11-27 (version 1.06 in progress).
 
 ## Open bugs and gaps
 
-- **CA-096 [bug] A file with no extension does not show in the file list or in File Search.**
-  Found by Derell on 2026-11-27: a file named `no_extension`, created in his `ndir64` folder, is
-  missing from the normal file list and from a `*.*` search. The released 1.05 file list does not
-  show it either, so the list problem is not from the 1.06 search changes. Cause not investigated;
-  not yet checked: the file's attributes, or whether Windows Explorer shows it. The `*.*` check in
-  CA-093 waits on this.
-
 ## Checks still owed
 
 - **CA-091 [task] Test: File Search works (GitHub #3).** Clicking Search then raised "Cannot call
