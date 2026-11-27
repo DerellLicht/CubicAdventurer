@@ -15,7 +15,8 @@ Last updated: 2026-11-27 (version 1.05 in progress).
 
 ## Checks still owed
 
-- **CA-091 [task] Test: File Search opens (GitHub #3).** Ctrl+F failed with "Error reading
+- **CA-091 [task] Test: File Search works (GitHub #3).** Clicking Search then raised "Cannot call
+  Start on a running or suspended thread" (fixed). Earlier, Ctrl+F failed with "Error reading
   FolderTree.CheckImageKind: Invalid property value". The Location folder picker form used a check
   box style that Virtual Treeview 8.3 no longer has. Check that the tab opens, the Location
   dropdown shows check boxes, and a search returns results.

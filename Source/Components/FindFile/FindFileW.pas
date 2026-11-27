@@ -1562,7 +1562,8 @@ begin
   inherited Create(True);
   Owner := AOwner;
   Priority := Owner.ThreadPriority;
-  Start; // Resume is deprecated; the thread was created suspended
+  // Claude: do not call Start here. Delphi's TThread cannot be started from its own
+  // constructor (EThread); TFindFileW.Execute starts it.
 end;
 
 procedure TSearchThread.Execute;
@@ -1822,6 +1823,9 @@ begin
       InitializeSearch;
       try
        SearchThread := TSearchThread.Create(Self);
+       // Claude: start only after SearchThread is set; the search tests it to decide
+       // whether results must be passed to the main thread.
+       SearchThread.Start;
       except
         FinalizeSearch;
         raise;

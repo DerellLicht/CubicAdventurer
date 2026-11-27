@@ -1,7 +1,7 @@
 # CubicAdventurer Changelog
 
 ## [1.05] - 2026-11-26
-- Fixed: File Search failed to open with an "Invalid property value" error
+- Fixed: File Search failed to open with an "Invalid property value" error, and clicking Search raised a thread error
 - Fixed: the column settings window (right-click a column header > More...) had the same kind of invalid setting
 - Fixed: the right-click menu on an empty part of the file list did not include the Windows add-ons for folders, such as the New submenu
 - Added: before applying a new name, CA checks that the item being renamed is still there; if not, nothing is renamed and a message says so
