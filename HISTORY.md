@@ -24,6 +24,13 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-27
 
+### CA-094 [task] Test: File Search Filters tab
+Opened 2026-11-27, closed 2026-11-27 (1.06). Passed, including an exclude of `*` (empty list).
+CE 1582 read the Exclude box twice (once marked as include, which won) and never read the
+Include box, so neither box did anything. A mask now matches the file name only unless it
+contains `\`, in which case it matches the full path. An interim version that tried both was
+dropped: `d*` would have matched everything on drive D:.
+
 ### CA-091 [task] Test: File Search works (GitHub #3)
 Opened 2026-11-27, closed 2026-11-27 (1.06). Passed, including the Location dropdown.
 Two faults: a check box style that Virtual Treeview 8.3 no longer has stopped the tab from

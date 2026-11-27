@@ -21,9 +21,6 @@ Last updated: 2026-11-27 (version 1.06 in progress).
 
 ## Checks still owed
 
-- **CA-094 [task] Test: File Search Filters tab.** Exclude masks remove files; include masks are
-  exceptions to the exclude masks. A mask without `\` matches the file name only (`conio32.cpp`; `d*` must not match drive D:);
-  a mask with `\` matches the full path (`*\obj\*`).
 - **CA-095 [task] Test: File Search content options.** Case Sensitive and Whole Word together.
 
 ## Wishlist
