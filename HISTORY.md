@@ -22,6 +22,13 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
   CA-060 on is unique.
 - CA-016 once held four unrelated items. It was split on 2026-10-27 (see that day).
 
+## 2026-11-27
+
+### CA-092 [task] Test: column settings window opens
+Opened 2026-11-27, closed 2026-11-27 (1.06). Passed.
+The window had a check box style (ckXP) that Virtual Treeview 8.3 no longer has. Derell changed
+columns, added Folder path and used Live Update.
+
 ## 2026-11-26
 
 ### CA-089 [task] Test: rename safeguard

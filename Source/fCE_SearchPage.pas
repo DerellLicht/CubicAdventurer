@@ -932,16 +932,27 @@ begin
   // Content
   Find.Criteria.Content.Phrase := Self.memo_content.Text;
   Find.Criteria.Content.Options := [];
+  // Claude: add each option, so ticking both keeps both
   if check_content_case_sensitive.Checked then
-  Find.Criteria.Content.Options:= [csoCaseSensitive];
+  begin
+    Find.Criteria.Content.Options:= Find.Criteria.Content.Options + [csoCaseSensitive];
+  end;
   if check_content_wholeword.Checked then
-  Find.Criteria.Content.Options:= [csoWholeWord];
+  begin
+    Find.Criteria.Content.Options:= Find.Criteria.Content.Options + [csoWholeWord];
+  end;
   // Filters
   Find.Criteria.Files.Filters.Clear;
+  // Claude: include masks ('>') go first: a file matching one is kept even if it
+  // also matches an exclude mask
+  for i:= 0 to memo_filters_include.Lines.Count - 1 do
+  begin
+    Find.Criteria.Files.Filters.Add('>' + memo_filters_include.Lines.Strings[i]);
+  end;
   for i:= 0 to memo_filters_exclude.Lines.Count - 1 do
-  Find.Criteria.Files.Filters.Add('>' + memo_filters_exclude.Lines.Strings[i]);  
-  for i:= 0 to memo_filters_exclude.Lines.Count - 1 do
-  Find.Criteria.Files.Filters.Add(memo_filters_exclude.Lines.Strings[i]);
+  begin
+    Find.Criteria.Files.Filters.Add(memo_filters_exclude.Lines.Strings[i]);
+  end;
   // Clear previous results
   if check_clear_before.Checked then
   ResultView.Clear;

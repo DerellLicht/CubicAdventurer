@@ -3,6 +3,9 @@
 ## [1.06] - 2026-11-27
 - Fixed: File Search failed to open with an "Invalid property value" error, and clicking Search raised a thread error (GitHub #3)
 - Fixed: the column settings window (right-click a column header > More...) had the same kind of invalid setting
+- Fixed: File Search no longer lists files that match only by their hidden short (8.3) name, for example .suppress.cppcheck for *.cpp
+- Fixed: the Include and Exclude File Masks boxes on the File Search Filters tab now work
+- Fixed: File Search now applies Case Sensitive and Whole Word together when both are ticked
 
 ## [1.05] - 2026-11-26
 - Fixed: the right-click menu on an empty part of the file list did not include the Windows add-ons for folders, such as the New submenu

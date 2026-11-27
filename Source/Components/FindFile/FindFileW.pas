@@ -22,7 +22,7 @@ unit FindFileW;
 interface
 
 uses
-  Windows, Messages, Classes, SysUtils;
+  Windows, Messages, Classes, SysUtils, ShLwApi;
 
 const
   FILE_ATTRIBUTE_READONLY            = $00000001;
@@ -1726,6 +1726,19 @@ begin
     end;
 end;
 
+// Claude: FindFirstFileW also matches the hidden short (8.3) name, so *.cpp returned
+// .suppress.cppcheck (short name SUPPRE~1.CPP). Check the long name against the mask.
+// '*.*' means every file. A name with no dot is also tried with one added, so masks
+// such as '*.' or 'readme.*' still find it, as they do in Windows.
+function LongNameMatches(const AName: WideString; const AMask: WideString): Boolean;
+begin
+  Result:= (AMask = '*.*') or PathMatchSpecW(PWideChar(AName), PWideChar(AMask));
+  if not Result and (Pos('.', AName) = 0) then
+  begin
+    Result:= PathMatchSpecW(PWideChar(AName + '.'), PWideChar(AMask));
+  end;
+end;
+
 procedure TFindFileW.SearchIn(const Path: WideString);
 var
   I: Integer;
@@ -1758,7 +1771,8 @@ begin
            try
              repeat
                if Aborted then Exit;
-               if (not LongBool(FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) or
+               if LongNameMatches(FindData.cFileName, FileMasks[I]) and
+                  (not LongBool(FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) or
                   ((FindData.cFileName[0] <> '.') or ((FindData.cFileName[1] <> #0) and
                   ((FindData.cFileName[1] <> '.') or (FindData.cFileName[2] <> #0))))) and
                   IsAcceptable(Path, FindData)
