@@ -1139,12 +1139,18 @@ var
   Name: WideString;
   Mask: PWideChar;
 
-  // Claude: a mask may match the whole path (original behaviour, e.g. *\conio32.cpp
-  // or *\obj\*) or just the file name, so that plain conio32.cpp also works.
+  // Claude: a mask containing '\' is compared with the whole path (e.g. *\obj\*);
+  // any other mask with the file name only, so d* does not match the drive D:.
   function MaskHits(AMask: PWideChar): Boolean;
   begin
-    Result := WildcardMatches(PWideChar(Path), AMask) or
-      WildcardMatches(PWideChar(Name), AMask);
+    if Pos('\', WideString(AMask)) > 0 then
+    begin
+      Result := WildcardMatches(PWideChar(Path), AMask);
+    end
+    else
+    begin
+      Result := WildcardMatches(PWideChar(Name), AMask);
+    end;
   end;
 
 begin

@@ -21,7 +21,8 @@ Last updated: 2026-11-27 (version 1.06 in progress).
   box style that Virtual Treeview 8.3 no longer has. Check that the tab opens, the Location
   dropdown shows check boxes, and a search returns results.
 - **CA-094 [task] Test: File Search Filters tab.** Exclude masks remove files; include masks are
-  exceptions to the exclude masks. A plain name (`conio32.cpp`) and `*\conio32.cpp` must both work.
+  exceptions to the exclude masks. A mask without `\` matches the file name only (`conio32.cpp`; `d*` must not match drive D:);
+  a mask with `\` matches the full path (`*\obj\*`).
 - **CA-095 [task] Test: File Search content options.** Case Sensitive and Whole Word together.
 
 ## Wishlist
