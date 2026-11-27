@@ -24,6 +24,17 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-27
 
+### CA-099 [bug] File Search content: matches missed, and wrong Whole Word matches
+Opened 2026-11-27, closed 2026-11-27 (1.06). Fixed and checked by Derell. The search did not
+go back after a partial match failed, so `Widget` was not found in `WWidget`; in UTF-8 files
+with a BOM, Whole Word could also accept part of a longer word. Every start position is now
+tried.
+
+### CA-095 [task] Test: File Search content options
+Opened 2026-11-27, closed 2026-11-27 (1.06). Passed, including some variants. Only one of
+Case Sensitive and Whole Word had taken effect when both were ticked. Content search reads
+every file that passes the other settings, binary files included; left as in CE.
+
 ### CA-094 [task] Test: File Search Filters tab
 Opened 2026-11-27, closed 2026-11-27 (1.06). Passed, including an exclude of `*` (empty list).
 CE 1582 read the Exclude box twice (once marked as include, which won) and never read the
