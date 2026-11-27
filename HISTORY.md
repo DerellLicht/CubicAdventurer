@@ -24,6 +24,11 @@ git, the commit messages, `CHANGELOG.md` and the saved chats of this project. No
 
 ## 2026-11-27
 
+### CA-098 [bug] File Search results show some Unicode file names as boxes
+Opened 2026-11-27, closed 2026-11-27 (1.06). Found by Derell; the file list showed the same
+names correctly. The search results list did not use the fallback font that the file list uses
+when the list font lacks a character; it now does. Derell checked it with a Cyrillic search.
+
 ### CA-099 [bug] File Search content: matches missed, and wrong Whole Word matches
 Opened 2026-11-27, closed 2026-11-27 (1.06). Fixed and checked by Derell. The search did not
 go back after a partial match failed, so `Widget` was not found in `WWidget`; in UTF-8 files

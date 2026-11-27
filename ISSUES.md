@@ -25,13 +25,6 @@ None.
   settings and sessions. Fix pushed 2026-11-27; Derell to check. Text already saved in garbled
   form stays garbled until it is entered again.
 
-- **CA-098 [bug] File Search results show some Unicode file names as boxes.** Found by Derell on
-  2026-11-27; emojis in names display correctly. Likely cause, from the code only: the fallback
-  font used when the list font lacks a character (`CE_FontFallback.pas`) is applied by the file
-  list (`TCECustomFileView.DoItemPaintText`) and the Folders tree, but the search results list
-  is the plain library list view and does not call it.
-  Fix pushed 2026-11-27 (search results now call it for each cell); Derell to check.
-
 ## Wishlist
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
