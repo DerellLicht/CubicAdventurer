@@ -548,241 +548,217 @@ begin
   end;
 end;
 
-function StreamContainsPhraseAnsi(Stream: TStream; const Phrase: PAnsiChar;
-  PhraseLen: Integer; Options: TContentSearchOptions): Boolean;
+// Claude: every position in the file is tried as the start of a match. The earlier
+// code did not go back after a partial match failed, so it missed text, for
+// example Widget in WWidget, or abac in ababac. The file is read in blocks; the
+// end of each block is kept in front of the next, so a match may cross blocks.
+// Handles ANSI and UTF-8 bytes (IsUtf8 only changes how the neighbouring
+// characters are decoded for Whole Word). The stream is read from its current
+// position; the start and end of the data count as word boundaries.
+function StreamContainsPhraseBytes(Stream: TStream; const Phrase: PAnsiChar;
+  PhraseLen: Integer; Options: TContentSearchOptions; IsUtf8: Boolean): Boolean;
 const
   MaxBufferSize = $F000;
+  // longest UTF-8 character; this much is kept before and after a match
+  Margin = 4;
 var
   CharMap: PAnsiCharMap;
-  PrvChar, NxtChar: AnsiChar;
-  Buffer: array[0..MaxBufferSize-1] of AnsiChar;
-  BufferSize: Integer;
-  BufferEnd: PAnsiChar;
-  PhraseEnd: PAnsiChar;
-  bp, pp: PAnsiChar;
-begin
-  if csoCaseSensitive in Options then
-    CharMap := @AnsiCharMap
-  else
-    CharMap := @AnsiLowerCharMap;
-  PrvChar := #0;
-  PhraseEnd := Phrase;
-  Inc(PhraseEnd, PhraseLen);
-  pp := Phrase;
-  BufferSize := Stream.Read(Buffer, MaxBufferSize);
-  while BufferSize > 0 do
+  Buffer: array of AnsiChar;
+  Count, StartAt, Last, Keep, BytesRead, I: Integer;
+  AtEnd: Boolean;
+
+  // Claude: True if the character ending just before Buffer[Index] is not a letter
+  // or digit.
+  function DelimiterBefore(Index: Integer): Boolean;
+  var
+    First: Integer;
   begin
-    bp := @Buffer;
-    BufferEnd := @Buffer[BufferSize];
-    repeat
-      if (CharMap^[bp^] = CharMap^[pp^]) and ((pp <> Phrase) or
-         not (csoWholeWord in Options) or AnsiIsDelimiter[PrvChar]) then
+    if Index = 0 then
+    begin
+      Result := True;
+    end
+    else if not IsUtf8 then
+    begin
+      Result := AnsiIsDelimiter[Buffer[Index - 1]];
+    end
+    else
+    begin
+      First := Index - 1;
+      while (First > 0) and (Index - First < Margin) and
+        ((Ord(Buffer[First]) and $C0) = $80) do
       begin
-        Inc(pp);
-        if pp = PhraseEnd then
-        begin
-          if csoWholeWord in Options then
-          begin
-            Inc(bp);
-            if bp = BufferEnd then
-            begin
-              if Stream.Read(NxtChar, SizeOf(NxtChar)) = 0 then
-                NxtChar := #0;
-            end
-            else
-              NxtChar := bp^;
-            if AnsiIsDelimiter[NxtChar] then
-            begin
-              Result := True;
-              Exit;
-            end;
-            if bp = BufferEnd then
-              Stream.Seek(-SizeOf(NxtChar), soFromCurrent);
-            Dec(bp);
-            pp := Phrase;
-          end
-          else
-          begin
-            Result := True;
-            Exit;
-          end;
-        end;
-      end
-      else
-        pp := Phrase;
-      PrvChar := bp^;
-      Inc(bp);
-    until bp = BufferEnd;
-    BufferSize := Stream.Read(Buffer, MaxBufferSize);
+        Dec(First);
+      end;
+      Result := WideIsDelimiter[DecodeUTF8Char(@Buffer[First], Index - First)];
+    end;
   end;
+
+  // Claude: the same for the character starting at Buffer[Index].
+  function DelimiterAt(Index: Integer): Boolean;
+  var
+    Len: Integer;
+  begin
+    if Index >= Count then
+    begin
+      Result := True;
+    end
+    else if not IsUtf8 then
+    begin
+      Result := AnsiIsDelimiter[Buffer[Index]];
+    end
+    else
+    begin
+      Len := 1;
+      while (Len < Margin) and (Index + Len < Count) and
+        ((Ord(Buffer[Index + Len]) and $C0) = $80) do
+      begin
+        Inc(Len);
+      end;
+      Result := WideIsDelimiter[DecodeUTF8Char(@Buffer[Index], Len)];
+    end;
+  end;
+
+begin
   Result := False;
+  if PhraseLen <= 0 then
+  begin
+    Exit;
+  end;
+  if csoCaseSensitive in Options then
+  begin
+    CharMap := @AnsiCharMap;
+  end
+  else
+  begin
+    CharMap := @AnsiLowerCharMap;
+  end;
+  SetLength(Buffer, MaxBufferSize + PhraseLen + 2 * Margin);
+  Count := 0;
+  StartAt := 0;
+  repeat
+    BytesRead := Stream.Read(Buffer[Count], Length(Buffer) - Count);
+    AtEnd := BytesRead <= 0;
+    if not AtEnd then
+    begin
+      Inc(Count, BytesRead);
+    end;
+    // last start position that can be judged now; until the end of the data,
+    // the character after the match must also be in the buffer
+    Last := Count - PhraseLen;
+    if not AtEnd then
+    begin
+      Dec(Last, Margin);
+    end;
+    while StartAt <= Last do
+    begin
+      I := 0;
+      while (I < PhraseLen) and (CharMap^[Buffer[StartAt + I]] = CharMap^[Phrase[I]]) do
+      begin
+        Inc(I);
+      end;
+      if (I = PhraseLen) and (not (csoWholeWord in Options) or
+        (DelimiterBefore(StartAt) and DelimiterAt(StartAt + PhraseLen))) then
+      begin
+        Result := True;
+        Exit;
+      end;
+      Inc(StartAt);
+    end;
+    // drop what is no longer needed, keeping the character before StartAt
+    Keep := StartAt - Margin;
+    if Keep > 0 then
+    begin
+      Move(Buffer[Keep], Buffer[0], Count - Keep);
+      Dec(Count, Keep);
+      Dec(StartAt, Keep);
+    end;
+  until AtEnd;
 end;
 
+function StreamContainsPhraseAnsi(Stream: TStream; const Phrase: PAnsiChar;
+  PhraseLen: Integer; Options: TContentSearchOptions): Boolean;
+begin
+  Result := StreamContainsPhraseBytes(Stream, Phrase, PhraseLen, Options, False);
+end;
+
+// Claude: the UTF-16 version of StreamContainsPhraseBytes. PhraseLen is in
+// characters. Swapped means the file is big-endian.
 function StreamContainsPhraseWide(Stream: TStream; const Phrase: PWideChar;
   PhraseLen: Integer; Options: TContentSearchOptions; Swapped: Boolean): Boolean;
 const
   MaxBufferSize = $F000;
 var
   CharMap: PWideCharMap;
-  PrvChar, NxtChar: WideChar;
-  Buffer: array[0..MaxBufferSize-1] of WideChar;
-  BufferSize: Integer;
-  BufferEnd: PWideChar;
-  PhraseEnd: PWideChar;
-  bp, pp: PWideChar;
+  Buffer: array of WideChar;
+  Count, StartAt, Last, Keep, CharsRead, I: Integer;
+  AtEnd: Boolean;
 begin
-  if csoCaseSensitive in Options then
-    CharMap := @WideCharMap
-  else
-    CharMap := @WideLowerCharMap;
-  PrvChar := #0;
-  PhraseEnd := Phrase;
-  Inc(PhraseEnd, PhraseLen);
-  pp := Phrase;
-  BufferSize := Stream.Read(Buffer, MaxBufferSize) shr 1;
-  while BufferSize > 0 do
-  begin
-    bp := @Buffer;
-    BufferEnd := @Buffer[BufferSize];
-    repeat
-      if Swapped then
-        PWORD(bp)^ := MakeWord(HiByte(PWORD(bp)^), LoByte(PWORD(bp)^));
-      if (CharMap^[bp^] = CharMap^[pp^]) and ((pp <> Phrase) or
-         not (csoWholeWord in Options) or WideIsDelimiter[PrvChar]) then
-      begin
-        Inc(pp);
-        if pp = PhraseEnd then
-        begin
-          if csoWholeWord in Options then
-          begin
-            Inc(bp);
-            if bp = BufferEnd then
-            begin
-              if Stream.Read(NxtChar, SizeOf(NxtChar)) = 0 then
-                NxtChar := #0;
-            end
-            else
-              NxtChar := bp^;
-            if Swapped then
-              NxtChar := WideChar(MakeWord(HiByte(WORD(NxtChar)), LoByte(WORD(NxtChar))));
-            if WideIsDelimiter[NxtChar] then
-            begin
-              Result := True;
-              Exit;
-            end;
-            if bp = BufferEnd then
-              Stream.Seek(-SizeOf(NxtChar), soFromCurrent);
-            Dec(bp);
-            pp := Phrase;
-          end
-          else
-          begin
-            Result := True;
-            Exit;
-          end;
-        end;
-      end
-      else
-        pp := Phrase;
-      PrvChar := bp^;
-      Inc(bp);
-    until bp = BufferEnd;
-    BufferSize := Stream.Read(Buffer, MaxBufferSize) shr 1;
-  end;
   Result := False;
+  if PhraseLen <= 0 then
+  begin
+    Exit;
+  end;
+  if csoCaseSensitive in Options then
+  begin
+    CharMap := @WideCharMap;
+  end
+  else
+  begin
+    CharMap := @WideLowerCharMap;
+  end;
+  SetLength(Buffer, MaxBufferSize + PhraseLen + 2);
+  Count := 0;
+  StartAt := 0;
+  repeat
+    CharsRead := Stream.Read(Buffer[Count], (Length(Buffer) - Count) * 2) div 2;
+    AtEnd := CharsRead <= 0;
+    if not AtEnd then
+    begin
+      if Swapped then
+      begin
+        for I := Count to Count + CharsRead - 1 do
+        begin
+          Buffer[I] := WideChar(Swap(Word(Buffer[I])));
+        end;
+      end;
+      Inc(Count, CharsRead);
+    end;
+    Last := Count - PhraseLen;
+    if not AtEnd then
+    begin
+      Dec(Last);
+    end;
+    while StartAt <= Last do
+    begin
+      I := 0;
+      while (I < PhraseLen) and (CharMap^[Buffer[StartAt + I]] = CharMap^[Phrase[I]]) do
+      begin
+        Inc(I);
+      end;
+      if (I = PhraseLen) and (not (csoWholeWord in Options) or
+        (((StartAt = 0) or WideIsDelimiter[Buffer[StartAt - 1]]) and
+        ((StartAt + PhraseLen >= Count) or WideIsDelimiter[Buffer[StartAt + PhraseLen]]))) then
+      begin
+        Result := True;
+        Exit;
+      end;
+      Inc(StartAt);
+    end;
+    // keep the character before StartAt
+    Keep := StartAt - 1;
+    if Keep > 0 then
+    begin
+      Move(Buffer[Keep], Buffer[0], (Count - Keep) * 2);
+      Dec(Count, Keep);
+      Dec(StartAt, Keep);
+    end;
+  until AtEnd;
 end;
 
 function StreamContainsPhraseUtf8(Stream: TStream; const Phrase: PAnsiChar;
   PhraseLen: Integer; Options: TContentSearchOptions): Boolean;
-const
-  MaxBufferSize = $F000;
-var
-  CharMap: PAnsiCharMap;
-  PrvChars, NxtChars: array[0..7] of AnsiChar;
-  PrvLen, NxtLen: Integer;
-  PrvReady: Boolean;
-  Rollback: Integer;
-  Buffer: array[0..MaxBufferSize-1] of AnsiChar;
-  BufferSize: Integer;
-  BufferEnd: PAnsiChar;
-  PhraseEnd: PAnsiChar;
-  bp, pp, np: PAnsiChar;
 begin
-  if csoCaseSensitive in Options then
-    CharMap := @AnsiCharMap
-  else
-    CharMap := @AnsiLowerCharMap;
-  PrvReady := True;
-  PrvLen := 0;
-  PhraseEnd := Phrase;
-  Inc(PhraseEnd, PhraseLen);
-  pp := Phrase;
-  BufferSize := Stream.Read(Buffer, MaxBufferSize);
-  while BufferSize > 0 do
-  begin
-    bp := @Buffer;
-    BufferEnd := @Buffer[BufferSize];
-    repeat
-      if (PrvReady or (pp <> Phrase)) and
-         (CharMap^[bp^] = CharMap^[pp^]) and
-         ((pp <> Phrase) or not (csoWholeWord in Options) or
-         WideIsDelimiter[DecodeUTF8Char(PrvChars, PrvLen)]) then
-      begin
-        Inc(pp);
-        if pp = PhraseEnd then
-        begin
-          if csoWholeWord in Options then
-          begin
-            np := bp;
-            Inc(np);
-            NxtLen := 0;
-            Rollback := 0;
-            repeat
-              if np = BufferEnd then
-              begin
-                if Stream.Read(NxtChars[NxtLen], 1) = 1 then
-                  Inc(Rollback)
-                else
-                  Break;
-              end
-              else
-              begin
-                NxtChars[NxtLen] := np^;
-                Inc(np);
-              end;
-              if (NxtLen > 0) and ((Ord(NxtChars[NxtLen]) and $C0) = $C0) then
-                Break;
-              Inc(NxtLen);
-            until ((Ord(NxtChars[NxtLen-1]) and $80) = 0) or (NxtLen > High(NxtChars));
-            if WideIsDelimiter[DecodeUTF8Char(NxtChars, NxtLen)] then
-            begin
-              Result := True;
-              Exit;
-            end;
-            if Rollback <> 0 then
-              Stream.Seek(-Rollback, soFromCurrent);
-            pp := Phrase;
-          end
-          else
-          begin
-            Result := True;
-            Exit;
-          end;
-        end;
-      end
-      else
-        pp := Phrase;
-      if PrvReady then
-        PrvLen := 0;
-      PrvChars[PrvLen] := bp^;
-      Inc(PrvLen);
-      PrvReady := ((Ord(bp^) and $80) = 0) or (PrvLen > High(PrvChars));
-      Inc(bp);
-      PrvReady := PrvReady or ((Ord(bp^) and $C0) = $C0);
-    until bp = BufferEnd;
-    BufferSize := Stream.Read(Buffer, MaxBufferSize);
-  end;
-  Result := False;
+  Result := StreamContainsPhraseBytes(Stream, Phrase, PhraseLen, Options, True);
 end;
 
 function FileContainsPhrase(const FileName: WideString;

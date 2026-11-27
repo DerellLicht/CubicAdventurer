@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-098). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-099). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-27 (version 1.06 in progress).
@@ -20,6 +20,12 @@ Last updated: 2026-11-27 (version 1.06 in progress).
   is the plain library list view and does not call it.
 
 ## Checks still owed
+
+- **CA-099 [bug] File Search content: matches missed, and wrong Whole Word matches.** Found
+  from the code on 2026-11-27 and fixed the same day; Derell to check. After a partial match
+  failed, the search did not go back, so `Widget` was not found in `WWidget`. In UTF-8 files
+  with a BOM, Whole Word could also accept part of a longer word. Check: a file containing
+  `WWidget` is listed for `Widget` with both boxes clear.
 
 - **CA-095 [task] Test: File Search content options.** Case Sensitive and Whole Word together.
 
