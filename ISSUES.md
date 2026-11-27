@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-096). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-097). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-27 (version 1.06 in progress).
@@ -23,6 +23,15 @@ Last updated: 2026-11-27 (version 1.06 in progress).
 ## Wishlist
 
 Nice-to-have ideas, taken up when there is no bug list to work on.
+
+- **CA-097 [feature] File Search: a trailing `\` in an Exclude mask means a folder.** Not started;
+  to be considered at leisure (2026-11-27). Typing `.git\` or `obj\` under Exclude File Masks
+  would skip any folder of that name without searching it. Today `*\.git\*` only hides the
+  results (the folder is still searched), and `.git\` matches nothing. Full `.gitignore` syntax
+  is not proposed: partial support would mislead Git users, and others do not know it. Open
+  points: how users learn of it (an example on the Filters tab, or Tips and Tricks), and what
+  happens when Include masks are also given. Workaround for hidden folders such as `.git`:
+  clear the Hidden box on the Size & Attributes tab (this also leaves out hidden files).
 
 - **CA-082 [feature] Linked Multiple Windows ("derelict mode").** Not started; on Derell's
   think-about list (2026-11-11). A third mode in Options > General, beside Single Instance
