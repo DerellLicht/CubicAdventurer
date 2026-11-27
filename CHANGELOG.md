@@ -3,6 +3,7 @@
 ## [1.06] - 2026-11-27
 - Fixed: File Search functionality (GitHub #3)
 - Fixed: the column settings window (right-click a column header > More...)
+- Fixed: non-English text was garbled after restarting CA
 
 ## [1.05] - 2026-11-26
 - Fixed: the right-click menu on an empty part of the file list did not include the Windows add-ons for folders, such as the New submenu

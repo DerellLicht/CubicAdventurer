@@ -868,7 +868,11 @@ begin
   begin
     Result := WideChar(Byte(FBuf[0]));
     Inc(FBuf);
-    if Result < #$80 then
+    // Claude: compare as numbers. Delphi reads the literal #$80 as an ANSI
+    // character and converts it using the Windows code page (U+20AC on a
+    // Western system), so "Result < #$80" let every UTF-8 lead byte through
+    // as a character of its own and non-English text was loaded garbled.
+    if Ord(Result) < $80 then
       Exit;
     if Word(Result) and $40 = 0 then
       DecodingError('Invalid UTF-8 sequence start byte');

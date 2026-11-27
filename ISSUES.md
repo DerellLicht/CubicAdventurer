@@ -6,7 +6,7 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-099). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-100). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-27 (version 1.06 in progress).
@@ -16,6 +16,14 @@ Last updated: 2026-11-27 (version 1.06 in progress).
 None.
 
 ## Checks still owed
+
+- **CA-100 [bug] Non-English text is garbled after restarting CA.** Found by Derell on
+  2026-11-27: Cyrillic text in the File Search word box was correct until CA was closed and
+  reopened. Cause, from the code: the XML reader's UTF-8 decoder compared a character with the
+  literal `#$80`, which Delphi converts using the Windows code page, so UTF-8 sequences were
+  read one byte at a time. The same reader loads the other XML files CA uses, including
+  settings and sessions. Fix pushed 2026-11-27; Derell to check. Text already saved in garbled
+  form stays garbled until it is entered again.
 
 - **CA-098 [bug] File Search results show some Unicode file names as boxes.** Found by Derell on
   2026-11-27; emojis in names display correctly. Likely cause, from the code only: the fallback
