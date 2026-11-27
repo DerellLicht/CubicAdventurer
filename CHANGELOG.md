@@ -7,6 +7,7 @@
 - Fixed: the Include and Exclude File Masks boxes on the File Search Filters tab now work
 - Changed: in those boxes a mask is compared with the file name only (conio32.cpp, *.cpp); a mask containing \ is compared with the full path, for example *\obj\* for folders
 - Fixed: File Search now applies Case Sensitive and Whole Word together when both are ticked
+- Fixed: File Search content searches could miss text, and in some UTF-8 files Whole Word could match part of a longer word
 
 ## [1.05] - 2026-11-26
 - Fixed: the right-click menu on an empty part of the file list did not include the Windows add-ons for folders, such as the New submenu
