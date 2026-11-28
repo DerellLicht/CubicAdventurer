@@ -6,14 +6,19 @@ once confirmed. When an item is fixed, dropped or closed, move it to `HISTORY.md
 first, with how it ended) and describe the fix in `CHANGELOG.md`.
 
 Entry format: `CA-nnn  [bug|feature|task]  short title`, then a few lines of detail.
-Numbers are never reused (highest used so far: CA-100). The exception is CA-051 to CA-059,
+Numbers are never reused (highest used so far: CA-101). The exception is CA-051 to CA-059,
 which were reused before 2026-10-30; `HISTORY.md` labels those.
 
 Last updated: 2026-11-27 (version 1.06 in progress).
 
 ## Open bugs and gaps
 
-None.
+- **CA-101 [task] Tips and Tricks: explain font settings** (from GitHub #4, a font that
+  looks larger on a high-resolution laptop). On hold until #4 has been discussed; do not
+  edit `Documents/Tips_and_Tricks.md` before then.
+  - Cover the font settings, including that a size not in the font window's list can be
+    typed into its Size box (6 point tested and works).
+  - Windows display scaling above 100% makes text larger; a smaller font size offsets it.
 
 ## Checks still owed
 
